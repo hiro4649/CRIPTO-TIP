@@ -17,3 +17,5 @@ Checked on 2026-06-02 using npm registry metadata after `npm view` commands time
 Production integrations remain mocked. No production YouTube API, RPC, or IRIS API dependency is required for CI.
 
 Contract CI dependency policy: Foundry dependencies should be pinned rather than cloning default branches. The current CI uses shallow clones for OpenZeppelin Contracts and forge-std as an MVP compatibility fix; the next hardening step should pin OpenZeppelin to `v5.6.1` and forge-std to a specific commit in either Foundry dependency metadata or CI clone commands.
+
+Queue dependency decision: PR #2 does not add Redis or BullMQ. A DB-backed outbox is sufficient for the current safety boundary, keeps CI free of external services, and makes idempotency/audit behavior reviewable in SQL.

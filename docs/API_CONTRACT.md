@@ -18,3 +18,7 @@ Internal and admin:
 - `WS /overlay/:streamId/ws?token=...` requires a mock overlay token in the MVP and must become a hashed stream-scoped read-only token in production.
 
 All public input is validated with Zod schemas from `packages/shared`.
+
+`GET /api/tip-intents/:tipIntentId` returns only the public DTO. It does not expose wallet addresses, raw display names, raw messages, message hashes, or client Tip ids.
+
+`POST /internal/events` remains idempotency-first: support event lookup by `source + source_event_id` happens before affinity, overlay, reaction, or outbox side effects.

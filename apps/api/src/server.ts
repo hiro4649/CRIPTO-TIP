@@ -22,29 +22,22 @@ import {
   type SupportReceived,
   type TipIntent
 } from "@cripto-tip/shared";
+import { loadConfig } from "./config/env.js";
+import { InMemoryRepository } from "./repositories/in-memory.js";
+import type { CriptoTipRepository } from "./repositories/types.js";
 
-const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? "change-me-admin-token";
-const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? "change-me-internal-token";
-const OVERLAY_TOKEN = process.env.MOCK_OVERLAY_TOKEN ?? "change-me-overlay-token";
+const config = loadConfig();
+const ADMIN_TOKEN = config.MOCK_ADMIN_TOKEN;
+const INTERNAL_TOKEN = config.MOCK_INTERNAL_TOKEN;
+const OVERLAY_TOKEN = config.MOCK_OVERLAY_TOKEN;
 const PORT = Number(process.env.API_PORT ?? 4000);
 
 type Store = {
-  liveSessions: Map<string, LiveSession>;
-  tipIntents: Map<string, TipIntent>;
-  supportEvents: Map<string, SupportReceived>;
   overlayClients: Map<string, Set<{ send: (payload: string) => void }>>;
-  recentTipsByWallet: Map<string, number>;
-  affinityByUser: Map<string, number>;
 };
 
-export const store: Store = {
-  liveSessions: new Map(),
-  tipIntents: new Map(),
-  supportEvents: new Map(),
-  overlayClients: new Map(),
-  recentTipsByWallet: new Map(),
-  affinityByUser: new Map()
-};
+export const repository = new InMemoryRepository();
+export const store: Store = { overlayClients: new Map() };
 
 function requireBearer(req: FastifyRequest, expected: string): boolean {
   return req.headers.authorization === `Bearer ${expected}`;
@@ -60,20 +53,6 @@ export function isOverlayTokenValid(token: string | undefined): boolean {
   return token === OVERLAY_TOKEN;
 }
 
-function publicTipIntent(intent: TipIntent) {
-  return {
-    id: intent.id,
-    stream_id: intent.stream_id,
-    character_id: intent.character_id,
-    display_name: intent.display_name_sanitized,
-    message: intent.message_sanitized,
-    amount_display: intent.amount_display,
-    tier: intent.tier,
-    moderation_status: intent.moderation_status,
-    created_at: intent.created_at
-  };
-}
-
 const TipIntentRequestSchema = z.object({
   iris_user_id: z.string().default("usr_mock"),
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/).optional(),
@@ -84,7 +63,7 @@ const TipIntentRequestSchema = z.object({
   tier: z.enum(["small", "medium", "large", "high"])
 });
 
-export function buildServer() {
+export function buildServer(repo: CriptoTipRepository = repository) {
   const app = Fastify({ logger: false });
   app.register(websocket);
 
@@ -92,7 +71,7 @@ export function buildServer() {
 
   app.get("/api/live/:streamId", async (req) => {
     const params = z.object({ streamId: z.string() }).parse(req.params);
-    const existing = store.liveSessions.get(params.streamId);
+    const existing = await repo.getLiveSession(params.streamId);
     if (existing) return existing;
     const session: LiveSession = {
       id: params.streamId,
@@ -105,8 +84,7 @@ export function buildServer() {
       overlay_url: `/overlay/${params.streamId}`,
       created_at: new Date().toISOString()
     };
-    store.liveSessions.set(params.streamId, session);
-    return session;
+    return repo.createLiveSession(session);
   });
 
   app.post("/api/wallet/nonce", async (req) => {
@@ -124,7 +102,7 @@ export function buildServer() {
     const body = TipIntentRequestSchema.parse(req.body);
     const displayName = sanitizeDisplayName(body.display_name);
     const message = sanitizeMessage(body.message);
-    const recentTipCount = body.wallet_address ? store.recentTipsByWallet.get(body.wallet_address) ?? 0 : 0;
+    const recentTipCount = body.wallet_address ? repository.recentTipsByWallet.get(body.wallet_address) ?? 0 : 0;
     const moderation = moderateTipMessage({ displayName: body.display_name, message: body.message, amountRaw: body.amount_raw, recentTipCount, isNewWallet: recentTipCount === 0 });
     const id = createPublicId("tipi");
     const clientTipSeed = `${streamId}:${body.iris_user_id}:${id}`;
@@ -147,21 +125,20 @@ export function buildServer() {
       moderation_status: moderation.status,
       created_at: new Date().toISOString()
     });
-    store.tipIntents.set(id, tipIntent);
-    if (body.wallet_address) store.recentTipsByWallet.set(body.wallet_address, recentTipCount + 1);
-    return { tip_intent: publicTipIntent(tipIntent), moderation };
+    await repo.createTipIntent(tipIntent);
+    if (body.wallet_address) repository.recentTipsByWallet.set(body.wallet_address, recentTipCount + 1);
+    return { tip_intent: await repo.getTipIntentPublic(id), moderation };
   });
 
   app.get("/api/tip-intents/:tipIntentId", async (req) => {
     const { tipIntentId } = z.object({ tipIntentId: z.string() }).parse(req.params);
-    const intent = store.tipIntents.get(tipIntentId);
-    return intent ? publicTipIntent(intent) : { error: "not_found" };
+    return (await repo.getTipIntentPublic(tipIntentId)) ?? { error: "not_found" };
   });
 
   app.post("/internal/events", async (req, reply) => {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const body = z.object({ tip_intent_id: z.string(), tx_hash: z.string().default("0xmock"), log_index: z.number().int().default(0) }).parse(req.body);
-    const intent = store.tipIntents.get(body.tip_intent_id);
+    const intent = await repo.getTipIntentInternal(body.tip_intent_id);
     if (!intent) return reply.code(404).send({ error: "tip_intent_not_found" });
     const source_event_id = createIdempotencyKeyForChainLog({
       chain_id: 31337,
@@ -170,13 +147,13 @@ export function buildServer() {
       log_index: body.log_index
     });
     const supportKey = `iris_token_tip:${source_event_id}`;
-    const existing = store.supportEvents.get(supportKey);
+    const existing = await repo.getSupportEventBySource("iris_token_tip", source_event_id);
     if (existing) {
       return { support_event: existing, duplicate: true };
     }
     if (intent.moderation_status === "hold") return { status: "hold", reason: "admin_approval_required" };
     if (intent.moderation_status === "rejected" || intent.moderation_status === "shadow_ignored") return { status: intent.moderation_status };
-    const previous = store.affinityByUser.get(intent.iris_user_id) ?? 0;
+    const previous = repository.affinityByUser.get(intent.iris_user_id) ?? 0;
     const affinity = canApplyAffinity(intent.moderation_status) ? calculateAffinityDelta({ tier: intent.tier, previous, dailyUsed: 0, streamUsed: 0 }) : { previous, delta: 0, next: previous };
     const support = normalizeTokenTipToSupportReceived({
       chain_id: 31337,
@@ -195,15 +172,35 @@ export function buildServer() {
       moderation_status: intent.moderation_status,
       created_at: new Date().toISOString()
     }, { previous: affinity.previous, delta: affinity.delta, next: affinity.next });
-    store.supportEvents.set(supportKey, support);
-    if (canApplyAffinity(intent.moderation_status)) store.affinityByUser.set(intent.iris_user_id, affinity.next);
+    const createdSupport = await repo.createSupportEventIfAbsent(support);
+    if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
+    if (canApplyAffinity(intent.moderation_status)) {
+      await repo.applyAffinityIfAbsent({
+        id: createPublicId("aff"),
+        source_event_id: support.source_event_id,
+        iris_user_id: intent.iris_user_id,
+        character_id: intent.character_id,
+        previous_affinity: affinity.previous,
+        affinity_delta: affinity.delta,
+        new_affinity: affinity.next,
+        reason: "support.received",
+        created_at: new Date().toISOString()
+      });
+    }
     const overlay = canEmitOverlay(intent.moderation_status) ? buildOverlayTipAlert(support) : undefined;
     if (overlay) {
+      await repo.createOverlayEventIfAbsent(support.source_event_id, support.stream_id, overlay);
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
       emitOverlay(overlay);
+    }
+    const reactionRequest = canRequestAiReaction(intent.moderation_status) ? buildCharacterReactionRequest(support) : undefined;
+    if (reactionRequest) {
+      await repo.createReactionRequestIfAbsent(support.source_event_id, support.character_id, reactionRequest);
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
     }
     return {
       support_event: support,
-      character_reaction_request: canRequestAiReaction(intent.moderation_status) ? buildCharacterReactionRequest(support) : undefined,
+      character_reaction_request: reactionRequest,
       overlay
     };
   });
@@ -211,16 +208,18 @@ export function buildServer() {
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
-    return [...store.supportEvents.values()].filter((event) => event.stream_id === streamId);
+    return [...repository.supportEvents.values()].filter((event) => event.stream_id === streamId);
   });
 
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    await repo.writeAuditLog({ actor_type: "admin", action: "approve_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
     return { status: "approved", audit_log: "mock-admin-approve" };
   });
 
   app.post("/admin/tips/:supportEventId/reject", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    await repo.writeAuditLog({ actor_type: "admin", action: "reject_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
     return { status: "rejected", audit_log: "mock-admin-reject" };
   });
 

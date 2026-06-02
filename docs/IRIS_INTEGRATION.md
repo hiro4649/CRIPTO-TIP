@@ -18,3 +18,5 @@ Reaction request constraints:
 - `avoid_romantic_escalation_from_payment`
 
 Memory candidates must not include wallet address, romance, ownership, or control inferred from payment.
+
+PR #2 keeps production IRIS delivery mocked. `iris.deliver`, `reaction.request`, and `overlay.emit` are represented as outbox job types so the next phase can attach real adapters without changing event idempotency rules.

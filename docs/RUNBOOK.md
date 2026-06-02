@@ -20,3 +20,16 @@ Failure behavior:
 - Contract pause disables Tip form.
 
 Queue and DLQ are documented for production; MVP uses in-memory maps.
+
+## Outbox and DLQ
+
+The preferred MVP queue is a DB-backed outbox:
+
+1. Producers insert `outbox_events` with a unique `idempotency_key`.
+2. Workers claim pending rows by setting `locked_at` and `locked_by`.
+3. Handlers deliver at least once. Consumers must be idempotent.
+4. Failures increment `retry_count`, set `last_error`, and schedule `next_attempt_at` with backoff.
+5. Jobs move to `dead_letter_events` after `max_retry_count`.
+6. Admin retry creates or requeues a `dead_letter.retry` job and writes `audit_logs`.
+
+Raw messages and raw display names are access-restricted operational data. Sanitized values are used for overlay and IRIS-facing events. Raw message retention should be limited to moderation review windows, with deletion or anonymization after the documented retention period.

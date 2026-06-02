@@ -1,16 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { buildServer, isOverlayTokenValid, store } from "./server.js";
+import { buildServer, isOverlayTokenValid, repository, store } from "./server.js";
 
 describe("api", () => {
   const wallet = "0x1111111111111111111111111111111111111111";
 
   beforeEach(() => {
-    store.liveSessions.clear();
-    store.tipIntents.clear();
-    store.supportEvents.clear();
+    repository.clear();
     store.overlayClients.clear();
-    store.recentTipsByWallet.clear();
-    store.affinityByUser.clear();
   });
 
   it("requires admin auth for admin mutation routes", async () => {
@@ -67,10 +63,10 @@ describe("api", () => {
     });
     const id = created.json().tip_intent.id;
     const first = await app.inject({ method: "POST", url: "/internal/events", headers: { authorization: "Bearer change-me-internal-token" }, payload: { tip_intent_id: id, tx_hash: "0xdup", log_index: 1 } });
-    const affinityAfterFirst = store.affinityByUser.get("usr_mock");
+    const affinityAfterFirst = repository.affinityByUser.get("usr_mock");
     const second = await app.inject({ method: "POST", url: "/internal/events", headers: { authorization: "Bearer change-me-internal-token" }, payload: { tip_intent_id: id, tx_hash: "0xdup", log_index: 1 } });
     expect(second.json().duplicate).toBe(true);
-    expect(store.affinityByUser.get("usr_mock")).toBe(affinityAfterFirst);
+    expect(repository.affinityByUser.get("usr_mock")).toBe(affinityAfterFirst);
     expect(second.json().overlay).toBeUndefined();
     expect(second.json().character_reaction_request).toBeUndefined();
     await app.close();
@@ -99,10 +95,10 @@ describe("api", () => {
       url: "/api/live/str_reject/tip-intents",
       payload: { wallet_address: wallet, display_name: "Akira", message: "violent", amount_raw: "100", amount_display: "100 IRIS", tier: "high" }
     });
-    const before = store.affinityByUser.get("usr_mock");
+    const before = repository.affinityByUser.get("usr_mock");
     const event = await app.inject({ method: "POST", url: "/internal/events", headers: { authorization: "Bearer change-me-internal-token" }, payload: { tip_intent_id: created.json().tip_intent.id, tx_hash: "0xreject", log_index: 1 } });
     expect(event.json().status).toBe("rejected");
-    expect(store.affinityByUser.get("usr_mock")).toBe(before);
+    expect(repository.affinityByUser.get("usr_mock")).toBe(before);
     await app.close();
   }, 20_000);
 
@@ -115,9 +111,9 @@ describe("api", () => {
       payload: { wallet_address: wallet, display_name: "Akira", message: "display only", amount_raw: "100", amount_display: "100 IRIS", tier: "small" }
     });
     const id = created.json().tip_intent.id;
-    const intent = store.tipIntents.get(id);
+    const intent = repository.tipIntents.get(id);
     if (!intent) throw new Error("missing intent");
-    store.tipIntents.set(id, { ...intent, moderation_status: "display_only" });
+    repository.tipIntents.set(id, { ...intent, moderation_status: "display_only" });
     const event = await app.inject({ method: "POST", url: "/internal/events", headers: { authorization: "Bearer change-me-internal-token" }, payload: { tip_intent_id: id, tx_hash: "0xdisplay", log_index: 1 } });
     expect(event.json().overlay).toBeDefined();
     expect(event.json().character_reaction_request).toBeUndefined();
