@@ -1,0 +1,26 @@
+{
+  "name": "@cripto-tip/overlay",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3001",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@cripto-tip/shared": "workspace:*",
+    "@vitejs/plugin-react": "^5.1.2",
+    "vite": "^7.2.7",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

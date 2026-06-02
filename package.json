@@ -1,0 +1,19 @@
+{
+  "name": "cripto-tip",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "lint": "corepack pnpm -r --workspace-concurrency=1 lint",
+    "typecheck": "corepack pnpm -r --workspace-concurrency=1 typecheck",
+    "test": "corepack pnpm -r --workspace-concurrency=1 test",
+    "dev:web": "corepack pnpm --filter @cripto-tip/web dev",
+    "dev:api": "corepack pnpm --filter @cripto-tip/api dev",
+    "dev:overlay": "corepack pnpm --filter @cripto-tip/overlay dev"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
