@@ -1,0 +1,13 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
+  "harnessVersion": "0.9.2",
+  "schemaVersion": "1.0.0",
+  "statusName": "scoreDecompositionStatus",
+  "requiredFields": ["status", "score", "caps", "topBlockingReasons", "topNextActions", "safeSummaryOnly"],
+  "limits": {
+    "maxCaps": 5,
+    "maxTopBlockingReasons": 5,
+    "maxTopNextActions": 5
+  },
+  "safeSummaryOnly": true
+}
