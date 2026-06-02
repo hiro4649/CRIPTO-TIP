@@ -1,0 +1,384 @@
+# CODEX_QUALITY_HARNESS_FILE v1.0.3
+name: quality-gate
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Create pre-checkout lifeboat artifact
+        shell: bash
+        env:
+          CODEX_PRECHECKOUT_REPOSITORY: ${{ github.repository }}
+          CODEX_PRECHECKOUT_EVENT_NAME: ${{ github.event_name }}
+          CODEX_PRECHECKOUT_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          CODEX_PRECHECKOUT_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP"
+          safe_repo="$(printf '%s' "${CODEX_PRECHECKOUT_REPOSITORY:-}" | tr -cd 'A-Za-z0-9_.-/' | cut -c1-120)"
+          safe_event="$(printf '%s' "${CODEX_PRECHECKOUT_EVENT_NAME:-unknown}" | tr -cd 'A-Za-z0-9_.:-' | cut -c1-80)"
+          safe_pr="$(printf '%s' "${CODEX_PRECHECKOUT_PR_NUMBER:-}" | tr -cd '0-9' | cut -c1-20)"
+          safe_head="$(printf '%s' "${CODEX_PRECHECKOUT_HEAD_SHA:-}" | tr -cd 'A-Fa-f0-9' | cut -c1-64)"
+          cat > "$RUNNER_TEMP/codex-minimal-safe-failure.json" <<JSON
+          {
+            "schemaVersion": "0.9.4",
+            "phase": "pre_checkout",
+            "status": "fail",
+            "safeSummaryOnly": true,
+            "lastKnownGate": "workflow_start",
+            "lastKnownReasonCodes": ["workflow_started"],
+            "safeNextAction": "Inspect safe workflow artifacts or rerun after the smallest correction.",
+            "repository": "$safe_repo",
+            "eventName": "$safe_event",
+            "prNumber": "$safe_pr",
+            "headSha": "$safe_head"
+          }
+          JSON
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install root dependencies if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f package.json ]; then
+            npm install --no-package-lock
+          fi
+      - name: Install monorepo dependencies if present
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in apps/backend apps/frontend contracts; do
+            if [ -f "$dir/package.json" ]; then
+              (cd "$dir" && npm install --no-package-lock)
+            fi
+          done
+      - name: Create Codex lifeboat artifact
+        if: always()
+        shell: bash
+        env:
+          CODEX_LIFEBOAT_PHASE: workflow_started
+          CODEX_LIFEBOAT_WRITE: "1"
+          CODEX_EVENT_NAME: ${{ github.event_name }}
+          CODEX_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || '' }}
+          CODEX_REPOSITORY: ${{ github.repository }}
+          CODEX_LIFEBOAT_PATH: ${{ runner.temp }}/codex-minimal-safe-failure.json
+        run: |
+          node scripts/codex-artifact-lifeboat.mjs > "$RUNNER_TEMP/codex-artifact-lifeboat.json" || true
+      - name: Prepare target product verification
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > "$RUNNER_TEMP/codex-remote-product-checks.safe.json" <<'JSON'
+          {"schemaVersion":"0.9.9","phase":"remote product checks","status":"pending","safeSummaryOnly":true}
+          JSON
+          cat > "$RUNNER_TEMP/codex-remote-product-baseline.json" <<'JSON'
+          {"schemaVersion":"0.9.9","phase":"remote product baseline","status":"pending","safeSummaryOnly":true}
+          JSON
+          cat > "$RUNNER_TEMP/codex-product-verification-evidence.remote.json" <<'JSON'
+          {"schemaVersion":"0.9.9","phase":"product verification evidence remote generation","status":"pending","safeSummaryOnly":true}
+          JSON
+          cat > "$RUNNER_TEMP/codex-remote-npm-diagnostic.safe.json" <<'JSON'
+          {"schemaVersion":"0.9.9","phase":"remote npm diagnostic","status":"pending","safeSummaryOnly":true}
+          JSON
+          # safe artifact upload is locked by the upload-artifact path list.
+      - name: Generate remote product evidence
+        if: always()
+        shell: bash
+        env:
+          CODEX_EVENT_NAME: ${{ github.event_name }}
+          CODEX_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          CODEX_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          echo "CODEX_PRODUCT_VERIFICATION_EVIDENCE_PATH=$RUNNER_TEMP/codex-product-verification-evidence.remote.json" >> "$GITHUB_ENV"
+          echo "CODEX_REMOTE_PRODUCT_BASELINE_PATH=$RUNNER_TEMP/codex-remote-product-baseline.json" >> "$GITHUB_ENV"
+          echo "CODEX_NPM_TEST_SAFE_SUMMARY_PATH=$RUNNER_TEMP/codex-remote-npm-diagnostic.safe.json" >> "$GITHUB_ENV"
+          if [ -f CODEX_SOURCE_HARNESS_MANIFEST.json ]; then
+            is_pr=false
+            if [ "${CODEX_EVENT_NAME:-}" = "pull_request" ]; then is_pr=true; fi
+            runner_json="$(IS_PR="$is_pr" node -e "const input={productRelevant:false,isPullRequest:process.env.IS_PR==='true',eventName:process.env.CODEX_EVENT_NAME||'',headSha:process.env.CODEX_PR_HEAD_SHA||'',baseSha:process.env.CODEX_PR_BASE_SHA||'',repository:process.env.CODEX_REPOSITORY||'',npmExecuted:false,npmExitCode:0}; process.stdout.write(JSON.stringify(input));")"
+            CODEX_REMOTE_PRODUCT_EVIDENCE_OUT_DIR="$RUNNER_TEMP" \
+            CODEX_REMOTE_PRODUCT_EVIDENCE_RUNNER_JSON="$runner_json" \
+              node scripts/codex-remote-product-evidence-runner.mjs --write-artifacts || true
+            echo "CODEX_REMOTE_NPM_EXECUTED=0" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          export CODEX_HARNESS_MODE=target
+          export CODEX_PROFILE_COMPAT_MODE=off
+          changed_files="$(git diff --name-only origin/main...HEAD || true)"
+          export CODEX_CHANGED_FILES="$changed_files"
+          classification_json="$(CODEX_QUALITY_REPORT=json node scripts/codex-change-classification-gate.mjs || true)"
+          product_relevant="$(CLASSIFICATION_JSON="$classification_json" node -e "const r=JSON.parse(process.env.CLASSIFICATION_JSON||'{}'); const s=r.changeClassificationStatus||{}; process.stdout.write(s.productRelevantChanged||s.runtimeReadinessClaimed||s.packageOrLockfileChanged?'1':'0')")"
+          npm_exit=0
+          npm_executed=0
+          if [ "$product_relevant" = "1" ]; then
+            npm_executed=1
+            echo "CODEX_SKIP_NPM=0" >> "$GITHUB_ENV"
+            npm test > "$RUNNER_TEMP/codex-npm-test.raw.log" 2>&1 || npm_exit=$?
+          else
+            echo "CODEX_SKIP_NPM=1" >> "$GITHUB_ENV"
+          fi
+          echo "CODEX_REMOTE_NPM_EXECUTED=$npm_executed" >> "$GITHUB_ENV"
+          echo "CODEX_NPM_EXIT_CODE=$npm_exit" >> "$GITHUB_ENV"
+          runner_json="$(PRODUCT_RELEVANT="$product_relevant" NPM_EXECUTED="$npm_executed" NPM_EXIT_CODE="$npm_exit" node -e "const input={productRelevant:process.env.PRODUCT_RELEVANT==='1',isPullRequest:process.env.CODEX_EVENT_NAME==='pull_request',eventName:process.env.CODEX_EVENT_NAME||'',headSha:process.env.CODEX_PR_HEAD_SHA||'',baseSha:process.env.CODEX_PR_BASE_SHA||'',repository:process.env.CODEX_REPOSITORY||'',npmExecuted:process.env.NPM_EXECUTED==='1',npmExitCode:Number(process.env.NPM_EXIT_CODE||0)}; process.stdout.write(JSON.stringify(input));")"
+          CODEX_REMOTE_PRODUCT_EVIDENCE_OUT_DIR="$RUNNER_TEMP" CODEX_REMOTE_PRODUCT_EVIDENCE_RUNNER_JSON="$runner_json" node scripts/codex-remote-product-evidence-runner.mjs --write-artifacts
+      - name: Run Codex quality gate
+        shell: bash
+        env:
+          CODEX_QUALITY_REPORT: "json"
+          CODEX_OPENAI_METHOD_REPORT: "json"
+          CODEX_EVENT_NAME: ${{ github.event_name }}
+          CODEX_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || '' }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+          CODEX_REPOSITORY: ${{ github.repository }}
+          CODEX_LIFEBOAT_PATH: ${{ runner.temp }}/codex-minimal-safe-failure.json
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if [ "${CODEX_EVENT_NAME:-}" = "pull_request" ]; then
+            export CODEX_EVIDENCE_PACK_STRICT=1
+            export CODEX_HUMAN_CONFIRMATION_STRICT=1
+          else
+            export CODEX_EVIDENCE_PACK_STRICT="${CODEX_EVIDENCE_PACK_STRICT:-0}"
+            export CODEX_HUMAN_CONFIRMATION_STRICT="${CODEX_HUMAN_CONFIRMATION_STRICT:-0}"
+            export CODEX_REMOTE_VERIFICATION_MODE="${CODEX_REMOTE_VERIFICATION_MODE:-source_main_workflow_dispatch}"
+          fi
+          if [ -f CODEX_SOURCE_HARNESS_MANIFEST.json ]; then
+            export CODEX_HARNESS_SOURCE_REPO=1
+            export CODEX_HARNESS_MODE=core
+            export CODEX_PROFILE_COMPAT_MODE=optional
+            export CODEX_REQUIRE_NPM=1
+          else
+            export CODEX_HARNESS_MODE=target
+            export CODEX_PROFILE_COMPAT_MODE=off
+            export CODEX_SKIP_NPM="${CODEX_SKIP_NPM:-1}"
+          fi
+          if [ "${CODEX_EVENT_NAME:-}" = "pull_request" ]; then
+            pr_json="$(gh api "repos/${CODEX_REPOSITORY}/pulls/${CODEX_PR_NUMBER}" --jq '{body: .body}' 2>/dev/null || printf '{"body":""}')"
+            export CODEX_PR_BODY="$(printf '%s' "$pr_json" | node -e "let input=''; process.stdin.on('data', c => input += c); process.stdin.on('end', () => { try { const parsed = JSON.parse(input); process.stdout.write(parsed.body || ''); } catch { process.stdout.write(''); } });")"
+            changed_files="$(git diff --name-only "origin/main...HEAD" || true)"
+            export CODEX_CHANGED_FILES="$(printf '%s\n' "$changed_files" | node -e "const fs = require('fs'); const lines = fs.readFileSync(0, 'utf8').split(/\\r?\\n/).filter(Boolean); process.stdout.write(JSON.stringify(lines));")"
+          fi
+          node scripts/codex-workflow-preflight.mjs > "$RUNNER_TEMP/codex-workflow-preflight.json"
+          gate_exit=0
+          node scripts/codex-local-quality-gate.mjs > "$RUNNER_TEMP/codex-quality-gate.json" || gate_exit=$?
+          node scripts/codex-workflow-preflight.mjs --write-artifact > "$RUNNER_TEMP/codex-workflow-preflight-artifact.json"
+          CODEX_LIFEBOAT_PHASE=quality_gate_failed CODEX_LAST_KNOWN_GATE=local_quality_gate node scripts/codex-artifact-lifeboat.mjs > "$RUNNER_TEMP/codex-artifact-lifeboat-after-gate.json" || true
+          node scripts/codex-workflow-quality-runner.mjs --report "$RUNNER_TEMP/codex-quality-gate.json" --gate-exit "$gate_exit"
+      - name: Write safe quality summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE' >> "$GITHUB_STEP_SUMMARY"
+          const fs = require('fs');
+          function readJson(file) {
+            try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+            catch { return null; }
+          }
+          const runnerTempLifeboat = process.env.RUNNER_TEMP ? `${process.env.RUNNER_TEMP}/codex-minimal-safe-failure.json` : '';
+          const summary = readJson('codex-quality-gate-safe-summary.json') || readJson('codex-minimal-safe-failure.json') || readJson(runnerTempLifeboat);
+          const diagnostic = readJson('codex-diagnostic-consolidated-summary.json');
+          const reasons = readJson('codex-failure-reasons.json') || [];
+          console.log('## Codex quality gate safe summary');
+          if (summary) {
+            console.log(`- status: ${summary.status || 'missing'}`);
+            console.log(`- mode: ${summary.mode || 'missing'}`);
+            console.log(`- mergeReady: ${summary.mergeReady}`);
+            console.log(`- targetMergeReady: ${summary.targetMergeReady ?? 'not_applicable'}`);
+            console.log(`- humanReviewRequired: ${summary.humanReviewRequired}`);
+            console.log(`- qualityScoreStatus: ${summary.qualityScoreStatus?.status || 'missing'}`);
+            console.log(`- qualityScore: ${summary.qualityScoreStatus?.score ?? 'missing'}`);
+            console.log(`- artifactLifeboatStatus: ${summary.artifactLifeboatStatus?.status || summary.status || 'missing'}`);
+            console.log(`- classificationCoverageStatus: ${summary.classificationCoverageStatus?.status || 'missing'}`);
+            console.log(`- remoteLocalParityStatus: ${summary.remoteLocalParityStatus?.status || 'missing'}`);
+            console.log(`- noArtifactFailureStatus: ${summary.noArtifactFailureStatus?.status || 'missing'}`);
+            console.log(`- versionLineageStatus: ${summary.versionLineageStatus?.status || 'missing'}`);
+            console.log(`- prEvidenceRendererStatus: ${summary.prEvidenceRendererStatus?.status || 'missing'}`);
+            console.log(`- safeArtifactClassifierStatus: ${summary.safeArtifactClassifierStatus?.status || 'missing'}`);
+            console.log(`- securityLifecycleStatus: ${summary.securityLifecycleStatus?.status || 'missing'}`);
+            console.log(`- reviewIndependenceStatus: ${summary.reviewIndependenceStatus?.status || 'missing'}`);
+            console.log(`- taskBriefCompilerStatus: ${summary.taskBriefCompilerStatus?.status || 'missing'}`);
+            console.log(`- bestOfNDecisionStatus: ${summary.bestOfNDecisionStatus?.status || 'missing'}`);
+            console.log(`- environmentProfileStatus: ${summary.environmentProfileStatus?.status || 'missing'}`);
+            console.log(`- agentsContextBudgetStatus: ${summary.agentsContextBudgetStatus?.status || 'missing'}`);
+            console.log(`- evidenceAutoRepairHintStatus: ${summary.evidenceAutoRepairHintStatus?.status || 'missing'}`);
+            console.log(`- baselineHealthStatus: ${summary.baselineHealthStatus?.status || 'missing'}`);
+            console.log(`- evidenceContinuityStatus: ${summary.evidenceContinuityStatus?.status || 'missing'}`);
+            console.log(`- prBodySurfaceNormalizerStatus: ${summary.prBodySurfaceNormalizerStatus?.status || 'missing'}`);
+            console.log(`- prTemplateCompilerStatus: ${summary.prTemplateCompilerStatus?.status || 'missing'}`);
+            console.log(`- selfTestCaseExportStatus: ${summary.selfTestCaseExportStatus?.status || 'missing'}`);
+            console.log(`- scoreDecompositionStatus: ${summary.scoreDecompositionStatus?.status || 'missing'}`);
+            console.log(`- gateDecisionTraceStatus: ${summary.gateDecisionTraceStatus?.status || 'missing'}`);
+            console.log(`- oldHarnessMarkerStatus: ${summary.oldHarnessMarkerStatus?.status || 'missing'}`);
+            console.log(`- v089SelfTestStatus: ${summary.v089SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v090SelfTestStatus: ${summary.v090SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v092SelfTestStatus: ${summary.v092SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v093SelfTestStatus: ${summary.v093SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v094SelfTestStatus: ${summary.v094SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v095SelfTestStatus: ${summary.v095SelfTestStatus?.status || 'missing'}`);
+            console.log(`- v096SelfTestStatus: ${summary.v096SelfTestStatus?.status || 'missing'}`);
+            console.log(`- activeSelfTestRegistryStatus: ${summary.activeSelfTestRegistryStatus?.status || 'missing'}`);
+            console.log(`- workflowProductVerificationInvariantStatus: ${summary.workflowProductVerificationInvariantStatus?.status || 'missing'}`);
+            console.log(`- targetHotfixRegressionStatus: ${summary.targetHotfixRegressionStatus?.status || 'missing'}`);
+            console.log(`- harnessRolloutDiffRegressionStatus: ${summary.harnessRolloutDiffRegressionStatus?.status || 'missing'}`);
+            console.log(`- blockerRootCauseClassifierStatus: ${summary.blockerRootCauseClassifierStatus?.status || 'missing'}`);
+            console.log(`- localRemoteEvidencePhaseStatus: ${summary.localRemoteEvidencePhaseStatus?.status || 'missing'}`);
+            console.log(`- structuredSolvabilityStatus: ${summary.structuredSolvabilityStatus?.status || 'missing'}`);
+            console.log(`- live2dDatasetRowAuditStatus: ${summary.live2dDatasetRowAuditStatus?.status || 'missing'}`);
+            console.log(`- motionAllowlistSyncStatus: ${summary.motionAllowlistSyncStatus?.status || 'missing'}`);
+            console.log(`- trustedLoaderEvidenceStatus: ${summary.trustedLoaderEvidenceStatus?.status || 'missing'}`);
+            console.log(`- live2dEvidenceCollectorContractStatus: ${summary.live2dEvidenceCollectorContractStatus?.status || 'missing'}`);
+            console.log(`- avatarUxSafetyStatus: ${summary.avatarUxSafetyStatus?.status || 'missing'}`);
+            console.log(`- runtimeLatencyMeasurementStatus: ${summary.runtimeLatencyMeasurementStatus?.status || 'missing'}`);
+            console.log(`- browserSmokeJsonArtifactStatus: ${summary.browserSmokeJsonArtifactStatus?.status || 'missing'}`);
+            console.log(`- ownerDecisionDigestStatus: ${summary.ownerDecisionDigestStatus?.status || 'missing'}`);
+            console.log(`- obsoletePrAutoRecommendStatus: ${summary.obsoletePrAutoRecommendStatus?.status || 'missing'}`);
+            console.log(`- datasetAuditV2SchemaStatus: ${summary.datasetAuditV2SchemaStatus?.status || 'missing'}`);
+            console.log(`- datasetAuditRunnerReadinessStatus: ${summary.datasetAuditRunnerReadinessStatus?.status || 'missing'}`);
+            console.log(`- v097SelfTestStatus: ${summary.v097SelfTestStatus?.status || 'missing'}`);
+            console.log(`- remoteProductEvidenceExecutionStatus: ${summary.remoteProductEvidenceExecutionStatus?.status || 'missing'}`);
+            console.log(`- remoteProductEvidenceRunnerStatus: ${summary.remoteProductEvidenceRunnerStatus?.status || 'missing'}`);
+            console.log(`- productEvidenceConsumptionStatus: ${summary.productEvidenceConsumptionStatus?.status || 'missing'}`);
+            console.log(`- placeholderEvidenceForbiddenStatus: ${summary.placeholderEvidenceForbiddenStatus?.status || 'missing'}`);
+            console.log(`- localRemotePhaseStatus: ${summary.localRemotePhaseStatus?.status || 'missing'}`);
+            console.log(`- structuredSolvabilityFieldsStatus: ${summary.structuredSolvabilityFieldsStatus?.status || 'missing'}`);
+            console.log(`- live2dDatasetRowAuditRunnerStatus: ${summary.live2dDatasetRowAuditRunnerStatus?.status || 'missing'}`);
+            console.log(`- motionAllowlistDiffStatus: ${summary.motionAllowlistDiffStatus?.status || 'missing'}`);
+            console.log(`- trustedLoaderEvidenceEnforcerStatus: ${summary.trustedLoaderEvidenceEnforcerStatus?.status || 'missing'}`);
+            console.log(`- avatarUxSafetyRunnerStatus: ${summary.avatarUxSafetyRunnerStatus?.status || 'missing'}`);
+            console.log(`- runtimeLatencySafeMetricStatus: ${summary.runtimeLatencySafeMetricStatus?.status || 'missing'}`);
+            console.log(`- browserSmokeVisualSafetyArtifactStatus: ${summary.browserSmokeVisualSafetyArtifactStatus?.status || 'missing'}`);
+            console.log(`- openPrRebaseReadinessStatus: ${summary.openPrRebaseReadinessStatus?.status || 'missing'}`);
+            console.log(`- fiveLineOwnerDigestStatus: ${summary.fiveLineOwnerDigestStatus?.status || 'missing'}`);
+            console.log(`- v098SelfTestStatus: ${summary.v098SelfTestStatus?.status || 'missing'}`);
+            console.log(`- formalEvidencePrecedenceStatus: ${summary.formalEvidencePrecedenceStatus?.status || 'missing'}`);
+            console.log(`- lifeboatSemanticsStatus: ${summary.lifeboatSemanticsStatus?.status || 'missing'}`);
+            console.log(`- placeholderOnlyEvidenceStatus: ${summary.placeholderOnlyEvidenceStatus?.status || 'missing'}`);
+            console.log(`- remoteNpmDiagnosticNormalizationStatus: ${summary.remoteNpmDiagnosticNormalizationStatus?.status || 'missing'}`);
+            console.log(`- legacySelfTestAdvisoryStatus: ${summary.legacySelfTestAdvisoryStatus?.status || 'missing'}`);
+            console.log(`- authSurfaceClassifierRefinementStatus: ${summary.authSurfaceClassifierRefinementStatus?.status || 'missing'}`);
+            console.log(`- targetQualityBlockerDigestStatus: ${summary.targetQualityBlockerDigestStatus?.status || 'missing'}`);
+            console.log(`- prEvidenceAutoRepairHintStatus: ${summary.prEvidenceAutoRepairHintStatus?.status || 'missing'}`);
+            console.log(`- actionsBlockerRecoveryStatus: ${summary.actionsBlockerRecoveryStatus?.status || 'missing'}`);
+            console.log(`- prContextRerunAssistantStatus: ${summary.prContextRerunAssistantStatus?.status || 'missing'}`);
+            console.log(`- sameHeadEvidenceRefreshStatus: ${summary.sameHeadEvidenceRefreshStatus?.status || 'missing'}`);
+            console.log(`- safeArtifactBundleCompletenessStatus: ${summary.safeArtifactBundleCompletenessStatus?.status || 'missing'}`);
+            console.log(`- datasetAuditV2P0SchemaStatus: ${summary.datasetAuditV2P0SchemaStatus?.status || 'missing'}`);
+            console.log(`- gameToolAdapterFixtureReadinessStatus: ${summary.gameToolAdapterFixtureReadinessStatus?.status || 'missing'}`);
+            console.log(`- belovedAvatarSafetyReadinessStatus: ${summary.belovedAvatarSafetyReadinessStatus?.status || 'missing'}`);
+            console.log(`- v099SelfTestStatus: ${summary.v099SelfTestStatus?.status || 'missing'}`);
+            console.log(`- localGateReportContractStatus: ${summary.localGateReportContractStatus?.status || 'missing'}`);
+            console.log(`- jsonReportShapeStatus: ${summary.jsonReportShapeStatus?.status || 'missing'}`);
+            console.log(`- localGateSideEffectStatus: ${summary.localGateSideEffectStatus?.status || 'missing'}`);
+            console.log(`- v101SelfTestStatus: ${summary.v101SelfTestStatus?.status || 'missing'}`);
+            console.log(`- remoteProductContextRestoreStatus: ${summary.remoteProductContextRestoreStatus?.status || 'missing'}`);
+            console.log(`- productRelevantEvidenceLockStatus: ${summary.productRelevantEvidenceLockStatus?.status || 'missing'}`);
+            console.log(`- productBaselineContinuityStatus: ${summary.productBaselineContinuityStatus?.status || 'missing'}`);
+            console.log(`- skipNpmProductBypassStatus: ${summary.skipNpmProductBypassStatus?.status || 'missing'}`);
+            console.log(`- pullRequestContextFidelityStatus: ${summary.pullRequestContextFidelityStatus?.status || 'missing'}`);
+            console.log(`- productContextSafeArtifactStatus: ${summary.productContextSafeArtifactStatus?.status || 'missing'}`);
+            console.log(`- runtimeJobSafetyStatus: ${summary.runtimeJobSafetyStatus?.status || 'missing'}`);
+            console.log(`- txPathStateEvidenceStatus: ${summary.txPathStateEvidenceStatus?.status || 'missing'}`);
+            console.log(`- envConsistencyStatus: ${summary.envConsistencyStatus?.status || 'missing'}`);
+            console.log(`- stagingNoTxPreflightStatus: ${summary.stagingNoTxPreflightStatus?.status || 'missing'}`);
+            console.log(`- runtimeLogSecretScanStatus: ${summary.runtimeLogSecretScanStatus?.status || 'missing'}`);
+            console.log(`- chainScopeStatus: ${summary.chainScopeStatus?.status || 'missing'}`);
+            console.log(`- falsePositiveBudgetStatus: ${summary.falsePositiveBudgetStatus?.status || 'missing'}`);
+            console.log(`- agentsDoctrineStatus: ${summary.agentsDoctrineStatus?.status || 'missing'}`);
+            console.log(`- skillRoutingStatus: ${summary.skillRoutingStatus?.status || 'missing'}`);
+            console.log(`- skillLoadBudgetStatus: ${summary.skillLoadBudgetStatus?.status || 'missing'}`);
+            console.log(`- skillDriftStatus: ${summary.skillDriftStatus?.status || 'missing'}`);
+            console.log(`- agentSessionGovernanceStatus: ${summary.agentSessionGovernanceStatus?.status || 'missing'}`);
+            console.log(`- agentContainmentBoundaryStatus: ${summary.agentContainmentBoundaryStatus?.status || 'missing'}`);
+            console.log(`- stateMachineSchemaStatus: ${summary.stateMachineSchemaStatus?.status || 'missing'}`);
+            console.log(`- evidenceMinimalityStatus: ${summary.evidenceMinimalityStatus?.status || 'missing'}`);
+            console.log(`- safeArtifactNextActionStatus: ${summary.safeArtifactNextActionStatus?.status || 'missing'}`);
+            console.log(`- skillEvidenceLinkStatus: ${summary.skillEvidenceLinkStatus?.status || 'missing'}`);
+            console.log(`- prEvidenceCompactStatus: ${summary.prEvidenceCompactStatus?.status || 'missing'}`);
+            console.log(`- reviewPolicyClassifierStatus: ${summary.reviewPolicyClassifierStatus?.status || 'missing'}`);
+            console.log(`- goalConditionStatus: ${summary.goalConditionStatus?.status || 'missing'}`);
+            console.log(`- targetSkipNpmProductOverrideStatus: ${summary.targetSkipNpmProductOverrideStatus?.status || 'missing'}`);
+            console.log(`- dockerSmokeCurrentHeadArtifactStatus: ${summary.dockerSmokeCurrentHeadArtifactStatus?.status || 'missing'}`);
+            console.log(`- sameHeadArtifactEvidenceStatus: ${summary.sameHeadArtifactEvidenceStatus?.status || 'missing'}`);
+            console.log(`- targetScriptClassificationFixtureStatus: ${summary.targetScriptClassificationFixtureStatus?.status || 'missing'}`);
+            console.log(`- remoteProductPrContextFixtureStatus: ${summary.remoteProductPrContextFixtureStatus?.status || 'missing'}`);
+            console.log(`- targetRolloutConflictStatus: ${summary.targetRolloutConflictStatus?.status || 'missing'}`);
+            console.log(`- targetPatchManifestStatus: ${summary.targetPatchManifestStatus?.status || 'missing'}`);
+            console.log(`- previousTargetHotfixPreservationStatus: ${summary.previousTargetHotfixPreservationStatus?.status || 'missing'}`);
+            console.log(`- pathMode: ${diagnostic?.pathMode || 'missing'}`);
+            console.log(`- topNextAction: ${diagnostic?.nextActions?.[0] || 'missing'}`);
+          } else {
+            console.log('- status: summary_missing');
+          }
+          console.log(`- failureReasonCount: ${Array.isArray(reasons) ? reasons.length : 0}`);
+          for (const item of Array.isArray(reasons) ? reasons.slice(0, 20) : []) {
+            const reasonCode = String(item.reasonCode || 'unknown').replace(/[^A-Za-z0-9_.:-]/g, '_');
+            const safeMessage = String(item.safeMessage || 'safe_message_missing').replace(/[^A-Za-z0-9_.:= -]/g, '_').slice(0, 180);
+            console.log(`- ${reasonCode}: ${safeMessage}`);
+          }
+          NODE
+      - name: Upload safe quality artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-quality-gate-safe-artifacts
+          path: |
+            codex-quality-gate-safe-summary.json
+            codex-minimal-safe-failure.json
+            ${{ runner.temp }}/codex-minimal-safe-failure.json
+            codex-diagnostic-consolidated-summary.json
+            codex-evidence-pack.normalized.json
+            codex-self-test-cases.safe.json
+            codex-failure-reasons.json
+            codex-invalid-report-recovery-summary.json
+            codex-target-quality-summary.json
+            codex-source-final-summary.json
+            codex-target-final-summary.json
+            codex-safe-artifact-index.json
+            codex-safe-artifact-classification.safe.json
+            codex-pr-evidence-rendered.safe.json
+            codex-evidence-auto-repair-hint.safe.json
+            codex-same-head-artifact-evidence.safe.json
+            codex-docker-smoke-artifact.safe.json
+            codex-pr-evidence-compact.safe.json
+            codex-product-context-safe-artifact.safe.json
+            codex-product-baseline-continuity.safe.json
+            codex-false-positive-budget.safe.json
+            codex-agent-session-governance.safe.json
+            codex-evidence-minimality.safe.json
+            codex-safe-artifact-next-action.safe.json
+            codex-skill-evidence-link.safe.json
+            codex-workflow-preflight.safe.json
+            codex-test-metrics.safe.json
+            ${{ runner.temp }}/codex-remote-npm-diagnostic.safe.json
+            ${{ runner.temp }}/codex-product-verification-evidence.remote.json
+            ${{ runner.temp }}/codex-remote-product-baseline.json
+            ${{ runner.temp }}/codex-remote-product-checks.safe.json
+            codex-dataset-audit-v2.safe.json
+            codex-browser-smoke-json-artifact.safe.json
+            codex-runtime-latency-measurement.safe.json
+            codex-owner-decision-digest.safe.json
+          if-no-files-found: ignore
