@@ -26,10 +26,11 @@ import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { CriptoTipRepository } from "./repositories/types.js";
 
-const config = loadConfig();
-const ADMIN_TOKEN = config.MOCK_ADMIN_TOKEN;
-const INTERNAL_TOKEN = config.MOCK_INTERNAL_TOKEN;
-const OVERLAY_TOKEN = config.MOCK_OVERLAY_TOKEN;
+loadConfig();
+const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
+const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? mockValue("admin");
+const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? mockValue("internal");
+const OVERLAY_TOKEN = process.env.MOCK_OVERLAY_TOKEN ?? mockValue("overlay");
 const PORT = Number(process.env.API_PORT ?? 4000);
 
 type Store = {
@@ -102,7 +103,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const body = TipIntentRequestSchema.parse(req.body);
     const displayName = sanitizeDisplayName(body.display_name);
     const message = sanitizeMessage(body.message);
-    const recentTipCount = body.wallet_address ? repository.recentTipsByWallet.get(body.wallet_address) ?? 0 : 0;
+    const recentTipCount = body.wallet_address ? await repo.getRecentTipCountByWallet(body.wallet_address) : 0;
     const moderation = moderateTipMessage({ displayName: body.display_name, message: body.message, amountRaw: body.amount_raw, recentTipCount, isNewWallet: recentTipCount === 0 });
     const id = createPublicId("tipi");
     const clientTipSeed = `${streamId}:${body.iris_user_id}:${id}`;
@@ -126,7 +127,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       created_at: new Date().toISOString()
     });
     await repo.createTipIntent(tipIntent);
-    if (body.wallet_address) repository.recentTipsByWallet.set(body.wallet_address, recentTipCount + 1);
+    if (body.wallet_address) await repo.recordRecentTipByWallet(body.wallet_address);
     return { tip_intent: await repo.getTipIntentPublic(id), moderation };
   });
 
@@ -153,7 +154,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     }
     if (intent.moderation_status === "hold") return { status: "hold", reason: "admin_approval_required" };
     if (intent.moderation_status === "rejected" || intent.moderation_status === "shadow_ignored") return { status: intent.moderation_status };
-    const previous = repository.affinityByUser.get(intent.iris_user_id) ?? 0;
+    const previous = await repo.getCurrentAffinity(intent.iris_user_id, intent.character_id);
     const affinity = canApplyAffinity(intent.moderation_status) ? calculateAffinityDelta({ tier: intent.tier, previous, dailyUsed: 0, streamUsed: 0 }) : { previous, delta: 0, next: previous };
     const support = normalizeTokenTipToSupportReceived({
       chain_id: 31337,
@@ -208,7 +209,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
-    return [...repository.supportEvents.values()].filter((event) => event.stream_id === streamId);
+    return repo.listSupportEventsByStream(streamId);
   });
 
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {

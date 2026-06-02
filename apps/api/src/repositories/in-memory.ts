@@ -49,6 +49,17 @@ export class InMemoryRepository implements CriptoTipRepository {
   async createTipIntent(intent: TipIntent) { this.tipIntents.set(intent.id, intent); return intent; }
   async getTipIntentPublic(id: string) { const intent = this.tipIntents.get(id); return intent ? toPublicTipIntent(intent) : undefined; }
   async getTipIntentInternal(id: string) { return this.tipIntents.get(id); }
+  async getRecentTipCountByWallet(walletAddress: string) { return this.recentTipsByWallet.get(walletAddress.toLowerCase()) ?? 0; }
+  async recordRecentTipByWallet(walletAddress: string) {
+    const key = walletAddress.toLowerCase();
+    this.recentTipsByWallet.set(key, (this.recentTipsByWallet.get(key) ?? 0) + 1);
+  }
+  async getCurrentAffinity(irisUserId: string, characterId: string) {
+    return this.affinityLedger.get([...this.affinityLedger.keys()].find((key) => key.includes(`:${irisUserId}:${characterId}`)) ?? "")?.new_affinity ?? this.affinityByUser.get(`${irisUserId}:${characterId}`) ?? this.affinityByUser.get(irisUserId) ?? 0;
+  }
+  async listSupportEventsByStream(streamId: string) {
+    return [...this.supportEvents.values()].filter((event) => event.stream_id === streamId);
+  }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
     const existing = this.tipTransactions.get(key);
@@ -70,6 +81,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     const existing = this.affinityLedger.get(key);
     if (existing) return { entry: existing, created: false };
     this.affinityLedger.set(key, entry);
+    this.affinityByUser.set(`${entry.iris_user_id}:${entry.character_id}`, entry.new_affinity);
     this.affinityByUser.set(entry.iris_user_id, entry.new_affinity);
     return { entry, created: true };
   }

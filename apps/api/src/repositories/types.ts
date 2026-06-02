@@ -80,6 +80,10 @@ export interface CriptoTipRepository {
   createTipIntent(intent: TipIntent): Promise<TipIntent>;
   getTipIntentPublic(id: string): Promise<PublicTipIntent | undefined>;
   getTipIntentInternal(id: string): Promise<TipIntent | undefined>;
+  getRecentTipCountByWallet(walletAddress: string): Promise<number>;
+  recordRecentTipByWallet(walletAddress: string): Promise<void>;
+  getCurrentAffinity(irisUserId: string, characterId: string): Promise<number>;
+  listSupportEventsByStream(streamId: string): Promise<SupportReceived[]>;
   recordTipTransaction(transaction: TipTransaction): Promise<TipTransaction>;
   findTipTransactionByChainLog(key: ChainLogKey): Promise<TipTransaction | undefined>;
   createSupportEventIfAbsent(event: SupportReceived): Promise<{ event: SupportReceived; created: boolean }>;

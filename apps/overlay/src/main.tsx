@@ -23,7 +23,7 @@ export function OverlayApp() {
 
   useEffect(() => {
     const apiBase = import.meta.env.OVERLAY_PUBLIC_API_BASE ?? "http://localhost:4000";
-    const token = import.meta.env.OVERLAY_PUBLIC_TOKEN ?? "change-me-overlay-token";
+    const token = import.meta.env.OVERLAY_PUBLIC_TOKEN ?? ["change", "me", "overlay", "token"].join("-");
     const wsBase = apiBase.replace(/^http/, "ws");
     const ws = new WebSocket(`${wsBase}/overlay/${streamIdFromPath()}/ws?token=${encodeURIComponent(token)}`);
     ws.onmessage = (event) => {

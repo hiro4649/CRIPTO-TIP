@@ -4,9 +4,10 @@
   "version": "0.1.0",
   "packageManager": "pnpm@10.11.0",
   "scripts": {
+    "ensure:pnpm": "corepack enable && corepack pnpm install",
     "lint": "corepack pnpm -r --workspace-concurrency=1 lint",
     "typecheck": "corepack pnpm -r --workspace-concurrency=1 typecheck",
-    "test": "corepack pnpm -r --workspace-concurrency=1 test",
+    "test": "corepack enable && corepack pnpm install --force && corepack pnpm -r --workspace-concurrency=1 test",
     "dev:web": "corepack pnpm --filter @cripto-tip/web dev",
     "dev:api": "corepack pnpm --filter @cripto-tip/api dev",
     "dev:overlay": "corepack pnpm --filter @cripto-tip/overlay dev"

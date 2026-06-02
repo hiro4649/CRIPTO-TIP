@@ -23,4 +23,4 @@ New local variables:
 - `APP_ENV`
 - `REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION`
 
-Local and test environments allow `change-me-*` mock tokens. Production-like config rejects those defaults when `REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION=true`.
+Local and test environments allow the generated local mock defaults. Production-like config rejects those defaults when `REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION=true`.

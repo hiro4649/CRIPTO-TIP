@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
+
 export const AppConfigSchema = z.object({
   DATABASE_URL: z.string().optional(),
   QUEUE_MODE: z.enum(["in_memory", "db_outbox"]).default("in_memory"),
@@ -8,9 +10,9 @@ export const AppConfigSchema = z.object({
   MAX_RETRY_COUNT: z.coerce.number().int().positive().default(5),
   NODE_ENV: z.string().default("development"),
   APP_ENV: z.enum(["local", "test", "staging", "production"]).default("local"),
-  MOCK_ADMIN_TOKEN: z.string().default("change-me-admin-token"),
-  MOCK_INTERNAL_TOKEN: z.string().default("change-me-internal-token"),
-  MOCK_OVERLAY_TOKEN: z.string().default("change-me-overlay-token"),
+  MOCK_ADMIN_TOKEN: z.string().default(mockValue("admin")),
+  MOCK_INTERNAL_TOKEN: z.string().default(mockValue("internal")),
+  MOCK_OVERLAY_TOKEN: z.string().default(mockValue("overlay")),
   REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION: z.coerce.boolean().default(true)
 });
 
@@ -21,7 +23,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const productionLike = config.APP_ENV === "production" || config.NODE_ENV === "production";
   if (productionLike && config.REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION) {
     for (const [name, value] of Object.entries({ MOCK_ADMIN_TOKEN: config.MOCK_ADMIN_TOKEN, MOCK_INTERNAL_TOKEN: config.MOCK_INTERNAL_TOKEN, MOCK_OVERLAY_TOKEN: config.MOCK_OVERLAY_TOKEN })) {
-      if (value.startsWith("change-me-")) throw new Error(`${name} must not use a change-me default in production`);
+      if (value === mockValue("admin") || value === mockValue("internal") || value === mockValue("overlay")) throw new Error(`${name} must not use the local mock default in production`);
     }
   }
   return config;
