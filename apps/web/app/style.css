@@ -1,0 +1,129 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, "Yu Gothic", "Meiryo", system-ui, sans-serif;
+  background: #f6f7f9;
+  color: #16181d;
+}
+
+body {
+  margin: 0;
+}
+
+.shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 24px;
+  align-items: end;
+  padding: 28px 0;
+}
+
+.eyebrow {
+  color: #0a6b5f;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  font-size: 42px;
+  letter-spacing: 0;
+}
+
+.lede {
+  max-width: 720px;
+  line-height: 1.7;
+}
+
+.status,
+.panel,
+.notice {
+  border: 1px solid #d8dde5;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.status {
+  padding: 18px;
+}
+
+.status span,
+.status strong {
+  display: block;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.panel {
+  padding: 18px;
+  min-height: 180px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.video {
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background: #20252e;
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+.form {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  display: grid;
+  gap: 5px;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+  border-radius: 6px;
+  border: 1px solid #c6ccd6;
+  padding: 9px 10px;
+}
+
+button {
+  background: #0a6b5f;
+  color: #ffffff;
+  border-color: #0a6b5f;
+}
+
+.notice {
+  margin-top: 18px;
+  padding: 18px;
+  border-left: 4px solid #0a6b5f;
+}
+
+.notice p {
+  margin: 6px 0;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+}

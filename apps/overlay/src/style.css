@@ -1,0 +1,59 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+  font-family: Inter, "Yu Gothic", "Meiryo", system-ui, sans-serif;
+}
+
+.overlay {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: end center;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.tip {
+  min-width: min(520px, 88vw);
+  max-width: 88vw;
+  border-radius: 8px;
+  padding: 22px 26px;
+  color: #ffffff;
+  background: rgba(22, 24, 29, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+.tip.medium {
+  border-color: #3fbda9;
+}
+
+.tip.large,
+.tip.high {
+  border-color: #f2c94c;
+}
+
+.name,
+.amount,
+.message {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.name {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.amount {
+  margin-top: 4px;
+  font-size: 18px;
+  color: #9ee6d8;
+}
+
+.message {
+  margin-top: 12px;
+  font-size: 20px;
+  line-height: 1.45;
+}

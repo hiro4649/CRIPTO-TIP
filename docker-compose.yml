@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cripto_tip
+      POSTGRES_PASSWORD: cripto_tip_dev
+      POSTGRES_DB: cripto_tip
+    ports:
+      - "5432:5432"
+    volumes:
+      - cripto_tip_pg:/var/lib/postgresql/data
+
+volumes:
+  cripto_tip_pg:

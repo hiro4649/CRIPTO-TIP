@@ -1,0 +1,24 @@
+{
+  "name": "@cripto-tip/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@cripto-tip/shared": "workspace:*",
+    "@fastify/websocket": "^11.2.0",
+    "fastify": "^5.8.5",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}
