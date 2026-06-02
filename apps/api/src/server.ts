@@ -5,10 +5,16 @@ import {
   buildCharacterReactionRequest,
   buildOverlayTipAlert,
   calculateAffinityDelta,
+  canApplyAffinity,
+  canEmitOverlay,
+  canRequestAiReaction,
+  createIdempotencyKeyForChainLog,
+  createPublicId,
   moderateTipMessage,
   normalizeTokenTipToSupportReceived,
   sanitizeDisplayName,
   sanitizeMessage,
+  sha256Bytes32Hex,
   stableId,
   TipIntentSchema,
   type LiveSession,
@@ -19,6 +25,7 @@ import {
 
 const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? "change-me-admin-token";
 const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? "change-me-internal-token";
+const OVERLAY_TOKEN = process.env.MOCK_OVERLAY_TOKEN ?? "change-me-overlay-token";
 const PORT = Number(process.env.API_PORT ?? 4000);
 
 type Store = {
@@ -47,6 +54,24 @@ function emitOverlay(alert: OverlayTipAlert) {
   const clients = store.overlayClients.get(alert.stream_id);
   if (!clients) return;
   for (const client of clients) client.send(JSON.stringify(alert));
+}
+
+export function isOverlayTokenValid(token: string | undefined): boolean {
+  return token === OVERLAY_TOKEN;
+}
+
+function publicTipIntent(intent: TipIntent) {
+  return {
+    id: intent.id,
+    stream_id: intent.stream_id,
+    character_id: intent.character_id,
+    display_name: intent.display_name_sanitized,
+    message: intent.message_sanitized,
+    amount_display: intent.amount_display,
+    tier: intent.tier,
+    moderation_status: intent.moderation_status,
+    created_at: intent.created_at
+  };
 }
 
 const TipIntentRequestSchema = z.object({
@@ -86,7 +111,7 @@ export function buildServer() {
 
   app.post("/api/wallet/nonce", async (req) => {
     const body = z.object({ wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/) }).parse(req.body);
-    return { nonce: stableId("nonce", `${body.wallet_address}:${Date.now()}`), expires_at: new Date(Date.now() + 10 * 60_000).toISOString() };
+    return { nonce: createPublicId("nonce"), expires_at: new Date(Date.now() + 10 * 60_000).toISOString() };
   });
 
   app.post("/api/wallet/verify", async (req) => {
@@ -101,7 +126,8 @@ export function buildServer() {
     const message = sanitizeMessage(body.message);
     const recentTipCount = body.wallet_address ? store.recentTipsByWallet.get(body.wallet_address) ?? 0 : 0;
     const moderation = moderateTipMessage({ displayName: body.display_name, message: body.message, amountRaw: body.amount_raw, recentTipCount, isNewWallet: recentTipCount === 0 });
-    const id = stableId("tipi", `${streamId}:${body.iris_user_id}:${Date.now()}`);
+    const id = createPublicId("tipi");
+    const clientTipSeed = `${streamId}:${body.iris_user_id}:${id}`;
     const tipIntent = TipIntentSchema.parse({
       id,
       stream_id: streamId,
@@ -116,19 +142,20 @@ export function buildServer() {
       amount_raw: body.amount_raw,
       amount_display: body.amount_display,
       tier: body.tier,
-      message_hash: stableId("msg", message),
-      client_tip_id: stableId("client_tip", id),
+      message_hash: await sha256Bytes32Hex(message),
+      client_tip_id: await sha256Bytes32Hex(clientTipSeed),
       moderation_status: moderation.status,
       created_at: new Date().toISOString()
     });
     store.tipIntents.set(id, tipIntent);
     if (body.wallet_address) store.recentTipsByWallet.set(body.wallet_address, recentTipCount + 1);
-    return { tip_intent: tipIntent, moderation };
+    return { tip_intent: publicTipIntent(tipIntent), moderation };
   });
 
   app.get("/api/tip-intents/:tipIntentId", async (req) => {
     const { tipIntentId } = z.object({ tipIntentId: z.string() }).parse(req.params);
-    return store.tipIntents.get(tipIntentId) ?? { error: "not_found" };
+    const intent = store.tipIntents.get(tipIntentId);
+    return intent ? publicTipIntent(intent) : { error: "not_found" };
   });
 
   app.post("/internal/events", async (req, reply) => {
@@ -136,9 +163,21 @@ export function buildServer() {
     const body = z.object({ tip_intent_id: z.string(), tx_hash: z.string().default("0xmock"), log_index: z.number().int().default(0) }).parse(req.body);
     const intent = store.tipIntents.get(body.tip_intent_id);
     if (!intent) return reply.code(404).send({ error: "tip_intent_not_found" });
+    const source_event_id = createIdempotencyKeyForChainLog({
+      chain_id: 31337,
+      contract_address: "0x2222222222222222222222222222222222222222",
+      tx_hash: body.tx_hash,
+      log_index: body.log_index
+    });
+    const supportKey = `iris_token_tip:${source_event_id}`;
+    const existing = store.supportEvents.get(supportKey);
+    if (existing) {
+      return { support_event: existing, duplicate: true };
+    }
+    if (intent.moderation_status === "hold") return { status: "hold", reason: "admin_approval_required" };
+    if (intent.moderation_status === "rejected" || intent.moderation_status === "shadow_ignored") return { status: intent.moderation_status };
     const previous = store.affinityByUser.get(intent.iris_user_id) ?? 0;
-    const affinity = calculateAffinityDelta({ tier: intent.tier, previous, dailyUsed: 0, streamUsed: 0 });
-    store.affinityByUser.set(intent.iris_user_id, affinity.next);
+    const affinity = canApplyAffinity(intent.moderation_status) ? calculateAffinityDelta({ tier: intent.tier, previous, dailyUsed: 0, streamUsed: 0 }) : { previous, delta: 0, next: previous };
     const support = normalizeTokenTipToSupportReceived({
       chain_id: 31337,
       contract_address: "0x2222222222222222222222222222222222222222",
@@ -156,11 +195,17 @@ export function buildServer() {
       moderation_status: intent.moderation_status,
       created_at: new Date().toISOString()
     }, { previous: affinity.previous, delta: affinity.delta, next: affinity.next });
-    if (!store.supportEvents.has(`${support.source}:${support.source_event_id}`)) {
-      store.supportEvents.set(`${support.source}:${support.source_event_id}`, support);
-      emitOverlay(buildOverlayTipAlert(support));
+    store.supportEvents.set(supportKey, support);
+    if (canApplyAffinity(intent.moderation_status)) store.affinityByUser.set(intent.iris_user_id, affinity.next);
+    const overlay = canEmitOverlay(intent.moderation_status) ? buildOverlayTipAlert(support) : undefined;
+    if (overlay) {
+      emitOverlay(overlay);
     }
-    return { support_event: support, character_reaction_request: buildCharacterReactionRequest(support), overlay: buildOverlayTipAlert(support) };
+    return {
+      support_event: support,
+      character_reaction_request: canRequestAiReaction(intent.moderation_status) ? buildCharacterReactionRequest(support) : undefined,
+      overlay
+    };
   });
 
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
@@ -181,6 +226,11 @@ export function buildServer() {
 
   app.get("/overlay/:streamId/ws", { websocket: true }, (socket, req) => {
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
+    const query = z.object({ token: z.string().optional() }).parse(req.query);
+    if (!isOverlayTokenValid(query.token)) {
+      socket.close(1008, "invalid overlay token");
+      return;
+    }
     const client = { send: (payload: string) => socket.send(payload) };
     const clients = store.overlayClients.get(streamId) ?? new Set();
     clients.add(client);

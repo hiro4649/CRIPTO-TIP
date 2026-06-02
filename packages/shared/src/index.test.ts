@@ -6,10 +6,12 @@ import {
   createIdempotencyKeyForChainLog,
   moderateTipMessage,
   normalizeTokenTipToSupportReceived,
+  normalizeYouTubeSuperChatToSupportReceived,
   OverlayTipAlertSchema,
   redactWalletAddressInText,
   sanitizeDisplayName,
   sanitizeMessage,
+  sha256Bytes32Hex,
   SupportReceivedSchema
 } from "./index.js";
 
@@ -26,6 +28,20 @@ describe("sanitizer and moderation", () => {
 
   it("redacts wallet addresses", () => {
     expect(redactWalletAddressInText(`send ${wallet}`)).toContain("[wallet-redacted]");
+  });
+
+  it("detectWalletAddressInText is deterministic across repeated calls", async () => {
+    const mod = await import("./index.js");
+    expect(mod.detectWalletAddressInText(wallet)).toBe(true);
+    expect(mod.detectWalletAddressInText(wallet)).toBe(true);
+    expect(mod.detectWalletAddressInText("hello")).toBe(false);
+    expect(mod.detectWalletAddressInText(wallet)).toBe(true);
+  });
+
+  it("redacts multiple wallet addresses", () => {
+    const second = "0x2222222222222222222222222222222222222222";
+    const redacted = redactWalletAddressInText(`${wallet} and ${second}`);
+    expect(redacted.match(/\[wallet-redacted\]/g)).toHaveLength(2);
   });
 
   it("enforces message max length", () => {
@@ -58,6 +74,10 @@ describe("affinity and events", () => {
   it("normalizers create stable idempotency keys", () => {
     const input = { chain_id: 1, contract_address: wallet, tx_hash: "0xabc", log_index: 2 };
     expect(createIdempotencyKeyForChainLog(input)).toBe(createIdempotencyKeyForChainLog(input));
+  });
+
+  it("message_hash and client_tip_id can be bytes32 hex", async () => {
+    await expect(sha256Bytes32Hex("message")).resolves.toMatch(/^0x[a-f0-9]{64}$/);
   });
 
   it("overlay event schema works", () => {
@@ -100,5 +120,23 @@ describe("affinity and events", () => {
     });
     const req = buildCharacterReactionRequest(event);
     expect(JSON.stringify(req)).not.toContain(wallet);
+  });
+
+  it("YouTube Super Chat comment moderation is applied", () => {
+    const event = normalizeYouTubeSuperChatToSupportReceived({
+      live_chat_message_id: "yt_1",
+      stream_id: "str_1",
+      character_id: "char_mio",
+      author_channel_id: "UC123",
+      author_display_name: "Akira",
+      amount_micros: "1000000",
+      currency: "JPY",
+      amount_display_string: "￥1,000",
+      tier: 3,
+      user_comment: `please read ${wallet}`,
+      published_at: new Date(0).toISOString()
+    });
+    expect(event.support.message_moderation_status).toBe("hold");
+    expect(event.reaction_policy.can_read_message).toBe(false);
   });
 });

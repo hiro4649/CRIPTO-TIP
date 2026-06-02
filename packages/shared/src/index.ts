@@ -4,6 +4,7 @@ export const supportSources = ["youtube_super_chat", "youtube_super_sticker", "i
 export const moderationStatuses = ["approved", "display_only", "hold", "rejected", "shadow_ignored"] as const;
 export const tiers = ["small", "medium", "large", "high"] as const;
 export type Tier = (typeof tiers)[number];
+export type ModerationStatus = (typeof moderationStatuses)[number];
 
 export const WalletAddressSchema = z.string().regex(/^0x[a-fA-F0-9]{40}$/);
 export const LiveSessionSchema = z.object({
@@ -34,8 +35,8 @@ export const TipIntentSchema = z.object({
   amount_raw: z.string(),
   amount_display: z.string(),
   tier: z.enum(tiers),
-  message_hash: z.string(),
-  client_tip_id: z.string(),
+  message_hash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
+  client_tip_id: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
   moderation_status: z.enum(moderationStatuses),
   created_at: z.string()
 });
@@ -134,6 +135,7 @@ export const TokenTipInputSchema = z.object({ chain_id: z.number().int(), contra
 export type TokenTipInput = z.infer<typeof TokenTipInputSchema>;
 
 const walletRegex = /0x[a-fA-F0-9]{40}/g;
+const walletTestRegex = /0x[a-fA-F0-9]{40}/;
 const urlRegex = /(https?:\/\/|www\.)\S+/i;
 const promptLikeRegex = /(ignore|system|developer|assistant|命令|指示|プロンプト|従え|無視|あなたは|管理者|admin)/i;
 const ngRegex = /(死ね|殺|差別|セックス|暴力|harass|hate|sexual|violent)/i;
@@ -148,8 +150,24 @@ export function stableId(prefix: string, value: string): string {
   return `${prefix}_${hash.toString(16).padStart(8, "0")}`;
 }
 
+export function createPublicId(prefix: string): string {
+  const randomUUID = globalThis.crypto?.randomUUID?.();
+  if (randomUUID) return `${prefix}_${randomUUID}`;
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
+}
+
+export async function sha256Hex(input: string): Promise<string> {
+  const bytes = new TextEncoder().encode(input);
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+export async function sha256Bytes32Hex(input: string): Promise<string> {
+  return `0x${await sha256Hex(input)}`;
+}
+
 export function detectWalletAddressInText(input: string): boolean {
-  return walletRegex.test(input);
+  return walletTestRegex.test(input);
 }
 
 export function redactWalletAddressInText(input: string): string {
@@ -186,6 +204,18 @@ export function moderateTipMessage(args: { displayName: string; message: string;
   if (reasons.includes("ng_word")) return { status: "rejected", reasons };
   if (reasons.length > 0) return { status: "hold", reasons };
   return { status: "approved", reasons };
+}
+
+export function canApplyAffinity(status: ModerationStatus): boolean {
+  return status === "approved";
+}
+
+export function canEmitOverlay(status: ModerationStatus): boolean {
+  return status === "approved" || status === "display_only";
+}
+
+export function canRequestAiReaction(status: ModerationStatus): boolean {
+  return status === "approved";
 }
 
 export function calculateAffinityDelta(args: { tier: Tier; previous: number; dailyUsed: number; streamUsed: number; recentTipCount?: number }): z.infer<typeof AffinityScoreSchema> {
@@ -230,6 +260,7 @@ export function normalizeTokenTipToSupportReceived(input: TokenTipInput, affinit
 export function normalizeYouTubeSuperChatToSupportReceived(input: YouTubeSuperChatInput, affinity = { previous: 0, delta: 0, next: 0 }): SupportReceived {
   const name = sanitizeDisplayName(input.author_display_name);
   const message = sanitizeMessage(input.user_comment);
+  const moderation = moderateTipMessage({ displayName: input.author_display_name, message: input.user_comment, amountRaw: input.amount_micros });
   const source_event_id = input.live_chat_message_id;
   return SupportReceivedSchema.parse({
     event_type: "support.received",
@@ -240,9 +271,9 @@ export function normalizeYouTubeSuperChatToSupportReceived(input: YouTubeSuperCh
     youtube_video_id: input.youtube_video_id,
     character_id: input.character_id,
     viewer: { display_name: name.sanitized, youtube_author_channel_id: input.author_channel_id },
-    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: "approved" },
+    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: moderation.status },
     relationship: { previous_affinity: affinity.previous, affinity_delta: affinity.delta, new_affinity: affinity.next, relationship_level: Math.floor(affinity.next / 50) },
-    reaction_policy: { can_say_name: true, can_read_message: true, max_speech_seconds: 12, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
+    reaction_policy: { can_say_name: moderation.status === "approved", can_read_message: moderation.status === "approved", max_speech_seconds: 12, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
     created_at: input.published_at
   });
 }

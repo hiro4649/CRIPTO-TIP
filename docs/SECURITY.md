@@ -28,3 +28,5 @@ form-action 'none';
 ```
 
 The overlay must not load user-provided images, URLs, scripts, audio, or HTML.
+
+The MVP accepts `WS /overlay/:streamId/ws?token=...` using a mock token. Production must replace this with a stream-scoped overlay token whose stored value is hashed, read-only, rotated per live session, and never shared with AI prompts or viewer-facing APIs.

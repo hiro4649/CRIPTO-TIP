@@ -2,6 +2,8 @@
 
 Bootstraps CRIPTO-TIP as a pnpm TypeScript monorepo and implements the first secure MVP vertical slice for IRIS Web Companion for YouTube LIVE Crypto Tip.
 
+Follow-up hardening adds event idempotency-before-side-effects, moderation gates, public TipIntent DTOs, bytes32-compatible hashes, deterministic wallet redaction, YouTube Super Chat moderation, malformed overlay message handling, overlay WS token checks, and stronger contract tests.
+
 # Scope
 
 - `packages/shared`: Zod schemas, sanitizers, moderation, normalizers, affinity caps, idempotency keys, AI reaction and overlay event builders.
@@ -27,6 +29,8 @@ All viewer names and messages are untrusted. AI reaction requests receive only s
 - Overlay uses WebSocket now; SSE fallback is documented for production.
 - Chain idempotency uses chain id, contract address, tx hash, and log index.
 - Support idempotency uses source and source event id.
+- Duplicate support events return the existing event before affinity, overlay, reaction, or memory side effects.
+- `approved`, `display_only`, `hold`, `rejected`, and `shadow_ignored` have explicit MVP gates.
 
 # Dependency decisions
 
@@ -52,8 +56,9 @@ Latest npm registry tags were checked on 2026-06-02 and recorded in `docs/DEPEND
 
 - `corepack pnpm lint`: passed.
 - `corepack pnpm typecheck`: passed.
-- `corepack pnpm test`: passed, 4 test files and 16 tests.
-- `cd contracts && forge test`: not run locally because `forge` is not installed in this environment.
+- Initial `corepack pnpm test`: passed, 4 test files and 16 tests.
+- After hardening `corepack pnpm test`: passed, 4 test files and 27 tests.
+- `cd contracts && forge test`: not run locally because `forge` is not installed in this environment; GitHub Actions contract job runs it.
 
 # Audit results
 
@@ -63,6 +68,7 @@ Critical: none open.
 High: none open.
 Medium: durable queue/DB/chain listener behavior is documented but not implemented in MVP.
 Low: development default mock bearer tokens must be rejected in production mode later.
+Low: overlay token is a shared mock token in MVP and must become stream-scoped, hashed, and rotated.
 
 # Known gaps
 
@@ -71,6 +77,7 @@ Low: development default mock bearer tokens must be rejected in production mode 
 - PostgreSQL schema is documented conceptually; MVP uses in-memory storage.
 - Foundry tests are authored but not executed locally because Foundry is unavailable.
 - gitleaks, semgrep, and slither were unavailable locally.
+- Production overlay auth still needs stream-scoped hashed token storage and rotation.
 
 # Follow-up issues
 
@@ -78,8 +85,9 @@ Low: development default mock bearer tokens must be rejected in production mode 
 - Implement official YouTube Live API connector.
 - Implement chain listener with WebSocket subscription, `eth_getLogs` catch-up, cursor, and confirmation window.
 - Add production config validation that rejects default mock tokens.
-- Run Foundry, slither, semgrep, and gitleaks in CI or a prepared local toolchain.
+- Run local Foundry, slither, semgrep, and gitleaks in a prepared local toolchain.
+- Replace shared mock overlay token with stream-scoped hashed token storage.
 
 # Commit SHA
 
-0f4c9221e2756d28345e0db05fa695c70d20642f
+See current PR head SHA.

@@ -15,6 +15,6 @@ Internal and admin:
 - `GET /admin/live-sessions/:streamId/tips` requires `Bearer MOCK_ADMIN_TOKEN`.
 - `POST /admin/tips/:supportEventId/approve` requires `Bearer MOCK_ADMIN_TOKEN`.
 - `POST /admin/tips/:supportEventId/reject` requires `Bearer MOCK_ADMIN_TOKEN`.
-- `WS /overlay/:streamId/ws` is read-only and stream-scoped in the MVP design.
+- `WS /overlay/:streamId/ws?token=...` requires a mock overlay token in the MVP and must become a hashed stream-scoped read-only token in production.
 
 All public input is validated with Zod schemas from `packages/shared`.
