@@ -29,7 +29,10 @@ jobs:
       - uses: foundry-rs/foundry-toolchain@v1
         with:
           version: stable
-      - run: forge install OpenZeppelin/openzeppelin-contracts --no-commit
+      - run: |
+          mkdir -p lib
+          git clone --depth 1 https://github.com/OpenZeppelin/openzeppelin-contracts.git lib/openzeppelin-contracts
+          git clone --depth 1 https://github.com/foundry-rs/forge-std.git lib/forge-std
         working-directory: contracts
       - run: forge test
         working-directory: contracts
