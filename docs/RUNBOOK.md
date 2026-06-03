@@ -66,3 +66,21 @@ RUN_LIVE_POSTGRES_TESTS=true DATABASE_URL="${DATABASE_URL}" pnpm test apps/api/s
 The current local Codex environment does not have Docker CLI available. GitHub CI runs the live Postgres integration test with a Postgres service.
 
 Raw messages and raw display names are access-restricted operational data. Sanitized values are used for overlay and IRIS-facing events. Raw message retention should be limited to moderation review windows, with deletion or anonymization after the documented retention period.
+
+## IRIS Delivery Failure
+
+IRIS Core delivery uses `iris.deliver` outbox jobs and idempotency keys. If IRIS Core is unavailable:
+
+1. Inspect `outbox_events` for `job_type = 'iris.deliver'`.
+2. Timeout and 5xx failures should remain retryable with increasing `retry_count` and future `next_attempt_at`.
+3. 401 and 403 indicate credential or authorization failure. Rotate `IRIS_CORE_SHARED_SECRET`, verify `IRIS_CORE_API_URL`, then use the admin DLQ retry endpoint after the credential boundary is fixed.
+4. Do not dump request bodies or shared secrets into logs.
+5. Verify that retry does not send wallet addresses, raw messages, or secrets to IRIS Core.
+
+Credential rotation:
+
+1. Provision the new IRIS Core shared secret outside git.
+2. Update runtime secret storage.
+3. Restart only the IRIS delivery worker.
+4. Confirm a test `iris.deliver` job succeeds.
+5. Retry DLQ jobs through the authenticated admin endpoint.

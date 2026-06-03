@@ -2,7 +2,7 @@
 
 ## PR production-chain-listener-reorg
 
-Latest local result: `corepack pnpm test` passed with 10 test files, 60 passed tests, and 6 skipped tests.
+Latest local result: `corepack pnpm test` passed with 11 test files, 67 passed tests, and 6 skipped tests.
 
 Risk coverage added:
 
@@ -17,9 +17,22 @@ Risk coverage added:
 
 Still uncovered by live production tests: production RPC endpoint behavior, listener process supervision, multi-chain routing, multi-token routing, official YouTube connector, and production IRIS Core delivery.
 
+PR iris-core-delivery-adapter adds `apps/api/src/iris/delivery-worker.test.ts` for IRIS delivery behavior:
+
+- support.received delivery success.
+- character.reaction.requested delivery success.
+- affinity.apply delivery success.
+- memory.write_candidate delivery success.
+- idempotent delivery by outbox idempotency key.
+- timeout and 5xx retry/backoff state.
+- 401 and 403 DLQ path.
+- wallet address and secret exclusion from IRIS payloads.
+- outbox complete/fail integration.
+- no unsafe valuation wording in reaction delivery payload.
+
 Latest local command: `corepack pnpm test apps/api`.
 
-Latest local result: 9 test files, 54 total tests, 49 passed tests, 5 skipped live Postgres tests.
+Latest local result: 11 test files, 73 total tests, 67 passed tests, 6 skipped tests.
 
 The skipped live Postgres tests require `RUN_LIVE_POSTGRES_TESTS=true` and `DATABASE_URL`. GitHub CI provides those values with a Postgres service, so the migration application and live repository tests run remotely.
 
@@ -50,3 +63,4 @@ Quality-gate npm entry command remains `npm test`; it is a real test command and
 | Production Chain Listener behavior. | Not in PR #4 scope. | Not covered. |
 | Official YouTube API connector behavior. | Not in PR #4 scope. | Not covered. |
 | Production IRIS Core delivery behavior. | Not in PR #4 scope. | Not covered. |
+

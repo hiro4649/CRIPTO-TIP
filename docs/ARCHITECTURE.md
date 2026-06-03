@@ -6,6 +6,12 @@ The Chain Listener observes TipRouterV1 `TipSent` logs through an injected EVM R
 
 This boundary does not implement token sale, token exchange, cash-out, custody, internal balances, investment wording, official YouTube connector, or production IRIS Core delivery.
 
+## IRIS Core Delivery Boundary
+
+PR iris-core-delivery-adapter adds an injected IRIS Core client and an `iris.deliver` outbox handler. Confirmed support events can be delivered to IRIS Core internal event, reaction, affinity, and memory endpoints through sanitized DTOs. Wallet addresses, secrets, raw names, raw messages, YouTube IDs, and wallet labels are excluded from delivery payloads.
+
+Delivery is at least once and uses idempotency keys based on `source_event_id` and delivery type. Timeout and 5xx responses retry through the outbox backoff path. 401 and 403 are treated as terminal credential/configuration failures and are sent to DLQ through the existing retry limit path.
+
 YouTube LIVE is the broadcast and chat surface only. IRIS Web Companion is the external crypto Tip surface. CRIPTO-TIP must not replace YouTube Super Chat payment or present IRIS Token Tip as YouTube Super Chat.
 
 Inputs are normalized into `support.received`:

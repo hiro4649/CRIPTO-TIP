@@ -92,3 +92,15 @@ Expected result: no match.
 - `.codex/review-independence.json`: records reviewer role, review checklist, and human review required fields.
 - `.codex/quality-gate-evidence.json`: maps reason codes to evidence files and safe placeholder inventory.
 - `.codex/evidence-pack.normalized.json`: provides current-head safe evidence pack metadata for the quality-gate parser.
+
+## PR iris-core-delivery-adapter Evidence
+
+Current-head evidence to update in PR body:
+
+- Product code changed: yes.
+- Runtime readiness claim: no.
+- Test command: `corepack pnpm test` with IRIS delivery adapter tests.
+- Security scan: secret/risky rendering grep and prohibited wording scan.
+- Quality-gate expected status: pending until GitHub run completes.
+
+Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.example`, package metadata, and any test files. The adapter sends sanitized delivery DTOs only and does not commit production IRIS Core secrets.

@@ -3,8 +3,8 @@
   "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
-  "testFiles": 10,
-  "testsPassed": 60,
+  "testFiles": 11,
+  "testsPassed": 67,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -22,13 +22,16 @@
     "block_cursor_persistence",
     "no_user_personal_data_on_chain_payload",
     "chain_cursor_migration",
-    "repository_chain_status_update"
+    "repository_chain_status_update",
+    "iris_core_delivery",
+    "iris_delivery_idempotency",
+    "iris_delivery_retry_dlq",
+    "iris_payload_privacy"
   ],
   "uncoveredRisks": [
     "production_rpc_secret_wiring",
     "listener_process_supervision",
     "official_youtube_connector",
-    "production_iris_core_delivery",
     "multiple_chain_support",
     "multiple_token_support"
   ]

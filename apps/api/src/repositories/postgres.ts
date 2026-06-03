@@ -443,6 +443,16 @@ export class PostgresRepository implements CriptoTipRepository {
     }
     return retried;
   }
+  async updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed") {
+    await this.db.query(
+      `update support_events
+       set delivery_status = $1, updated_at = $2
+       where source_event_id = $3`,
+      [status, new Date().toISOString(), sourceEventId]
+    );
+    const result = await this.db.query<Record<string, unknown>>("select * from support_events where source_event_id = $1 limit 1", [sourceEventId]);
+    return result.rows[0] ? rowToSupportReceived(result.rows[0] as SupportEventRow) : undefined;
+  }
   async createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert) {
     const result = await this.db.query<{ id: string }>(
       `insert into overlay_events (id, source_event_id, stream_id, payload_json, delivery_status)

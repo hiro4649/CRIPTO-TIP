@@ -31,3 +31,14 @@ Durable schema:
 - Overlay events are unique by `source_event_id + stream_id`.
 - Reaction requests are unique by `source_event_id + character_id`.
 - Outbox jobs are unique by `idempotency_key`.
+
+## IRIS Delivery Payloads
+
+`iris.deliver` jobs wrap sanitized IRIS Core delivery DTOs:
+
+- `support.received`
+- `character.reaction.requested`
+- `affinity.apply`
+- `memory.write_candidate`
+
+Each delivery uses `source_event_id` plus delivery type as the idempotency key. IRIS delivery payloads exclude wallet addresses, secrets, raw display names, raw messages, YouTube IDs, and wallet labels.

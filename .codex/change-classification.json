@@ -10,6 +10,20 @@
   "changeClassificationStatus": "pass",
   "pathPatterns": [
     {
+      "pathPattern": "apps/api/src/iris/**",
+      "classification": "product_source",
+      "riskLevel": "high",
+      "verification": "apps/api/src/iris/delivery-worker.test.ts",
+      "scope": "iris_core_delivery"
+    },
+    {
+      "pathPattern": "apps/api/src/config/**",
+      "classification": "config_validation",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/config/env.test.ts",
+      "scope": "config_secret_boundary"
+    },
+    {
       "pathPattern": "apps/api/src/chain/**",
       "classification": "product_source",
       "riskLevel": "high",
