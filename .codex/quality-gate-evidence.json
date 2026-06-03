@@ -1,26 +1,70 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.3",
+  "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 4,
   "artifactId": "pending",
   "previousArtifactId": "7376187554",
   "reasonCodeMappings": {
-    "secretScan": [".codex/quality-gate-evidence.json", "git grep secret/risky rendering command"],
-    "changeClassificationStatus": [".codex/change-classification.json"],
-    "productVerificationStatus": [".codex/product-verification.json", "apps/api/src/repositories/postgres.test.ts", "apps/api/src/server.test.ts"],
-    "productVerificationEvidenceStatus": [".codex/product-verification.json", "docs/PRODUCT_VERIFICATION.md"],
-    "classificationCoverageStatus": [".codex/change-classification.json"],
-    "formalEvidencePrecedenceStatus": ["PR body Evidence Integrity", ".codex/task-contract.json"],
-    "remoteNpmDiagnosticNormalizationStatus": [".codex/test-coverage-evidence.json", "npm test"],
-    "reviewIndependenceStatus": [".codex/review-independence.json"],
-    "codeReviewMonitorStatus": ["docs/CODE_REVIEW_MONITOR.md", ".codex/review-independence.json"],
-    "contractGovernanceStatus": ["docs/CONTRACT_GOVERNANCE.md", ".codex/task-contract.json"],
-    "complexityGovernanceStatus": ["docs/COMPLEXITY_GOVERNANCE.md", ".codex/task-contract.json"],
-    "bestOfNEvidenceStatus": [".codex/review-independence.json", ".codex/test-coverage-evidence.json"],
-    "testCoverageEvidenceStatus": [".codex/test-coverage-evidence.json", "corepack pnpm test apps/api"],
-    "v085SelfTestStatus": [".codex/task-contract.json"],
-    "targetQualityScoreStatus": [".codex/change-classification.json", ".codex/product-verification.json", ".codex/test-coverage-evidence.json", ".codex/review-independence.json"]
+    "secretScan": [
+      ".codex/quality-gate-evidence.json",
+      "git grep secret/risky rendering command"
+    ],
+    "changeClassificationStatus": [
+      ".codex/change-classification.json"
+    ],
+    "productVerificationStatus": [
+      ".codex/product-verification.json",
+      "apps/api/src/repositories/postgres.test.ts",
+      "apps/api/src/server.test.ts"
+    ],
+    "productVerificationEvidenceStatus": [
+      ".codex/product-verification.json",
+      "docs/PRODUCT_VERIFICATION.md"
+    ],
+    "classificationCoverageStatus": [
+      ".codex/change-classification.json"
+    ],
+    "formalEvidencePrecedenceStatus": [
+      "PR body Evidence Integrity",
+      ".codex/task-contract.json"
+    ],
+    "remoteNpmDiagnosticNormalizationStatus": [
+      ".codex/test-coverage-evidence.json",
+      "npm test"
+    ],
+    "reviewIndependenceStatus": [
+      ".codex/review-independence.json"
+    ],
+    "codeReviewMonitorStatus": [
+      "docs/CODE_REVIEW_MONITOR.md",
+      ".codex/review-independence.json"
+    ],
+    "contractGovernanceStatus": [
+      "docs/CONTRACT_GOVERNANCE.md",
+      ".codex/task-contract.json"
+    ],
+    "complexityGovernanceStatus": [
+      "docs/COMPLEXITY_GOVERNANCE.md",
+      ".codex/task-contract.json"
+    ],
+    "bestOfNEvidenceStatus": [
+      ".codex/review-independence.json",
+      ".codex/test-coverage-evidence.json"
+    ],
+    "testCoverageEvidenceStatus": [
+      ".codex/test-coverage-evidence.json",
+      "corepack pnpm test apps/api"
+    ],
+    "v085SelfTestStatus": [
+      ".codex/task-contract.json"
+    ],
+    "targetQualityScoreStatus": [
+      ".codex/change-classification.json",
+      ".codex/product-verification.json",
+      ".codex/test-coverage-evidence.json",
+      ".codex/review-independence.json"
+    ]
   },
   "safePlaceholderInventory": [
     "MOCK_ADMIN_TOKEN",

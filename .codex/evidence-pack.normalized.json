@@ -1,10 +1,10 @@
 {
   "schemaVersion": "0.9.2",
-  "harnessVersion": "1.0.3",
+  "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "4",
   "baseSha": "afe302a64d46ed72b9e9132e227d75d5d4ebd34a",
-  "headSha": "current PR head",
+  "headSha": "6770dcb4f9d3496b8fc29d022135dfcad336b152",
   "artifactId": "pending",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
@@ -47,5 +47,19 @@
     "tests": 54,
     "source": ".codex/test-coverage-evidence.json"
   },
-  "safeSummaryOnly": true
+  "safeSummaryOnly": true,
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "26875592955",
+      "status": "success",
+      "headSha": "6770dcb4f9d3496b8fc29d022135dfcad336b152"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "26875592817",
+      "status": "failure",
+      "headSha": "6770dcb4f9d3496b8fc29d022135dfcad336b152"
+    }
+  ]
 }

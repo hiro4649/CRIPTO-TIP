@@ -76,6 +76,33 @@
       "notes": "Codex entrypoint map."
     },
     {
+      "pathPattern": ".codex/**",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable PR evidence for target quality gate."
+    },
+    {
+      "pathPattern": ".env.example",
+      "classification": "config",
+      "surface": "config",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Safe placeholder env example and local/test config surface."
+    },
+    {
+      "pathPattern": "docs/**",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product docs and PR evidence docs."
+    },
+    {
       "pathPattern": "docker-compose.yml",
       "classification": "config",
       "surface": "local_integration",

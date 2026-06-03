@@ -30,11 +30,15 @@ Done criteria: TypeScript CI pass; contracts CI pass; quality-gate pass; live Po
 
 Base SHA: afe302a64d46ed72b9e9132e227d75d5d4ebd34a
 
-Head SHA: current PR head
+Head SHA: 6770dcb4f9d3496b8fc29d022135dfcad336b152
 
-Quality-gate artifact: pending for PR #4
+Quality-gate: failure on v1.0.4 merge run 26875592817; evidence refreshed for current head
 
-CI runs: pending for PR #4
+Product CI: success
+
+ci run: 26875592955
+
+quality-gate run: 26875592817
 
 Stale evidence: current head only
 
@@ -152,4 +156,4 @@ This PR does not implement token sale, token exchange, cash-out, custody, intern
 
 # Commit SHA
 
-To be filled after commit.
+6770dcb4f9d3496b8fc29d022135dfcad336b152

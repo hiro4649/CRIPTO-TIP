@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.3",
+  "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 4,
   "testFiles": 9,
@@ -8,9 +8,24 @@
   "passedTests": 49,
   "skippedTests": 5,
   "commands": [
-    { "command": "corepack pnpm test apps/api", "status": "pass", "testFiles": 9, "tests": 54, "passedTests": 49, "skippedTests": 5 },
-    { "command": "RUN_LIVE_POSTGRES_TESTS=true DATABASE_URL=... pnpm test apps/api/src/repositories/postgres.test.ts", "status": "configured_for_github_ci", "testFiles": 1, "livePostgresTests": 5 },
-    { "command": "contracts CI", "status": "pending_for_pr3" }
+    {
+      "command": "corepack pnpm test apps/api",
+      "status": "pass",
+      "testFiles": 9,
+      "tests": 54,
+      "passedTests": 49,
+      "skippedTests": 5
+    },
+    {
+      "command": "RUN_LIVE_POSTGRES_TESTS=true DATABASE_URL=... pnpm test apps/api/src/repositories/postgres.test.ts",
+      "status": "configured_for_github_ci",
+      "testFiles": 1,
+      "livePostgresTests": 5
+    },
+    {
+      "command": "contracts CI",
+      "status": "pending_for_pr3"
+    }
   ],
   "riskCoverage": [
     "public_dto_safety",
