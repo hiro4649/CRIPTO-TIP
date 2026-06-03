@@ -116,7 +116,7 @@ export function selectValidEvidencePackCandidate(candidates, env = process.env) 
 }
 
 function evidencePackPath(env = process.env) {
-  if (env.CODEX_EVIDENCE_PACK_PATH) return env.CODEX_EVIDENCE_PACK_PATH;
+  if (Object.prototype.hasOwnProperty.call(env, 'CODEX_EVIDENCE_PACK_PATH')) return env.CODEX_EVIDENCE_PACK_PATH;
   return fs.existsSync(defaultPackPath) ? defaultPackPath : '';
 }
 
