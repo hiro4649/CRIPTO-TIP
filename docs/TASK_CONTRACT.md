@@ -1,12 +1,12 @@
 # Task Contract
 
-Task Mode: feature.
+Task mode: product_minor_r2.
 
 PR Profile: product_minor_r2.
 
 ## Goal
 
-Durable event storage and queue boundary.
+Add durable event storage, repository boundary, outbox/DLQ boundary, config validation, and quality evidence for CRIPTO-TIP PR #2.
 
 ## Allowed Scope
 
@@ -16,6 +16,8 @@ Durable event storage and queue boundary.
 - Config validation.
 - Quality evidence docs.
 - Tests/docs.
+- Test evidence.
+- CI contract dependency pinning.
 
 ## Forbidden Scope
 
@@ -29,6 +31,15 @@ Durable event storage and queue boundary.
 - Internal balance.
 - Investment wording.
 - Speculative reward.
+- YouTube scraping.
+
+## Runtime Readiness Claim
+
+No. PR #2 does not claim production runtime readiness.
+
+## Product Code Changed
+
+Yes. PR #2 changes API repository boundaries, outbox worker boundaries, config validation, tests, docs, and package/test configuration.
 
 ## Done Criteria
 

@@ -61,3 +61,13 @@ Expected result: no match.
 - `npm test`: passed locally with 9 test files and 45 tests.
 - Node 20 Vitest reproduction: passed locally with 9 test files and 45 tests.
 - Quality-gate remote npm diagnostic failure root cause found locally: Node 20 lacks the newer global `WebSocket` used by the overlay token rejection test. The test now imports `ws` and handles rejected connection errors.
+
+## Machine-Readable Evidence
+
+- `.codex/change-classification.json`: classifies every PR #2 changed file, including `.codex/**`, `docs/**`, `.env.example`, migration, package, lockfile, and test config.
+- `.codex/task-contract.json`: records `product_minor_r2`, `productCodeChanged: true`, `runtimeReadinessClaimed: false`, allowed scope, forbidden scope, and acceptance criteria.
+- `.codex/product-verification.json`: records pass/not_started product verification states.
+- `.codex/test-coverage-evidence.json`: records 9 test files and 45 tests with risk coverage.
+- `.codex/review-independence.json`: records reviewer role, review checklist, and human review required fields.
+- `.codex/quality-gate-evidence.json`: maps reason codes to evidence files and safe placeholder inventory.
+- `.codex/evidence-pack.normalized.json`: provides current-head safe evidence pack metadata for the quality-gate parser.

@@ -56,5 +56,6 @@ None open.
 - `PostgresRepository` exposes parameterized SQL for public TipIntent DTO, recent wallet count, current affinity, and stream support event listing.
 - Full production DB connection wiring, docker-backed integration tests, stale lock reclamation, and admin DLQ retry endpoint remain incomplete.
 - Quality-gate evidence docs were added for change classification, product verification, test coverage, review independence, task contract, code review monitor, contract governance, complexity governance, API compatibility, production gates, and residual risk tracking.
+- Machine-readable quality evidence files were added under `.codex/` for classification, task contract, product verification, test coverage, review independence, quality-gate reason mapping, and normalized evidence pack metadata.
 - Latest local `corepack pnpm test` result recorded for PR evidence: 9 test files and 45 tests.
 - Latest local `npm test` and Node 20 Vitest reproduction results recorded for PR evidence: 9 test files and 45 tests.

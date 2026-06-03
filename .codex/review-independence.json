@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 2,
+  "writerEvidencePresent": true,
+  "reviewEvidencePresent": true,
+  "reviewChecklistPresent": true,
+  "reviewerRole": "project-owner",
+  "headSha": "current PR head",
+  "productCodeChanged": true,
+  "runtimeReadinessClaimed": false,
+  "reviewChecklist": [
+    "correctness",
+    "regression",
+    "security",
+    "data_integrity",
+    "runtime_safety",
+    "test_evidence",
+    "diff_scope",
+    "known_gaps"
+  ],
+  "humanReviewRequiredFields": [
+    "quality_gate_status",
+    "CI status",
+    "head SHA",
+    "remaining blockers",
+    "merge decision"
+  ]
+}

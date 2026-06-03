@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 2,
+  "artifactId": "7374500499",
+  "previousArtifactId": "7374500499",
+  "reasonCodeMappings": {
+    "secretScan": [".codex/quality-gate-evidence.json", "git grep secret/risky rendering command"],
+    "changeClassificationStatus": [".codex/change-classification.json"],
+    "productVerificationStatus": [".codex/product-verification.json"],
+    "productVerificationEvidenceStatus": [".codex/product-verification.json", "docs/PRODUCT_VERIFICATION.md"],
+    "classificationCoverageStatus": [".codex/change-classification.json"],
+    "formalEvidencePrecedenceStatus": ["PR body Evidence Integrity", ".codex/task-contract.json"],
+    "remoteNpmDiagnosticNormalizationStatus": [".codex/test-coverage-evidence.json", "npm test"],
+    "reviewIndependenceStatus": [".codex/review-independence.json"],
+    "codeReviewMonitorStatus": ["docs/CODE_REVIEW_MONITOR.md", ".codex/review-independence.json"],
+    "contractGovernanceStatus": ["docs/CONTRACT_GOVERNANCE.md", ".codex/task-contract.json"],
+    "complexityGovernanceStatus": ["docs/COMPLEXITY_GOVERNANCE.md", ".codex/task-contract.json"],
+    "bestOfNEvidenceStatus": [".codex/review-independence.json", ".codex/test-coverage-evidence.json"],
+    "testCoverageEvidenceStatus": [".codex/test-coverage-evidence.json"],
+    "v085SelfTestStatus": [".codex/task-contract.json"],
+    "targetQualityScoreStatus": [".codex/change-classification.json", ".codex/product-verification.json", ".codex/test-coverage-evidence.json", ".codex/review-independence.json"]
+  },
+  "safePlaceholderInventory": [
+    "MOCK_ADMIN_TOKEN",
+    "MOCK_INTERNAL_TOKEN",
+    "MOCK_OVERLAY_TOKEN",
+    "change-me-admin-token",
+    "change-me-internal-token",
+    "change-me-overlay-token"
+  ],
+  "productCodeChanged": true,
+  "runtimeReadinessClaimed": false,
+  "qualityGateIsNotDisabled": true
+}

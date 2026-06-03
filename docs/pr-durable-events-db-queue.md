@@ -8,21 +8,89 @@ Follow-up fix completes the server-side repository boundary so `buildServer(repo
 
 Make PR #2 reviewable as a durable idempotency, repository, outbox, and DLQ boundary without adding production chain listener, production YouTube connector, production IRIS delivery, token sale, token exchange, cash-out, custody, internal balance, investment wording, or speculative reward behavior.
 
-# PR Profile
+## Task Contract
 
-Task Mode: feature.
+Task mode:
+product_minor_r2
 
-PR Profile: product_minor_r2.
+Goal:
+Add durable event storage, repository boundary, outbox/DLQ boundary, config validation, and quality evidence for CRIPTO-TIP PR #2.
 
-# Task Contract
+Allowed scope:
+migrations
+repository boundary
+api internal flow
+outbox/DLQ boundary
+config validation
+test evidence
+quality evidence docs
+CI contract dependency pinning
 
-Goal: durable event storage and queue boundary.
+Forbidden scope:
+production chain listener
+official YouTube connector
+production IRIS delivery
+token sale
+token exchange
+cash-out
+custody
+internal balance
+investment wording
+speculative reward
+YouTube scraping
 
-Allowed scope: migration, repository boundary, outbox/DLQ, config validation, quality evidence docs, tests, docs, and package test-entry compatibility needed for quality-gate remote npm diagnostics.
+Runtime readiness claim:
+no
 
-Forbidden scope: production chain listener, official YouTube connector, production IRIS delivery, token sale, token exchange, cash-out, custody, internal balance, investment wording, and speculative reward.
+Product code changed:
+yes
 
-Done criteria: TypeScript CI pass, contracts CI pass, quality-gate pass, `server.ts` no direct InMemory internals, public DTO safety preserved, moderation gates preserved, idempotency preserved, evidence docs updated, and PR body test count matches actual test output.
+Done criteria:
+typescript CI pass
+contracts CI pass
+quality-gate pass
+server.ts no direct InMemory internals
+public DTO safety preserved
+moderation gates preserved
+idempotency preserved
+evidence docs updated
+PR body test count matches actual test output
+
+## Evidence Integrity
+
+Base SHA:
+287d9540d59a0bea52f94964890f5d400ac3280c
+
+Head SHA:
+current PR head
+
+Quality-gate artifact:
+7374500499 or latest rerun artifact
+
+CI runs:
+typescript/contracts run `26859906074`
+quality-gate run `26859916066`
+
+Stale evidence:
+current head only
+
+## Testing and review
+
+- `corepack pnpm lint`
+- `corepack pnpm typecheck`
+- `corepack pnpm test`
+- `npm test`
+- contracts CI
+- quality-gate
+- repository internals scan
+- secret/risky rendering scan
+- prohibited wording scan
+
+Latest test files count:
+9
+
+Latest test count:
+45
 
 # Scope
 
