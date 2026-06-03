@@ -15,6 +15,15 @@ Runtime readiness claim: no
 Product code changed: yes
 Done criteria: typescript CI pass; contracts CI pass; quality-gate pass; no direct InMemory internals; public DTO safety; moderation gates; idempotency; evidence docs; test count matches output.
 Verification surface: repository boundary; public DTO; moderation; idempotency; SQL placeholders; outbox/DLQ; config; overlay token/text-only; package compatibility; contracts CI.
+Risk surface: storage, API internal flow, config validation, package verification, and quality evidence ingestion.
+Split required: no, because PR #2 is already the durable storage/outbox slice before Chain Listener, YouTube connector, and IRIS delivery follow-up PRs.
+Plan evidence: inspect quality-gate artifact, identify parser inputs, patch only evidence ingestion and parser-aligned fields, then rerun product checks.
+
+## Best of N Evidence
+candidate count: 2
+selected candidate: minimal parser-alignment patch.
+reason selected: it preserves product runtime scope, avoids implementing deferred integrations, and fixes only the quality-gate ingestion failures shown by artifact 7375563503.
+candidate rejected: adding more docs without parser alignment was rejected because the latest artifact showed classification/product/review gates already passing.
 
 ## Evidence Integrity
 Base SHA: 287d9540d59a0bea52f94964890f5d400ac3280c

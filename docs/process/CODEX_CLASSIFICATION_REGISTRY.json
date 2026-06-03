@@ -12,6 +12,14 @@
       "allowsFastPath": false
     },
     {
+      "pathPattern": "scripts/dev-server.js",
+      "classification": "dev_server_entrypoint",
+      "surface": "runtime",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false
+    },
+    {
       "pathPattern": ".codex/**",
       "classification": "harness_managed",
       "surface": "quality_evidence",
