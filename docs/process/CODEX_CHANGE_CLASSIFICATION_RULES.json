@@ -1,6 +1,6 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
-  "harnessVersion": "1.0.3",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.4",
+  "harnessVersion": "1.0.2",
   "harnessFiles": [
     "AGENTS.md",
     ".github/pull_request_template.md",
@@ -15,8 +15,6 @@
   ],
   "docsFiles": [
     "README.md",
-    "COMPLIANCE.md",
-    "SECURITY.md",
     "docs/"
   ],
   "productSourceFiles": [
@@ -32,17 +30,11 @@
     "test/",
     "tests/",
     "__tests__/",
-    "scripts/run-tests.js",
-    "apps/api/src/server.test.ts",
-    "apps/api/src/repositories/",
-    "apps/api/src/outbox/",
-    "apps/api/src/db/",
-    "apps/web/app/page.test.ts"
+    "scripts/run-tests.js"
   ],
   "specFiles": [
     "specs/",
-    "docs/specs/",
-    "migrations/"
+    "docs/specs/"
   ],
   "packageFiles": [
     "package.json",
@@ -59,9 +51,7 @@
   "runtimeAssetFiles": [
     "public/",
     "assets/",
-    "runtime/",
-    "apps/overlay/src/main.tsx",
-    "apps/web/app/"
+    "runtime/"
   ],
   "configFiles": [
     "tsconfig.json",
@@ -75,7 +65,6 @@
     "apps/api/src/config/"
   ],
   "authorityFiles": [
-    "AGENTS.md",
     "IRIS_SPEC_AUTHORITY.md",
     "*_SPEC_AUTHORITY.md",
     "docs/process/*AUTHORITY*.md"

@@ -21,7 +21,7 @@ After contract changes run cd contracts && forge test.
 Report repo URL, local path, branch, commit SHA, files changed, commands run, test results, security checks, GitHub/browser confirmations, remaining risks, and next recommended action.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.0.3
+CODEX_QUALITY_HARNESS_FILE v1.0.4
 
 ## Prime Directive
 
@@ -39,6 +39,11 @@ For v1.0.1 through v1.0.3 outcome, recovery, fixture isolation, clean-main,
 judgment consistency, product surface routing, review taxonomy, stale input,
 external blocked, handover, branch/head, and local gate contract routing, use
 the matching `docs/process/CODEX_*_POLICY.md` files.
+For v1.0.4 claim-to-code, boundary linting, acceptance criteria, risk, evidence
+v2, GitHub hysteresis, tool gap, active self-test, hotfix preservation,
+PR-chain saturation, role/tool, evidence site, annotation, and Dynamic Workflow
+Lite governance, use `docs/process/CODEX_V104_SPEC.md` and the matching
+`docs/process/CODEX_*_POLICY.md` or schema files.
 
 ## Plan-First Rule
 

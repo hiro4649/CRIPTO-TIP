@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.3
+// CODEX_QUALITY_HARNESS_FILE v1.0.4
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { HARNESS_VERSION, scanObjectForUnsafe, simpleStatus, writeJsonReport, exitFor, readJson, readText } from './codex-v080-lib.mjs';
@@ -98,15 +98,12 @@ export function buildPlaceholderOnlyEvidenceReport(input = parseJson(process.env
   return safe('placeholderOnlyEvidenceStatus', reasonCodes.length ? 'fail' : 'pass', { reasonCodes, productRelevant, formalEvidencePresent });
 }
 
-export function buildRemoteNpmDiagnosticNormalizationReport(input = parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_NORMALIZATION_JSON) || parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_JSON) || {}) {
+export function buildRemoteNpmDiagnosticNormalizationReport(input = parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_NORMALIZATION_JSON) || {}) {
   const productRelevant = productRelevantFromInput(input);
   if (!parseBool(input.forceCheck) && !productRelevant) return notApplicable('remoteNpmDiagnosticNormalizationStatus', 'remote_npm_diagnostic_normalization_not_applicable');
   const reasonCodes = [];
-  const diagnostic = input.diagnostic || input.remoteNpmDiagnosticStatus?.diagnostic || {};
-  const status = statusOf(input);
-  const npmExecuted = parseBool(input.npmExecuted) ||
-    (['pass', 'manual_confirmation_required', 'fail'].includes(status) && status !== 'not_applicable' && Boolean(input.diagnostic || input.remoteNpmDiagnosticStatus?.diagnostic));
-  const npmExitCode = Number(input.npmExitCode ?? diagnostic.npmExitCode ?? 0);
+  const npmExecuted = parseBool(input.npmExecuted);
+  const npmExitCode = Number(input.npmExitCode ?? 0);
   if (productRelevant && !npmExecuted) reasonCodes.push('remote_npm_not_executed_for_product_pr');
   if (npmExitCode !== 0 || parseBool(input.npmFailMarkedPass)) reasonCodes.push('remote_npm_diagnostic_normalization_failed');
   if (parseBool(input.diagnosticPendingFinalPass) || parseBool(input.diagnosticMissingNoFormalEvidence) || parseBool(input.remoteNpmNotExecutedEmittedDespiteExecuted)) reasonCodes.push('remote_npm_diagnostic_normalization_failed');
