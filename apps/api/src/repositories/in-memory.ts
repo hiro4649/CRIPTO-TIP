@@ -106,6 +106,26 @@ export class InMemoryRepository implements CriptoTipRepository {
     }
     return claimed;
   }
+  async reclaimStaleOutboxJobs(workerId: string, staleBefore: Date, limit: number, now = new Date()) {
+    const reclaimed: OutboxEvent[] = [];
+    for (const event of this.outboxEvents.values()) {
+      if (reclaimed.length >= limit) break;
+      if (event.status !== "processing") continue;
+      if (!event.locked_at || new Date(event.locked_at).getTime() >= staleBefore.getTime()) continue;
+      const updated = {
+        ...event,
+        status: "pending" as const,
+        last_error: `reclaimed stale lock by ${workerId}`,
+        next_attempt_at: now.toISOString(),
+        updated_at: now.toISOString()
+      };
+      delete updated.locked_at;
+      delete updated.locked_by;
+      this.outboxEvents.set(event.id, updated);
+      reclaimed.push(updated);
+    }
+    return reclaimed;
+  }
   async completeOutboxJob(id: string) {
     const event = this.outboxEvents.get(id);
     if (!event) return undefined;
@@ -132,6 +152,24 @@ export class InMemoryRepository implements CriptoTipRepository {
     const { locked_at: _lockedAt, locked_by: _lockedBy, ...rest } = event;
     this.outboxEvents.set(id, { ...rest, status: "dead_lettered", last_error: error, updated_at: now.toISOString() });
     return dead;
+  }
+  async retryDeadLetter(deadLetterId: string, actorId: string, now = new Date()) {
+    const dead = this.deadLetterEvents.get(deadLetterId);
+    if (!dead) return undefined;
+    const original = this.outboxEvents.get(dead.original_event_id);
+    if (!original) return undefined;
+    const { locked_at: _lockedAt, locked_by: _lockedBy, ...rest } = original;
+    const updated: OutboxEvent = {
+      ...rest,
+      status: "pending",
+      retry_count: 0,
+      last_error: `DLQ retry requested by ${actorId}`,
+      next_attempt_at: now.toISOString(),
+      updated_at: now.toISOString()
+    };
+    this.outboxEvents.set(updated.id, updated);
+    await this.writeAuditLog({ actor_type: "admin", actor_id: actorId, action: "retry_dead_letter", target_type: "dead_letter_event", target_id: deadLetterId, after_json: { outbox_event_id: updated.id } });
+    return updated;
   }
   async createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert) {
     const key = `${sourceEventId}:${streamId}`;

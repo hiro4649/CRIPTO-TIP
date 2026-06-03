@@ -1,18 +1,16 @@
 # Test Coverage Evidence
 
-Latest command: `corepack pnpm test`.
+Latest local command: `corepack pnpm test apps/api`.
 
-Latest result: 9 test files passed, 45 tests passed.
+Latest local result: 9 test files, 54 total tests, 49 passed tests, 5 skipped live Postgres tests.
 
-Quality-gate npm entry command: `npm test`.
+The skipped live Postgres tests require `RUN_LIVE_POSTGRES_TESTS=true` and `DATABASE_URL`. GitHub CI provides those values with a Postgres service, so the migration application and live repository tests run remotely.
 
-Latest root npm result: 9 test files passed, 45 tests passed.
-
-Latest Node 20 reproduction result: 9 test files passed, 45 tests passed.
+Quality-gate npm entry command remains `npm test`; it is a real test command and is not a bypass.
 
 | Workspace | Test files | Tests | Covered risks |
 | --- | ---: | ---: | --- |
-| `apps/api` | 6 | 26 | API idempotency, public DTO privacy, moderation gate side effects, injected repository use, Postgres SQL boundary, outbox worker, migration constraints, config validation. |
+| `apps/api` | 6 | 30 passed, 5 skipped locally | API idempotency, public DTO privacy, moderation gate side effects, injected repository use, Postgres SQL boundary, live Postgres migration/constraint tests, stale lock reclaim, admin DLQ retry, outbox worker, migration constraints, config validation. |
 | `apps/overlay` | 1 | 2 | Malformed WebSocket message handling and overlay event schema handling. |
 | `apps/web` | 1 | 2 | Required safety text and prohibited UI wording guard. |
 | `packages/shared` | 1 | 15 | Sanitization, wallet address redaction, moderation decisions, affinity caps, schemas, normalizers, overlay event schema, AI request privacy. |
@@ -22,19 +20,16 @@ Latest Node 20 reproduction result: 9 test files passed, 45 tests passed.
 | Risk | Test evidence | Status |
 | --- | --- | --- |
 | Duplicate support event double-applies affinity. | API and repository idempotency tests. | Covered. |
-| Duplicate chain log creates duplicate transaction. | In-memory repository chain log idempotency test. | Covered. |
+| Duplicate chain log creates duplicate transaction. | In-memory and live Postgres chain log idempotency tests. | Covered. |
 | Public TipIntent leaks wallet or raw viewer data. | API and Postgres public DTO tests. | Covered. |
 | Unsafe moderation status reaches overlay or AI reaction. | API moderation gate tests. | Covered. |
 | `display_only` is read aloud or changes affinity. | API display-only test. | Covered. |
 | `server.ts` depends on global in-memory maps. | Server injection tests plus no-match rg command. | Covered. |
-| Outbox retry never reaches DLQ. | Worker and repository DLQ tests. | Covered. |
+| Outbox retry never reaches DLQ. | Worker, repository, and live Postgres DLQ tests. | Covered. |
+| Stale outbox locks remain stuck. | In-memory, worker boundary, and live Postgres stale reclaim tests. | Covered. |
+| Admin DLQ retry lacks audit trail. | API endpoint test and live Postgres audit-log test. | Covered. |
 | Production local mock defaults are accepted. | Config production reject test. | Covered. |
-| Quality-gate Node 20 WebSocket rejection behavior fails due missing global WebSocket. | API overlay invalid token test uses explicit `ws` client and handles rejected connection error/close paths. | Covered. |
 | Contract behavior regresses. | GitHub CI contracts job. | Covered in CI; local Foundry unavailable. |
-| Live DB SQL behavior diverges from SQL-boundary tests. | No live DB integration test. | Not covered. |
-| Stale outbox locks remain stuck. | Active lock respect is tested; stale reclaim is not implemented. | Partial. |
-| Admin DLQ retry lacks audit trail. | Audit log write repository test exists; admin retry endpoint is not implemented. | Partial. |
-
-The PR body and `docs/pr-durable-events-db-queue.md` must match this count: 9 test files, 45 tests.
-
-Node 20 compatibility is included because the remote quality-gate uses Node 20. The test count remains unchanged after the WebSocket test compatibility repair.
+| Production Chain Listener behavior. | Not in PR #4 scope. | Not covered. |
+| Official YouTube API connector behavior. | Not in PR #4 scope. | Not covered. |
+| Production IRIS Core delivery behavior. | Not in PR #4 scope. | Not covered. |

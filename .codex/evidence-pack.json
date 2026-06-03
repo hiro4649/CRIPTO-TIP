@@ -45,6 +45,8 @@
     "status": "present",
     "testFiles": 9,
     "tests": 54,
+    "passedTests": 49,
+    "skippedTests": 5,
     "source": ".codex/test-coverage-evidence.json"
   },
   "safeSummaryOnly": true

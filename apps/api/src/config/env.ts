@@ -7,6 +7,7 @@ export const AppConfigSchema = z.object({
   QUEUE_MODE: z.enum(["in_memory", "db_outbox"]).default("in_memory"),
   WORKER_ID: z.string().default("worker-local"),
   OUTBOX_POLL_INTERVAL_MS: z.coerce.number().int().positive().default(1000),
+  OUTBOX_STALE_LOCK_MS: z.coerce.number().int().positive().default(300_000),
   MAX_RETRY_COUNT: z.coerce.number().int().positive().default(5),
   NODE_ENV: z.string().default("development"),
   APP_ENV: z.enum(["local", "test", "staging", "production"]).default("local"),

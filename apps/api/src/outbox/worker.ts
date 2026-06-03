@@ -14,3 +14,9 @@ export async function processOutboxBatch(args: { repository: CriptoTipRepository
   }
   return jobs.length;
 }
+
+export async function reclaimStaleOutboxLocks(args: { repository: CriptoTipRepository; workerId: string; staleLockMs: number; limit: number; now?: Date }) {
+  const now = args.now ?? new Date();
+  const staleBefore = new Date(now.getTime() - args.staleLockMs);
+  return args.repository.reclaimStaleOutboxJobs(args.workerId, staleBefore, args.limit, now);
+}

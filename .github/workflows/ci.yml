@@ -8,6 +8,20 @@ on:
 jobs:
   typescript:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cripto_tip
+          POSTGRES_PASSWORD: cripto_tip_dev
+          POSTGRES_DB: cripto_tip
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cripto_tip -d cripto_tip"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -21,6 +35,9 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+        env:
+          RUN_LIVE_POSTGRES_TESTS: "true"
+          DATABASE_URL: postgresql://cripto_tip:cripto_tip_dev@localhost:5432/cripto_tip
 
   contracts:
     runs-on: ubuntu-latest

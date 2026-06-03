@@ -84,6 +84,14 @@
       "allowsFastPath": false
     },
     {
+      "pathPattern": "docker-compose.yml",
+      "classification": "config",
+      "surface": "local_integration",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false
+    },
+    {
       "pathPattern": "README.md",
       "classification": "docs",
       "surface": "docs",
