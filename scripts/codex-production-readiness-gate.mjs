@@ -126,6 +126,10 @@ export function hasProductionClaim(body) {
 
 export function isRiskyContext(body) {
   const lower = normalizeText(body);
+  if (/\bno production readiness claim\b/.test(lower) && !hasProductionClaim(body)) {
+    const withoutNegatedReadiness = lower.replace(/\bno production readiness claim\b/g, '');
+    return /\br3\b|\brelease\b|\bsecurity\b|\bproduction\b|\bmigration\b|\bdependency\b|\bmulti file\b|\blarge diff\b|\bimplementation\b/.test(withoutNegatedReadiness);
+  }
   return /\br3\b|\brelease\b|\bsecurity\b|\bproduction\b|\bmigration\b|\bdependency\b|\bmulti file\b|\blarge diff\b|\bimplementation\b/.test(lower);
 }
 

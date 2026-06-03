@@ -72,6 +72,7 @@ function buildReport() {
 
   const goNoGoHeading = buildProductionReadinessReport({
     CODEX_EVENT_NAME: 'pull_request',
+    CODEX_EVIDENCE_PACK_PATH: '',
     CODEX_PR_HEAD_SHA: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     CODEX_PR_BODY: [
       'Production Go/No-Go:',

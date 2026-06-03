@@ -14,6 +14,15 @@ Latest clean npm reproduction result: `npm install --no-package-lock && npm test
 
 Latest Node 20 reproduction result: `npx -y node@20 ./node_modules/vitest/vitest.mjs run packages/shared apps/api apps/overlay apps/web` passed with 9 test files and 45 tests after importing `ws` in the overlay rejection test.
 
+PR #4 local test result after adding storage/queue recovery: `corepack pnpm test apps/api` passed with 9 test files, 49 passed tests, and 5 skipped live Postgres tests in the local environment. The skipped tests run in GitHub CI with `RUN_LIVE_POSTGRES_TESTS=true` and a Postgres service.
+
+PR #4 live Postgres evidence added:
+
+- `apps/api/src/repositories/postgres.test.ts` applies `migrations/0001_durable_events.sql` to a real Postgres database when `RUN_LIVE_POSTGRES_TESTS=true`.
+- The live test verifies `tip_transactions`, `support_events`, `affinity_ledger`, and `outbox_events.idempotency_key` uniqueness.
+- The live test verifies stale outbox lock reclaim and DLQ retry with audit log write.
+- `.github/workflows/ci.yml` provides the Postgres service for the TypeScript job.
+
 ## Reason Code Matrix
 
 | Reason code | Response | Evidence |

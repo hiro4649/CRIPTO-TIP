@@ -59,7 +59,10 @@
     "next.config.*",
     "webpack.config.*",
     "eslint.config.*",
-    ".env*"
+    ".env*",
+    "docker-compose.yml",
+    "vitest.config.ts",
+    "apps/api/src/config/"
   ],
   "authorityFiles": [
     "IRIS_SPEC_AUTHORITY.md",

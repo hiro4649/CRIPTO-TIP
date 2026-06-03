@@ -32,6 +32,29 @@ The preferred MVP queue is a DB-backed outbox:
 5. Jobs move to `dead_letter_events` after `max_retry_count`.
 6. Admin retry creates or requeues a `dead_letter.retry` job and writes `audit_logs`.
 
-Stale lock reclamation is not implemented yet. The next worker hardening PR should reclaim jobs whose `locked_at` is older than the configured timeout while preserving active locks. The same PR should add an admin DLQ retry endpoint that writes an audit log.
+Stale lock reclamation:
+
+1. Configure `OUTBOX_STALE_LOCK_MS` for the maximum expected handler runtime.
+2. A worker calls `reclaimStaleOutboxLocks` before normal claim loops, using `now - OUTBOX_STALE_LOCK_MS` as the stale threshold.
+3. Only `processing` jobs with `locked_at` older than the threshold are moved back to `pending`.
+4. Active locks are preserved.
+5. Reclaimed jobs remain at-least-once; consumers must stay idempotent.
+
+DLQ retry:
+
+1. Inspect `dead_letter_events.last_error` and the original `outbox_events` row.
+2. Call `POST /admin/dead-letter/:deadLetterId/retry` with the admin Bearer token.
+3. The endpoint requeues the original outbox job as `pending`, resets `retry_count` to `0`, and writes `audit_logs` with `action = retry_dead_letter`.
+4. Requeued jobs are delivered at least once by the normal worker path.
+5. Do not retry jobs that would call production IRIS, YouTube, or chain adapters until those adapters have idempotent delivery evidence.
+
+Local live PostgreSQL test:
+
+```bash
+docker compose up -d postgres
+RUN_LIVE_POSTGRES_TESTS=true DATABASE_URL="${DATABASE_URL}" pnpm test apps/api/src/repositories/postgres.test.ts
+```
+
+The current local Codex environment does not have Docker CLI available. GitHub CI runs the live Postgres integration test with a Postgres service.
 
 Raw messages and raw display names are access-restricted operational data. Sanitized values are used for overlay and IRIS-facing events. Raw message retention should be limited to moderation review windows, with deletion or anonymization after the documented retention period.

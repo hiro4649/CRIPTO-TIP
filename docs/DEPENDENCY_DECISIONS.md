@@ -15,6 +15,8 @@ Checked on 2026-06-02 using npm registry metadata after `npm view` commands time
 | vitest | 4.1.8 | Use `^4.1.8` for unit tests. |
 | ws | 8.21.0 | Use `^8.21.0` as a test-only WebSocket client so overlay negative tests run under Node 20 quality-gate. |
 | @types/ws | 8.18.1 | Use `^8.18.1` for TypeScript coverage of the test-only WebSocket client. |
+| pg | 8.21.0 | Use `^8.21.0` for live PostgreSQL repository integration tests and future DB-backed repository wiring. |
+| @types/pg | 8.20.0 | Use `^8.20.0` for TypeScript coverage of the `pg` integration test client. |
 
 Production integrations remain mocked. No production YouTube API, RPC, or IRIS API dependency is required for CI.
 
@@ -25,3 +27,5 @@ Package manager compatibility decision: the primary workspace remains pnpm. The 
 Node 20 quality-gate compatibility decision: Node 20 does not provide the same global `WebSocket` test surface as newer local Node versions. The API overlay rejection test now imports `ws` explicitly and handles rejected connection `error` events, preserving the negative auth test instead of weakening or skipping it.
 
 Queue dependency decision: PR #2 does not add Redis or BullMQ. A DB-backed outbox is sufficient for the current safety boundary, keeps CI free of external services, and makes idempotency/audit behavior reviewable in SQL.
+
+PR #3 keeps that decision: no Redis or BullMQ is added. `pg` is the only new runtime-facing library, and it is used to verify the existing PostgreSQL migration and repository methods against a real Postgres service in CI.

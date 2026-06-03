@@ -19,6 +19,8 @@ describe("api", () => {
     await app.ready();
     const res = await app.inject({ method: "POST", url: "/admin/tips/evt/approve" });
     expect(res.statusCode).toBe(401);
+    const retry = await app.inject({ method: "POST", url: "/admin/dead-letter/dlq/retry" });
+    expect(retry.statusCode).toBe(401);
     await app.close();
   }, 20_000);
 
@@ -199,6 +201,21 @@ describe("api", () => {
     const result = await app.inject({ method: "GET", url: "/admin/live-sessions/str_admin/tips", headers: { authorization: adminAuth } });
     expect(repo.called).toBe(true);
     expect(result.json()).toHaveLength(1);
+    await app.close();
+  }, 20_000);
+
+  it("admin DLQ retry endpoint requires auth, requeues job, and writes audit log", async () => {
+    const repo = new InMemoryRepository();
+    await repo.enqueueOutbox({ id: "job-admin-dlq", job_type: "iris.deliver", aggregate_type: "support_event", aggregate_id: "evt", idempotency_key: "job-admin-dlq", payload_json: {}, max_retry_count: 1 });
+    const dead = await repo.failOutboxJob("job-admin-dlq", "terminal failure");
+    if (!dead || !("id" in dead)) throw new Error("missing dead letter");
+    const app = buildServer(repo);
+    await app.ready();
+    const result = await app.inject({ method: "POST", url: `/admin/dead-letter/${dead.id}/retry`, headers: { authorization: adminAuth }, payload: { actor_id: "admin-1" } });
+    expect(result.statusCode).toBe(200);
+    expect(result.json()).toEqual({ status: "retry_queued", outbox_event_id: "job-admin-dlq" });
+    expect(repo.outboxEvents.get("job-admin-dlq")?.status).toBe("pending");
+    expect(repo.auditLogs).toContainEqual(expect.objectContaining({ action: "retry_dead_letter", actor_id: "admin-1", target_id: dead.id }));
     await app.close();
   }, 20_000);
 

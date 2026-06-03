@@ -224,6 +224,15 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return { status: "rejected", audit_log: "mock-admin-reject" };
   });
 
+  app.post("/admin/dead-letter/:deadLetterId/retry", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { deadLetterId } = z.object({ deadLetterId: z.string() }).parse(req.params);
+    const body = z.object({ actor_id: z.string().default("admin_mock") }).parse(req.body ?? {});
+    const retried = await repo.retryDeadLetter(deadLetterId, body.actor_id);
+    if (!retried) return reply.code(404).send({ error: "dead_letter_not_found" });
+    return { status: "retry_queued", outbox_event_id: retried.id };
+  });
+
   app.get("/overlay/:streamId/ws", { websocket: true }, (socket, req) => {
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
     const query = z.object({ token: z.string().optional() }).parse(req.query);

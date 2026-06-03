@@ -68,6 +68,29 @@ describe("InMemoryRepository", () => {
     expect(jobs.map((job) => job.id)).toEqual(["pending"]);
   });
 
+  it("reclaims stale locks but preserves active locks", async () => {
+    const repo = new InMemoryRepository();
+    const now = new Date("2026-06-03T00:10:00.000Z");
+    await repo.enqueueOutbox({ id: "stale", job_type: "iris.deliver", aggregate_type: "support_event", aggregate_id: "evt1", idempotency_key: "stale", payload_json: {}, status: "processing", locked_at: "2026-06-03T00:00:00.000Z", locked_by: "old-worker" });
+    await repo.enqueueOutbox({ id: "active", job_type: "iris.deliver", aggregate_type: "support_event", aggregate_id: "evt2", idempotency_key: "active", payload_json: {}, status: "processing", locked_at: "2026-06-03T00:09:30.000Z", locked_by: "active-worker" });
+    const reclaimed = await repo.reclaimStaleOutboxJobs("reclaimer", new Date("2026-06-03T00:05:00.000Z"), 10, now);
+    expect(reclaimed.map((job) => job.id)).toEqual(["stale"]);
+    expect(repo.outboxEvents.get("stale")?.status).toBe("pending");
+    expect(repo.outboxEvents.get("stale")?.locked_at).toBeUndefined();
+    expect(repo.outboxEvents.get("active")?.status).toBe("processing");
+  });
+
+  it("requeues dead letter jobs and writes audit log", async () => {
+    const repo = new InMemoryRepository();
+    await repo.enqueueOutbox({ id: "job-dlq", job_type: "iris.deliver", aggregate_type: "support_event", aggregate_id: "evt", idempotency_key: "job-dlq", payload_json: {}, max_retry_count: 1 });
+    const dead = await repo.failOutboxJob("job-dlq", "terminal failure");
+    if (!dead || !("original_event_id" in dead)) throw new Error("missing dead letter");
+    const retried = await repo.retryDeadLetter(dead.id, "admin-1");
+    expect(retried?.status).toBe("pending");
+    expect(retried?.retry_count).toBe(0);
+    expect(repo.auditLogs).toContainEqual(expect.objectContaining({ action: "retry_dead_letter", target_id: dead.id }));
+  });
+
   it("audit log repository can write admin action", async () => {
     const repo = new InMemoryRepository();
     await repo.writeAuditLog({ actor_type: "admin", action: "reject_tip", target_type: "support_event", target_id: "evt" });
