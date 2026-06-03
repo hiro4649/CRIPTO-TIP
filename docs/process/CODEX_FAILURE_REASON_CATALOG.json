@@ -1,0 +1,4366 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
+  "harnessVersion": "1.0.3",
+  "reasonCodes": [
+    {
+      "reasonCode": "missing_head_sha",
+      "gate": "evidence",
+      "severity": "error",
+      "safeMessage": "Current head SHA evidence is missing.",
+      "nextBestFix": "Record the current PR head SHA in structured evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "head_sha_mismatch",
+      "gate": "evidence",
+      "severity": "error",
+      "safeMessage": "Evidence head SHA does not match current head.",
+      "nextBestFix": "Regenerate evidence for the current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_evidence",
+      "gate": "evidence",
+      "severity": "error",
+      "safeMessage": "Evidence is stale or lacks freshness proof.",
+      "nextBestFix": "Rerun checks and update evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "missing_remote_evidence",
+      "gate": "ci",
+      "severity": "error",
+      "safeMessage": "Remote quality evidence is missing.",
+      "nextBestFix": "Run the quality gate on the PR head.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "missing_command_result",
+      "gate": "evidence",
+      "severity": "error",
+      "safeMessage": "Command result evidence is incomplete.",
+      "nextBestFix": "Record command, result, exit code or pass/fail, date, source, and head SHA.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "weak_evidence_phrase",
+      "gate": "evidence",
+      "severity": "error",
+      "safeMessage": "Weak evidence wording was used as proof.",
+      "nextBestFix": "Replace weak wording with structured command evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "unsafe_claim_wording",
+      "gate": "production",
+      "severity": "error",
+      "safeMessage": "Production or release claim lacks required evidence.",
+      "nextBestFix": "Remove the claim or provide complete evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "missing_human_confirmation",
+      "gate": "humanConfirmation",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Human confirmation is required but incomplete.",
+      "nextBestFix": "Add current-head structured human confirmation.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "human_confirmation_incomplete",
+      "gate": "humanConfirmation",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Human confirmation is missing required fields.",
+      "nextBestFix": "Complete the required structured confirmation fields.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "non_overridable_failure_present",
+      "gate": "humanConfirmation",
+      "severity": "error",
+      "safeMessage": "A non-overridable failure is present.",
+      "nextBestFix": "Fix the underlying failure.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "unsafe_value_detected",
+      "gate": "safeOutput",
+      "severity": "error",
+      "safeMessage": "Unsafe value was detected.",
+      "nextBestFix": "Remove the value and keep only safe labels.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "scope_mismatch",
+      "gate": "scope",
+      "severity": "error",
+      "safeMessage": "Changed files do not match allowed scope.",
+      "nextBestFix": "Remove forbidden or unrelated changes.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "forbidden_path_changed",
+      "gate": "scope",
+      "severity": "error",
+      "safeMessage": "A forbidden path changed.",
+      "nextBestFix": "Revert forbidden path changes.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_ci_parity_mismatch",
+      "gate": "ciReplay",
+      "severity": "error",
+      "safeMessage": "Local replay and CI context do not agree.",
+      "nextBestFix": "Replay with the current PR body and head SHA.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "github_api_unavailable",
+      "gate": "ciReplay",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "GitHub API evidence could not be fetched.",
+      "nextBestFix": "Provide GitHub token read access or rerun in GitHub Actions.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "ci_replay_not_requested",
+      "gate": "ciReplay",
+      "severity": "not_applicable",
+      "safeMessage": "CI replay was not requested in this context.",
+      "nextBestFix": "Run ci replay with repository, PR number, and head SHA when PR parity is required.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "evidence_pack_missing",
+      "gate": "evidencePack",
+      "severity": "warning",
+      "safeMessage": "Structured evidence pack is missing.",
+      "nextBestFix": "Add .codex/evidence-pack.json or rely on legacy PR body fallback when allowed.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "evidence_pack_invalid",
+      "gate": "evidencePack",
+      "severity": "error",
+      "safeMessage": "Structured evidence pack is invalid.",
+      "nextBestFix": "Fix the evidence pack schema fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "manual_confirmation_invalid",
+      "gate": "humanConfirmation",
+      "severity": "error",
+      "safeMessage": "Manual confirmation is invalid.",
+      "nextBestFix": "Fix current-head confirmation fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "generic_core_project_coupling",
+      "gate": "genericCore",
+      "severity": "error",
+      "safeMessage": "Core harness depends on project-specific assumptions.",
+      "nextBestFix": "Move profile behavior behind optional compatibility mode.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "profile_required_in_core_mode",
+      "gate": "genericCore",
+      "severity": "error",
+      "safeMessage": "Profile checks are required in core mode.",
+      "nextBestFix": "Set profile compatibility to optional or explicitly enable profile mode.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_mojibake",
+      "gate": "agentsContext",
+      "severity": "error",
+      "safeMessage": "AGENTS.md contains corrupted text.",
+      "nextBestFix": "Rewrite AGENTS.md as clean UTF-8 text.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_unsafe_value",
+      "gate": "agentsContext",
+      "severity": "error",
+      "safeMessage": "AGENTS.md contains unsafe value-shaped content.",
+      "nextBestFix": "Replace values with safe labels.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "environment_readiness_missing",
+      "gate": "environmentReadiness",
+      "severity": "error",
+      "safeMessage": "Environment readiness guidance is incomplete.",
+      "nextBestFix": "Document Node/runtime and setup guidance.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "golden_set_missing",
+      "gate": "goldenSet",
+      "severity": "error",
+      "safeMessage": "Golden set fixtures are missing.",
+      "nextBestFix": "Add deterministic safe golden fixtures.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "golden_set_failed",
+      "gate": "goldenSet",
+      "severity": "error",
+      "safeMessage": "Golden set regression failed.",
+      "nextBestFix": "Fix gate behavior or fixture expectations.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "best_of_n_required",
+      "gate": "bestOfN",
+      "severity": "error",
+      "safeMessage": "Best of N evidence is required for this risk.",
+      "nextBestFix": "Add candidate count, selected candidate, and safe reasons.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "best_of_n_invalid",
+      "gate": "bestOfN",
+      "severity": "error",
+      "safeMessage": "Best of N evidence is incomplete.",
+      "nextBestFix": "Complete the Best of N evidence fields.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "task_queue_unsafe",
+      "gate": "taskQueueLite",
+      "severity": "error",
+      "safeMessage": "Task queue contains unsafe content.",
+      "nextBestFix": "Keep queue entries safe-summary-only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_trace_schema_invalid",
+      "gate": "safeTrace",
+      "severity": "error",
+      "safeMessage": "Safe trace schema is invalid.",
+      "nextBestFix": "Use the current safe trace schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_trace_unsafe_value",
+      "gate": "safeTrace",
+      "severity": "error",
+      "safeMessage": "Safe trace contains unsafe value-shaped content.",
+      "nextBestFix": "Remove raw values and set rawValuesStored false.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "curator_auto_apply_forbidden",
+      "gate": "curatorReport",
+      "severity": "error",
+      "safeMessage": "Curator report attempts an automatic action.",
+      "nextBestFix": "Make curator report suggestion-only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "curator_report_invalid",
+      "gate": "curatorReport",
+      "severity": "error",
+      "safeMessage": "Curator report is invalid.",
+      "nextBestFix": "Use allowed safe action labels only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "offline_evolution_auto_apply_forbidden",
+      "gate": "offlineEvolution",
+      "severity": "error",
+      "safeMessage": "Offline evolution proposal attempts automatic action.",
+      "nextBestFix": "Keep proposals human-approved and suggestion-only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "offline_evolution_proposal_invalid",
+      "gate": "offlineEvolution",
+      "severity": "error",
+      "safeMessage": "Offline evolution proposal is invalid.",
+      "nextBestFix": "Complete proposal-only fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "test_coverage_evidence_missing",
+      "gate": "testCoverage",
+      "severity": "error",
+      "safeMessage": "Required test coverage evidence is missing.",
+      "nextBestFix": "Map changed area to test command and edge/failure paths.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "performance_claim_without_evidence",
+      "gate": "performance",
+      "severity": "error",
+      "safeMessage": "Performance claim lacks measurement evidence.",
+      "nextBestFix": "Add baseline and new measurement summaries or remove the claim.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_entire_file_mojibake",
+      "gate": "agentsContext",
+      "severity": "error",
+      "safeMessage": "AGENTS.md contains unreadable text outside or inside the harness block.",
+      "nextBestFix": "Repair AGENTS.md as readable UTF-8 safe context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_duplicate_harness_block",
+      "gate": "agentsContext",
+      "severity": "error",
+      "safeMessage": "AGENTS.md contains multiple harness blocks.",
+      "nextBestFix": "Keep exactly one current harness block.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_missing_harness_block",
+      "gate": "agentsContext",
+      "severity": "error",
+      "safeMessage": "AGENTS.md is missing the current harness block.",
+      "nextBestFix": "Add one current harness block.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "target_manifest_missing",
+      "gate": "targetManifest",
+      "severity": "error",
+      "safeMessage": "Target harness manifest is missing or invalid.",
+      "nextBestFix": "Add docs/process/CODEX_HARNESS_MANIFEST.json for target mode.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "change_classification_unknown",
+      "gate": "changeClassification",
+      "severity": "error",
+      "safeMessage": "Changed files could not be classified safely.",
+      "nextBestFix": "Classify the change or narrow the scope.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "product_verification_required",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Product-relevant changes require verification evidence.",
+      "nextBestFix": "Run project-defined checks or provide explicit review status.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "npm_skip_not_allowed_for_product_change",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "CODEX_SKIP_NPM cannot be used for product-relevant changes.",
+      "nextBestFix": "Run appropriate project checks or mark emergency manual review.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_claim_requires_product_checks",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Runtime readiness claims require product checks.",
+      "nextBestFix": "Run smoke, build, test, or project-defined runtime checks.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "package_change_requires_package_verification",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Package or lockfile changes require package verification.",
+      "nextBestFix": "Use repository package verification conventions.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_quality_score_unavailable",
+      "gate": "targetQualityScore",
+      "severity": "error",
+      "safeMessage": "Target quality score could not be computed.",
+      "nextBestFix": "Run target-mode local quality gate with JSON output.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "target_quality_score_blocking_failure",
+      "gate": "targetQualityScore",
+      "severity": "error",
+      "safeMessage": "Target quality score has a blocking gate.",
+      "nextBestFix": "Fix the blocking target gate before merge.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_runner_failed",
+      "gate": "workflowRunner",
+      "severity": "error",
+      "safeMessage": "Workflow quality runner found a blocking failure.",
+      "nextBestFix": "Fix the reported required status or gate failure.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_runner_invalid_report",
+      "gate": "workflowRunner",
+      "severity": "error",
+      "safeMessage": "Workflow quality runner received invalid or unsafe report data.",
+      "nextBestFix": "Regenerate the local quality gate JSON report.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "classification_rules_missing",
+      "gate": "changeClassification",
+      "severity": "error",
+      "safeMessage": "Change classification rules are missing.",
+      "nextBestFix": "Add docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "classification_rules_invalid",
+      "gate": "changeClassification",
+      "severity": "error",
+      "safeMessage": "Change classification rules are invalid or unsafe.",
+      "nextBestFix": "Fix the classification rules JSON.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "classification_unknown_in_pr_context",
+      "gate": "changeClassification",
+      "severity": "error",
+      "safeMessage": "Unknown files were changed in PR context.",
+      "nextBestFix": "Classify the files or narrow the PR scope.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "product_verification_evidence_missing",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Required product verification evidence is missing.",
+      "nextBestFix": "Add safe command evidence for product-relevant changes.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "product_verification_evidence_invalid",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Product verification evidence is invalid.",
+      "nextBestFix": "Fix the normalized evidence schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_verification_evidence_unsafe",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Product verification evidence contains unsafe content.",
+      "nextBestFix": "Remove unsafe values and keep safe summaries only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "test_metrics_missing",
+      "gate": "testMetrics",
+      "severity": "warning",
+      "safeMessage": "Test metrics are missing when claimed.",
+      "nextBestFix": "Provide safe test metrics or remove the runtime metric claim.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "test_metrics_invalid",
+      "gate": "testMetrics",
+      "severity": "error",
+      "safeMessage": "Test metrics are invalid.",
+      "nextBestFix": "Use the current safe test metrics schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "test_metrics_unsafe",
+      "gate": "testMetrics",
+      "severity": "error",
+      "safeMessage": "Test metrics contain unsafe content.",
+      "nextBestFix": "Remove raw logs and unsafe values from metrics.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "performance_metrics_required",
+      "gate": "performance",
+      "severity": "error",
+      "safeMessage": "Performance or runtime metric claim requires safe metrics.",
+      "nextBestFix": "Add safe baseline and new measurement summaries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_pr_detected",
+      "gate": "stalePrAudit",
+      "severity": "error",
+      "safeMessage": "PR metadata is stale for the current harness context.",
+      "nextBestFix": "Refresh the PR or rerun evidence on the current base and head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_confirmation_detected",
+      "gate": "stalePrAudit",
+      "severity": "error",
+      "safeMessage": "Structured confirmation does not match the current head.",
+      "nextBestFix": "Add current-head structured confirmation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_harness_version_in_pr",
+      "gate": "stalePrAudit",
+      "severity": "error",
+      "safeMessage": "PR text presents an old harness version as current.",
+      "nextBestFix": "Update PR evidence to the current source harness version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "reason_summary_invalid",
+      "gate": "reasonSummary",
+      "severity": "error",
+      "safeMessage": "Compact reason summary is invalid or unsafe.",
+      "nextBestFix": "Regenerate safe reason summary from the report.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_baseline_missing",
+      "gate": "remoteProductBaseline",
+      "severity": "error",
+      "safeMessage": "Required remote product baseline evidence is missing.",
+      "nextBestFix": "Attach a safe current-base baseline evidence object.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_baseline_stale",
+      "gate": "remoteProductBaseline",
+      "severity": "error",
+      "safeMessage": "Remote product baseline evidence is stale.",
+      "nextBestFix": "Refresh baseline evidence for the current base.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_baseline_failing",
+      "gate": "remoteProductBaseline",
+      "severity": "manual",
+      "safeMessage": "Remote product baseline is already failing.",
+      "nextBestFix": "Treat candidate failures as baseline-blocked until baseline is repaired or accepted.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_baseline_invalid",
+      "gate": "remoteProductBaseline",
+      "severity": "error",
+      "safeMessage": "Remote product baseline evidence is invalid or unsafe.",
+      "nextBestFix": "Regenerate safe baseline evidence using the schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_diagnostic_missing",
+      "gate": "remoteNpmDiagnostic",
+      "severity": "info",
+      "safeMessage": "Remote npm diagnostic evidence is not present.",
+      "nextBestFix": "Add safe diagnostic metadata if an npm failure needs classification.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "remote_npm_diagnostic_invalid",
+      "gate": "remoteNpmDiagnostic",
+      "severity": "error",
+      "safeMessage": "Remote npm diagnostic evidence is invalid.",
+      "nextBestFix": "Regenerate diagnostic evidence from safe metadata only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_diagnostic_unknown",
+      "gate": "remoteNpmDiagnostic",
+      "severity": "manual",
+      "safeMessage": "Remote npm failure category is unknown.",
+      "nextBestFix": "Classify the failure with safe markers or request owner review.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_diagnostic_unsafe",
+      "gate": "remoteNpmDiagnostic",
+      "severity": "error",
+      "safeMessage": "Remote npm diagnostic evidence contains unsafe content.",
+      "nextBestFix": "Remove raw logs and unsafe values from diagnostic evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_preflight_failed",
+      "gate": "workflowPreflight",
+      "severity": "error",
+      "safeMessage": "Workflow preflight failed.",
+      "nextBestFix": "Fix the safe preflight setup issue before running the quality gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_preflight_missing_required_file",
+      "gate": "workflowPreflight",
+      "severity": "error",
+      "safeMessage": "Workflow preflight found a missing required harness file.",
+      "nextBestFix": "Restore the required harness file or update target manifest correctly.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_artifact_index_invalid",
+      "gate": "safeArtifactIndex",
+      "severity": "error",
+      "safeMessage": "Safe artifact index is invalid or unsafe.",
+      "nextBestFix": "Regenerate the safe artifact index from safe artifact names only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_artifact_missing",
+      "gate": "safeArtifactIndex",
+      "severity": "warning",
+      "safeMessage": "An expected safe artifact is missing.",
+      "nextBestFix": "Generate the missing safe artifact or record a safe not-applicable reason.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "open_pr_hygiene_stale_pr",
+      "gate": "openPrHygiene",
+      "severity": "warning",
+      "safeMessage": "Open PR hygiene report found stale PR evidence.",
+      "nextBestFix": "Refresh or close stale PRs after owner decision.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "open_pr_hygiene_needs_owner_decision",
+      "gate": "openPrHygiene",
+      "severity": "manual",
+      "safeMessage": "Open PR hygiene report needs owner decision.",
+      "nextBestFix": "Ask the owner whether to refresh, keep, or close candidate PRs.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "baseline_failure",
+      "gate": "productVerification",
+      "severity": "manual",
+      "safeMessage": "Candidate failure matches a known failing baseline.",
+      "nextBestFix": "Repair or accept the failing baseline before treating candidate as ready.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "candidate_regression",
+      "gate": "productVerification",
+      "severity": "error",
+      "safeMessage": "Candidate failed while baseline was passing.",
+      "nextBestFix": "Fix the candidate regression or update evidence if classification is wrong.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_final_summary_invalid",
+      "gate": "targetFinalSummary",
+      "severity": "error",
+      "safeMessage": "Target final summary is invalid or unsafe.",
+      "nextBestFix": "Regenerate the final summary from safe report fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_required_status_failure",
+      "gate": "workflowQualityRunner",
+      "severity": "error",
+      "safeMessage": "A workflow-required status did not pass.",
+      "nextBestFix": "Fix the reported status and rerun the workflow on the current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "missing_required_method_sections",
+      "gate": "prBodyLint",
+      "severity": "error",
+      "safeMessage": "The PR body is missing required method sections.",
+      "nextBestFix": "Add the required compact PR sections for the declared profile.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "quality_gate_failure",
+      "gate": "localQualityGate",
+      "severity": "error",
+      "safeMessage": "A quality gate failure was reported.",
+      "nextBestFix": "Review safe failure reasons and rerun the failed gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_profile_invalid",
+      "gate": "prProfile",
+      "severity": "error",
+      "safeMessage": "The PR profile is invalid.",
+      "nextBestFix": "Use one of the supported safe PR profile labels.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "fast_path_precondition_failed",
+      "gate": "fastPath",
+      "severity": "error",
+      "safeMessage": "Fast path preconditions were not met.",
+      "nextBestFix": "Use full verification or fix the precondition failure.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "fast_path_not_allowed_for_product_change",
+      "gate": "fastPath",
+      "severity": "manual",
+      "safeMessage": "Fast path is not allowed for product-relevant changes.",
+      "nextBestFix": "Run the full product verification path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "diagnostic_consolidation_invalid",
+      "gate": "diagnosticConsolidation",
+      "severity": "error",
+      "safeMessage": "Diagnostic consolidation is invalid or unsafe.",
+      "nextBestFix": "Regenerate the consolidated diagnostic summary from safe fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "diagnostic_consolidation_missing",
+      "gate": "diagnosticConsolidation",
+      "severity": "error",
+      "safeMessage": "Diagnostic consolidation artifact is missing.",
+      "nextBestFix": "Run the workflow quality runner to produce the consolidated summary.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "unsafe_value_class_unknown",
+      "gate": "safeOutput",
+      "severity": "error",
+      "safeMessage": "An unsafe value class could not be classified safely.",
+      "nextBestFix": "Redact or reclassify the value in a constrained safe field.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "unsafe_value_action_required",
+      "gate": "safeOutput",
+      "severity": "error",
+      "safeMessage": "Unsafe value action matrix requires redaction or failure.",
+      "nextBestFix": "Remove concrete unsafe values and keep only safe labels or booleans.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "invalid_report_recovery_failed",
+      "gate": "workflowRunner",
+      "severity": "error",
+      "safeMessage": "Invalid report recovery did not complete safely.",
+      "nextBestFix": "Regenerate fallback artifacts without storing the raw report.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "artifact_budget_exceeded",
+      "gate": "safeArtifactIndex",
+      "severity": "warning",
+      "safeMessage": "Safe artifact count exceeded the configured budget.",
+      "nextBestFix": "Keep primary human artifacts compact and rely on indexed machine artifacts.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "artifact_required_missing",
+      "gate": "safeArtifactIndex",
+      "severity": "error",
+      "safeMessage": "A required safe artifact is missing.",
+      "nextBestFix": "Regenerate required workflow artifacts.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_profile_missing",
+      "gate": "prProfile",
+      "severity": "warning",
+      "safeMessage": "PR profile is missing and was inferred.",
+      "nextBestFix": "Add a concise PR profile label that matches the change.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "pr_profile_conflict",
+      "gate": "prProfile",
+      "severity": "warning",
+      "safeMessage": "Declared PR profile conflicts with inferred risk profile.",
+      "nextBestFix": "Update the PR profile or explain the mismatch.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "open_pr_overlap_owner_decision",
+      "gate": "openPrHygiene",
+      "severity": "manual",
+      "safeMessage": "Open PR hygiene found overlapping harness-managed files.",
+      "nextBestFix": "Ask the owner whether to refresh or sequence the overlapping PRs.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "actions_runtime_advisory_warning",
+      "gate": "actionsRuntimeAdvisory",
+      "severity": "warning",
+      "safeMessage": "GitHub Actions runtime advisory needs follow-up.",
+      "nextBestFix": "Track action runtime migration without changing versions automatically.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "actions_runtime_deprecation_blocked",
+      "gate": "actionsRuntimeAdvisory",
+      "severity": "error",
+      "safeMessage": "Actions runtime deprecation has become blocking.",
+      "nextBestFix": "Update action runtime configuration or affected actions.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_mode_missing",
+      "gate": "v085Stability",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Task mode is missing for a change that needs explicit discipline.",
+      "nextBestFix": "Add a Task mode field using an allowed safe label.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_reproduction_missing",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Bugfix evidence is missing reproduction status.",
+      "nextBestFix": "Record reproduced, baseline fail, or a safe reason reproduction was not possible.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "bugfix_root_cause_missing",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Bugfix evidence is missing a root-cause status.",
+      "nextBestFix": "Record the root cause or hypothesis before changing code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "bugfix_verification_missing",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Bugfix evidence is missing verification status.",
+      "nextBestFix": "Record pass, fail, partial, or a safe not-run reason.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "bugfix_unrelated_changes",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Bugfix evidence reports unrelated changes.",
+      "nextBestFix": "Remove unrelated changes or split them into a separate task.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_profile_repair_hint_available",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "PR profile assist has a safe repair hint.",
+      "nextBestFix": "Add the missing profile sections named by the safe summary.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "product_evidence_explained",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Product verification failure was explained with safe labels.",
+      "nextBestFix": "Fix the underlying product verification gate result.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "import_smoke_config_invalid",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Import smoke configuration is invalid.",
+      "nextBestFix": "Fix the safe import smoke config schema or remove it.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "import_smoke_failed",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Configured safe import smoke check failed.",
+      "nextBestFix": "Fix the import target or expected export list.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_risk_register_invalid",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Runtime risk register is invalid.",
+      "nextBestFix": "Fix the safe runtime risk register schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_release_blocked_by_open_risk",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "Runtime or release readiness is blocked by an open release-blocking risk.",
+      "nextBestFix": "Remove the readiness claim or close the risk with required evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_risk_closed_without_evidence",
+      "gate": "v085Stability",
+      "severity": "error",
+      "safeMessage": "A critical runtime risk was closed without required evidence.",
+      "nextBestFix": "Add the required safe evidence or keep the risk open.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "checkout_remote_discrepancy_detected",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Checkout and remote evidence disagree for the same head.",
+      "nextBestFix": "Use current checkout evidence first and refresh remote evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "fast_path_full_verification_required",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Fast path is denied and full verification is required.",
+      "nextBestFix": "Run the product or runtime evidence required by the existing gates.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_reproduction_not_reproducible",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Bugfix reproduction was not possible but a reason was provided.",
+      "nextBestFix": "Keep the reason and verify by the smallest available check.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_root_cause_hypothesis",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Bugfix root cause is a hypothesis.",
+      "nextBestFix": "Verify the hypothesis or record remaining risk.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_verification_partial",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Bugfix verification is partial.",
+      "nextBestFix": "Run the missing focused check or record why it is not available.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_regression_test_absent_with_reason",
+      "gate": "v085Stability",
+      "severity": "warning",
+      "safeMessage": "Bugfix regression test is absent with a reason.",
+      "nextBestFix": "Add a regression test when feasible or keep the safe reason.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "runtime_risk_impact_summary_missing",
+      "gate": "v085Stability",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "A critical runtime risk area changed without an impact summary.",
+      "nextBestFix": "Add a concise safe runtime risk impact summary.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "code_review_monitor_failed",
+      "gate": "codeReviewMonitor",
+      "severity": "error",
+      "safeMessage": "Code review monitor found a blocking review concern.",
+      "nextBestFix": "Resolve the blocking review monitor finding.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_surface_rules_invalid",
+      "gate": "codeReviewMonitor",
+      "severity": "error",
+      "safeMessage": "Review surface rules are missing or invalid.",
+      "nextBestFix": "Fix CODEX_REVIEW_SURFACE_RULES.json or the safe local override.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_change_without_review_surface",
+      "gate": "codeReviewMonitor",
+      "severity": "warning",
+      "safeMessage": "Product change lacks enough safe review surface evidence.",
+      "nextBestFix": "Add safe review surface and verification evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "product_change_without_test_or_reason",
+      "gate": "codeReviewMonitor",
+      "severity": "warning",
+      "safeMessage": "Product change has no test change or safe reason.",
+      "nextBestFix": "Add test evidence or a safe reason no test file changed.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "bugfix_review_evidence_missing",
+      "gate": "codeReviewMonitor",
+      "severity": "error",
+      "safeMessage": "Bugfix review evidence is missing reproduction, root cause, or verification.",
+      "nextBestFix": "Add bugfix evidence before merge.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "feature_acceptance_criteria_missing",
+      "gate": "codeReviewMonitor",
+      "severity": "warning",
+      "safeMessage": "Feature change lacks acceptance criteria.",
+      "nextBestFix": "Add acceptance criteria or Done when evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "refactor_behavior_invariant_missing",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Refactor lacks a behavior invariant summary.",
+      "nextBestFix": "Add a behavior invariant summary and verification evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "auth_surface_changed_without_negative_test_evidence",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Auth surface changed without negative test evidence.",
+      "nextBestFix": "Add negative auth/security test evidence or owner-reviewed rationale.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "storage_surface_changed_without_integrity_evidence",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Storage surface changed without integrity evidence.",
+      "nextBestFix": "Add data integrity, migration, or concurrency risk evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "api_surface_changed_without_compatibility_summary",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "API surface changed without compatibility summary.",
+      "nextBestFix": "Add request and response compatibility summary.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "runtime_surface_changed_without_smoke_or_reason",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Runtime surface changed without smoke evidence or safe reason.",
+      "nextBestFix": "Add smoke/import/runtime verification or a safe reason.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "large_product_diff_requires_review_scope",
+      "gate": "codeReviewMonitor",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Large product diff needs review scope evidence.",
+      "nextBestFix": "Add review scope summary and verification evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "harness_change_mixed_with_product_files",
+      "gate": "codeReviewMonitor",
+      "severity": "error",
+      "safeMessage": "Harness change includes product files.",
+      "nextBestFix": "Split product files out of the harness change.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_monitor_safe_summary_invalid",
+      "gate": "codeReviewMonitor",
+      "severity": "error",
+      "safeMessage": "Code review monitor summary contains unsafe or invalid output.",
+      "nextBestFix": "Redact unsafe values and keep safe summary only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_governance_failed",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Prompt governance failed.",
+      "nextBestFix": "Fix prompt governance blockers.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_like_change_without_eval",
+      "gate": "promptGovernance",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Prompt-like change lacks required eval evidence.",
+      "nextBestFix": "Add deterministic prompt eval evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "agents_change_without_prompt_eval",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "AGENTS change lacks prompt eval evidence.",
+      "nextBestFix": "Add AGENTS prompt eval coverage.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_change_without_eval",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Skill change lacks matching eval evidence.",
+      "nextBestFix": "Add skill eval coverage.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_policy_change_without_review_eval",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Review policy change lacks review eval evidence.",
+      "nextBestFix": "Add review eval suite coverage.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_eval_suite_invalid",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Prompt eval suite is invalid.",
+      "nextBestFix": "Fix prompt eval suite schema or cases.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_eval_case_failed",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Prompt eval case failed.",
+      "nextBestFix": "Fix prompt-like file or eval case.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_eval_suite_invalid",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Review eval suite is invalid.",
+      "nextBestFix": "Fix review eval suite schema or cases.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_eval_case_failed",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Review eval case failed.",
+      "nextBestFix": "Fix review monitor behavior or fixture expectation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_variant_report_invalid",
+      "gate": "promptGovernance",
+      "severity": "warning",
+      "safeMessage": "Prompt variant report is invalid.",
+      "nextBestFix": "Fix suggestion-only prompt variant report.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "prompt_variant_auto_apply_forbidden",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Prompt variant auto-apply behavior is forbidden.",
+      "nextBestFix": "Keep prompt variants suggestion-only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_change_risk_unclassified",
+      "gate": "promptGovernance",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Prompt change risk is unclassified.",
+      "nextBestFix": "Classify prompt change risk.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "manual_override_policy_weakened",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Manual override policy appears weakened.",
+      "nextBestFix": "Restore non-overridable failure protection.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_verification_prompt_weakened",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Product verification policy appears weakened.",
+      "nextBestFix": "Restore product verification failure protection.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prompt_governance_safe_summary_invalid",
+      "gate": "promptGovernance",
+      "severity": "error",
+      "safeMessage": "Prompt governance summary is unsafe or invalid.",
+      "nextBestFix": "Use safe summary fields only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_governance_failed",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Knowledge governance failed.",
+      "nextBestFix": "Fix knowledge map or source-of-record index.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_map_missing",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Knowledge map is missing.",
+      "nextBestFix": "Add CODEX_KNOWLEDGE_MAP.json.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_map_invalid",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Knowledge map is invalid.",
+      "nextBestFix": "Fix knowledge map schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_source_missing",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Knowledge map references a missing source.",
+      "nextBestFix": "Update or restore referenced source file.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_marker_mismatch",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Knowledge map marker or version is stale.",
+      "nextBestFix": "Update marker and harness version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_required_policy_not_indexed",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Required policy is not indexed.",
+      "nextBestFix": "Add required policy to knowledge map.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_required_skill_not_indexed",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Required skill is not indexed.",
+      "nextBestFix": "Add required skill to knowledge map.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_required_eval_not_indexed",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Required eval suite is not indexed.",
+      "nextBestFix": "Add required eval suite to knowledge map.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_required_contract_not_indexed",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "Required contract policy is not indexed.",
+      "nextBestFix": "Add contract entries to knowledge map.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_orphan_policy_detected",
+      "gate": "knowledgeGovernance",
+      "severity": "warning",
+      "safeMessage": "Policy may be orphaned from the knowledge map.",
+      "nextBestFix": "Index or remove obsolete policy.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "agents_context_too_manual_like",
+      "gate": "knowledgeGovernance",
+      "severity": "error",
+      "safeMessage": "AGENTS content is too manual-like.",
+      "nextBestFix": "Move task-specific detail into docs/process or skills.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "knowledge_deprecated_version_reference",
+      "gate": "knowledgeGovernance",
+      "severity": "warning",
+      "safeMessage": "Knowledge map contains deprecated version reference.",
+      "nextBestFix": "Update stale version references when required.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "contract_governance_failed",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Contract governance failed.",
+      "nextBestFix": "Fix task contract, handoff, or load-bearing evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_contract_missing",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Required task contract is missing.",
+      "nextBestFix": "Add a task contract for risky work.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_contract_invalid",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Task contract is invalid.",
+      "nextBestFix": "Fix task contract schema and fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_contract_verification_surface_missing",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Task contract lacks verification surface.",
+      "nextBestFix": "Add verification surface.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_contract_done_criteria_missing",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Task contract lacks done criteria.",
+      "nextBestFix": "Add done criteria.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_contract_forbidden_scope_missing",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Task contract lacks forbidden scope.",
+      "nextBestFix": "Add forbidden scope for risky work.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "handoff_artifact_invalid",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Handoff artifact is invalid.",
+      "nextBestFix": "Fix handoff schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "handoff_head_mismatch",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Handoff head SHA mismatches current head.",
+      "nextBestFix": "Regenerate handoff for current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "handoff_raw_artifact_forbidden",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Handoff stores raw artifacts.",
+      "nextBestFix": "Remove raw logs or raw diffs from handoff.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "load_bearing_evidence_missing",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Load-bearing evidence is missing.",
+      "nextBestFix": "Add positive and negative fixture evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "load_bearing_evidence_invalid",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Load-bearing evidence is invalid.",
+      "nextBestFix": "Fix load-bearing evidence schema.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "load_bearing_component_cost_unjustified",
+      "gate": "contractGovernance",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Load-bearing component cost needs justification.",
+      "nextBestFix": "Justify high runtime cost or lower default mode.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "stub_feature_claim_detected",
+      "gate": "contractGovernance",
+      "severity": "error",
+      "safeMessage": "Stub or fixture pass was used with readiness claim.",
+      "nextBestFix": "Remove readiness claim or provide real evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "display_only_feature_claim_detected",
+      "gate": "contractGovernance",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Display-only feature was claimed complete.",
+      "nextBestFix": "Separate display evidence from completion claim.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "complexity_governance_failed",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Complexity governance failed.",
+      "nextBestFix": "Review complexity governance output and fix the failing safe reason.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_complexity_unknown",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Task complexity could not be classified.",
+      "nextBestFix": "Provide task mode, PR body, changed files, or classification evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "high_complexity_contract_missing",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "High-complexity work is missing a task contract.",
+      "nextBestFix": "Add a task contract with done criteria, verification surface, risk surface, scope, and stop condition.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "high_complexity_oracle_missing",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "High-complexity work is missing required oracle evidence.",
+      "nextBestFix": "Add test, smoke, fixture, schema, validator, static check, or justified manual check evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "high_complexity_split_required",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "High-complexity work requires a split plan or split reason.",
+      "nextBestFix": "Add a split plan or explain why the bounded change should stay together.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "solvability_constraints_missing",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Required task constraints are missing.",
+      "nextBestFix": "Add constraints, allowed scope, forbidden scope, or stop condition.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "solvability_constraints_conflict",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Task constraints conflict.",
+      "nextBestFix": "Resolve the contradictory goal and forbidden scope before implementation or merge.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "acceptance_criteria_missing_for_complex_task",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Complex task lacks acceptance criteria.",
+      "nextBestFix": "Add acceptance criteria, done criteria, or an explicit done-when statement.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "reasoning_evidence_effort_mismatch",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Evidence effort is weak for task complexity.",
+      "nextBestFix": "Add plan, task contract, verification evidence, risk surface, or rollback/stop condition.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "algorithmic_artifact_required",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "A reproducible verification artifact is required.",
+      "nextBestFix": "Add a test, fixture, schema, validator, smoke command, reproduction command, migration check, or static check.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "verification_blocked_by_missing_tool",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "A required verification tool is unavailable while verification is claimed.",
+      "nextBestFix": "Provide the tool, use a safe alternative, or remove the readiness/verification claim.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "verification_weakened_by_missing_tool",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "A missing tool weakens verification evidence.",
+      "nextBestFix": "Record the missing tool impact and provide a safe alternative or owner-accepted residual risk.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "output_budget_risk_detected",
+      "gate": "complexity",
+      "severity": "warning",
+      "safeMessage": "Large output or many-step work increases review risk.",
+      "nextBestFix": "Use compact safe artifacts and reproducible validators instead of long explanations.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "impossible_task_detected",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Task appears impossible under current constraints.",
+      "nextBestFix": "Revise the goal or constraints before implementation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "fixture_not_sufficient_for_runtime_claim",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Fixture-only evidence is insufficient for runtime readiness.",
+      "nextBestFix": "Add runtime smoke, test, schema, validator, or remove the readiness claim.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "oracle_required_for_auth_surface",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Auth or security surface change lacks required oracle evidence.",
+      "nextBestFix": "Add negative-case auth/security evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "oracle_required_for_storage_surface",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Storage or concurrency surface change lacks integrity evidence.",
+      "nextBestFix": "Add failure-path, data integrity, migration, concurrency, or rollback evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "oracle_required_for_release_gate",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Release gate lacks required oracle evidence.",
+      "nextBestFix": "Add current-head evidence plus rollback or stop condition.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "oracle_required_for_runtime_readiness",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Runtime readiness lacks required oracle evidence.",
+      "nextBestFix": "Add smoke, test, schema, validator, or current-head runtime evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "split_required_for_large_diff",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Large diff requires split plan or split reason.",
+      "nextBestFix": "Split the work or document why the bounded change is reviewable.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "split_required_for_multi_surface_change",
+      "gate": "complexity",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Multi-surface high-complexity change requires split plan or split reason.",
+      "nextBestFix": "Split by risk surface or add an explicit split reason.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "invented_command_detected",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Verification references a command that appears unavailable or invented.",
+      "nextBestFix": "Use an existing repo command or mark the check unavailable with reason.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "complexity_eval_suite_invalid",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "Complexity eval suite is invalid.",
+      "nextBestFix": "Fix the complexity eval suite schema and fixture shape.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "complexity_eval_case_failed",
+      "gate": "complexity",
+      "severity": "error",
+      "safeMessage": "A complexity eval case failed.",
+      "nextBestFix": "Fix complexity gate behavior or the deterministic fixture expectation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "baseline_health_failed",
+      "gate": "baselineHealth",
+      "severity": "error",
+      "safeMessage": "Baseline health validation failed.",
+      "nextBestFix": "Review baseline health inputs and product relevance.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "baseline_evidence_missing",
+      "gate": "baselineHealth",
+      "severity": "error",
+      "safeMessage": "Required baseline evidence is missing.",
+      "nextBestFix": "Provide current baseline evidence or confirm harness-only scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "baseline_evidence_stale",
+      "gate": "baselineHealth",
+      "severity": "error",
+      "safeMessage": "Baseline evidence is stale.",
+      "nextBestFix": "Refresh the baseline evidence for the current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_skip_npm_without_verification",
+      "gate": "baselineHealth",
+      "severity": "error",
+      "safeMessage": "Product-relevant work used skip-npm without verification.",
+      "nextBestFix": "Run product verification or remove product-relevant scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "baseline_candidate_regression_not_separated",
+      "gate": "baselineHealth",
+      "severity": "error",
+      "safeMessage": "Baseline and candidate regression are not separated.",
+      "nextBestFix": "Separate baseline failure from candidate failure evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_continuity_failed",
+      "gate": "evidenceContinuity",
+      "severity": "error",
+      "safeMessage": "Evidence continuity validation failed.",
+      "nextBestFix": "Restore the missing safe evidence path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_evidence_path_lost",
+      "gate": "evidenceContinuity",
+      "severity": "error",
+      "safeMessage": "Remote product baseline evidence path was lost.",
+      "nextBestFix": "Propagate baseline evidence into workflow summaries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_verification_path_lost",
+      "gate": "evidenceContinuity",
+      "severity": "error",
+      "safeMessage": "Product verification evidence path was lost.",
+      "nextBestFix": "Propagate product verification status safely.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_pack_human_confirmation_path_lost",
+      "gate": "evidenceContinuity",
+      "severity": "error",
+      "safeMessage": "Evidence pack lost human confirmation.",
+      "nextBestFix": "Include humanConfirmation in the current-head evidence pack.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "complexity_status_path_lost",
+      "gate": "evidenceContinuity",
+      "severity": "error",
+      "safeMessage": "Complexity or oracle status path was lost.",
+      "nextBestFix": "Propagate complexity governance status into summaries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "self_test_case_export_failed",
+      "gate": "selfTestCaseExport",
+      "severity": "error",
+      "safeMessage": "Self-test case export failed.",
+      "nextBestFix": "Emit safe failed case IDs without raw logs.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "self_test_failed_case_export_missing",
+      "gate": "selfTestCaseExport",
+      "severity": "error",
+      "safeMessage": "A failed self-test did not export a failed case ID.",
+      "nextBestFix": "Add safe failed case export metadata.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_body_surface_normalizer_failed",
+      "gate": "prBodySurfaceNormalizer",
+      "severity": "error",
+      "safeMessage": "PR body surface normalization failed.",
+      "nextBestFix": "Review PR body surface labels.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "surface_false_positive_detected",
+      "gate": "prBodySurfaceNormalizer",
+      "severity": "warning",
+      "safeMessage": "A PR body surface false positive was detected.",
+      "nextBestFix": "Use changed files and negation-aware surface labels.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "required_heading_hint_available",
+      "gate": "prBodySurfaceNormalizer",
+      "severity": "warning",
+      "safeMessage": "A safe heading hint is available.",
+      "nextBestFix": "Add the suggested exact heading if required.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "required_heading_missing_exact",
+      "gate": "prBodySurfaceNormalizer",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "A required heading is missing.",
+      "nextBestFix": "Add the exact required heading.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "required_heading_near_miss",
+      "gate": "prBodySurfaceNormalizer",
+      "severity": "warning",
+      "safeMessage": "A heading near miss was detected.",
+      "nextBestFix": "Use the exact heading text.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "score_decomposition_failed",
+      "gate": "scoreDecomposition",
+      "severity": "error",
+      "safeMessage": "Score decomposition failed.",
+      "nextBestFix": "Review score cap and top reason metadata.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "self_test_profile_not_allowed",
+      "gate": "selfTestProfile",
+      "severity": "error",
+      "safeMessage": "The requested self-test profile is not allowed.",
+      "nextBestFix": "Use a full or standard profile for product-relevant work.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "old_harness_marker_detected",
+      "gate": "oldHarnessMarker",
+      "severity": "warning",
+      "safeMessage": "Old harness marker was detected.",
+      "nextBestFix": "Update active harness-managed markers.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "old_source_marker_detected",
+      "gate": "oldHarnessMarker",
+      "severity": "error",
+      "safeMessage": "Old source harness marker was detected.",
+      "nextBestFix": "Update active source-managed markers to the current version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "artifact_lifeboat_missing",
+      "gate": "artifactLifeboat",
+      "severity": "error",
+      "safeMessage": "The minimal safe failure artifact is missing.",
+      "nextBestFix": "Create the lifeboat artifact before running the quality gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "artifact_lifeboat_unsafe",
+      "gate": "artifactLifeboat",
+      "severity": "error",
+      "safeMessage": "The lifeboat artifact contains unsafe output.",
+      "nextBestFix": "Regenerate the artifact with safe reason codes only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "no_artifact_failure_unclassified",
+      "gate": "noArtifactFailure",
+      "severity": "error",
+      "safeMessage": "A no-artifact failure was not classified safely.",
+      "nextBestFix": "Classify the failure phase and preserve a safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "classification_registry_invalid",
+      "gate": "classificationCoverage",
+      "severity": "error",
+      "safeMessage": "The classification registry is invalid.",
+      "nextBestFix": "Repair the registry schema and required entries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "classification_unknown_file",
+      "gate": "classificationCoverage",
+      "severity": "error",
+      "safeMessage": "A changed file is not covered by the classification registry.",
+      "nextBestFix": "Add a safe registry entry or narrow the changed file set.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "classification_registry_conflict",
+      "gate": "classificationCoverage",
+      "severity": "error",
+      "safeMessage": "The classification registry conflicts with source manifest scope.",
+      "nextBestFix": "Align registry entries with source-managed manifest scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "entrypoint_unclassified",
+      "gate": "classificationCoverage",
+      "severity": "error",
+      "safeMessage": "An entrypoint-like file is unclassified.",
+      "nextBestFix": "Add an explicit registry entry for the entrypoint.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_local_parity_failed",
+      "gate": "remoteLocalParity",
+      "severity": "error",
+      "safeMessage": "Remote and local quality contexts differ.",
+      "nextBestFix": "Compare safe parity summaries and rerun with matching context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_changed_files_mismatch",
+      "gate": "remoteLocalParity",
+      "severity": "error",
+      "safeMessage": "Remote changed files differ from local changed files.",
+      "nextBestFix": "Refresh changed-file evidence for the current PR head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_classification_context_mismatch",
+      "gate": "remoteLocalParity",
+      "severity": "error",
+      "safeMessage": "Remote classification rules differ from local rules.",
+      "nextBestFix": "Ensure remote and local runners use the same harness version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_registry_hash_mismatch",
+      "gate": "remoteLocalParity",
+      "severity": "error",
+      "safeMessage": "Remote registry hash differs from local registry hash.",
+      "nextBestFix": "Rerun after the current registry is present on the PR head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_unknown_file_not_seen_locally",
+      "gate": "remoteLocalParity",
+      "severity": "error",
+      "safeMessage": "Remote saw an unknown file that local classification did not see.",
+      "nextBestFix": "Refresh local changed-file context and registry coverage.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_template_compiler_failed",
+      "gate": "prTemplateCompiler",
+      "severity": "error",
+      "safeMessage": "PR template compilation failed.",
+      "nextBestFix": "Repair the safe template profile inputs.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_template_compiler_hint_available",
+      "gate": "prTemplateCompiler",
+      "severity": "warning",
+      "safeMessage": "A safe PR body template hint is available.",
+      "nextBestFix": "Use the suggested profile skeleton when updating PR body text.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "gate_decision_trace_missing",
+      "gate": "gateDecisionTrace",
+      "severity": "error",
+      "safeMessage": "Gate decision trace is missing for a failed report.",
+      "nextBestFix": "Generate a safe one-screen decision trace.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "gate_decision_trace_unsafe",
+      "gate": "gateDecisionTrace",
+      "severity": "error",
+      "safeMessage": "Gate decision trace contains unsafe output.",
+      "nextBestFix": "Regenerate the trace with safe reason summaries only.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "lifeboat_upload_missing",
+      "gate": "artifactLifeboat",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "The lifeboat artifact was generated but upload evidence is missing.",
+      "nextBestFix": "Check the artifact upload step and preserve safe failure evidence.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "version_lineage_failed",
+      "gate": "versionLineage",
+      "severity": "error",
+      "safeMessage": "Version lineage evidence is incomplete or inconsistent.",
+      "nextBestFix": "Align active harness markers, manifests, and self-test references.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "active_marker_version_mismatch",
+      "gate": "versionLineage",
+      "severity": "error",
+      "safeMessage": "An active harness-managed marker uses the wrong version.",
+      "nextBestFix": "Update the active marker to the current harness version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_evidence_render_failed",
+      "gate": "prEvidenceRenderer",
+      "severity": "error",
+      "safeMessage": "PR evidence block rendering failed.",
+      "nextBestFix": "Regenerate safe evidence blocks for the current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_evidence_stale_head",
+      "gate": "prEvidenceRenderer",
+      "severity": "error",
+      "safeMessage": "Rendered PR evidence is stale for the current head.",
+      "nextBestFix": "Regenerate evidence using the current head SHA.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_evidence_missing_human_confirmation",
+      "gate": "prEvidenceRenderer",
+      "severity": "manual_confirmation_required",
+      "safeMessage": "Rendered evidence lacks required human confirmation.",
+      "nextBestFix": "Add current-head human confirmation fields.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "safe_artifact_classification_failed",
+      "gate": "safeArtifactClassifier",
+      "severity": "error",
+      "safeMessage": "Safe artifact classification failed.",
+      "nextBestFix": "Classify the failure with a safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_artifact_next_action_missing",
+      "gate": "safeArtifactClassifier",
+      "severity": "error",
+      "safeMessage": "A failing artifact does not include a safe next action.",
+      "nextBestFix": "Add a safe next action that does not weaken the gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "security_lifecycle_failed",
+      "gate": "securityLifecycle",
+      "severity": "error",
+      "safeMessage": "Security lifecycle checks failed.",
+      "nextBestFix": "Fix the deterministic security finding or add required oracle evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dangerous_api_pattern_detected",
+      "gate": "securityLifecycle",
+      "severity": "error",
+      "safeMessage": "A dangerous API pattern was detected.",
+      "nextBestFix": "Remove the pattern or confine it to a deterministic fixture.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_permission_escalation_unjustified",
+      "gate": "securityLifecycle",
+      "severity": "error",
+      "safeMessage": "Workflow permissions were escalated without task contract support.",
+      "nextBestFix": "Remove the escalation or document the required contract.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_independence_missing",
+      "gate": "reviewIndependence",
+      "severity": "error",
+      "safeMessage": "Independent review evidence is missing.",
+      "nextBestFix": "Separate writer evidence from reviewer checklist evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "writer_only_review_detected",
+      "gate": "reviewIndependence",
+      "severity": "error",
+      "safeMessage": "Review evidence appears to be writer-only.",
+      "nextBestFix": "Add reviewer checklist and negative case evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_brief_missing",
+      "gate": "taskBriefCompiler",
+      "severity": "error",
+      "safeMessage": "Required task brief evidence is missing.",
+      "nextBestFix": "Generate a task brief with scope, verification, and risks.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_brief_forbidden_scope_missing",
+      "gate": "taskBriefCompiler",
+      "severity": "error",
+      "safeMessage": "Task brief lacks forbidden scope.",
+      "nextBestFix": "Add forbidden scope and do-not-touch files.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "best_of_n_decision_missing",
+      "gate": "bestOfNDecision",
+      "severity": "error",
+      "safeMessage": "Best-of-N decision evidence is incomplete.",
+      "nextBestFix": "Record safe summary-only selected reason and verification delta.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "best_of_n_raw_candidate_forbidden",
+      "gate": "bestOfNDecision",
+      "severity": "error",
+      "safeMessage": "Best-of-N record contains forbidden raw candidate content.",
+      "nextBestFix": "Store only safe summary fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "environment_profile_failed",
+      "gate": "environmentProfile",
+      "severity": "error",
+      "safeMessage": "Environment profile does not support the claimed verification.",
+      "nextBestFix": "Use available tools or adjust verification claims safely.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "gh_auth_required_but_unavailable",
+      "gate": "environmentProfile",
+      "severity": "error",
+      "safeMessage": "GitHub auth is required but unavailable.",
+      "nextBestFix": "Restore GitHub auth before requested remote PR operation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_context_budget_exceeded",
+      "gate": "agentsContextBudget",
+      "severity": "error",
+      "safeMessage": "AGENTS.md exceeds the harness context budget or embeds policy bodies.",
+      "nextBestFix": "Keep AGENTS.md short and move policy details to docs/process.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_auto_repair_hint_available",
+      "gate": "evidenceAutoRepairHint",
+      "severity": "warning",
+      "safeMessage": "A safe evidence repair hint is available.",
+      "nextBestFix": "Apply only body-safe current-head evidence repair if allowed.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "evidence_auto_repair_unsafe",
+      "gate": "evidenceAutoRepairHint",
+      "severity": "error",
+      "safeMessage": "Suggested evidence repair would weaken a gate.",
+      "nextBestFix": "Fix the underlying failure instead of editing claims.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_hotfix_overwritten",
+      "gate": "targetHotfixPreservation",
+      "severity": "error",
+      "safeMessage": "A target hotfix or adaptation would be overwritten.",
+      "nextBestFix": "Preserve or migrate the target patch with evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_patch_manifest_missing",
+      "gate": "targetPatchManifest",
+      "severity": "error",
+      "safeMessage": "Target patch manifest evidence is missing.",
+      "nextBestFix": "Add or repair the target patch manifest entry.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_rollout_conflict_detected",
+      "gate": "targetRolloutConflict",
+      "severity": "error",
+      "safeMessage": "A target rollout conflict was detected.",
+      "nextBestFix": "Resolve the conflict before applying source harness files.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_only_policy_deleted",
+      "gate": "targetRolloutConflict",
+      "severity": "error",
+      "safeMessage": "A target-only policy would be deleted.",
+      "nextBestFix": "Keep the target policy or provide migration evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_pr_context_missing",
+      "gate": "remoteProductPrContext",
+      "severity": "error",
+      "safeMessage": "Remote product PR context evidence is missing.",
+      "nextBestFix": "Run current-head PR checks with product baseline evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_dispatch_used_as_pr_substitute",
+      "gate": "remoteProductPrContext",
+      "severity": "error",
+      "safeMessage": "workflow_dispatch evidence was used as a PR substitute.",
+      "nextBestFix": "Use the pull_request check for the current head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "scripts_run_tests_misclassified",
+      "gate": "targetScriptClassification",
+      "severity": "error",
+      "safeMessage": "scripts/run-tests.js was misclassified.",
+      "nextBestFix": "Restore target script classification.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_script_classification_lost",
+      "gate": "targetScriptClassification",
+      "severity": "error",
+      "safeMessage": "Target script classification was lost.",
+      "nextBestFix": "Restore script classification fixture or manifest entry.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "same_head_artifact_mismatch",
+      "gate": "sameHeadArtifactEvidence",
+      "severity": "error",
+      "safeMessage": "Artifact evidence does not match the current head.",
+      "nextBestFix": "Regenerate same-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "same_head_artifact_missing",
+      "gate": "sameHeadArtifactEvidence",
+      "severity": "error",
+      "safeMessage": "Required same-head artifact evidence is missing.",
+      "nextBestFix": "Create current-head safe artifact evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "manual_confirmation_stale_head",
+      "gate": "sameHeadArtifactEvidence",
+      "severity": "error",
+      "safeMessage": "Manual confirmation is stale for the current head.",
+      "nextBestFix": "Regenerate current-head manual confirmation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "docker_smoke_artifact_missing",
+      "gate": "dockerSmokeArtifact",
+      "severity": "error",
+      "safeMessage": "Docker smoke artifact is required but missing.",
+      "nextBestFix": "Run Docker smoke and upload safe current-head artifact.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "docker_smoke_head_mismatch",
+      "gate": "dockerSmokeArtifact",
+      "severity": "error",
+      "safeMessage": "Docker smoke artifact head does not match PR head.",
+      "nextBestFix": "Regenerate Docker smoke for the current PR head.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "docker_smoke_fast_path_skip_forbidden",
+      "gate": "dockerSmokeArtifact",
+      "severity": "error",
+      "safeMessage": "Docker smoke was skipped by fast path or skip-npm.",
+      "nextBestFix": "Run Docker smoke for Docker-relevant changes.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_skip_npm_product_override",
+      "gate": "targetSkipNpmProductOverride",
+      "severity": "error",
+      "safeMessage": "CODEX_SKIP_NPM bypassed product verification.",
+      "nextBestFix": "Require product baseline or remove product-relevant scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "goal_condition_missing",
+      "gate": "goalCondition",
+      "severity": "error",
+      "safeMessage": "Goal condition is incomplete.",
+      "nextBestFix": "Add goal, measurable end state, proof command, must-not-change, stop condition, and max scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "goal_scope_expansion_detected",
+      "gate": "goalCondition",
+      "severity": "error",
+      "safeMessage": "Goal scope expanded beyond the requested task.",
+      "nextBestFix": "Stop at the requested scope.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_policy_classifier_failed",
+      "gate": "reviewPolicyClassifier",
+      "severity": "error",
+      "safeMessage": "Review policy classification failed.",
+      "nextBestFix": "Provide review evidence appropriate for the risk class.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_evidence_compact_failed",
+      "gate": "prEvidenceCompact",
+      "severity": "error",
+      "safeMessage": "PR evidence compact check failed.",
+      "nextBestFix": "Move detailed evidence to safe artifacts and keep PR body concise.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_body_too_large",
+      "gate": "prEvidenceCompact",
+      "severity": "warning",
+      "safeMessage": "PR body exceeds compact evidence budget.",
+      "nextBestFix": "Summarize large lists and link safe artifacts.",
+      "canManualConfirmationOverride": true
+    },
+    {
+      "reasonCode": "raw_log_in_pr_body",
+      "gate": "prEvidenceCompact",
+      "severity": "error",
+      "safeMessage": "Raw log content was found in the PR body.",
+      "nextBestFix": "Remove raw logs and use safe summaries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_context_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "remote product context missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_relevant_evidence_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "product relevant evidence missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_baseline_lost",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "product baseline lost.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skip_npm_product_bypass",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "skip npm product bypass.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pull_request_context_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "pull request context missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_dispatch_not_pr_substitute",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "workflow dispatch not pr substitute.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_context_artifact_classification_failed",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "product context artifact classification failed.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_job_safety_failed",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "runtime job safety failed.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_job_ownership_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "runtime job ownership missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "tx_path_state_evidence_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "tx path state evidence missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "tx_hash_receipt_policy_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "tx hash receipt policy missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "double_send_risk_unaddressed",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "double send risk unaddressed.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "env_consistency_failed",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "env consistency failed.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "staging_no_tx_preflight_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "staging no tx preflight missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_log_secret_scan_missing",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "runtime log secret scan missing.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "raw_runtime_log_forbidden",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "raw runtime log forbidden.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "chain_scope_conflict",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "chain scope conflict.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "false_positive_budget_failed",
+      "gate": "v094",
+      "severity": "error",
+      "safeMessage": "false positive budget failed.",
+      "nextBestFix": "Regenerate compact current-head evidence or fix the blocking harness context.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_doctrine_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "agents doctrine failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agents_manual_too_large",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "agents manual too large",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_routing_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "skill routing failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_count_exceeded",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "skill count exceeded",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_load_budget_exceeded",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "skill load budget exceeded",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_drift_detected",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "skill drift detected",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agent_session_conflict",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "agent session conflict",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agent_needs_input_merge_blocked",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "agent needs input merge blocked",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "agent_containment_boundary_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "agent containment boundary failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "external_content_trust_violation",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "external content trust violation",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "tool_permission_too_broad",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "tool permission too broad",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "eval_trace_invalid",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "eval trace invalid",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "raw_production_data_forbidden",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "raw production data forbidden",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "operator_visible_delta_missing",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "operator visible delta missing",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "trace_to_eval_candidate_invalid",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "trace to eval candidate invalid",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "subagent_governance_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "subagent governance failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "subagent_raw_output_forbidden",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "subagent raw output forbidden",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "state_machine_schema_missing",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "state machine schema missing",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "processed_boolean_only_state_machine",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "processed boolean only state machine",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "state_transition_helper_missing",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "state transition helper missing",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "receipt_evidence_schema_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "receipt evidence schema failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "receipt_private_data_forbidden",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "receipt private data forbidden",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "worker_readiness_sequence_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "worker readiness sequence failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_minimality_failed",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "evidence minimality failed",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_dedup_conflict",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "evidence dedup conflict",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "skill_evidence_link_missing",
+      "gate": "v095",
+      "severity": "error",
+      "safeMessage": "skill evidence link missing",
+      "nextBestFix": "Use the v0.9.5 safe next action for this gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "k_rule_coverage_missing",
+      "gate": "kRuleCoverageStatus",
+      "severity": "error",
+      "safeMessage": "K-rule coverage evidence is missing.",
+      "nextBestFix": "Add a safe K-rule coverage manifest entry and deterministic fixture.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "k_rule_coverage_stale",
+      "gate": "kRuleCoverageStatus",
+      "severity": "error",
+      "safeMessage": "K-rule coverage manifest is stale.",
+      "nextBestFix": "Refresh the coverage manifest for the current harness version.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "live2d_spec_sync_failed",
+      "gate": "live2dSpecSyncStatus",
+      "severity": "error",
+      "safeMessage": "Live2D spec synchronization evidence failed.",
+      "nextBestFix": "Align the safe spec phase evidence without connecting runtime Live2D.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "live2d_spec_future_phase_mixed",
+      "gate": "live2dSpecSyncStatus",
+      "severity": "error",
+      "safeMessage": "A future Live2D phase was mixed into the current scope.",
+      "nextBestFix": "Keep future phase evidence separate from the current rollout.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_latency_budget_missing",
+      "gate": "runtimeLatencyBudgetStatus",
+      "severity": "error",
+      "safeMessage": "Runtime latency budget evidence is missing.",
+      "nextBestFix": "Record bounded latency, duplicate delivery, and queue drain evidence policy.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_latency_duplicate_delivery",
+      "gate": "runtimeLatencyBudgetStatus",
+      "severity": "error",
+      "safeMessage": "Runtime latency evidence allows duplicate delivery.",
+      "nextBestFix": "Add idempotency or ownership evidence before claiming readiness.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_latency_queue_drain_before_ready",
+      "gate": "runtimeLatencyBudgetStatus",
+      "severity": "error",
+      "safeMessage": "Queue drain readiness was claimed before safe evidence.",
+      "nextBestFix": "Require bounded queue drain evidence before readiness.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "obsolete_open_pr_reuse_forbidden",
+      "gate": "obsoleteOpenPrStatus",
+      "severity": "error",
+      "safeMessage": "An obsolete open PR was reused for new harness work.",
+      "nextBestFix": "Open a current-head harness PR or close stale scope before reuse.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "owner_summary_missing",
+      "gate": "ownerSummaryCompactStatus",
+      "severity": "error",
+      "safeMessage": "Owner summary digest is missing.",
+      "nextBestFix": "Add a compact safe owner summary with the required fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "browser_smoke_artifact_missing",
+      "gate": "browserSmokeArtifactStatus",
+      "severity": "error",
+      "safeMessage": "Browser smoke artifact is missing when required.",
+      "nextBestFix": "Generate a safe current-head browser smoke artifact or mark it not applicable.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "browser_smoke_raw_output_forbidden",
+      "gate": "browserSmokeArtifactStatus",
+      "severity": "error",
+      "safeMessage": "Browser smoke evidence contains raw console output.",
+      "nextBestFix": "Replace raw output with a safe summary artifact.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "failure_to_repair_plan_missing",
+      "gate": "failureToRepairPlanStatus",
+      "severity": "error",
+      "safeMessage": "Failure-to-repair plan is missing.",
+      "nextBestFix": "Add the safe next repair action and stop condition.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_state_adoption_missing",
+      "gate": "runtimeStateAdoptionStatus",
+      "severity": "error",
+      "safeMessage": "Runtime state adoption evidence is missing.",
+      "nextBestFix": "Add schema/helper adoption evidence before readiness claims.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "claim_transition_atomic_missing",
+      "gate": "claimTransitionStatus",
+      "severity": "error",
+      "safeMessage": "Atomic claim transition evidence is missing.",
+      "nextBestFix": "Document atomic claim/lease ownership evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "timeout_adoption_missing",
+      "gate": "timeoutAdoptionStatus",
+      "severity": "error",
+      "safeMessage": "Timeout adoption evidence is missing.",
+      "nextBestFix": "Add timeout, retry, and partial failure evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "tx_reconciliation_service_missing",
+      "gate": "txReconciliationServiceStatus",
+      "severity": "error",
+      "safeMessage": "Transaction reconciliation service evidence is missing.",
+      "nextBestFix": "Add safe reconciliation service evidence before tx readiness.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "txhash_before_wait_missing",
+      "gate": "txHashBeforeWaitStatus",
+      "severity": "error",
+      "safeMessage": "txHash-before-wait evidence is missing.",
+      "nextBestFix": "Persist txHash before waiting for receipt.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "receipt_resume_boundary_missing",
+      "gate": "receiptResumeBoundaryStatus",
+      "severity": "error",
+      "safeMessage": "Receipt resume boundary evidence is missing.",
+      "nextBestFix": "Define safe receipt resume and retry boundaries.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "migration_rollout_safety_failed",
+      "gate": "migrationRolloutSafetyStatus",
+      "severity": "error",
+      "safeMessage": "Migration rollout safety evidence failed.",
+      "nextBestFix": "Provide additive migration or rollback evidence before rollout.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "migration_runtime_compat_missing",
+      "gate": "migrationRuntimeCompatStatus",
+      "severity": "error",
+      "safeMessage": "Migration runtime compatibility evidence is missing.",
+      "nextBestFix": "Add runtime compatibility evidence for migration paths.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "human_review_digest_missing",
+      "gate": "humanReviewDigestStatus",
+      "severity": "error",
+      "safeMessage": "Human review digest is missing.",
+      "nextBestFix": "Add a compact human review digest for R3 work.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dataset_audit_readiness_missing",
+      "gate": "datasetAuditReadinessStatus",
+      "severity": "error",
+      "safeMessage": "Dataset audit readiness evidence is missing.",
+      "nextBestFix": "Add safe audit readiness evidence without auto-fix behavior.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dataset_audit_auto_fix_forbidden",
+      "gate": "datasetAuditReadinessStatus",
+      "severity": "error",
+      "safeMessage": "Dataset audit was used as auto-fix authority.",
+      "nextBestFix": "Keep dataset audit read-only and advisory.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "game_tool_adapter_direct_handoff",
+      "gate": "gameToolAdapterContractFixtureStatus",
+      "severity": "error",
+      "safeMessage": "Game/tool adapter candidate was handed off directly.",
+      "nextBestFix": "Require approved action contract evidence before handoff.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "beloved_avatar_memory_privacy_violation",
+      "gate": "belovedAvatarSafetyAuditStatus",
+      "severity": "error",
+      "safeMessage": "Beloved avatar safety evidence contains memory/privacy risk.",
+      "nextBestFix": "Remove sensitive data and add safe audit evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "active_self_test_registry_missing",
+      "gate": "activeSelfTestRegistryStatus",
+      "severity": "error",
+      "safeMessage": "active self test registry missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_product_verification_step_missing",
+      "gate": "workflowProductVerificationInvariantStatus",
+      "severity": "error",
+      "safeMessage": "workflow product verification step missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_artifact_upload_missing",
+      "gate": "workflowProductVerificationInvariantStatus",
+      "severity": "error",
+      "safeMessage": "remote product artifact upload missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_hotfix_regression_detected",
+      "gate": "targetHotfixRegressionStatus",
+      "severity": "error",
+      "safeMessage": "target hotfix regression detected.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "harness_rollout_diff_regression_detected",
+      "gate": "harnessRolloutDiffRegressionStatus",
+      "severity": "error",
+      "safeMessage": "harness rollout diff regression detected.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "blocker_root_cause_missing",
+      "gate": "blockerRootCauseClassifierStatus",
+      "severity": "error",
+      "safeMessage": "blocker root cause missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_remote_evidence_phase_conflict",
+      "gate": "localRemoteEvidencePhaseStatus",
+      "severity": "error",
+      "safeMessage": "local remote evidence phase conflict.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "structured_solvability_conflict",
+      "gate": "structuredSolvabilityStatus",
+      "severity": "error",
+      "safeMessage": "structured solvability conflict.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "live2d_dataset_row_audit_failed",
+      "gate": "live2dDatasetRowAuditStatus",
+      "severity": "error",
+      "safeMessage": "live2d dataset row audit failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "motion_allowlist_sync_failed",
+      "gate": "motionAllowlistSyncStatus",
+      "severity": "error",
+      "safeMessage": "motion allowlist sync failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "trusted_loader_evidence_missing",
+      "gate": "trustedLoaderEvidenceStatus",
+      "severity": "error",
+      "safeMessage": "trusted loader evidence missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "live2d_evidence_collector_contract_failed",
+      "gate": "live2dEvidenceCollectorContractStatus",
+      "severity": "error",
+      "safeMessage": "live2d evidence collector contract failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "avatar_ux_safety_failed",
+      "gate": "avatarUxSafetyStatus",
+      "severity": "error",
+      "safeMessage": "avatar ux safety failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_latency_measurement_failed",
+      "gate": "runtimeLatencyMeasurementStatus",
+      "severity": "error",
+      "safeMessage": "runtime latency measurement failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "browser_smoke_json_artifact_failed",
+      "gate": "browserSmokeJsonArtifactStatus",
+      "severity": "error",
+      "safeMessage": "browser smoke json artifact failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "owner_decision_digest_missing",
+      "gate": "ownerDecisionDigestStatus",
+      "severity": "error",
+      "safeMessage": "owner decision digest missing.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "obsolete_pr_reuse_forbidden",
+      "gate": "obsoletePrAutoRecommendStatus",
+      "severity": "error",
+      "safeMessage": "obsolete pr reuse forbidden.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dataset_audit_v2_schema_failed",
+      "gate": "datasetAuditV2SchemaStatus",
+      "severity": "error",
+      "safeMessage": "dataset audit v2 schema failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "game_tool_adapter_contract_failed",
+      "gate": "gameToolAdapterContractFixtureStatus",
+      "severity": "error",
+      "safeMessage": "game tool adapter contract failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "beloved_avatar_safety_failed",
+      "gate": "belovedAvatarSafetyAuditStatus",
+      "severity": "error",
+      "safeMessage": "beloved avatar safety failed.",
+      "nextBestFix": "Repair the v0.9.7 safe evidence gate input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_evidence_execution_missing",
+      "severity": "error",
+      "safeMessage": "remote product evidence execution missing",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "remoteProductEvidenceExecutionStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_product_evidence_runner_failed",
+      "severity": "error",
+      "safeMessage": "remote product evidence runner failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "remoteProductEvidenceRunnerStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_evidence_not_consumed",
+      "severity": "error",
+      "safeMessage": "product evidence not consumed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "productEvidenceConsumptionStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "placeholder_evidence_forbidden",
+      "severity": "error",
+      "safeMessage": "placeholder evidence forbidden",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "placeholderEvidenceForbiddenStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_remote_phase_conflict",
+      "severity": "error",
+      "safeMessage": "local remote phase conflict",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "localRemotePhaseStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "structured_solvability_field_conflict",
+      "severity": "error",
+      "safeMessage": "structured solvability field conflict",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "structuredSolvabilityFieldsStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "live2d_dataset_row_audit_runner_failed",
+      "severity": "error",
+      "safeMessage": "live2d dataset row audit runner failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "live2dDatasetRowAuditRunnerStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "motion_allowlist_diff_failed",
+      "severity": "error",
+      "safeMessage": "motion allowlist diff failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "motionAllowlistDiffStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "trusted_loader_evidence_enforcer_failed",
+      "severity": "error",
+      "safeMessage": "trusted loader evidence enforcer failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "trustedLoaderEvidenceEnforcerStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "avatar_ux_safety_runner_failed",
+      "severity": "error",
+      "safeMessage": "avatar ux safety runner failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "avatarUxSafetyRunnerStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_latency_safe_metric_failed",
+      "severity": "error",
+      "safeMessage": "runtime latency safe metric failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "runtimeLatencySafeMetricStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "browser_smoke_visual_safety_artifact_failed",
+      "severity": "error",
+      "safeMessage": "browser smoke visual safety artifact failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "browserSmokeVisualSafetyArtifactStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "open_pr_rebase_readiness_failed",
+      "severity": "error",
+      "safeMessage": "open pr rebase readiness failed",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "openPrRebaseReadinessStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "five_line_owner_digest_missing",
+      "severity": "error",
+      "safeMessage": "five line owner digest missing",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "fiveLineOwnerDigestStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pending_placeholder_used_as_pass",
+      "severity": "error",
+      "safeMessage": "pending placeholder used as pass",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "placeholderEvidenceForbiddenStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_not_executed_for_product_pr",
+      "severity": "error",
+      "safeMessage": "remote npm not executed for product pr",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "remoteProductEvidenceExecutionStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "quality_gate_ignored_product_evidence",
+      "severity": "error",
+      "safeMessage": "quality gate ignored product evidence",
+      "nextBestFix": "Repair the v0.9.8 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "productEvidenceConsumptionStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "formal_evidence_precedence_failed",
+      "severity": "error",
+      "safeMessage": "formal evidence precedence failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "formalEvidencePrecedenceStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "lifeboat_semantics_failed",
+      "severity": "error",
+      "safeMessage": "lifeboat semantics failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "lifeboatSemanticsStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "placeholder_only_evidence_forbidden",
+      "severity": "error",
+      "safeMessage": "placeholder-only evidence forbidden",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "placeholderOnlyEvidenceStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_diagnostic_normalization_failed",
+      "severity": "error",
+      "safeMessage": "remote npm diagnostic normalization failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "remoteNpmDiagnosticNormalizationStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "legacy_self_test_advisory_failed",
+      "severity": "error",
+      "safeMessage": "legacy self-test advisory failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "legacySelfTestAdvisoryStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "auth_surface_classifier_false_positive",
+      "severity": "error",
+      "safeMessage": "auth surface classifier false positive",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "authSurfaceClassifierRefinementStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_quality_blocker_digest_missing",
+      "severity": "error",
+      "safeMessage": "target quality blocker digest missing",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "targetQualityBlockerDigestStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_evidence_auto_repair_hint_failed",
+      "severity": "error",
+      "safeMessage": "PR evidence auto-repair hint failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "prEvidenceAutoRepairHintStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "actions_blocker_recovery_failed",
+      "severity": "error",
+      "safeMessage": "Actions blocker recovery failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "actionsBlockerRecoveryStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_context_rerun_assistant_failed",
+      "severity": "error",
+      "safeMessage": "PR context rerun assistant failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "prContextRerunAssistantStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "same_head_evidence_refresh_failed",
+      "severity": "error",
+      "safeMessage": "same-head evidence refresh failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "sameHeadEvidenceRefreshStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_artifact_bundle_completeness_failed",
+      "severity": "error",
+      "safeMessage": "safe artifact bundle completeness failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "safeArtifactBundleCompletenessStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dataset_audit_v2_p0_schema_failed",
+      "severity": "error",
+      "safeMessage": "dataset audit v2 P0 schema failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "datasetAuditV2P0SchemaStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "game_tool_adapter_fixture_readiness_failed",
+      "severity": "error",
+      "safeMessage": "Game Tool Adapter fixture readiness failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "gameToolAdapterFixtureReadinessStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "beloved_avatar_safety_readiness_failed",
+      "severity": "error",
+      "safeMessage": "beloved avatar safety readiness failed",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "belovedAvatarSafetyReadinessStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "lifeboat_only_pass_forbidden",
+      "severity": "error",
+      "safeMessage": "lifeboat-only pass forbidden",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "lifeboatSemanticsStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "normal_bundle_lifeboat_standby_misclassified",
+      "severity": "error",
+      "safeMessage": "normal bundle and standby lifeboat misclassified",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "lifeboatSemanticsStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_infra_failure_misclassified_as_product",
+      "severity": "error",
+      "safeMessage": "remote infra failure misclassified as product",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "actionsBlockerRecoveryStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_failure_misclassified_as_infra",
+      "severity": "error",
+      "safeMessage": "product failure misclassified as infra",
+      "nextBestFix": "Repair the v0.9.9 harness evidence contract without adding product code or raw artifacts.",
+      "gate": "actionsBlockerRecoveryStatus",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "parent_harness_required",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "parent harness required",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "parent_harness_self_test_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "parent harness self test failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "new_harness_self_test_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "new harness self test failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "parent_gate_preservation_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "parent gate preservation failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "version_succession_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "version succession failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_plan_missing",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "workflow plan missing",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "task_graph_invalid",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "task graph invalid",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_scope_missing",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "workflow scope missing",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "parallel_worker_budget_exceeded",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "parallel worker budget exceeded",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "branch_isolation_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "branch isolation failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "worker_file_ownership_conflict",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "worker file ownership conflict",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "subagent_role_matrix_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "subagent role matrix failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "evidence_aggregation_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "evidence aggregation failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "merge_sequence_violation",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "merge sequence violation",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_stop_condition_triggered",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "workflow stop condition triggered",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_resume_invalid",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "workflow resume invalid",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_cost_budget_exceeded",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "workflow cost budget exceeded",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "codebase_map_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "codebase map failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "entrypoint_map_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "entrypoint map failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "module_boundary_violation",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "module boundary violation",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dependency_graph_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "dependency graph failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "data_flow_map_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "data flow map failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "api_surface_map_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "api surface map failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "db_usage_raw_rows_forbidden",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "db usage raw rows forbidden",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "worker_batch_timeout_missing",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "worker batch timeout missing",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "external_integration_secret_exposure",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "external integration secret exposure",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "security_surface_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "security surface failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "performance_hotspot_claim_unproven",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "performance hotspot claim unproven",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "service_cost_claim_unproven",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "service cost claim unproven",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dead_code_unconfirmed_delete_forbidden",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "dead code unconfirmed delete forbidden",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "test_gap_unresolved",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "test gap unresolved",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "docs_implementation_conflict",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "docs implementation conflict",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "handover_document_missing",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "handover document missing",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "confidence_classification_missing",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "confidence classification missing",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "improvement_backlog_invalid",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "improvement backlog invalid",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_cleanup_plan_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "safe cleanup plan failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "behavior_preservation_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "behavior preservation failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "refactor_slice_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "refactor slice failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "public_contract_change_unstated",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "public contract change unstated",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "migration_safety_plan_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "migration safety plan failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_readiness_boundary_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "runtime readiness boundary failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "production_go_boundary_failed",
+      "gate": "v100",
+      "severity": "error",
+      "safeMessage": "production go boundary failed",
+      "nextBestFix": "Repair the structured v1.0.0 harness evidence without changing product code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "prime_directive_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Prime directive is missing or reduced to rule dumping.",
+      "nextBestFix": "Add the compact v1.0.1 prime directive and route details to policy docs.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "outcome_contract_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Outcome contract is missing required behavior, owner, cutover, or evidence fields.",
+      "nextBestFix": "Add a structured outcome contract before product behavior implementation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "source_of_truth_owner_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Source-of-truth ownership is missing or duplicated.",
+      "nextBestFix": "Declare the owner module, owner file, public contract, consumers, and forbidden duplicate owners.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "old_path_disposition_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Old path disposition is missing.",
+      "nextBestFix": "Choose remove, redirect, deprecate, compat_keep_with_owner, or not_applicable.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "plan_reviewer_wrong_owner",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Plan reviewer detected wrong owner.",
+      "nextBestFix": "Move the plan to the correct owner before implementation.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "plan_reviewer_missing_cutover",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Plan reviewer detected missing cutover.",
+      "nextBestFix": "Add the old-to-new path cutover or disposition evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "plan_reviewer_weak_evidence",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Plan reviewer detected weak evidence.",
+      "nextBestFix": "Replace weak claims with structured current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "anti_accretion_dual_active_path",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "New and old paths are both active without safe disposition.",
+      "nextBestFix": "Remove, redirect, deprecate, or explicitly owner-retain the old path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "visible_acceptance_evidence_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Visible acceptance evidence is missing.",
+      "nextBestFix": "Record before/after user-visible behavior, evidence type, location, and limitations.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "visible_acceptance_evidence_test_only",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Test-only evidence was used as behavior acceptance evidence.",
+      "nextBestFix": "Add visible acceptance evidence and keep tests as supporting evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "toolchain_node_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Node toolchain is missing.",
+      "nextBestFix": "Run the gate where Node is available.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "toolchain_npm_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "npm toolchain is missing.",
+      "nextBestFix": "Run the gate where npm is available.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "toolchain_gh_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "GitHub CLI is missing.",
+      "nextBestFix": "Run the gate where GitHub CLI is available.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "github_auth_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "GitHub authentication is missing.",
+      "nextBestFix": "Authenticate GitHub CLI or provide a scoped GitHub token in CI.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "parent_harness_preflight_failed",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Parent harness preflight failed.",
+      "nextBestFix": "Repair parent preflight or use the documented degraded lane only for the local gate report contract defect.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_branch_not_main",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Target pilot branch is not main.",
+      "nextBestFix": "Return the target worktree to clean main before pilot or bounded target gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "head_not_origin_main",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "HEAD does not match origin/main.",
+      "nextBestFix": "Fast-forward to origin/main before pilot or bounded target gate.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "same_head_main_quality_gate_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Same-head main quality-gate success is missing.",
+      "nextBestFix": "Run or locate a successful quality-gate for the exact main head SHA.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_json_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate JSON report is missing.",
+      "nextBestFix": "Return parseable JSON on stdout or provide an explicit safe report path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_json_empty",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate JSON report is empty.",
+      "nextBestFix": "Return a populated JSON report with status-bearing fields.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_json_parse_failed",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate JSON report could not be parsed.",
+      "nextBestFix": "Remove non-JSON output or write a valid JSON report path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_timeout",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate timed out.",
+      "nextBestFix": "Bound the child gate and return safe JSON failure evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_stdout_stderr_empty_timeout",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate timed out with empty stdout and stderr.",
+      "nextBestFix": "Return a safe JSON timeout reason instead of no output.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_tracked_file_side_effect",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate changed tracked files.",
+      "nextBestFix": "Remove or explicitly own generated artifacts before rerunning.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_branch_mutation",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate changed branch.",
+      "nextBestFix": "Remove git branch mutations from local gate execution.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_head_mutation",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate changed HEAD.",
+      "nextBestFix": "Remove git HEAD mutations from local gate execution.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "tracked_generated_artifact_created",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Tracked generated artifact was created.",
+      "nextBestFix": "Keep generated artifacts untracked unless they are source-owned files.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "small_product_pr_fast_path_ineligible",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Small product PR fast path is ineligible.",
+      "nextBestFix": "Use the normal evidence path without weakening safety gates.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "self_test_fixture_isolation_failed",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Self-test fixture isolation failed.",
+      "nextBestFix": "Make the fixture deterministic and detached from real repos, network, and product commands.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "authoritative_product_evidence_conflict",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Product evidence precedence conflict detected.",
+      "nextBestFix": "Use same-head formal evidence and reject placeholder or lifeboat-only proof.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_quality_owner_action_ambiguous",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Target quality owner action is ambiguous.",
+      "nextBestFix": "Choose exactly one next owner action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "runtime_adoption_sequence_violation",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Runtime adoption sequence is out of order.",
+      "nextBestFix": "Follow foundation, claim, persistence, reconciliation, worker, runtime readiness, production go.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "origin_main_drift_without_same_head_quality_gate",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Origin main drift lacks same-head quality-gate evidence.",
+      "nextBestFix": "Refresh main evidence for the exact current head SHA.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_target_gate_unbounded",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local target gate is unbounded.",
+      "nextBestFix": "Add branch, HEAD, timeout, report contract, and side-effect bounds.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_human_text_mixed_with_json",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate mixed human text with JSON output.",
+      "nextBestFix": "Emit only JSON in JSON report mode.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_report_path_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate report path is missing.",
+      "nextBestFix": "Return stdout JSON or an explicit safe report path.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_gate_unknown_report_contract",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Local gate report contract failed in an unknown way.",
+      "nextBestFix": "Return safe JSON with a known reason code.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pilot_input_dirty",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Pilot input worktree is dirty.",
+      "nextBestFix": "Protect and clear dirty changes before pilot input.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_local_path_ambiguous",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Target local path is ambiguous.",
+      "nextBestFix": "Select one canonical path by remote URL and main HEAD.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_remote_identity_mismatch",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "Target remote identity mismatch.",
+      "nextBestFix": "Verify owner, repository, remote URL, default branch, and main HEAD.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "v101_self_test_missing",
+      "gate": "v101",
+      "severity": "error",
+      "safeMessage": "v101 self-test is missing or unregistered.",
+      "nextBestFix": "Register v101 self-test in the local gate and source manifest.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "clean_main_legacy_self_test_drift",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "clean_main_legacy_self_test_drift requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "clean_main_support_file_boundary_mismatch",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "clean_main_support_file_boundary_mismatch requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "clean_main_actual_product_bug",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "clean_main_actual_product_bug requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "fixture_orchestration_timing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "fixture_orchestration_timing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "support_file_materialization_mismatch",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "support_file_materialization_mismatch requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "source_target_manifest_boundary_error",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "source_target_manifest_boundary_error requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "v085_active_checkout_diff_leak",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "v085_active_checkout_diff_leak requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_pr_diff_containment_failed",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "product_pr_diff_containment_failed requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "harness_fixture_diff_isolation_failed",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "harness_fixture_diff_isolation_failed requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_pr_evidence_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "product_pr_evidence_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_pr_pending_after_push_not_remote_pass",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "product_pr_pending_after_push_not_remote_pass requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_merge_ready_without_same_head_remote_pass",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "target_merge_ready_without_same_head_remote_pass requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "backup_artifact_tracked",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "backup_artifact_tracked requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "backup_artifact_staged",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "backup_artifact_staged requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "backup_artifact_repo_internal",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "backup_artifact_repo_internal requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "external_blocked_independent_reviewer_unavailable",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "external_blocked_independent_reviewer_unavailable requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "split_score_model_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "split_score_model_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_dependency_graph_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "pr_dependency_graph_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_next_action_ambiguous",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "safe_next_action_ambiguous requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "handover_snapshot_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "handover_snapshot_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "protected_state_inventory_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "protected_state_inventory_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "protected_patch_apply_forbidden",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "protected_patch_apply_forbidden requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "protected_stash_pop_forbidden",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "protected_stash_pop_forbidden requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "workflow_resume_state_missing",
+      "gate": "v102",
+      "severity": "error",
+      "safeMessage": "workflow_resume_state_missing requires v1.0.2 recovery classification.",
+      "nextBestFix": "Choose the single safe owner action and refresh current-head evidence.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "reason_summary_final_aggregation_inconsistent",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "reason_summary_final_aggregation_inconsistent requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "target_quality_pass_but_report_fail",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "target_quality_pass_but_report_fail requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "legacy_advisory_promoted_to_failure",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "legacy_advisory_promoted_to_failure requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_blocking_reason_not_removed",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "stale_blocking_reason_not_removed requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_truth_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "remote_npm_truth_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_executed_but_normalizer_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "remote_npm_executed_but_normalizer_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_executed_but_stale_head",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "remote_npm_executed_but_stale_head requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "remote_npm_profile_mismatch",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "remote_npm_profile_mismatch requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "local_remote_failure_delta_unknown",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "local_remote_failure_delta_unknown requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "product_surface_router_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "product_surface_router_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "command_scope_mismatch",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "command_scope_mismatch requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "command_cwd_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "command_cwd_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "active_self_test_artifact_mismatch",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "active_self_test_artifact_mismatch requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "legacy_artifact_used_as_active",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "legacy_artifact_used_as_active requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_body_governance_safe_patch_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "pr_body_governance_safe_patch_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "review_evidence_taxonomy_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "review_evidence_taxonomy_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "writer_self_review_detected",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "writer_self_review_detected requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "chatgpt_pro_review_not_human_independent",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "chatgpt_pro_review_not_human_independent requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "codex_operational_comment_informational_only",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "codex_operational_comment_informational_only requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "contract_readiness_profile_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "contract_readiness_profile_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "stale_audit_input_detected",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "stale_audit_input_detected requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "github_event_payload_stale",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "github_event_payload_stale requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "pr_body_live_fetch_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "pr_body_live_fetch_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_artifact_head_mismatch",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "safe_artifact_head_mismatch requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "event_payload_live_body_diff",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "event_payload_live_body_diff requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "rerun_uses_stale_event_payload",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "rerun_uses_stale_event_payload requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "merge_readiness_reason_ladder_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "merge_readiness_reason_ladder_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "codex_action_boundary_missing",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "codex_action_boundary_missing requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "user_manual_work_pushed_back",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "user_manual_work_pushed_back requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "safe_next_action_not_precise",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "safe_next_action_not_precise requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "design_only_pr_misclassified_as_implementation",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "design_only_pr_misclassified_as_implementation requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "implementation_deferred_not_respected",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "implementation_deferred_not_respected requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "five_five_low_mode_violation",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "five_five_low_mode_violation requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "dynamic_workflow_overused",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "dynamic_workflow_overused requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "simulated_subagent_misrepresented",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "simulated_subagent_misrepresented requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    },
+    {
+      "reasonCode": "worker_file_ownership_conflict_v2",
+      "gate": "v103",
+      "severity": "error",
+      "safeMessage": "worker_file_ownership_conflict_v2 requires v1.0.3 judgment consistency classification.",
+      "nextBestFix": "Use the v1.0.3 safe reason ladder and provide exactly one safe next action.",
+      "canManualConfirmationOverride": false
+    }
+  ]
+}

@@ -1,19 +1,38 @@
 {
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
+  "harnessVersion": "1.0.3",
   "harnessFiles": [
     "AGENTS.md",
-    ".codex/",
-    "docs/process/"
+    ".github/pull_request_template.md",
+    ".github/workflows/quality-gate.yml",
+    ".github/workflows/weekly-health-check.yml",
+    "CODEX_SOURCE_HARNESS_MANIFEST.json",
+    "docs/process/",
+    "docs/codex/",
+    "scripts/codex-*",
+    ".agents/skills/",
+    ".codex/"
   ],
   "docsFiles": [
     "README.md",
+    "COMPLIANCE.md",
+    "SECURITY.md",
     "docs/"
   ],
   "productSourceFiles": [
+    "src/",
     "apps/",
     "contracts/",
-    "packages/"
+    "packages/",
+    "lib/",
+    "server/",
+    "client/"
   ],
   "testFiles": [
+    "test/",
+    "tests/",
+    "__tests__/",
+    "scripts/run-tests.js",
     "apps/api/src/server.test.ts",
     "apps/api/src/repositories/",
     "apps/api/src/outbox/",
@@ -21,28 +40,44 @@
     "apps/web/app/page.test.ts"
   ],
   "specFiles": [
+    "specs/",
+    "docs/specs/",
     "migrations/"
   ],
   "packageFiles": [
-    "package.json"
+    "package.json",
+    "npm-shrinkwrap.json"
   ],
   "lockFiles": [
+    "package-lock.json",
+    "yarn.lock",
     "pnpm-lock.yaml"
   ],
   "workflowFiles": [
     ".github/workflows/"
   ],
   "runtimeAssetFiles": [
+    "public/",
+    "assets/",
+    "runtime/",
     "apps/overlay/src/main.tsx",
     "apps/web/app/"
   ],
   "configFiles": [
-    ".env.example",
+    "tsconfig.json",
+    "vite.config.*",
+    "next.config.*",
+    "webpack.config.*",
+    "eslint.config.*",
+    ".env*",
     "vitest.config.ts",
     "apps/api/src/config/"
   ],
   "authorityFiles": [
-    "AGENTS.md"
+    "AGENTS.md",
+    "IRIS_SPEC_AUTHORITY.md",
+    "*_SPEC_AUTHORITY.md",
+    "docs/process/*AUTHORITY*.md"
   ],
   "unknownPolicy": "fail_in_pr_context"
 }

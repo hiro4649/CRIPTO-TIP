@@ -1,0 +1,11 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
+  "harnessVersion": "0.9.2",
+  "policy": "artifact_lifeboat",
+  "artifact": "codex-minimal-safe-failure.json",
+  "defaultPhase": "pre_checkout",
+  "preCheckoutRequired": true,
+  "runnerTempArtifact": true,
+  "repoScriptIndependent": true,
+  "safeSummaryOnly": true
+}
