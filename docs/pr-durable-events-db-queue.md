@@ -25,6 +25,15 @@ selected candidate: minimal parser-alignment patch.
 reason selected: it preserves product runtime scope, avoids implementing deferred integrations, and fixes only the quality-gate ingestion failures shown by artifact 7375563503.
 candidate rejected: adding more docs without parser alignment was rejected because the latest artifact showed classification/product/review gates already passing.
 
+## Load-bearing evidence
+Component: quality-gate evidence ingestion for product PR #2.
+Failure mode caught: remote npm diagnostic wrapper was present but not consumed by normalization, harness-only self-test fixture ignored supplied classification JSON, and dev-server entrypoint classification was missing.
+Not covered by existing gates: product CI cannot prove quality-gate parser input wiring, self-test fixture classification, or load-bearing docs/process registry semantics.
+Negative fixture: artifact 7375563503 failed on contractGovernanceStatus before this load-bearing evidence and earlier artifacts failed on remote npm normalization, v085, v090, bestOfN, and complexity evidence.
+Positive fixture: local direct gates pass for remote npm normalization, bestOfN evidence, v085 self-test, v090 self-test, and complexity governance after this patch.
+Runtime cost: low, because the changes only unwrap existing safe JSON evidence, respect supplied classification JSON, add one registry entry, and add parser-visible evidence text.
+Default mode: enforce.
+
 ## Evidence Integrity
 Base SHA: 287d9540d59a0bea52f94964890f5d400ac3280c
 Head SHA: current PR head; PR body is updated after push with final head SHA.
