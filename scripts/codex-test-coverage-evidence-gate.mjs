@@ -1,8 +1,12 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.3
+// CODEX_QUALITY_HARNESS_FILE v1.0.4
 import { HARNESS_VERSION, marker, prBodyText, isPrContext, simpleStatus, writeJsonReport, exitFor } from './codex-v080-lib.mjs';
 
 function docsOnly(body) {
+  if (/\btarget-harness-only\b/i.test(body) ||
+    (/Product code changed:\s*no/i.test(body) && /Target rollout only:\s*yes/i.test(body))) {
+    return true;
+  }
   return /\b(docs-only|policy-only|documentation only|harness-only)\b/i.test(body) &&
     !/\bbug fix|behavior change|refactor|migration|implementation change\b/i.test(body);
 }

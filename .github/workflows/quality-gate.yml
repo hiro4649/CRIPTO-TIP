@@ -1,4 +1,4 @@
-# CODEX_QUALITY_HARNESS_FILE v1.0.3
+# CODEX_QUALITY_HARNESS_FILE v1.0.4
 name: quality-gate
 
 on:
@@ -175,12 +175,6 @@ jobs:
             export CODEX_PROFILE_COMPAT_MODE=off
             export CODEX_SKIP_NPM="${CODEX_SKIP_NPM:-1}"
           fi
-          if [ "${CODEX_EVENT_NAME:-}" = "pull_request" ]; then
-            pr_json="$(gh api "repos/${CODEX_REPOSITORY}/pulls/${CODEX_PR_NUMBER}" --jq '{body: .body}' 2>/dev/null || printf '{"body":""}')"
-            export CODEX_PR_BODY="$(printf '%s' "$pr_json" | node -e "let input=''; process.stdin.on('data', c => input += c); process.stdin.on('end', () => { try { const parsed = JSON.parse(input); process.stdout.write(parsed.body || ''); } catch { process.stdout.write(''); } });")"
-            changed_files="$(git diff --name-only "origin/main...HEAD" || true)"
-            export CODEX_CHANGED_FILES="$(printf '%s\n' "$changed_files" | node -e "const fs = require('fs'); const lines = fs.readFileSync(0, 'utf8').split(/\\r?\\n/).filter(Boolean); process.stdout.write(JSON.stringify(lines));")"
-          fi
           node scripts/codex-workflow-preflight.mjs > "$RUNNER_TEMP/codex-workflow-preflight.json"
           gate_exit=0
           node scripts/codex-local-quality-gate.mjs > "$RUNNER_TEMP/codex-quality-gate.json" || gate_exit=$?
@@ -220,6 +214,15 @@ jobs:
             console.log(`- safeArtifactClassifierStatus: ${summary.safeArtifactClassifierStatus?.status || 'missing'}`);
             console.log(`- securityLifecycleStatus: ${summary.securityLifecycleStatus?.status || 'missing'}`);
             console.log(`- reviewIndependenceStatus: ${summary.reviewIndependenceStatus?.status || 'missing'}`);
+            console.log(`- v104SelfTestStatus: ${summary.v104SelfTestStatus?.status || 'missing'}`);
+            console.log(`- claimToCodeVerifierStatus: ${summary.claimToCodeVerifierStatus?.status || 'missing'}`);
+            console.log(`- architectureBoundaryLinterStatus: ${summary.architectureBoundaryLinterStatus?.status || 'missing'}`);
+            console.log(`- acceptanceCriteriaMatrixStatus: ${summary.acceptanceCriteriaMatrixStatus?.status || 'missing'}`);
+            console.log(`- riskGateStatus: ${summary.riskGateStatus?.status || 'missing'}`);
+            console.log(`- evidenceReportV2Status: ${summary.evidenceReportV2Status?.status || 'missing'}`);
+            console.log(`- githubStateHysteresisStatus: ${summary.githubStateHysteresisStatus?.status || 'missing'}`);
+            console.log(`- targetHotfixPreservationAcrossRolloutStatus: ${summary.targetHotfixPreservationAcrossRolloutStatus?.status || 'missing'}`);
+            console.log(`- externalBlockedTerminalStatus: ${summary.externalBlockedTerminalStatus?.status || 'missing'}`);
             console.log(`- taskBriefCompilerStatus: ${summary.taskBriefCompilerStatus?.status || 'missing'}`);
             console.log(`- bestOfNDecisionStatus: ${summary.bestOfNDecisionStatus?.status || 'missing'}`);
             console.log(`- environmentProfileStatus: ${summary.environmentProfileStatus?.status || 'missing'}`);
