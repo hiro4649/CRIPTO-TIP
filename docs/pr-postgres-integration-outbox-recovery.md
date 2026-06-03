@@ -1,5 +1,7 @@
 # Summary
 
+PR profile: product_minor_r2
+
 Adds live PostgreSQL integration tests, PostgresRepository durable method coverage, stale outbox lock reclamation, and an authenticated admin DLQ retry endpoint.
 
 ## Goal
@@ -51,6 +53,8 @@ Product verification evidence: `apps/api/src/repositories/postgres.test.ts`, `ap
 API compatibility: public TipIntent DTO remains safe and unchanged. Internal repository/outbox methods are extended. Admin API adds `POST /admin/dead-letter/:deadLetterId/retry`; existing admin endpoints remain compatible. Breaking changes: none intended.
 
 ## Tests or checks run
+
+## Testing and review
 
 Package verification: `corepack pnpm install`, `corepack pnpm lint`, `corepack pnpm typecheck`, `corepack pnpm test`, and `npm test` passed locally. Local test result: 9 test files, 54 total tests, 49 passed, 5 skipped live Postgres tests. GitHub CI is configured to run those 5 live Postgres tests with a Postgres service.
 
