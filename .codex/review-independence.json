@@ -2,14 +2,14 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 4,
+  "prNumber": "pending",
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
   "writerEvidence": {
     "present": true,
     "files": [
-      "docs/pr-postgres-integration-outbox-recovery.md",
+      "docs/pr-production-chain-listener-reorg.md",
       ".codex/task-contract.json",
       ".codex/product-verification.json"
     ]
@@ -17,24 +17,27 @@
   "reviewEvidence": {
     "present": true,
     "files": [
-      "docs/RUNBOOK.md",
+      "docs/CHAIN_LISTENER.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/RISK_REGISTER.md"
+      "docs/RISK_REGISTER.md",
+      "docs/RUNBOOK.md"
     ],
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "6770dcb4f9d3496b8fc29d022135dfcad336b152",
+  "headSha": "pending_after_commit",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
-    "correctness",
-    "regression",
-    "security",
-    "data_integrity",
-    "runtime_safety",
+    "abi_decode_correctness",
+    "duplicate_log_idempotency",
+    "confirmation_window",
+    "reorg_status_transition",
+    "cursor_persistence",
+    "outbox_enqueue_timing",
+    "no_user_personal_data_on_chain_payload",
+    "security_scans",
     "test_evidence",
-    "diff_scope",
     "known_gaps"
   ],
   "humanReviewRequiredFields": [
@@ -43,16 +46,5 @@
     "head SHA",
     "remaining blockers",
     "merge decision"
-  ],
-  "currentHeadOwnerConfirmation": {
-    "required": true,
-    "confirmedByRole": "project-owner",
-    "fields": [
-      "quality_gate_status",
-      "CI status",
-      "head SHA",
-      "remaining blockers",
-      "merge decision"
-    ]
-  }
+  ]
 }

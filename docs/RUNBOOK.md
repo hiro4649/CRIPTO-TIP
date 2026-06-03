@@ -1,5 +1,13 @@
 # Runbook
 
+## Chain Listener Recovery
+
+If RPC WebSocket disconnects, keep the listener process alive and run `eth_getLogs` catch-up from `chain_cursors.last_scanned_block + 1` after reconnect. Duplicate logs are safe because `tip_transactions` is unique by `chain_id + contract_address + tx_hash + log_index`.
+
+If a reorg is detected by removed logs or block hash mismatch, the transaction must move to `reorged` or return to pending confirmation before downstream normalization. `support.normalize` must only be enqueued for confirmed transactions.
+
+If cursor state appears stale, inspect `chain_cursors` for the target `chain_id` and `contract_address`, compare with the latest finalized block, and run a bounded catch-up window. Do not skip confirmation checks.
+
 Local:
 
 ```bash

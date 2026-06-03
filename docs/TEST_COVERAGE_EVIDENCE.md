@@ -1,5 +1,22 @@
 # Test Coverage Evidence
 
+## PR production-chain-listener-reorg
+
+Latest local result: `corepack pnpm test` passed with 10 test files, 60 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- Chain ABI correctness: `apps/api/src/chain/tip-router-listener.test.ts`.
+- Duplicate on-chain log idempotency: `apps/api/src/chain/tip-router-listener.test.ts`.
+- `eth_getLogs` catch-up and cursor persistence: `apps/api/src/chain/tip-router-listener.test.ts`.
+- WebSocket subscription boundary: `apps/api/src/chain/tip-router-listener.test.ts`.
+- Confirmation window gating before `support.normalize`: `apps/api/src/chain/tip-router-listener.test.ts`.
+- Reorg status transition: `apps/api/src/chain/tip-router-listener.test.ts`.
+- Repository chain cursor and transaction status methods: `apps/api/src/repositories/in-memory.test.ts`, `apps/api/src/repositories/postgres.test.ts`.
+- Migration coverage for `chain_cursors`: `apps/api/src/db/migration.test.ts`.
+
+Still uncovered by live production tests: production RPC endpoint behavior, listener process supervision, multi-chain routing, multi-token routing, official YouTube connector, and production IRIS Core delivery.
+
 Latest local command: `corepack pnpm test apps/api`.
 
 Latest local result: 9 test files, 54 total tests, 49 passed tests, 5 skipped live Postgres tests.

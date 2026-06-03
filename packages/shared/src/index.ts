@@ -50,6 +50,7 @@ export const TipTransactionSchema = z.object({
   tx_hash: z.string().min(1),
   log_index: z.number().int().nonnegative(),
   block_number: z.number().int().nonnegative(),
+  block_hash: z.string().optional(),
   from_address: WalletAddressSchema,
   stream_id: z.string(),
   character_id: z.string(),
@@ -57,7 +58,9 @@ export const TipTransactionSchema = z.object({
   message_hash: z.string(),
   client_tip_id: z.string().optional(),
   status: z.enum(["detected", "pending_confirmation", "confirmed", "reorged", "failed", "ignored"]),
-  confirmations: z.number().int().nonnegative()
+  confirmations: z.number().int().nonnegative(),
+  detected_at: z.string().optional(),
+  confirmed_at: z.string().optional()
 });
 export type TipTransaction = z.infer<typeof TipTransactionSchema>;
 

@@ -2,90 +2,47 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 4,
+  "prNumber": "pending",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
   "classificationCoverageStatus": "pass",
   "changeClassificationStatus": "pass",
-  "classificationRegistry": {
-    ".codex/**": "machine_readable_quality_evidence",
-    ".env.example": "config_example",
-    ".github/workflows/ci.yml": "ci",
-    "apps/api/src/config/**": "config_validation",
-    "apps/api/src/outbox/**": "outbox_dlq_boundary",
-    "apps/api/src/repositories/**": "repository_boundary",
-    "apps/api/src/server.ts": "api_internal_flow",
-    "apps/api/src/server.test.ts": "tests",
-    "docker-compose.yml": "local_integration_config",
-    "docs/**": "docs",
-    "docs/process/**": "harness_managed",
-    "package.json": "package_metadata",
-    "pnpm-lock.yaml": "lockfile"
-  },
   "pathPatterns": [
     {
-      "pathPattern": ".codex/**",
-      "classification": "machine_readable_quality_evidence",
-      "riskLevel": "low",
-      "verification": "JSON evidence files are PR #4 scoped",
-      "scope": "quality_evidence"
-    },
-    {
-      "pathPattern": ".env.example",
-      "classification": "config_example",
-      "riskLevel": "low",
-      "verification": "config validation and safe placeholders",
-      "scope": "env_example"
-    },
-    {
-      "pathPattern": ".github/workflows/ci.yml",
-      "classification": "ci",
-      "riskLevel": "medium",
-      "verification": "GitHub CI runs TypeScript, product tests, live Postgres tests, and contracts",
-      "scope": "ci"
-    },
-    {
-      "pathPattern": "apps/api/src/config/**",
-      "classification": "config_validation",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/config/env.test.ts",
-      "scope": "config_validation"
-    },
-    {
-      "pathPattern": "apps/api/src/outbox/**",
-      "classification": "outbox_dlq_boundary",
+      "pathPattern": "apps/api/src/chain/**",
+      "classification": "product_source",
       "riskLevel": "high",
-      "verification": "apps/api/src/outbox/worker.test.ts",
-      "scope": "outbox_dlq_boundary"
+      "verification": "apps/api/src/chain/tip-router-listener.test.ts",
+      "scope": "chain_listener"
     },
     {
       "pathPattern": "apps/api/src/repositories/**",
-      "classification": "repository_boundary",
+      "classification": "product_source",
       "riskLevel": "high",
       "verification": "repository unit tests and live Postgres integration tests",
       "scope": "repository_boundary"
     },
     {
-      "pathPattern": "apps/api/src/server.ts",
-      "classification": "api_internal_flow",
+      "pathPattern": "apps/api/src/db/**",
+      "classification": "test",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/db/migration.test.ts",
+      "scope": "migration_tests"
+    },
+    {
+      "pathPattern": "packages/shared/src/index.ts",
+      "classification": "product_source",
+      "riskLevel": "medium",
+      "verification": "corepack pnpm typecheck and shared schema tests",
+      "scope": "shared_schema"
+    },
+    {
+      "pathPattern": "migrations/**",
+      "classification": "product_source",
       "riskLevel": "high",
-      "verification": "apps/api/src/server.test.ts",
-      "scope": "api_internal_flow"
-    },
-    {
-      "pathPattern": "apps/api/src/server.test.ts",
-      "classification": "tests",
-      "riskLevel": "medium",
-      "verification": "corepack pnpm test apps/api",
-      "scope": "tests"
-    },
-    {
-      "pathPattern": "docker-compose.yml",
-      "classification": "local_integration_config",
-      "riskLevel": "medium",
-      "verification": "documented local Postgres command and GitHub CI Postgres service",
-      "scope": "live_postgres_integration"
+      "verification": "migration tests and live Postgres integration path",
+      "scope": "db_schema"
     },
     {
       "pathPattern": "docs/**",
@@ -95,159 +52,80 @@
       "scope": "docs"
     },
     {
-      "pathPattern": "docs/process/**",
+      "pathPattern": ".codex/**",
+      "classification": "verification_relevant",
+      "riskLevel": "low",
+      "verification": "machine-readable evidence",
+      "scope": "quality_evidence"
+    },
+    {
+      "pathPattern": "apps/api/package.json",
+      "classification": "package",
+      "riskLevel": "medium",
+      "verification": "corepack pnpm install, typecheck, test",
+      "scope": "package_metadata"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "classification": "harness_managed",
       "riskLevel": "medium",
-      "verification": "classification registry includes PR #4 config surfaces",
-      "scope": "quality_gate_registry"
+      "verification": "quality-gate classification coverage",
+      "scope": "classification_registry"
+    },
+    {
+      "pathPattern": ".github/workflows/quality-gate.yml",
+      "classification": "workflow",
+      "riskLevel": "medium",
+      "verification": "quality-gate consumes PR body evidence without weakening required statuses",
+      "scope": "quality_gate_workflow"
     },
     {
       "pathPattern": "package.json",
-      "classification": "package_metadata",
+      "classification": "package",
       "riskLevel": "medium",
-      "verification": "pnpm install and tests",
+      "verification": "npm test and corepack pnpm test",
       "scope": "package_metadata"
     },
     {
       "pathPattern": "pnpm-lock.yaml",
       "classification": "lockfile",
       "riskLevel": "medium",
-      "verification": "pnpm install and tests",
+      "verification": "corepack pnpm install",
       "scope": "lockfile"
     }
   ],
   "changedFiles": [
-    {
-      "path": ".env.example",
-      "classification": "config_example"
-    },
-    {
-      "path": ".github/workflows/ci.yml",
-      "classification": "ci"
-    },
-    {
-      "path": ".codex/change-classification.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/evidence-pack.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/evidence-pack.normalized.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/product-verification.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/quality-gate-evidence.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/task-contract.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": ".codex/test-coverage-evidence.json",
-      "classification": "machine_readable_quality_evidence"
-    },
-    {
-      "path": "apps/api/src/config/env.ts",
-      "classification": "config_validation"
-    },
-    {
-      "path": "apps/api/src/outbox/worker.test.ts",
-      "classification": "outbox_dlq_boundary"
-    },
-    {
-      "path": "apps/api/src/outbox/worker.ts",
-      "classification": "outbox_dlq_boundary"
-    },
-    {
-      "path": "apps/api/src/repositories/in-memory.test.ts",
-      "classification": "repository_boundary"
-    },
-    {
-      "path": "apps/api/src/repositories/in-memory.ts",
-      "classification": "repository_boundary"
-    },
-    {
-      "path": "apps/api/src/repositories/postgres.test.ts",
-      "classification": "repository_boundary"
-    },
-    {
-      "path": "apps/api/src/repositories/postgres.ts",
-      "classification": "repository_boundary"
-    },
-    {
-      "path": "apps/api/src/repositories/types.ts",
-      "classification": "repository_boundary"
-    },
-    {
-      "path": "apps/api/src/server.test.ts",
-      "classification": "tests"
-    },
-    {
-      "path": "apps/api/src/server.ts",
-      "classification": "api_internal_flow"
-    },
-    {
-      "path": "docker-compose.yml",
-      "classification": "local_integration_config"
-    },
-    {
-      "path": "docs/AC_MATRIX.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/DEPENDENCY_DECISIONS.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/PRODUCTION_GATES.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/PRODUCT_VERIFICATION.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/QUALITY_GATE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RISK_REGISTER.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RUNBOOK.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/pr-postgres-integration-outbox-recovery.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json",
-      "classification": "harness_managed"
-    },
-    {
-      "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "classification": "harness_managed"
-    },
-    {
-      "path": "package.json",
-      "classification": "package_metadata"
-    },
-    {
-      "path": "pnpm-lock.yaml",
-      "classification": "lockfile"
-    }
+    { "path": ".codex/change-classification.json", "classification": "verification_relevant" },
+    { "path": ".codex/product-verification.json", "classification": "verification_relevant" },
+    { "path": ".codex/quality-gate-evidence.json", "classification": "verification_relevant" },
+    { "path": ".codex/task-contract.json", "classification": "verification_relevant" },
+    { "path": ".codex/test-coverage-evidence.json", "classification": "verification_relevant" },
+    { "path": ".github/workflows/quality-gate.yml", "classification": "workflow" },
+    { "path": "apps/api/package.json", "classification": "package" },
+    { "path": "apps/api/src/chain/evm-rpc.ts", "classification": "product_source" },
+    { "path": "apps/api/src/chain/tip-router-listener.test.ts", "classification": "test" },
+    { "path": "apps/api/src/chain/tip-router-listener.ts", "classification": "product_source" },
+    { "path": "apps/api/src/db/migration.test.ts", "classification": "test" },
+    { "path": "apps/api/src/repositories/in-memory.test.ts", "classification": "test" },
+    { "path": "apps/api/src/repositories/in-memory.ts", "classification": "product_source" },
+    { "path": "apps/api/src/repositories/postgres.test.ts", "classification": "test" },
+    { "path": "apps/api/src/repositories/postgres.ts", "classification": "product_source" },
+    { "path": "apps/api/src/repositories/types.ts", "classification": "product_source" },
+    { "path": "docs/ARCHITECTURE.md", "classification": "docs" },
+    { "path": "docs/CHAIN_LISTENER.md", "classification": "docs" },
+    { "path": "docs/DEPENDENCY_DECISIONS.md", "classification": "docs" },
+    { "path": "docs/EVENT_SCHEMA.md", "classification": "docs" },
+    { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
+    { "path": "docs/PRODUCTION_GATES.md", "classification": "docs" },
+    { "path": "docs/QUALITY_GATE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
+    { "path": "docs/RUNBOOK.md", "classification": "docs" },
+    { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
+    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "harness_managed" },
+    { "path": "migrations/0002_chain_listener_reorg.sql", "classification": "product_source" },
+    { "path": "package.json", "classification": "package" },
+    { "path": "packages/shared/src/index.ts", "classification": "product_source" },
+    { "path": "pnpm-lock.yaml", "classification": "lockfile" }
   ]
 }

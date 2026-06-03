@@ -1,5 +1,11 @@
 # Architecture
 
+## Chain Listener Boundary
+
+The Chain Listener observes TipRouterV1 `TipSent` logs through an injected EVM RPC provider adapter. It records durable `tip_transactions`, persists `chain_cursors`, waits for confirmation, handles reorg status transitions, and enqueues `support.normalize` only after confirmation.
+
+This boundary does not implement token sale, token exchange, cash-out, custody, internal balances, investment wording, official YouTube connector, or production IRIS Core delivery.
+
 YouTube LIVE is the broadcast and chat surface only. IRIS Web Companion is the external crypto Tip surface. CRIPTO-TIP must not replace YouTube Super Chat payment or present IRIS Token Tip as YouTube Super Chat.
 
 Inputs are normalized into `support.received`:

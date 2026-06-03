@@ -49,6 +49,17 @@ describe("InMemoryRepository", () => {
     expect(repo.tipTransactions.size).toBe(1);
   });
 
+  it("updates pending chain transactions and persists chain cursors", async () => {
+    const repo = new InMemoryRepository();
+    const tx: TipTransaction = { id: "tx_cursor", chain_id: 1, contract_address: wallet, token_address: wallet, tx_hash: "0xhash2", log_index: 2, block_number: 9, block_hash: "0xblock", from_address: wallet, stream_id: "str", character_id: "char", amount_raw: "100", message_hash: "0x" + "a".repeat(64), client_tip_id: "0x" + "b".repeat(64), status: "pending_confirmation", confirmations: 0 };
+    await repo.recordTipTransaction(tx);
+    expect(await repo.listPendingTipTransactions(1, wallet)).toHaveLength(1);
+    const updated = await repo.updateTipTransactionByChainLog(tx, { status: "confirmed", confirmations: 3, confirmed_at: "2026-06-03T00:00:00.000Z" });
+    expect(updated?.status).toBe("confirmed");
+    await repo.saveChainCursor({ id: "cursor1", chain_id: 1, contract_address: wallet, last_scanned_block: 12, last_finalized_block: 9, last_seen_block_hash: "0xblock12", updated_at: "2026-06-03T00:00:00.000Z" });
+    expect(await repo.getChainCursor({ chain_id: 1, contract_address: wallet })).toEqual(expect.objectContaining({ last_scanned_block: 12 }));
+  });
+
   it("outbox retry increments retry_count and moves to DLQ after max retry", async () => {
     const repo = new InMemoryRepository();
     const job = await repo.enqueueOutbox({ id: "job1", job_type: "iris.deliver", aggregate_type: "support_event", aggregate_id: "evt", idempotency_key: "iris.deliver:evt", payload_json: {}, max_retry_count: 2 });

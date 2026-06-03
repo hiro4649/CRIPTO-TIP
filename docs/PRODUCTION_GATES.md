@@ -1,5 +1,19 @@
 # Production Gates
 
+## PR production-chain-listener-reorg Gate Assessment
+
+Current state: G3 partial.
+
+G0 scaffold: pass.
+
+G1 mock vertical slice: pass.
+
+G2 durable MVP: pass after PR #4 merge.
+
+G3 integration ready: partial. This PR adds chain listener boundary, ABI decode, catch-up, cursor, confirmation, and reorg handling, but production RPC runtime wiring, supervision, and operational rollout remain gated.
+
+G4 production ready: not started. This repository is still not production ready.
+
 | Gate | Meaning | PR #2 status |
 | --- | --- | --- |
 | G0 scaffold | Repo, workspace, mock app/API/contract skeleton exists. | Passed by PR #1. |

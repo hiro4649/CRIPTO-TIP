@@ -1,5 +1,16 @@
 # Risk Register
 
+## PR production-chain-listener-reorg
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| High | Production RPC deployment wiring is not complete. | Backend | listener-runtime-config PR | RPC provider is injected; no production RPC URL or secret is committed. |
+| High | Listener process supervision and operational metrics export remain incomplete. | Backend/ops | listener-observability PR | Tests cover retry boundaries; runbook documents catch-up and reorg recovery. |
+| Medium | Official YouTube connector is not implemented. | YouTube integration owner | youtube-connector PR | Current work does not touch YouTube ingestion and does not scrape YouTube. |
+| Medium | Production IRIS Core delivery adapter is not implemented. | IRIS integration owner | iris-delivery PR | Confirmed tips enqueue `support.normalize` through the durable outbox. |
+| Medium | Multiple chain and multiple token support are not implemented. | Backend | multi-chain-token PR if product scope requires it | Current config is single chain and single TipRouter contract. |
+| Low | Local forge may be unavailable on this Windows machine. | Contract owner | toolchain setup PR if needed | GitHub contracts CI remains the source of truth. |
+
 | Severity | Risk | Owner | Next PR | Mitigation |
 | --- | --- | --- | --- | --- |
 | High | Production Chain Listener is not implemented. | Backend/chain integration owner | chain-listener PR | Keep mock connector only; require confirmation window, reorg handling, and `tx_hash + log_index` idempotency before production. |

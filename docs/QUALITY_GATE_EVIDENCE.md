@@ -1,5 +1,15 @@
 # Quality Gate Evidence
 
+## PR production-chain-listener-reorg update
+
+Latest local Chain Listener evidence:
+
+- `corepack pnpm typecheck`: passed.
+- `corepack pnpm test`: passed with 10 test files, 60 passed tests, and 6 skipped tests.
+- New tests cover TipSent decode, duplicate log idempotency, `eth_getLogs` catch-up, WebSocket subscription boundary, confirmation window gating, reorg status transition, `support.normalize` enqueue only after confirmation, RPC error retry/backoff boundary, block cursor persistence, and no user personal text fields in decoded on-chain log payloads.
+
+Quality-gate status for the new PR is pending until the branch is pushed and GitHub Actions run. Evidence files are updated for Harness v1.0.4 ingestion and current changed files are classified in `.codex/change-classification.json`.
+
 Latest failed quality-gate runs inspected: `26859916066`, `26860961085`, `26861097867`, and `26861752050`.
 
 Latest quality-gate artifact inspected: `7375148482`.

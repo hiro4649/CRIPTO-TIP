@@ -156,6 +156,24 @@
       "notes": "Product app source."
     },
     {
+      "pathPattern": "packages/**",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared product packages and schemas."
+    },
+    {
+      "pathPattern": "migrations/**",
+      "classification": "product_source",
+      "surface": "database",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Product database migrations."
+    },
+    {
       "pathPattern": "contracts/**",
       "classification": "product_source",
       "surface": "api",
