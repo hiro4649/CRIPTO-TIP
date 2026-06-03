@@ -102,7 +102,12 @@ export function buildRemoteNpmDiagnosticNormalizationReport(input = parseJson(pr
   const productRelevant = productRelevantFromInput(input);
   if (!parseBool(input.forceCheck) && !productRelevant) return notApplicable('remoteNpmDiagnosticNormalizationStatus', 'remote_npm_diagnostic_normalization_not_applicable');
   const reasonCodes = [];
-  const diagnostic = input.remoteNpmDiagnostic || input.remoteNpmDiagnosticStatus?.diagnostic || parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_JSON) || {};
+  const diagnosticFromEnv = parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_JSON) || {};
+  const diagnostic = input.remoteNpmDiagnostic ||
+    input.remoteNpmDiagnosticStatus?.diagnostic ||
+    input.remoteNpmDiagnosticStatus ||
+    diagnosticFromEnv.diagnostic ||
+    diagnosticFromEnv;
   const diagnosticExitCode = diagnostic?.npmExitCode;
   const npmExecuted = parseBool(input.npmExecuted) ||
     Number.isFinite(Number(diagnosticExitCode)) ||
