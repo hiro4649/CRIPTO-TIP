@@ -1,12 +1,4 @@
-const safetyText = [
-  "IRIS Token Tipは、AIキャラクターへの応援演出を発生させる機能です。",
-  "暗号資産の価格上昇、収益、換金、返金を保証するものではありません。",
-  "送金は取り消せません。",
-  "税務上の取扱いは利用者の居住国や状況により異なります。",
-  "未成年の利用はできません。"
-];
-
-export { safetyText };
+import { safetyText } from "./safety";
 
 export default function Home() {
   return (

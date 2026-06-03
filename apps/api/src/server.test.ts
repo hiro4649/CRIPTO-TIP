@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import WebSocket from "ws";
 import { buildServer, isOverlayTokenValid, store } from "./server.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import { normalizeTokenTipToSupportReceived } from "@cripto-tip/shared";
@@ -211,17 +212,21 @@ describe("api", () => {
     if (!address || typeof address === "string") throw new Error("missing server address");
     const ws = new WebSocket(`ws://127.0.0.1:${address.port}/overlay/str_ws/ws`);
     let opened = false;
-    ws.addEventListener("open", () => {
+    ws.on("open", () => {
       opened = true;
     });
     const closeCode = await new Promise<number>((resolve) => {
       const timer = setTimeout(() => resolve(0), 750);
-      ws.addEventListener("close", (event) => {
+      ws.on("error", () => {
         clearTimeout(timer);
-        resolve(event.code);
-      }, { once: true });
+        resolve(1006);
+      });
+      ws.on("close", (code) => {
+        clearTimeout(timer);
+        resolve(code);
+      });
     });
-    ws.close();
+    ws.terminate();
     expect(opened).toBe(false);
     expect([0, 1006, 1008]).toContain(closeCode);
     await app.close();

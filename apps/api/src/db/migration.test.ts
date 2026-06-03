@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const sql = readFileSync(resolve(process.cwd(), "../../migrations/0001_durable_events.sql"), "utf8").toLowerCase();
+const here = dirname(fileURLToPath(import.meta.url));
+const sql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8").toLowerCase();
 
 describe("migration 0001", () => {
   it("contains required tables", () => {

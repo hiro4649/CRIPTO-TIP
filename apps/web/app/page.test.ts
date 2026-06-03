@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { safetyText } from "./page";
+import { safetyText } from "./safety";
 
 const prohibitedLanguage = ["profit", "yield", "price increase", "refund guarantee", "investment return"];
 

@@ -7,14 +7,23 @@
     "ensure:pnpm": "corepack enable && corepack pnpm install",
     "lint": "corepack pnpm -r --workspace-concurrency=1 lint",
     "typecheck": "corepack pnpm -r --workspace-concurrency=1 typecheck",
-    "test": "corepack enable && corepack pnpm install --force && corepack pnpm -r --workspace-concurrency=1 test",
+    "test": "vitest run packages/shared apps/api apps/overlay apps/web",
     "dev:web": "corepack pnpm --filter @cripto-tip/web dev",
     "dev:api": "corepack pnpm --filter @cripto-tip/api dev",
     "dev:overlay": "corepack pnpm --filter @cripto-tip/overlay dev"
   },
   "devDependencies": {
+    "@cripto-tip/shared": "file:packages/shared",
+    "@fastify/websocket": "^11.2.0",
     "@types/node": "^22.15.30",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^5.1.2",
+    "fastify": "^5.8.5",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.8",
+    "ws": "^8.21.0",
+    "zod": "^4.4.3"
   }
 }

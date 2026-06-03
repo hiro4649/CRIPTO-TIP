@@ -2,6 +2,8 @@
 
 Date: 2026-06-02
 
+Updated: 2026-06-03 for quality-gate evidence repair.
+
 ## Critical
 
 None open.
@@ -39,6 +41,11 @@ None open.
   Fix: `loadConfig` rejects generated local mock defaults in production-like config.
   Test recommendation: Existing config tests cover local allow and production reject.
 
+- File: `apps/api/src/server.test.ts`
+  Risk: quality-gate runs Node 20, where the newer global `WebSocket` test surface is unavailable.
+  Fix: The overlay invalid-token negative test imports the test-only `ws` client and handles rejected connection `error` and `close` paths.
+  Test recommendation: Keep Node 20 reproduction in PR evidence until quality-gate npm diagnostics pass.
+
 ## Checks
 
 - Migration includes required tables and unique constraints.
@@ -48,3 +55,6 @@ None open.
 - `apps/api/src/server.ts` no longer reads `InMemoryRepository`-specific maps such as `recentTipsByWallet`, `affinityByUser`, `supportEvents`, `tipIntents`, `outboxEvents`, `deadLetterEvents`, or `auditLogs`.
 - `PostgresRepository` exposes parameterized SQL for public TipIntent DTO, recent wallet count, current affinity, and stream support event listing.
 - Full production DB connection wiring, docker-backed integration tests, stale lock reclamation, and admin DLQ retry endpoint remain incomplete.
+- Quality-gate evidence docs were added for change classification, product verification, test coverage, review independence, task contract, code review monitor, contract governance, complexity governance, API compatibility, production gates, and residual risk tracking.
+- Latest local `corepack pnpm test` result recorded for PR evidence: 9 test files and 45 tests.
+- Latest local `npm test` and Node 20 Vitest reproduction results recorded for PR evidence: 9 test files and 45 tests.
