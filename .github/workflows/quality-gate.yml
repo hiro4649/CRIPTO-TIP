@@ -103,10 +103,24 @@ jobs:
       - name: Prepare PR body evidence
         if: always()
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          CODEX_REPOSITORY: ${{ github.repository }}
+          CODEX_PR_NUMBER: ${{ github.event.pull_request.number || '' }}
         run: |
           set -euo pipefail
+          if [ -n "${CODEX_PR_NUMBER:-}" ]; then
+            gh api "repos/${CODEX_REPOSITORY}/pulls/${CODEX_PR_NUMBER}" --jq .body > "$RUNNER_TEMP/codex-pr-body.api.md"
+          else
+            : > "$RUNNER_TEMP/codex-pr-body.api.md"
+          fi
           node - <<'NODE' > "$RUNNER_TEMP/codex-pr-body.md"
           const fs = require('fs');
+          const currentPath = process.env.RUNNER_TEMP ? `${process.env.RUNNER_TEMP}/codex-pr-body.api.md` : '';
+          if (currentPath && fs.existsSync(currentPath) && fs.readFileSync(currentPath, 'utf8').trim()) {
+            process.stdout.write(fs.readFileSync(currentPath, 'utf8'));
+            process.exit(0);
+          }
           const eventPath = process.env.GITHUB_EVENT_PATH;
           let body = '';
           if (eventPath && fs.existsSync(eventPath)) {
