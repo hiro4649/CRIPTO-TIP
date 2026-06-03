@@ -73,6 +73,13 @@
       "scope": "classification_registry"
     },
     {
+      "pathPattern": ".github/workflows/quality-gate.yml",
+      "classification": "workflow",
+      "riskLevel": "medium",
+      "verification": "quality-gate consumes PR body evidence without weakening required statuses",
+      "scope": "quality_gate_workflow"
+    },
+    {
       "pathPattern": "package.json",
       "classification": "package",
       "riskLevel": "medium",
@@ -93,6 +100,7 @@
     { "path": ".codex/quality-gate-evidence.json", "classification": "verification_relevant" },
     { "path": ".codex/task-contract.json", "classification": "verification_relevant" },
     { "path": ".codex/test-coverage-evidence.json", "classification": "verification_relevant" },
+    { "path": ".github/workflows/quality-gate.yml", "classification": "workflow" },
     { "path": "apps/api/package.json", "classification": "package" },
     { "path": "apps/api/src/chain/evm-rpc.ts", "classification": "product_source" },
     { "path": "apps/api/src/chain/tip-router-listener.test.ts", "classification": "test" },

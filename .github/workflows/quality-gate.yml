@@ -100,6 +100,25 @@ jobs:
           {"schemaVersion":"0.9.9","phase":"remote npm diagnostic","status":"pending","safeSummaryOnly":true}
           JSON
           # safe artifact upload is locked by the upload-artifact path list.
+      - name: Prepare PR body evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE' > "$RUNNER_TEMP/codex-pr-body.md"
+          const fs = require('fs');
+          const eventPath = process.env.GITHUB_EVENT_PATH;
+          let body = '';
+          if (eventPath && fs.existsSync(eventPath)) {
+            try {
+              body = JSON.parse(fs.readFileSync(eventPath, 'utf8')).pull_request?.body || '';
+            } catch {
+              body = '';
+            }
+          }
+          process.stdout.write(body);
+          NODE
+          echo "CODEX_PR_BODY_PATH=$RUNNER_TEMP/codex-pr-body.md" >> "$GITHUB_ENV"
       - name: Generate remote product evidence
         if: always()
         shell: bash
