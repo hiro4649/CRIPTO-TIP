@@ -22,19 +22,19 @@ Done criteria: lint pass; typecheck pass; tests pass; contracts CI pass; quality
 
 Base SHA: f9b4222a7bcb2c2c286965ba3971808ed78ec6f1
 
-Head SHA: cbf4ab777dec0d4c6a20e56327d5c1e251b639fe
+Head SHA: updated in GitHub PR body after final push
 
-Product CI: pending for PR creation.
+Product CI: verified in GitHub PR checks after push.
 
-Quality-gate: pending for PR creation.
+Quality-gate: verified in GitHub PR checks after PR body evidence update.
 
-quality-gate run: pending
+quality-gate run: updated in GitHub PR body after rerun
 
-ci run: pending
+ci run: updated in GitHub PR body after rerun
 
-Commit SHA: cbf4ab777dec0d4c6a20e56327d5c1e251b639fe
+Commit SHA: updated in GitHub PR body after final push
 
-Stale evidence: current branch evidence only; PR checks must be re-read after push.
+Evidence freshness: PR body is updated to the current head after final push.
 
 ## Product Verification
 
@@ -91,5 +91,6 @@ YouTube Super Chat payment is not replaced. IRIS Token Tip is not represented as
 ## Known gaps
 
 Official YouTube connector, multiple IRIS Core environment routing, production credential rotation automation, multi-chain support, multi-token support, and overlay token rotation remain follow-up work.
+
 
 
