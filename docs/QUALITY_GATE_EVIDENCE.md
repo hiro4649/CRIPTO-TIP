@@ -1,8 +1,8 @@
 # Quality Gate Evidence
 
-Latest failed quality-gate runs inspected: `26859916066`, `26860961085`, and `26861097867`.
+Latest failed quality-gate runs inspected: `26859916066`, `26860961085`, `26861097867`, and `26861752050`.
 
-Latest quality-gate artifact inspected: `7374890965`.
+Latest quality-gate artifact inspected: `7375148482`.
 
 Latest product CI run inspected: `26860944234`.
 

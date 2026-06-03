@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0",
+  "entries": [
+    {
+      "pathPattern": ".codex/**",
+      "classification": "harness_managed",
+      "surface": "quality_evidence",
+      "risk": "low"
+    },
+    {
+      "pathPattern": ".env.example",
+      "classification": "config",
+      "surface": "config_example",
+      "risk": "low"
+    },
+    {
+      "pathPattern": ".github/workflows/**",
+      "classification": "workflow",
+      "surface": "ci",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "AGENTS.md",
+      "classification": "harness_managed",
+      "surface": "governance",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "apps/api/src/config/**",
+      "classification": "config",
+      "surface": "config_validation",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "apps/api/src/db/**",
+      "classification": "test",
+      "surface": "db_schema_test",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "apps/api/src/outbox/**",
+      "classification": "product_source",
+      "surface": "outbox_dlq_boundary",
+      "risk": "high"
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/**",
+      "classification": "product_source",
+      "surface": "repository_boundary",
+      "risk": "high"
+    },
+    {
+      "pathPattern": "apps/api/src/server.test.ts",
+      "classification": "test",
+      "surface": "api_tests",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "apps/api/src/server.ts",
+      "classification": "product_source",
+      "surface": "api_internal_flow",
+      "risk": "high"
+    },
+    {
+      "pathPattern": "apps/overlay/src/main.tsx",
+      "classification": "product_runtime_entrypoint",
+      "surface": "overlay_runtime",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "apps/web/app/**",
+      "classification": "product_source",
+      "surface": "web_ui_safety",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "docs/**",
+      "classification": "docs",
+      "surface": "documentation",
+      "risk": "low"
+    },
+    {
+      "pathPattern": "migrations/**",
+      "classification": "product_relevant",
+      "surface": "db_schema",
+      "risk": "high"
+    },
+    {
+      "pathPattern": "package.json",
+      "classification": "package",
+      "surface": "package_metadata",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "pnpm-lock.yaml",
+      "classification": "lockfile",
+      "surface": "lockfile",
+      "risk": "medium"
+    },
+    {
+      "pathPattern": "vitest.config.ts",
+      "classification": "config",
+      "surface": "test_config",
+      "risk": "medium"
+    }
+  ]
+}

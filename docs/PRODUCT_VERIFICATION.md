@@ -18,7 +18,7 @@ Current evidence head before this repair: `afb371ef29fb7fea9e5cc08fef866040441e3
 | Node 20 quality-gate npm path runs the same product tests. | `apps/api/src/server.test.ts`, `package.json`; Node 20 local reproduction | Passed with 9 test files and 45 tests. |
 | Foundry contract job passes in GitHub CI. | GitHub CI runs `26835142098`, `26858338314`, job `contracts` | Passed. |
 | TypeScript CI passes in GitHub CI. | GitHub CI runs `26835142098`, `26858338314`, job `typescript` | Passed. |
-| Quality-gate failed before this patch, and this patch adds evidence to satisfy it. | Failed quality-gate runs `26835148559`, `26858353061`; this evidence set | Repair in progress. |
+| Quality-gate failed before this patch, and this patch adds evidence to satisfy it. | Failed quality-gate run `26861752050`; this evidence set | Repair in progress. |
 
 ## Not Verified In PR #2
 

@@ -1,0 +1,48 @@
+{
+  "harnessFiles": [
+    "AGENTS.md",
+    ".codex/",
+    "docs/process/"
+  ],
+  "docsFiles": [
+    "README.md",
+    "docs/"
+  ],
+  "productSourceFiles": [
+    "apps/",
+    "contracts/",
+    "packages/"
+  ],
+  "testFiles": [
+    "apps/api/src/server.test.ts",
+    "apps/api/src/repositories/",
+    "apps/api/src/outbox/",
+    "apps/api/src/db/",
+    "apps/web/app/page.test.ts"
+  ],
+  "specFiles": [
+    "migrations/"
+  ],
+  "packageFiles": [
+    "package.json"
+  ],
+  "lockFiles": [
+    "pnpm-lock.yaml"
+  ],
+  "workflowFiles": [
+    ".github/workflows/"
+  ],
+  "runtimeAssetFiles": [
+    "apps/overlay/src/main.tsx",
+    "apps/web/app/"
+  ],
+  "configFiles": [
+    ".env.example",
+    "vitest.config.ts",
+    "apps/api/src/config/"
+  ],
+  "authorityFiles": [
+    "AGENTS.md"
+  ],
+  "unknownPolicy": "fail_in_pr_context"
+}

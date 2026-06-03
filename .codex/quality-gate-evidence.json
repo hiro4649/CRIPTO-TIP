@@ -3,7 +3,7 @@
   "harnessVersion": "1.0.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 2,
-  "artifactId": "7374890965",
+  "artifactId": "7375148482",
   "previousArtifactId": "7374500499",
   "reasonCodeMappings": {
     "secretScan": [".codex/quality-gate-evidence.json", "git grep secret/risky rendering command"],
@@ -26,9 +26,9 @@
     "MOCK_ADMIN_TOKEN",
     "MOCK_INTERNAL_TOKEN",
     "MOCK_OVERLAY_TOKEN",
-    "change-me-admin-token",
-    "change-me-internal-token",
-    "change-me-overlay-token"
+    "local-admin-placeholder",
+    "local-internal-placeholder",
+    "local-overlay-placeholder"
   ],
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,

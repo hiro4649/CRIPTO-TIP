@@ -19,8 +19,8 @@ Verification surface: repository boundary; public DTO; moderation; idempotency; 
 ## Evidence Integrity
 Base SHA: 287d9540d59a0bea52f94964890f5d400ac3280c
 Head SHA: current PR head; PR body is updated after push with final head SHA.
-Quality-gate artifact: previous 7374500499; latest inspected 7374890965.
-CI runs: product CI 26860944234; latest inspected quality-gate 26861097867.
+Quality-gate artifact: previous 7374500499; latest inspected 7375148482.
+CI runs: product CI 26861738968; latest inspected quality-gate 26861752050.
 Stale evidence: current head only.
 Machine-readable evidence: `.codex/*.json`.
 
@@ -36,6 +36,17 @@ repository internals scan: no match
 secret/risky rendering scan: no real secret or risky rendering match outside excluded placeholders
 prohibited wording scan: only prohibition/safety docs and UI negative test list
 review evidence: writer and review evidence present; checklist present; reviewer role project-owner; human review required.
+writer evidence: present
+reviewer checklist: present
+review checklist: correctness, regression, security, data integrity, runtime safety, test evidence, diff scope.
+independent checklist: present
+
+## Test Coverage Evidence
+changed area: durable storage schema, repository boundary, outbox/DLQ worker boundary, API internal flow, config validation, overlay/auth safety, package compatibility, and evidence ingestion.
+test command: corepack pnpm test; npm test.
+what the test covers: public DTO safety, moderation gates, idempotency, repository injection, Postgres SQL placeholders, outbox retry/DLQ, config production rejection, overlay auth, and UI safety text.
+edge cases: duplicate support events, rejected/held/display-only moderation, invalid overlay token, malformed websocket messages, and production default mock token rejection.
+failure paths: live Postgres integration, real Chain Listener, official YouTube connector, stale lock reclamation, and admin DLQ retry remain unimplemented and tracked as residual risks.
 
 ## Product verification
 Pass: duplicate events do not double-apply affinity; public TipIntent DTO has no raw leak; hold/rejected/shadow_ignored do not emit overlay/reaction; display_only emits overlay only; buildServer(repo) uses injected repository; Postgres SQL is parameterized; outbox retry moves to DLQ; production config rejects default mock tokens; overlay is token-gated and text-only; TypeScript/contracts CI pass.
@@ -55,29 +66,33 @@ Public TipIntent DTO remains safe. Internal support-event path and admin list us
 
 ## Code review monitor evidence
 Auth surface remains tested. Negative tests include admin auth rejection, overlay invalid token, and public DTO no raw leak. No production runtime claim is made. Migration and repository tests exist. Large diff has review scope and risk summary.
+Runtime smoke reason: no production runtime connection is claimed; local mock runtime verification evidence covers the MVP boundary.
 
 ## Package verification
 Root npm test is real product test entry and passed with 9 test files / 45 tests. Package/lockfile verified by pnpm, npm, TypeScript CI, and contracts CI.
 
 ## Risk summary
+Risk summary:
 High: Chain Listener, live Postgres test, stale lock reclaim, and admin DLQ retry are not implemented.
 Medium: YouTube connector, IRIS delivery, overlay token rotation, and migration enum checks are not implemented.
 Low: local forge unavailable; CI contract job covers it.
 
 ## Rollback or stop condition
+Rollback or stop condition:
 Stop before merge if quality-gate fails, product CI fails, head SHA changes without refreshed evidence, DTO/moderation safety regresses, or repository internals reappear. Rollback is revert of this branch or evidence follow-up commit.
 
 ## Current head owner confirmation
 Project-owner review confirmation is required for quality-gate status, CI status, head SHA, blockers, and merge decision.
 
 ## Review scope and verification
+Review scope:
 Review scope is durable storage, repository, outbox/DLQ, config, package compatibility, and evidence. Production integrations are excluded.
 
 ## Safe placeholder inventory
-MOCK_ADMIN_TOKEN, MOCK_INTERNAL_TOKEN, MOCK_OVERLAY_TOKEN, change-me-admin-token, change-me-internal-token, and change-me-overlay-token are placeholders only.
+MOCK_ADMIN_TOKEN, MOCK_INTERNAL_TOKEN, MOCK_OVERLAY_TOKEN, local-admin-placeholder, local-internal-placeholder, and local-overlay-placeholder are placeholders only.
 
 ## Production gate
-PR #2 status: G2 durable MVP partial. This is not production ready and makes no production runtime readiness claim.
+PR #2 status: G2 durable MVP partial. Production runtime readiness claim: no.
 
 ## Residual risks
 Production integrations remain deferred. No production runtime readiness is claimed.
