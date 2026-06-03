@@ -132,7 +132,20 @@ jobs:
           }
           process.stdout.write(body);
           NODE
+          node - <<'NODE' "$RUNNER_TEMP/codex-pr-body.md" "$RUNNER_TEMP/codex-evidence-pack.from-pr.json"
+          const fs = require('fs');
+          const [bodyPath, outPath] = process.argv.slice(2);
+          const body = fs.readFileSync(bodyPath, 'utf8');
+          const match = body.match(/BEGIN_CODEX_EVIDENCE_PACK_JSON\s*([\s\S]*?)\s*END_CODEX_EVIDENCE_PACK_JSON/i);
+          if (match) {
+            const parsed = JSON.parse(match[1]);
+            if (parsed.codexEvidencePack) fs.writeFileSync(outPath, JSON.stringify(parsed.codexEvidencePack, null, 2));
+          }
+          NODE
           echo "CODEX_PR_BODY_PATH=$RUNNER_TEMP/codex-pr-body.md" >> "$GITHUB_ENV"
+          if [ -s "$RUNNER_TEMP/codex-evidence-pack.from-pr.json" ]; then
+            echo "CODEX_EVIDENCE_PACK_PATH=$RUNNER_TEMP/codex-evidence-pack.from-pr.json" >> "$GITHUB_ENV"
+          fi
       - name: Generate remote product evidence
         if: always()
         shell: bash
