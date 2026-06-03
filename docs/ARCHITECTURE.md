@@ -10,7 +10,7 @@ This boundary does not implement token sale, token exchange, cash-out, custody, 
 
 PR iris-core-delivery-adapter adds an injected IRIS Core client and an `iris.deliver` outbox handler. Confirmed support events can be delivered to IRIS Core internal event, reaction, affinity, and memory endpoints through sanitized DTOs. Wallet addresses, secrets, raw names, raw messages, YouTube IDs, and wallet labels are excluded from delivery payloads.
 
-Delivery is at least once and uses idempotency keys based on `source_event_id` and delivery type. Timeout and 5xx responses retry through the outbox backoff path. 401 and 403 are treated as terminal credential/configuration failures and are sent to DLQ through the existing retry limit path.
+Delivery is at least once and uses idempotency keys based on `source_event_id` and delivery type. Timeout and 5xx responses retry through the outbox backoff path. 401 and 403 are treated as terminal credential/configuration failures and are sent immediately to DLQ independent of `max_retry_count`.
 
 YouTube LIVE is the broadcast and chat surface only. IRIS Web Companion is the external crypto Tip surface. CRIPTO-TIP must not replace YouTube Super Chat payment or present IRIS Token Tip as YouTube Super Chat.
 

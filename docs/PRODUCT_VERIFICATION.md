@@ -63,7 +63,7 @@ Verified product behavior:
 - `memory.write_candidate` delivery excludes wallet address, secret, payment-based romance, ownership, or control.
 - Delivery idempotency is enforced by `iris.deliver:*:<source_event_id>` keys.
 - Timeout and 5xx failures retry through outbox backoff.
-- 401 and 403 failures move to DLQ through the retry limit path.
+- 401 and 403 failures move immediately to DLQ independent of `max_retry_count`.
 - Success completes the outbox job and failure updates retry/DLQ state.
 
 Deferred behavior:

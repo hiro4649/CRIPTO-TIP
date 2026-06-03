@@ -55,7 +55,7 @@ Verified behavior expected from tests:
 - memory.write_candidate delivery success.
 - idempotent delivery by outbox idempotency key.
 - HTTP timeout and 5xx retry/backoff.
-- 401/403 DLQ behavior.
+- 401/403 immediate DLQ behavior independent of `max_retry_count`.
 - wallet_address and secret not sent to IRIS Core payloads.
 - delivery_status/outbox completion and failure integration.
 - no unsafe valuation wording in reaction delivery payload.
@@ -64,19 +64,19 @@ Verified behavior expected from tests:
 
 Changed area: IRIS Core delivery adapter, `iris.deliver` outbox consumer, config validation, delivery DTO privacy, retry/DLQ behavior, and runbook/docs.
 
-Test command: corepack pnpm test: pass, 11 test files, 67 passed, 6 skipped.
+Test command: corepack pnpm test: pass, 11 test files, 68 passed, 6 skipped.
 
-What the test covers: IRIS delivery success paths, idempotency, timeout/5xx retry, 401/403 DLQ, wallet/secret exclusion, outbox complete/fail integration, and safe reaction payload wording.
+What the test covers: IRIS delivery success paths, idempotency, timeout/5xx retry, 401/403 immediate DLQ independent of `max_retry_count`, wallet/secret exclusion, outbox complete/fail integration, and safe reaction payload wording.
 
 Edge cases: duplicate delivery jobs, terminal auth errors, transient HTTP failures, local forge unavailable with GitHub contracts CI fallback.
 
-Failure paths: 401/403 are terminal DLQ failures; timeout and 5xx remain retryable through outbox backoff; delivery status changes to retrying or failed before the outbox moves forward.
+Failure paths: 401/403 are terminal DLQ failures independent of `max_retry_count`; timeout and 5xx remain retryable through outbox backoff; delivery status changes to retrying or failed before the outbox moves forward.
 
 Reason if no test: official YouTube connector, multiple IRIS Core routing, production credential storage, multi-chain support, and multi-token support are intentionally out of scope.
 
 ## Testing and review
 
-Tests or checks run: corepack pnpm install pass; corepack pnpm lint pass; corepack pnpm typecheck pass; corepack pnpm test pass, 11 test files, 67 passed, 6 skipped; npm test pass, 11 test files, 67 passed, 6 skipped; local forge unavailable; security scans run.
+Tests or checks run: corepack pnpm install pass; corepack pnpm lint pass; corepack pnpm typecheck pass; corepack pnpm test pass, 11 test files, 68 passed, 6 skipped; npm test pass, 11 test files, 68 passed, 6 skipped; local forge unavailable; security scans run.
 
 Review focus: payload privacy, idempotency key construction, HTTP auth/signature boundary, retry/DLQ classification, and no production secret commit.
 

@@ -1,5 +1,5 @@
 import { CharacterReactionRequestSchema, SupportReceivedSchema } from "@cripto-tip/shared";
-import type { OutboxHandler } from "../outbox/worker.js";
+import { TerminalOutboxError, type OutboxHandler } from "../outbox/worker.js";
 import type { CriptoTipRepository, OutboxEvent } from "../repositories/types.js";
 import {
   buildAffinityDelivery,
@@ -24,7 +24,9 @@ export function createIrisDeliverOutboxHandler(args: { repository: CriptoTipRepo
       await args.client.deliver(delivery);
       await args.repository.updateSupportEventDeliveryStatus(delivery.source_event_id, "delivered");
     } catch (error) {
-      await args.repository.updateSupportEventDeliveryStatus(delivery.source_event_id, isTerminalIrisDeliveryError(error) ? "failed" : "retrying");
+      const terminal = isTerminalIrisDeliveryError(error);
+      await args.repository.updateSupportEventDeliveryStatus(delivery.source_event_id, terminal ? "failed" : "retrying");
+      if (terminal) throw new TerminalOutboxError(error instanceof Error ? error.message : "terminal iris delivery error");
       throw error;
     }
   };

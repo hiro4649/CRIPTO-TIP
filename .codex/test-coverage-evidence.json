@@ -4,7 +4,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
   "testFiles": 11,
-  "testsPassed": 67,
+  "testsPassed": 68,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -26,6 +26,7 @@
     "iris_core_delivery",
     "iris_delivery_idempotency",
     "iris_delivery_retry_dlq",
+    "iris_terminal_auth_immediate_dlq",
     "iris_payload_privacy"
   ],
   "uncoveredRisks": [

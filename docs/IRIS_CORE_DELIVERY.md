@@ -30,7 +30,7 @@ Delivery is at least once. IRIS Core must consume the idempotency key:
 - `iris.deliver:affinity:<source_event_id>:<character_id>`
 - `iris.deliver:memory:<source_event_id>:<character_id>`
 
-Timeout and 5xx failures retry through the existing outbox backoff path. 401 and 403 are terminal credential/configuration failures and move to DLQ through the repository retry limit path.
+Timeout and 5xx failures retry through the existing outbox backoff path. 401 and 403 are terminal credential/configuration failures and move to DLQ immediately through `TerminalOutboxError`, independent of `max_retry_count`.
 
 ## Observability
 

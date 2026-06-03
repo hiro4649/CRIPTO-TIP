@@ -73,7 +73,7 @@ IRIS Core delivery uses `iris.deliver` outbox jobs and idempotency keys. If IRIS
 
 1. Inspect `outbox_events` for `job_type = 'iris.deliver'`.
 2. Timeout and 5xx failures should remain retryable with increasing `retry_count` and future `next_attempt_at`.
-3. 401 and 403 indicate credential or authorization failure. Rotate `IRIS_CORE_SHARED_SECRET`, verify `IRIS_CORE_API_URL`, then use the admin DLQ retry endpoint after the credential boundary is fixed.
+3. 401 and 403 indicate credential or authorization failure and move to DLQ immediately, independent of `max_retry_count`. Rotate `IRIS_CORE_SHARED_SECRET`, verify `IRIS_CORE_API_URL`, then use the admin DLQ retry endpoint after the credential boundary is fixed.
 4. Do not dump request bodies or shared secrets into logs.
 5. Verify that retry does not send wallet addresses, raw messages, or secrets to IRIS Core.
 

@@ -19,6 +19,7 @@
     "production_iris_delivery": "pass",
     "iris_delivery_idempotency": "pass",
     "iris_delivery_retry_dlq": "pass",
+    "iris_terminal_auth_immediate_dlq": "pass",
     "iris_payload_privacy": "pass",
     "multiple_chains": "not_started",
     "multiple_tokens": "not_started",

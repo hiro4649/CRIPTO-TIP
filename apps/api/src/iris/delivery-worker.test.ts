@@ -87,13 +87,13 @@ describe("IRIS Core delivery adapter", () => {
     expect([...repo.outboxEvents.values()].filter((event) => event.idempotency_key === delivery.idempotency_key)).toHaveLength(1);
   });
 
-  it("retries timeout and 5xx failures with backoff state", async () => {
+  it("retries timeout and 5xx failures with backoff state instead of immediate DLQ", async () => {
     for (const error of [new Error("timeout"), new IrisCoreHttpError(503)]) {
       const repo = new InMemoryRepository();
       const support = supportEvent();
       await repo.createSupportEventIfAbsent(support);
       const delivery = firstDelivery(buildIrisDeliveryJobsForSupportEvent(support));
-      await enqueueDelivery(repo, delivery, 3);
+      await enqueueDelivery(repo, delivery, 5);
 
       await processOutboxBatch({ repository: repo, workerId: "iris-worker", limit: 1, handler: createIrisDeliverOutboxHandler({ repository: repo, client: new MockIrisCoreClient(error) }), now: new Date("2999-06-03T00:00:00.000Z") });
 
@@ -101,22 +101,26 @@ describe("IRIS Core delivery adapter", () => {
       expect(job?.status).toBe("pending");
       expect(job?.retry_count).toBe(1);
       expect(job?.last_error).not.toContain("change-me");
+      expect([...repo.deadLetterEvents.values()]).toHaveLength(0);
       expect(repo.supportEventDeliveryStatus.get(delivery.source_event_id)).toBe("retrying");
     }
   });
 
-  it("moves 401 and 403 failures to DLQ without over-retry", async () => {
+  it("moves 401 and 403 failures to DLQ immediately without depending on max_retry_count", async () => {
     for (const statusCode of [401, 403]) {
       const repo = new InMemoryRepository();
       const support = supportEvent();
       await repo.createSupportEventIfAbsent(support);
       const delivery = firstDelivery(buildIrisDeliveryJobsForSupportEvent(support));
-      await enqueueDelivery(repo, delivery, 1);
+      await enqueueDelivery(repo, delivery, 5);
 
       await processOutboxBatch({ repository: repo, workerId: "iris-worker", limit: 1, handler: createIrisDeliverOutboxHandler({ repository: repo, client: new MockIrisCoreClient(new IrisCoreHttpError(statusCode)) }) });
 
-      expect(repo.outboxEvents.get(delivery.idempotency_key)?.status).toBe("dead_lettered");
+      const job = repo.outboxEvents.get(delivery.idempotency_key);
+      expect(job?.status).toBe("dead_lettered");
+      expect(job?.retry_count).toBe(0);
       expect([...repo.deadLetterEvents.values()][0]?.job_type).toBe("iris.deliver");
+      expect([...repo.deadLetterEvents.values()][0]?.last_error).toContain(String(statusCode));
       expect(repo.supportEventDeliveryStatus.get(delivery.source_event_id)).toBe("failed");
     }
   });

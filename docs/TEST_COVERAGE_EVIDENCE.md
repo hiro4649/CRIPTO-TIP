@@ -2,7 +2,7 @@
 
 ## PR production-chain-listener-reorg
 
-Latest local result: `corepack pnpm test` passed with 11 test files, 67 passed tests, and 6 skipped tests.
+Latest local result: `corepack pnpm test` passed with 11 test files, 68 passed tests, and 6 skipped tests.
 
 Risk coverage added:
 
@@ -25,14 +25,15 @@ PR iris-core-delivery-adapter adds `apps/api/src/iris/delivery-worker.test.ts` f
 - memory.write_candidate delivery success.
 - idempotent delivery by outbox idempotency key.
 - timeout and 5xx retry/backoff state.
-- 401 and 403 DLQ path.
+- 401 and 403 immediate DLQ path independent of `max_retry_count`.
+- terminal outbox errors move to DLQ without completing or retrying the job.
 - wallet address and secret exclusion from IRIS payloads.
 - outbox complete/fail integration.
 - no unsafe valuation wording in reaction delivery payload.
 
 Latest local command: `corepack pnpm test apps/api`.
 
-Latest local result: 11 test files, 73 total tests, 67 passed tests, 6 skipped tests.
+Latest local result: 11 test files, 74 total tests, 68 passed tests, 6 skipped tests.
 
 The skipped live Postgres tests require `RUN_LIVE_POSTGRES_TESTS=true` and `DATABASE_URL`. GitHub CI provides those values with a Postgres service, so the migration application and live repository tests run remotely.
 

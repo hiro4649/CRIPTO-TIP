@@ -99,7 +99,10 @@ Current-head evidence to update in PR body:
 
 - Product code changed: yes.
 - Runtime readiness claim: no.
-- Test command: `corepack pnpm test` with IRIS delivery adapter tests.
+- Test command: `corepack pnpm test` passed with 11 test files, 68 passed tests, and 6 skipped tests.
+- Terminal auth evidence: `apps/api/src/iris/delivery-worker.test.ts` verifies 401 and 403 move immediately to DLQ independent of `max_retry_count`.
+- Retry evidence: `apps/api/src/iris/delivery-worker.test.ts` verifies timeout and 503 remain retryable and do not immediately DLQ when `max_retry_count` is 5.
+- Worker evidence: `apps/api/src/outbox/worker.test.ts` verifies `TerminalOutboxError` moves to DLQ without completing or retrying the job.
 - Security scan: secret/risky rendering grep and prohibited wording scan.
 - Quality-gate expected status: pending until GitHub run completes.
 
