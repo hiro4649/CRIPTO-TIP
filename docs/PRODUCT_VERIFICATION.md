@@ -1,5 +1,28 @@
 # Product Verification
 
+## PR production-chain-listener-reorg
+
+Verified product behavior:
+
+- TipRouterV1 `TipSent` logs decode through a fixed ABI.
+- Duplicate logs do not create duplicate `tip_transactions` or duplicate `chain.tip.detected` outbox jobs.
+- `eth_getLogs` catch-up scans from persisted cursor state.
+- WebSocket subscription accepts new logs through an injected provider boundary.
+- Pending transactions do not enqueue `support.normalize` before the confirmation window is met.
+- Confirmed transactions enqueue `support.normalize` once.
+- Reorged transactions are marked `reorged` and do not enqueue `support.normalize`.
+- Decoded on-chain log payloads do not include display names, comment text, YouTube names, YouTube IDs, or wallet labels.
+
+Unverified or deferred behavior:
+
+- Production RPC endpoint wiring and secret handling.
+- Listener deployment supervision.
+- Official YouTube API connector.
+- Production IRIS Core delivery adapter.
+- Multiple chain support.
+- Multiple token support.
+- Wallet custody, which remains forbidden.
+
 ## Verified Behavior
 
 | Behavior | Evidence | Result |

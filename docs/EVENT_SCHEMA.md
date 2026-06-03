@@ -1,5 +1,13 @@
 # Event Schema
 
+## Chain Listener Events
+
+`chain.tip.detected` is enqueued after an idempotent TipRouterV1 `TipSent` log is recorded in `tip_transactions`.
+
+`support.normalize` is enqueued only after the transaction reaches the configured confirmation window and has not been reorged.
+
+On-chain log payloads contain address and hash identifiers only. They do not contain display names, comment text, YouTube names, YouTube IDs, wallet labels, or raw messages.
+
 Shared Zod schemas live in `packages/shared`.
 
 Events:

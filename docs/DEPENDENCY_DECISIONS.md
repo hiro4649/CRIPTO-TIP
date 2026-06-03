@@ -18,6 +18,8 @@ Checked on 2026-06-02 using npm registry metadata after `npm view` commands time
 | pg | 8.21.0 | Use `^8.21.0` for live PostgreSQL repository integration tests and future DB-backed repository wiring. |
 | @types/pg | 8.20.0 | Use `^8.20.0` for TypeScript coverage of the `pg` integration test client. |
 
+PR production-chain-listener-reorg dependency check: `npm view viem version` returned `2.52.0` on 2026-06-03. `apps/api` now declares `viem` `2.52.0` for TipRouterV1 ABI event decoding and test log encoding.
+
 Production integrations remain mocked. No production YouTube API, RPC, or IRIS API dependency is required for CI.
 
 Contract CI dependency policy: Foundry and Solidity test dependencies are pinned in CI. The workflow uses Foundry `v1.7.1`, OpenZeppelin Contracts `v5.6.1`, forge-std `v1.7.1`, and ds-test commit `e282159d5170298eb2455a6c05280ab5a73a4ef0` instead of resolving default branches at run time.

@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const sql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8").toLowerCase();
+const chainSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8").toLowerCase();
 
 describe("migration 0001", () => {
   it("contains required tables", () => {
@@ -22,5 +23,19 @@ describe("migration 0001", () => {
     expect(sql).toContain("idempotency_key text not null unique");
     expect(sql).toContain("client_tip_id text not null unique");
     expect(sql).toContain("normalized_wallet_address text not null unique");
+  });
+});
+
+describe("migration 0002", () => {
+  it("adds chain cursor persistence for listener catch-up", () => {
+    expect(chainSql).toContain("create table chain_cursors");
+    expect(chainSql).toContain("unique(chain_id, contract_address)");
+    expect(chainSql).toContain("last_scanned_block bigint not null");
+    expect(chainSql).toContain("last_finalized_block bigint not null");
+  });
+
+  it("indexes pending transaction confirmation scans", () => {
+    expect(chainSql).toContain("tip_transactions_confirmation_idx");
+    expect(chainSql).toContain("chain_id, contract_address, status, block_number");
   });
 });

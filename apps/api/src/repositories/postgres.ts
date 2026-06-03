@@ -1,5 +1,5 @@
 import { createPublicId, SupportReceivedSchema, type CharacterReactionRequest, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export type QueryClient = {
   query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
@@ -66,6 +66,43 @@ function rowToDeadLetterEvent(row: Record<string, unknown>): DeadLetterEvent {
     failed_at: iso(row.failed_at),
     created_at: iso(row.created_at)
   };
+}
+
+function rowToTipTransaction(row: Record<string, unknown>): TipTransaction {
+  const tx: TipTransaction = {
+    id: String(row.id),
+    chain_id: Number(row.chain_id),
+    contract_address: String(row.contract_address),
+    token_address: String(row.token_address),
+    tx_hash: String(row.tx_hash),
+    log_index: Number(row.log_index),
+    block_number: Number(row.block_number),
+    from_address: String(row.from_address),
+    stream_id: String(row.stream_id),
+    character_id: String(row.character_id),
+    amount_raw: String(row.amount_raw),
+    message_hash: String(row.message_hash),
+    status: row.status as TipTransaction["status"],
+    confirmations: Number(row.confirmations)
+  };
+  if (row.block_hash) tx.block_hash = String(row.block_hash);
+  if (row.client_tip_id) tx.client_tip_id = String(row.client_tip_id);
+  if (row.detected_at) tx.detected_at = iso(row.detected_at);
+  if (row.confirmed_at) tx.confirmed_at = iso(row.confirmed_at);
+  return tx;
+}
+
+function rowToChainCursor(row: Record<string, unknown>): ChainCursor {
+  const cursor: ChainCursor = {
+    id: String(row.id),
+    chain_id: Number(row.chain_id),
+    contract_address: String(row.contract_address),
+    last_scanned_block: Number(row.last_scanned_block),
+    last_finalized_block: Number(row.last_finalized_block),
+    updated_at: iso(row.updated_at)
+  };
+  if (row.last_seen_block_hash) cursor.last_seen_block_hash = String(row.last_seen_block_hash);
+  return cursor;
 }
 
 function rowToSupportReceived(row: SupportEventRow): SupportReceived {
@@ -193,18 +230,69 @@ export class PostgresRepository implements CriptoTipRepository {
         client_tip_id, status, confirmations, detected_at, confirmed_at)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
        on conflict (chain_id, contract_address, tx_hash, log_index) do nothing`,
-      [transaction.id, transaction.chain_id, transaction.contract_address, transaction.token_address, transaction.tx_hash, transaction.log_index, transaction.block_number, null, transaction.from_address, transaction.from_address.toLowerCase(), transaction.stream_id, transaction.character_id, transaction.amount_raw, transaction.message_hash, transaction.client_tip_id, transaction.status, transaction.confirmations, null, null]
+      [transaction.id, transaction.chain_id, transaction.contract_address, transaction.token_address, transaction.tx_hash, transaction.log_index, transaction.block_number, transaction.block_hash ?? null, transaction.from_address, transaction.from_address.toLowerCase(), transaction.stream_id, transaction.character_id, transaction.amount_raw, transaction.message_hash, transaction.client_tip_id, transaction.status, transaction.confirmations, transaction.detected_at ?? null, transaction.confirmed_at ?? null]
     );
     return (await this.findTipTransactionByChainLog(transaction)) ?? transaction;
   }
   async findTipTransactionByChainLog(key: ChainLogKey) {
-    const result = await this.db.query<TipTransaction>(
+    const result = await this.db.query<Record<string, unknown>>(
       `select * from tip_transactions
        where chain_id = $1 and contract_address = $2 and tx_hash = $3 and log_index = $4
        limit 1`,
       [key.chain_id, key.contract_address, key.tx_hash, key.log_index]
     );
-    return result.rows[0];
+    return result.rows[0] ? rowToTipTransaction(result.rows[0]) : undefined;
+  }
+  async listPendingTipTransactions(chainId: number, contractAddress: string) {
+    const result = await this.db.query<Record<string, unknown>>(
+      `select * from tip_transactions
+       where chain_id = $1
+         and contract_address = $2
+         and status in ('detected', 'pending_confirmation')
+       order by block_number asc, log_index asc`,
+      [chainId, contractAddress]
+    );
+    return result.rows.map(rowToTipTransaction);
+  }
+  async updateTipTransactionByChainLog(key: ChainLogKey, patch: TipTransactionStatusPatch) {
+    const current = await this.findTipTransactionByChainLog(key);
+    if (!current) return undefined;
+    const next = { ...current, ...patch };
+    const result = await this.db.query<Record<string, unknown>>(
+      `update tip_transactions
+       set status = $1,
+           confirmations = $2,
+           block_hash = $3,
+           confirmed_at = $4,
+           updated_at = now()
+       where chain_id = $5 and contract_address = $6 and tx_hash = $7 and log_index = $8
+       returning *`,
+      [next.status, next.confirmations, next.block_hash ?? null, next.confirmed_at ?? null, key.chain_id, key.contract_address, key.tx_hash, key.log_index]
+    );
+    return result.rows[0] ? rowToTipTransaction(result.rows[0]) : undefined;
+  }
+  async getChainCursor(key: ChainCursorKey) {
+    const result = await this.db.query<Record<string, unknown>>(
+      `select * from chain_cursors where chain_id = $1 and contract_address = $2 limit 1`,
+      [key.chain_id, key.contract_address]
+    );
+    return result.rows[0] ? rowToChainCursor(result.rows[0]) : undefined;
+  }
+  async saveChainCursor(cursor: ChainCursor) {
+    const result = await this.db.query<Record<string, unknown>>(
+      `insert into chain_cursors (id, chain_id, contract_address, last_scanned_block, last_finalized_block, last_seen_block_hash, updated_at)
+       values ($1,$2,$3,$4,$5,$6,$7)
+       on conflict (chain_id, contract_address) do update set
+         last_scanned_block = excluded.last_scanned_block,
+         last_finalized_block = excluded.last_finalized_block,
+         last_seen_block_hash = excluded.last_seen_block_hash,
+         updated_at = excluded.updated_at
+       returning *`,
+      [cursor.id, cursor.chain_id, cursor.contract_address, cursor.last_scanned_block, cursor.last_finalized_block, cursor.last_seen_block_hash ?? null, cursor.updated_at]
+    );
+    const row = result.rows[0];
+    if (!row) throw new Error("chain cursor upsert did not return a row");
+    return rowToChainCursor(row);
   }
   async createSupportEventIfAbsent(event: SupportReceived) {
     const existing = await this.getSupportEventBySource(event.source, event.source_event_id);

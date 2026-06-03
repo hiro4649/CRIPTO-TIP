@@ -74,6 +74,20 @@ export type AuditLogInput = {
 
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
+export type ChainCursor = {
+  id: string;
+  chain_id: number;
+  contract_address: string;
+  last_scanned_block: number;
+  last_finalized_block: number;
+  last_seen_block_hash?: string;
+  updated_at: string;
+};
+
+export type ChainCursorKey = Pick<ChainCursor, "chain_id" | "contract_address">;
+
+export type TipTransactionStatusPatch = Partial<Pick<TipTransaction, "status" | "confirmations" | "block_hash" | "confirmed_at">>;
+
 export interface CriptoTipRepository {
   createLiveSession(session: LiveSession): Promise<LiveSession>;
   getLiveSession(id: string): Promise<LiveSession | undefined>;
@@ -86,6 +100,10 @@ export interface CriptoTipRepository {
   listSupportEventsByStream(streamId: string): Promise<SupportReceived[]>;
   recordTipTransaction(transaction: TipTransaction): Promise<TipTransaction>;
   findTipTransactionByChainLog(key: ChainLogKey): Promise<TipTransaction | undefined>;
+  listPendingTipTransactions(chainId: number, contractAddress: string): Promise<TipTransaction[]>;
+  updateTipTransactionByChainLog(key: ChainLogKey, patch: TipTransactionStatusPatch): Promise<TipTransaction | undefined>;
+  getChainCursor(key: ChainCursorKey): Promise<ChainCursor | undefined>;
+  saveChainCursor(cursor: ChainCursor): Promise<ChainCursor>;
   createSupportEventIfAbsent(event: SupportReceived): Promise<{ event: SupportReceived; created: boolean }>;
   getSupportEventBySource(source: string, sourceEventId: string): Promise<SupportReceived | undefined>;
   applyAffinityIfAbsent(entry: AffinityLedgerEntry): Promise<{ entry: AffinityLedgerEntry; created: boolean }>;

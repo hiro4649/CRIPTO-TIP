@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -19,6 +19,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   liveSessions = new Map<string, LiveSession>();
   tipIntents = new Map<string, TipIntent>();
   tipTransactions = new Map<string, TipTransaction>();
+  chainCursors = new Map<string, ChainCursor>();
   supportEvents = new Map<string, SupportReceived>();
   affinityLedger = new Map<string, AffinityLedgerEntry>();
   outboxEvents = new Map<string, OutboxEvent>();
@@ -33,6 +34,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.liveSessions.clear();
     this.tipIntents.clear();
     this.tipTransactions.clear();
+    this.chainCursors.clear();
     this.supportEvents.clear();
     this.affinityLedger.clear();
     this.outboxEvents.clear();
@@ -68,6 +70,29 @@ export class InMemoryRepository implements CriptoTipRepository {
     return transaction;
   }
   async findTipTransactionByChainLog(key: ChainLogKey) { return this.tipTransactions.get(createIdempotencyKeyForChainLog(key)); }
+  async listPendingTipTransactions(chainId: number, contractAddress: string) {
+    return [...this.tipTransactions.values()].filter((transaction) =>
+      transaction.chain_id === chainId &&
+      transaction.contract_address.toLowerCase() === contractAddress.toLowerCase() &&
+      (transaction.status === "detected" || transaction.status === "pending_confirmation")
+    );
+  }
+  async updateTipTransactionByChainLog(key: ChainLogKey, patch: TipTransactionStatusPatch) {
+    const idempotencyKey = createIdempotencyKeyForChainLog(key);
+    const existing = this.tipTransactions.get(idempotencyKey);
+    if (!existing) return undefined;
+    const updated = { ...existing, ...patch };
+    this.tipTransactions.set(idempotencyKey, updated);
+    return updated;
+  }
+  async getChainCursor(key: ChainCursorKey) {
+    return this.chainCursors.get(`${key.chain_id}:${key.contract_address.toLowerCase()}`);
+  }
+  async saveChainCursor(cursor: ChainCursor) {
+    const normalized = { ...cursor, contract_address: cursor.contract_address.toLowerCase() };
+    this.chainCursors.set(`${normalized.chain_id}:${normalized.contract_address}`, normalized);
+    return normalized;
+  }
   async createSupportEventIfAbsent(event: SupportReceived) {
     const key = `${event.source}:${event.source_event_id}`;
     const existing = this.supportEvents.get(key);

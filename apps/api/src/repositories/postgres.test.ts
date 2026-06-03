@@ -48,6 +48,7 @@ describe("PostgresRepository", () => {
     await repo.getRecentTipCountByWallet("0x1111111111111111111111111111111111111111");
     await repo.getCurrentAffinity("usr", "char");
     await repo.listSupportEventsByStream("str");
+    await repo.getChainCursor({ chain_id: 1, contract_address: "0x1111111111111111111111111111111111111111" });
     expect(client.queries.every((query) => query.sql.includes("$1"))).toBe(true);
     expect(client.queries.every((query) => Array.isArray(query.params))).toBe(true);
   });
@@ -57,6 +58,7 @@ const runLivePostgres = process.env.RUN_LIVE_POSTGRES_TESTS === "true" && Boolea
 const liveDescribe = runLivePostgres ? describe : describe.skip;
 const here = dirname(fileURLToPath(import.meta.url));
 const migrationSql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8");
+const chainMigrationSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8");
 
 liveDescribe("PostgresRepository live integration", () => {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -67,6 +69,7 @@ liveDescribe("PostgresRepository live integration", () => {
     await pool.query("drop schema public cascade");
     await pool.query("create schema public");
     await pool.query(migrationSql);
+    await pool.query(chainMigrationSql);
   }, 30_000);
 
   afterAll(async () => {
@@ -81,10 +84,19 @@ liveDescribe("PostgresRepository live integration", () => {
   });
 
   it("preserves tip transaction chain-log uniqueness in the live database", async () => {
-    const tx: TipTransaction = { id: "tx_live_1", chain_id: 31337, contract_address: wallet, token_address: wallet, tx_hash: "0xlive", log_index: 1, block_number: 1, from_address: wallet, stream_id: "str", character_id: "char", amount_raw: "100", message_hash: "0x" + "a".repeat(64), client_tip_id: "0x" + "b".repeat(64), status: "detected", confirmations: 0 };
+    const tx: TipTransaction = { id: "tx_live_1", chain_id: 31337, contract_address: wallet, token_address: wallet, tx_hash: "0xlive", log_index: 1, block_number: 1, block_hash: "0xblock", from_address: wallet, stream_id: "str", character_id: "char", amount_raw: "100", message_hash: "0x" + "a".repeat(64), client_tip_id: "0x" + "b".repeat(64), status: "detected", confirmations: 0 };
     await repo.recordTipTransaction(tx);
     const duplicate = await repo.recordTipTransaction({ ...tx, id: "tx_live_2" });
     expect(duplicate.id).toBe("tx_live_1");
+    const updated = await repo.updateTipTransactionByChainLog(tx, { status: "confirmed", confirmations: 3, confirmed_at: "2026-06-03T00:00:00.000Z" });
+    expect(updated?.status).toBe("confirmed");
+  });
+
+  it("persists chain cursors in the live database", async () => {
+    const saved = await repo.saveChainCursor({ id: "cursor_live", chain_id: 31337, contract_address: wallet, last_scanned_block: 100, last_finalized_block: 94, last_seen_block_hash: "0xblock100", updated_at: "2026-06-03T00:00:00.000Z" });
+    expect(saved.last_scanned_block).toBe(100);
+    const loaded = await repo.getChainCursor({ chain_id: 31337, contract_address: wallet });
+    expect(loaded?.last_finalized_block).toBe(94);
   });
 
   it("preserves support event and affinity idempotency in the live database", async () => {
