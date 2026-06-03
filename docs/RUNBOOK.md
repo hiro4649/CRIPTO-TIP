@@ -84,3 +84,13 @@ Credential rotation:
 3. Restart only the IRIS delivery worker.
 4. Confirm a test `iris.deliver` job succeeds.
 5. Retry DLQ jobs through the authenticated admin endpoint.
+
+## YouTube Connector
+
+YouTube connector failures:
+
+1. Confirm `YOUTUBE_CONNECTOR_MODE=official` only in an environment with managed YouTube credentials.
+2. For quota exceeded responses, reduce polling pressure and follow the `pollingIntervalMillis` returned by the official API.
+3. If `liveChatMessages.streamList` is unavailable, the connector falls back to `liveChatMessages.list`.
+4. If verification codes fail, confirm the code matches `IRIS-XXXXXX`, is for the same stream, is unexpired, and has not been consumed.
+5. Do not use scraping, HTML parsing, browser automation, or user-provided URLs for YouTube chat ingestion.

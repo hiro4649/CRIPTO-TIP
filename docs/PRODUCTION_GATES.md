@@ -4,7 +4,7 @@
 
 Current state: G3 partial.
 
-IRIS delivery update: PR iris-core-delivery-adapter advances G3 by adding the IRIS Core delivery adapter boundary, idempotent `iris.deliver` handling, retry/DLQ integration, and sanitized payload tests. G3 remains partial until the official YouTube connector, runtime deployment wiring, and operational signoff are complete.
+IRIS delivery update: PR iris-core-delivery-adapter advances G3 by adding the IRIS Core delivery adapter boundary, idempotent `iris.deliver` handling, retry/DLQ integration, and sanitized payload tests. The official YouTube connector boundary is now present, but G3 remains partial until production credential rollout, runtime deployment wiring, and operational signoff are complete.
 
 G0 scaffold: pass.
 
@@ -21,7 +21,7 @@ G4 production ready: not started. This repository is still not production ready.
 | G0 scaffold | Repo, workspace, mock app/API/contract skeleton exists. | Passed by PR #1. |
 | G1 mock vertical slice | Mock Tip creates support event, moderation gate, affinity, reaction request, and overlay alert. | Passed by PR #1 and preserved in PR #2 tests. |
 | G2 durable MVP | Durable schema, idempotency constraints, repository boundary, outbox/DLQ boundary, stale lock reclaim, admin DLQ retry, and live DB tests exist. | Passed by PR #4 for storage/queue boundary. |
-| G3 integration ready | Production chain listener, official YouTube connector, and IRIS delivery adapter are ready. | Partial: chain listener and IRIS delivery adapter boundaries exist; official YouTube connector and runtime signoff remain. |
+| G3 integration ready | Production chain listener, official YouTube connector, and IRIS delivery adapter are ready. | Partial: chain listener, IRIS delivery, and YouTube connector boundaries exist; production credential rollout and runtime signoff remain. |
 | G4 production ready | Production secrets, token rotation, reorg-tested chain listener, admin DLQ retry, monitoring, and legal/security signoff are complete. | Not started. |
 
 PR #4 completes the storage/queue portion of G2. It is not production ready.

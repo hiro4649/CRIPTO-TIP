@@ -129,11 +129,15 @@ export const OverlayTipAlertSchema = z.object({ event_type: z.literal("overlay.t
 export type OverlayTipAlert = z.infer<typeof OverlayTipAlertSchema>;
 export const YouTubeChatMessageReceivedSchema = z.object({ event_type: z.literal("youtube.chat.message.received"), event_id: z.string(), stream_id: z.string(), author_display_name: z.string(), author_channel_id: z.string(), message: z.string(), published_at: z.string() });
 export const YouTubeViewerVerifiedSchema = z.object({ event_type: z.literal("youtube.viewer.verified"), event_id: z.string(), iris_user_id: z.string(), youtube_author_channel_id: z.string(), code: z.string().regex(/^IRIS-[A-Z0-9]{6}$/), expires_at: z.string() });
+export type YouTubeChatMessageReceived = z.infer<typeof YouTubeChatMessageReceivedSchema>;
+export type YouTubeViewerVerified = z.infer<typeof YouTubeViewerVerifiedSchema>;
 export const ModerationDecisionSchema = z.object({ status: z.enum(moderationStatuses), reasons: z.array(z.string()) });
 export type ModerationDecision = z.infer<typeof ModerationDecisionSchema>;
 export const AffinityScoreSchema = z.object({ previous: z.number(), delta: z.number(), next: z.number(), daily_remaining: z.number(), stream_remaining: z.number() });
 export const YouTubeSuperChatInputSchema = z.object({ live_chat_message_id: z.string(), stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: z.string(), currency: z.string(), amount_display_string: z.string(), tier: z.number().int(), user_comment: z.string().default(""), published_at: z.string() });
 export type YouTubeSuperChatInput = z.infer<typeof YouTubeSuperChatInputSchema>;
+export const YouTubeSuperStickerInputSchema = z.object({ live_chat_message_id: z.string(), stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: z.string(), currency: z.string(), amount_display_string: z.string(), tier: z.number().int(), sticker_display_text: z.string().default("Super Sticker"), published_at: z.string() });
+export type YouTubeSuperStickerInput = z.infer<typeof YouTubeSuperStickerInputSchema>;
 export const TokenTipInputSchema = z.object({ chain_id: z.number().int(), contract_address: WalletAddressSchema, tx_hash: z.string(), log_index: z.number().int().nonnegative(), stream_id: z.string(), character_id: z.string(), iris_user_id: z.string().optional(), wallet_address: WalletAddressSchema, display_name: z.string(), amount_raw: z.string(), amount_display: z.string(), tier: z.enum(tiers), message: z.string(), moderation_status: z.enum(moderationStatuses), created_at: z.string() });
 export type TokenTipInput = z.infer<typeof TokenTipInputSchema>;
 
@@ -278,6 +282,39 @@ export function normalizeYouTubeSuperChatToSupportReceived(input: YouTubeSuperCh
     relationship: { previous_affinity: affinity.previous, affinity_delta: affinity.delta, new_affinity: affinity.next, relationship_level: Math.floor(affinity.next / 50) },
     reaction_policy: { can_say_name: moderation.status === "approved", can_read_message: moderation.status === "approved", max_speech_seconds: 12, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
     created_at: input.published_at
+  });
+}
+
+export function normalizeYouTubeSuperStickerToSupportReceived(input: YouTubeSuperStickerInput, affinity = { previous: 0, delta: 0, next: 0 }): SupportReceived {
+  const name = sanitizeDisplayName(input.author_display_name);
+  const message = sanitizeMessage(input.sticker_display_text);
+  const source_event_id = input.live_chat_message_id;
+  return SupportReceivedSchema.parse({
+    event_type: "support.received",
+    event_id: stableId("evt", createIdempotencyKeyForSupportEvent("youtube_super_sticker", source_event_id)),
+    source: "youtube_super_sticker",
+    source_event_id,
+    stream_id: input.stream_id,
+    youtube_video_id: input.youtube_video_id,
+    character_id: input.character_id,
+    viewer: { display_name: name.sanitized, youtube_author_channel_id: input.author_channel_id },
+    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: "approved" },
+    relationship: { previous_affinity: affinity.previous, affinity_delta: affinity.delta, new_affinity: affinity.next, relationship_level: Math.floor(affinity.next / 50) },
+    reaction_policy: { can_say_name: true, can_read_message: false, max_speech_seconds: 10, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
+    created_at: input.published_at
+  });
+}
+
+export function normalizeYouTubeChatMessageReceived(input: { live_chat_message_id: string; stream_id: string; author_channel_id: string; author_display_name: string; message: string; published_at: string }): YouTubeChatMessageReceived {
+  const name = sanitizeDisplayName(input.author_display_name);
+  return YouTubeChatMessageReceivedSchema.parse({
+    event_type: "youtube.chat.message.received",
+    event_id: stableId("ytchat", input.live_chat_message_id),
+    stream_id: input.stream_id,
+    author_display_name: name.sanitized,
+    author_channel_id: input.author_channel_id,
+    message: sanitizeMessage(input.message),
+    published_at: input.published_at
   });
 }
 

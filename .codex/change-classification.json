@@ -31,6 +31,13 @@
       "scope": "config_secret_boundary"
     },
     {
+      "pathPattern": "apps/api/src/youtube/**",
+      "classification": "product_source",
+      "riskLevel": "high",
+      "verification": "apps/api/src/youtube/connector.test.ts and apps/api/src/youtube/verification.test.ts",
+      "scope": "official_youtube_connector"
+    },
+    {
       "pathPattern": "apps/api/src/chain/**",
       "classification": "product_source",
       "riskLevel": "high",
@@ -80,6 +87,13 @@
       "scope": "quality_evidence"
     },
     {
+      "pathPattern": ".env.example",
+      "classification": "config_example",
+      "riskLevel": "medium",
+      "verification": "secret scan and config validation tests",
+      "scope": "config_credential_boundary"
+    },
+    {
       "pathPattern": "apps/api/package.json",
       "classification": "package",
       "riskLevel": "medium",
@@ -121,16 +135,23 @@
     { "path": ".codex/quality-gate-evidence.json", "classification": "verification_relevant" },
     { "path": ".codex/task-contract.json", "classification": "verification_relevant" },
     { "path": ".codex/test-coverage-evidence.json", "classification": "verification_relevant" },
+    { "path": ".env.example", "classification": "config_example" },
     { "path": ".github/workflows/quality-gate.yml", "classification": "workflow" },
     { "path": "apps/api/package.json", "classification": "package" },
     { "path": "apps/api/src/chain/evm-rpc.ts", "classification": "product_source" },
     { "path": "apps/api/src/chain/tip-router-listener.test.ts", "classification": "test" },
     { "path": "apps/api/src/chain/tip-router-listener.ts", "classification": "product_source" },
+    { "path": "apps/api/src/config/env.test.ts", "classification": "test" },
+    { "path": "apps/api/src/config/env.ts", "classification": "config_validation" },
     { "path": "apps/api/src/db/migration.test.ts", "classification": "test" },
     { "path": "apps/api/src/iris/delivery-worker.test.ts", "classification": "test" },
     { "path": "apps/api/src/iris/delivery-worker.ts", "classification": "product_source" },
     { "path": "apps/api/src/outbox/worker.test.ts", "classification": "test" },
     { "path": "apps/api/src/outbox/worker.ts", "classification": "product_source" },
+    { "path": "apps/api/src/youtube/connector.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/connector.ts", "classification": "product_source" },
+    { "path": "apps/api/src/youtube/verification.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/verification.ts", "classification": "product_source" },
     { "path": "apps/api/src/repositories/in-memory.test.ts", "classification": "test" },
     { "path": "apps/api/src/repositories/in-memory.ts", "classification": "product_source" },
     { "path": "apps/api/src/repositories/postgres.test.ts", "classification": "test" },
@@ -147,11 +168,14 @@
     { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
     { "path": "docs/RUNBOOK.md", "classification": "docs" },
     { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/YOUTUBE_CONNECTOR.md", "classification": "docs" },
     { "path": "docs/pr-iris-core-delivery-adapter.md", "classification": "docs" },
+    { "path": "docs/pr-official-youtube-connector.md", "classification": "docs" },
     { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
     { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "harness_managed" },
     { "path": "migrations/0002_chain_listener_reorg.sql", "classification": "product_source" },
     { "path": "package.json", "classification": "package" },
+    { "path": "packages/shared/src/index.test.ts", "classification": "test" },
     { "path": "packages/shared/src/index.ts", "classification": "product_source" },
     { "path": "pnpm-lock.yaml", "classification": "lockfile" }
   ]
