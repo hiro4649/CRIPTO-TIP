@@ -12,9 +12,9 @@ Allowed scope: chain listener service boundary; EVM RPC provider adapter; TipRou
 
 Forbidden scope: official YouTube connector; production IRIS Core delivery; token sale; token exchange; cash-out; custody; internal balance; investment wording; speculative reward; YouTube scraping; multiple chains; multiple tokens; wallet custody.
 
-Runtime readiness claim: partial. The listener boundary is production-shaped, but production RPC secret wiring, deployment supervision, and operational rollout remain gated.
+Runtime readiness claim: no
 
-Product code changed: yes.
+Product code changed: yes
 
 Done criteria: lint pass; typecheck pass; tests pass; contract CI available; Chain Listener decodes TipSent logs; duplicate logs are idempotent; catch-up persists cursor; confirmation window gates `support.normalize`; reorged transactions do not normalize; no user personal text fields are decoded from on-chain logs.
 

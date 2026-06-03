@@ -66,6 +66,20 @@
       "scope": "package_metadata"
     },
     {
+      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "classification": "harness_managed",
+      "riskLevel": "medium",
+      "verification": "quality-gate classification coverage",
+      "scope": "classification_registry"
+    },
+    {
+      "pathPattern": "package.json",
+      "classification": "package",
+      "riskLevel": "medium",
+      "verification": "npm test and corepack pnpm test",
+      "scope": "package_metadata"
+    },
+    {
       "pathPattern": "pnpm-lock.yaml",
       "classification": "lockfile",
       "riskLevel": "medium",
@@ -100,7 +114,9 @@
     { "path": "docs/RUNBOOK.md", "classification": "docs" },
     { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
     { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
+    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "harness_managed" },
     { "path": "migrations/0002_chain_listener_reorg.sql", "classification": "product_source" },
+    { "path": "package.json", "classification": "package" },
     { "path": "packages/shared/src/index.ts", "classification": "product_source" },
     { "path": "pnpm-lock.yaml", "classification": "lockfile" }
   ]
