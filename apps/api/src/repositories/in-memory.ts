@@ -29,6 +29,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   auditLogs: AuditLogInput[] = [];
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
+  supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
 
   clear() {
     this.liveSessions.clear();
@@ -44,6 +45,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.auditLogs = [];
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
+    this.supportEventDeliveryStatus.clear();
   }
 
   async createLiveSession(session: LiveSession) { this.liveSessions.set(session.id, session); return session; }
@@ -195,6 +197,10 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.outboxEvents.set(updated.id, updated);
     await this.writeAuditLog({ actor_type: "admin", actor_id: actorId, action: "retry_dead_letter", target_type: "dead_letter_event", target_id: deadLetterId, after_json: { outbox_event_id: updated.id } });
     return updated;
+  }
+  async updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed") {
+    this.supportEventDeliveryStatus.set(sourceEventId, status);
+    return [...this.supportEvents.values()].find((event) => event.source_event_id === sourceEventId);
   }
   async createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert) {
     const key = `${sourceEventId}:${streamId}`;

@@ -52,3 +52,22 @@ Unverified or deferred behavior:
 ## Boundary Confirmation
 
 YouTube LIVE remains the broadcast and chat surface. IRIS Web Companion remains the external crypto Tip surface. YouTube Super Chat payment is not replaced, and IRIS Token Tip is not represented as YouTube Super Chat.
+
+## PR iris-core-delivery-adapter
+
+Verified product behavior:
+
+- `support.received` delivery succeeds through an injected IRIS Core client.
+- `character.reaction.requested` delivery succeeds without wallet address, secret, or unsafe valuation wording.
+- `affinity.apply` delivery is derived from sanitized support event data.
+- `memory.write_candidate` delivery excludes wallet address, secret, payment-based romance, ownership, or control.
+- Delivery idempotency is enforced by `iris.deliver:*:<source_event_id>` keys.
+- Timeout and 5xx failures retry through outbox backoff.
+- 401 and 403 failures move immediately to DLQ independent of `max_retry_count`.
+- Success completes the outbox job and failure updates retry/DLQ state.
+
+Deferred behavior:
+
+- Official YouTube connector.
+- Multiple IRIS Core environment auto-routing.
+- Production credential provisioning and rotation automation.

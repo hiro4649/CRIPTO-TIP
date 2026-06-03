@@ -10,6 +10,27 @@
   "changeClassificationStatus": "pass",
   "pathPatterns": [
     {
+      "pathPattern": "apps/api/src/iris/**",
+      "classification": "product_source",
+      "riskLevel": "high",
+      "verification": "apps/api/src/iris/delivery-worker.test.ts",
+      "scope": "iris_core_delivery"
+    },
+    {
+      "pathPattern": "apps/api/src/outbox/**",
+      "classification": "product_source",
+      "riskLevel": "high",
+      "verification": "apps/api/src/outbox/worker.test.ts",
+      "scope": "outbox_dlq_boundary"
+    },
+    {
+      "pathPattern": "apps/api/src/config/**",
+      "classification": "config_validation",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/config/env.test.ts",
+      "scope": "config_secret_boundary"
+    },
+    {
       "pathPattern": "apps/api/src/chain/**",
       "classification": "product_source",
       "riskLevel": "high",
@@ -106,6 +127,10 @@
     { "path": "apps/api/src/chain/tip-router-listener.test.ts", "classification": "test" },
     { "path": "apps/api/src/chain/tip-router-listener.ts", "classification": "product_source" },
     { "path": "apps/api/src/db/migration.test.ts", "classification": "test" },
+    { "path": "apps/api/src/iris/delivery-worker.test.ts", "classification": "test" },
+    { "path": "apps/api/src/iris/delivery-worker.ts", "classification": "product_source" },
+    { "path": "apps/api/src/outbox/worker.test.ts", "classification": "test" },
+    { "path": "apps/api/src/outbox/worker.ts", "classification": "product_source" },
     { "path": "apps/api/src/repositories/in-memory.test.ts", "classification": "test" },
     { "path": "apps/api/src/repositories/in-memory.ts", "classification": "product_source" },
     { "path": "apps/api/src/repositories/postgres.test.ts", "classification": "test" },
@@ -115,12 +140,14 @@
     { "path": "docs/CHAIN_LISTENER.md", "classification": "docs" },
     { "path": "docs/DEPENDENCY_DECISIONS.md", "classification": "docs" },
     { "path": "docs/EVENT_SCHEMA.md", "classification": "docs" },
+    { "path": "docs/IRIS_CORE_DELIVERY.md", "classification": "docs" },
     { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
     { "path": "docs/PRODUCTION_GATES.md", "classification": "docs" },
     { "path": "docs/QUALITY_GATE_EVIDENCE.md", "classification": "docs" },
     { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
     { "path": "docs/RUNBOOK.md", "classification": "docs" },
     { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/pr-iris-core-delivery-adapter.md", "classification": "docs" },
     { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
     { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "harness_managed" },
     { "path": "migrations/0002_chain_listener_reorg.sql", "classification": "product_source" },

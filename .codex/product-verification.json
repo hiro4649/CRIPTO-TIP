@@ -16,7 +16,11 @@
     "block_cursor_persistence": "pass",
     "no_user_personal_data_on_chain_payload": "pass",
     "official_youtube_connector": "not_started",
-    "production_iris_delivery": "not_started",
+    "production_iris_delivery": "pass",
+    "iris_delivery_idempotency": "pass",
+    "iris_delivery_retry_dlq": "pass",
+    "iris_terminal_auth_immediate_dlq": "pass",
+    "iris_payload_privacy": "pass",
     "multiple_chains": "not_started",
     "multiple_tokens": "not_started",
     "wallet_custody": "forbidden"
@@ -26,6 +30,10 @@
     "apps/api/src/repositories/in-memory.test.ts",
     "apps/api/src/repositories/postgres.test.ts",
     "apps/api/src/db/migration.test.ts",
-    "docs/CHAIN_LISTENER.md"
-  ]
+    "docs/CHAIN_LISTENER.md",
+    "apps/api/src/iris/delivery-worker.test.ts",
+    "docs/IRIS_CORE_DELIVERY.md"
+  ],
+  "iris_core_delivery_adapter": "pass",
+  "iris_core_delivery_tests": "pass"
 }

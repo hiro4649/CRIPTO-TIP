@@ -114,6 +114,7 @@ export interface CriptoTipRepository {
   failOutboxJob(id: string, error: string, now?: Date): Promise<OutboxEvent | DeadLetterEvent | undefined>;
   moveToDeadLetter(id: string, error: string, now?: Date): Promise<DeadLetterEvent | undefined>;
   retryDeadLetter(deadLetterId: string, actorId: string, now?: Date): Promise<OutboxEvent | undefined>;
+  updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed"): Promise<SupportReceived | undefined>;
   createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;
   createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
   writeAuditLog(input: AuditLogInput): Promise<void>;
