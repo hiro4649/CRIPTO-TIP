@@ -21,6 +21,7 @@
     "src/",
     "apps/",
     "contracts/",
+    "migrations/",
     "packages/",
     "lib/",
     "server/",
