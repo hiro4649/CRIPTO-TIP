@@ -39,9 +39,21 @@ function harnessManagedChange(files = []) {
   });
 }
 
+function classificationFromEnv(env = process.env) {
+  if (!env.CODEX_CHANGE_CLASSIFICATION_JSON) return null;
+  try {
+    const parsed = JSON.parse(env.CODEX_CHANGE_CLASSIFICATION_JSON);
+    if (parsed?.changeClassificationStatus) return parsed.changeClassificationStatus;
+    if (parsed?.classification) return parsed;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 function inferProfile(env = process.env) {
   const files = changedFiles(env);
-  const classified = classifyChange(files, env);
+  const classified = classificationFromEnv(env) || classifyChange(files, env);
   const c = classified.classification;
   if (c.runtimeReadinessClaimed) return 'readiness_claim_r3';
   if (classified.productRelevantChanged) return env.CODEX_RISK_LEVEL === 'R3' ? 'product_r3' : 'product_minor_r2';
@@ -49,7 +61,7 @@ function inferProfile(env = process.env) {
     return env.CODEX_RISK_LEVEL === 'R2' ? 'harness_only_r2' : 'harness_workflow_r3';
   }
   if (c.docsOnly) return 'docs_only_r1_r2';
-  if (c.harnessOnly && env.CODEX_RISK_LEVEL === 'R2') return 'harness_only_r2';
+  if (c.harnessOnly) return env.CODEX_RISK_LEVEL === 'R2' ? 'harness_only_r2' : 'harness_workflow_r3';
   return 'harness_workflow_r3';
 }
 

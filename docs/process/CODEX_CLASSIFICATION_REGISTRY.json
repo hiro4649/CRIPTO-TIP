@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "1.0.2",
+  "schemaVersion": "1.0.3",
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
-  "harnessVersion": "1.0.2",
+  "harnessVersion": "1.0.3",
   "entries": [
     {
       "pathPattern": "scripts/codex-*",
@@ -9,17 +9,23 @@
       "surface": "harness",
       "risk": "R3",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex harness scripts only."
+      "allowsFastPath": false
     },
     {
-      "pathPattern": "scripts/run-tests.js",
-      "classification": "product_relevant",
-      "surface": "verification",
-      "risk": "R3",
+      "pathPattern": "scripts/dev-server.js",
+      "classification": "dev_server_entrypoint",
+      "surface": "runtime",
+      "risk": "R2",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Target-specific test runner script; not a Codex harness script."
+      "allowsFastPath": false
+    },
+    {
+      "pathPattern": ".codex/**",
+      "classification": "harness_managed",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false
     },
     {
       "pathPattern": "docs/process/**",
@@ -27,8 +33,7 @@
       "surface": "harness",
       "risk": "R2",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Harness policies, schemas, fixtures, and knowledge map."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "docs/codex/**",
@@ -36,8 +41,7 @@
       "surface": "harness",
       "risk": "R1",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Harness usage docs."
+      "allowsFastPath": false
     },
     {
       "pathPattern": ".github/workflows/**",
@@ -45,8 +49,7 @@
       "surface": "workflow",
       "risk": "R3",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Workflow behavior requires harness validation."
+      "allowsFastPath": false
     },
     {
       "pathPattern": ".github/pull_request_template.md",
@@ -54,8 +57,7 @@
       "surface": "harness",
       "risk": "R2",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "PR method surface."
+      "allowsFastPath": false
     },
     {
       "pathPattern": ".agents/skills/**",
@@ -63,8 +65,7 @@
       "surface": "harness",
       "risk": "R2",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex skills."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "AGENTS.md",
@@ -72,8 +73,15 @@
       "surface": "harness",
       "risk": "R3",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex entrypoint map."
+      "allowsFastPath": false
+    },
+    {
+      "pathPattern": ".env.example",
+      "classification": "config",
+      "surface": "config_example",
+      "risk": "R1",
+      "requiresProductVerification": true,
+      "allowsFastPath": false
     },
     {
       "pathPattern": "README.md",
@@ -81,35 +89,15 @@
       "surface": "docs",
       "risk": "R1",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Repository overview."
+      "allowsFastPath": false
     },
     {
-      "pathPattern": "CODEX_SOURCE_HARNESS_MANIFEST.json",
-      "classification": "harness_managed",
-      "surface": "harness",
-      "risk": "R3",
+      "pathPattern": "docs/**",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
       "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Source manifest."
-    },
-    {
-      "pathPattern": "scripts/dev-server.js",
-      "classification": "dev_server_entrypoint",
-      "surface": "dev_server",
-      "risk": "R3",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Known dev server entrypoint, not a Codex harness script."
-    },
-    {
-      "pathPattern": "src/**",
-      "classification": "product_source",
-      "surface": "runtime",
-      "risk": "R3",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Product source."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "apps/**",
@@ -117,8 +105,7 @@
       "surface": "runtime",
       "risk": "R3",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Product app source."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "contracts/**",
@@ -126,26 +113,23 @@
       "surface": "api",
       "risk": "R3",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Contracts and API surfaces."
+      "allowsFastPath": false
     },
     {
-      "pathPattern": "tests/**",
-      "classification": "test",
-      "surface": "test",
-      "risk": "R2",
+      "pathPattern": "packages/**",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Product tests."
+      "allowsFastPath": false
     },
     {
-      "pathPattern": "test/**",
-      "classification": "test",
-      "surface": "test",
-      "risk": "R2",
+      "pathPattern": "migrations/**",
+      "classification": "product_relevant",
+      "surface": "db_schema",
+      "risk": "R3",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Product tests."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "package.json",
@@ -153,17 +137,7 @@
       "surface": "runtime",
       "risk": "R4",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Package manifest."
-    },
-    {
-      "pathPattern": "package-lock.json",
-      "classification": "lockfile",
-      "surface": "runtime",
-      "risk": "R4",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Lockfile."
+      "allowsFastPath": false
     },
     {
       "pathPattern": "pnpm-lock.yaml",
@@ -171,44 +145,15 @@
       "surface": "runtime",
       "risk": "R4",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Lockfile."
+      "allowsFastPath": false
     },
     {
-      "pathPattern": "yarn.lock",
-      "classification": "lockfile",
-      "surface": "runtime",
-      "risk": "R4",
+      "pathPattern": "vitest.config.ts",
+      "classification": "config",
+      "surface": "test_config",
+      "risk": "R2",
       "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Lockfile."
-    },
-    {
-      "pathPattern": "docs/process/CODEX_*_POLICY.md",
-      "classification": "harness_managed",
-      "surface": "harness_policy",
-      "risk": "R2",
-      "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex v1.0.2 policy docs."
-    },
-    {
-      "pathPattern": "docs/process/CODEX_*_SCHEMA.json",
-      "classification": "harness_managed",
-      "surface": "harness_schema",
-      "risk": "R2",
-      "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex v1.0.2 schema docs."
-    },
-    {
-      "pathPattern": "scripts/codex-v102-*",
-      "classification": "harness_managed",
-      "surface": "harness",
-      "risk": "R3",
-      "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Codex v1.0.2 source harness scripts."
+      "allowsFastPath": false
     }
   ],
   "safeSummaryOnly": true

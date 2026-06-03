@@ -1,0 +1,100 @@
+import type { LiveSession, OverlayTipAlert, SupportReceived, TipIntent, TipTransaction, CharacterReactionRequest } from "@cripto-tip/shared";
+
+export type JobType =
+  | "chain.tip.detected"
+  | "chain.tip.confirmed"
+  | "support.normalize"
+  | "affinity.apply"
+  | "overlay.emit"
+  | "reaction.request"
+  | "iris.deliver"
+  | "youtube.chat.received"
+  | "youtube.superchat.received"
+  | "dead_letter.retry";
+
+export type OutboxStatus = "pending" | "processing" | "completed" | "failed" | "dead_lettered";
+
+export type PublicTipIntent = Pick<TipIntent, "id" | "stream_id" | "character_id" | "amount_display" | "tier" | "moderation_status" | "created_at"> & {
+  display_name: string;
+  message: string;
+};
+
+export type AffinityLedgerEntry = {
+  id: string;
+  source_event_id: string;
+  iris_user_id: string;
+  character_id: string;
+  previous_affinity: number;
+  affinity_delta: number;
+  new_affinity: number;
+  reason: string;
+  created_at: string;
+};
+
+export type OutboxEvent = {
+  id: string;
+  job_type: JobType;
+  aggregate_type: string;
+  aggregate_id: string;
+  idempotency_key: string;
+  payload_json: unknown;
+  status: OutboxStatus;
+  retry_count: number;
+  max_retry_count: number;
+  next_attempt_at: string;
+  last_error?: string;
+  locked_at?: string;
+  locked_by?: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type DeadLetterEvent = {
+  id: string;
+  original_event_id: string;
+  job_type: JobType;
+  payload_json: unknown;
+  last_error: string;
+  retry_count: number;
+  failed_at: string;
+  created_at: string;
+};
+
+export type AuditLogInput = {
+  actor_type: string;
+  actor_id?: string;
+  action: string;
+  target_type: string;
+  target_id: string;
+  before_json?: unknown;
+  after_json?: unknown;
+  ip_address?: string;
+  user_agent?: string;
+};
+
+export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
+
+export interface CriptoTipRepository {
+  createLiveSession(session: LiveSession): Promise<LiveSession>;
+  getLiveSession(id: string): Promise<LiveSession | undefined>;
+  createTipIntent(intent: TipIntent): Promise<TipIntent>;
+  getTipIntentPublic(id: string): Promise<PublicTipIntent | undefined>;
+  getTipIntentInternal(id: string): Promise<TipIntent | undefined>;
+  getRecentTipCountByWallet(walletAddress: string): Promise<number>;
+  recordRecentTipByWallet(walletAddress: string): Promise<void>;
+  getCurrentAffinity(irisUserId: string, characterId: string): Promise<number>;
+  listSupportEventsByStream(streamId: string): Promise<SupportReceived[]>;
+  recordTipTransaction(transaction: TipTransaction): Promise<TipTransaction>;
+  findTipTransactionByChainLog(key: ChainLogKey): Promise<TipTransaction | undefined>;
+  createSupportEventIfAbsent(event: SupportReceived): Promise<{ event: SupportReceived; created: boolean }>;
+  getSupportEventBySource(source: string, sourceEventId: string): Promise<SupportReceived | undefined>;
+  applyAffinityIfAbsent(entry: AffinityLedgerEntry): Promise<{ entry: AffinityLedgerEntry; created: boolean }>;
+  enqueueOutbox(input: Omit<OutboxEvent, "status" | "retry_count" | "max_retry_count" | "next_attempt_at" | "created_at" | "updated_at"> & { status?: OutboxStatus; retry_count?: number; max_retry_count?: number; next_attempt_at?: string }): Promise<OutboxEvent>;
+  claimOutboxJobs(workerId: string, limit: number, now?: Date): Promise<OutboxEvent[]>;
+  completeOutboxJob(id: string): Promise<OutboxEvent | undefined>;
+  failOutboxJob(id: string, error: string, now?: Date): Promise<OutboxEvent | DeadLetterEvent | undefined>;
+  moveToDeadLetter(id: string, error: string, now?: Date): Promise<DeadLetterEvent | undefined>;
+  createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;
+  createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
+  writeAuditLog(input: AuditLogInput): Promise<void>;
+}

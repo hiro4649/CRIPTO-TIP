@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 2,
+  "testFiles": 9,
+  "tests": 45,
+  "commands": [
+    { "command": "corepack pnpm test", "status": "pass", "testFiles": 9, "tests": 45 },
+    { "command": "npm test", "status": "pass", "testFiles": 9, "tests": 45 },
+    { "command": "npx -y node@20 ./node_modules/vitest/vitest.mjs run packages/shared apps/api apps/overlay apps/web", "status": "pass", "testFiles": 9, "tests": 45 },
+    { "command": "contracts CI", "status": "pass", "runId": "26860944234" }
+  ],
+  "riskCoverage": [
+    "public_dto_safety",
+    "moderation_gates",
+    "idempotency",
+    "repository_injection",
+    "postgres_sql_placeholder",
+    "outbox_dlq",
+    "config_validation",
+    "overlay_auth"
+  ],
+  "uncoveredRisks": [
+    "live_postgres_integration",
+    "real_chain_listener",
+    "official_youtube_connector",
+    "stale_lock_reclaim",
+    "admin_dlq_retry_endpoint"
+  ]
+}

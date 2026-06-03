@@ -46,8 +46,8 @@ Latest npm registry tags were checked on 2026-06-02 and recorded in `docs/DEPEND
 - `corepack pnpm typecheck`
 - `corepack pnpm test`
 - `cd contracts && forge test`
-- `git grep -n "PRIVATE_KEY\\|SECRET\\|TOKEN\\|API_KEY\\|MNEMONIC\\|innerHTML\\|dangerouslySetInnerHTML" -- . ':!pnpm-lock.yaml' ':!.env.example' || true`
-- `rg -n "dangerouslySetInnerHTML|innerHTML|scrape|scraping|スクレイ|price chart|cashout|cash-out|internal balance" apps packages contracts docs README.md COMPLIANCE.md SECURITY.md AGENTS.md -g '!node_modules'`
+- secret/risky rendering grep, excluding lockfile and `.env.example`
+- prohibited scope wording scan across app, package, contract, and docs paths
 - `gitleaks detect --source . --no-git`
 - `semgrep scan --config auto`
 - `slither contracts/src/TipRouterV1.sol`

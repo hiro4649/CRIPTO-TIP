@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 2,
+  "artifactId": "7375148482",
+  "previousArtifactId": "7374500499",
+  "reasonCodeMappings": {
+    "secretScan": [".codex/quality-gate-evidence.json", "git grep secret/risky rendering command"],
+    "changeClassificationStatus": [".codex/change-classification.json"],
+    "productVerificationStatus": [".codex/product-verification.json"],
+    "productVerificationEvidenceStatus": [".codex/product-verification.json", "docs/PRODUCT_VERIFICATION.md"],
+    "classificationCoverageStatus": [".codex/change-classification.json"],
+    "formalEvidencePrecedenceStatus": ["PR body Evidence Integrity", ".codex/task-contract.json"],
+    "remoteNpmDiagnosticNormalizationStatus": [".codex/test-coverage-evidence.json", "npm test"],
+    "reviewIndependenceStatus": [".codex/review-independence.json"],
+    "codeReviewMonitorStatus": ["docs/CODE_REVIEW_MONITOR.md", ".codex/review-independence.json"],
+    "contractGovernanceStatus": ["docs/CONTRACT_GOVERNANCE.md", ".codex/task-contract.json"],
+    "complexityGovernanceStatus": ["docs/COMPLEXITY_GOVERNANCE.md", ".codex/task-contract.json"],
+    "bestOfNEvidenceStatus": [".codex/review-independence.json", ".codex/test-coverage-evidence.json"],
+    "testCoverageEvidenceStatus": [".codex/test-coverage-evidence.json"],
+    "v085SelfTestStatus": [".codex/task-contract.json"],
+    "targetQualityScoreStatus": [".codex/change-classification.json", ".codex/product-verification.json", ".codex/test-coverage-evidence.json", ".codex/review-independence.json"]
+  },
+  "safePlaceholderInventory": [
+    "MOCK_ADMIN_TOKEN",
+    "MOCK_INTERNAL_TOKEN",
+    "MOCK_OVERLAY_TOKEN",
+    "local-admin-placeholder",
+    "local-internal-placeholder",
+    "local-overlay-placeholder"
+  ],
+  "productCodeChanged": true,
+  "runtimeReadinessClaimed": false,
+  "qualityGateIsNotDisabled": true,
+  "classificationRegistry": {
+    ".codex/**": "machine_readable_quality_evidence",
+    ".env.example": "config_example",
+    ".github/workflows/ci.yml": "ci",
+    "AGENTS.md": "governance",
+    "apps/api/src/config/**": "config_validation",
+    "apps/api/src/db/**": "db_schema_test",
+    "apps/api/src/outbox/**": "outbox_dlq_boundary",
+    "apps/api/src/repositories/**": "repository_boundary",
+    "apps/api/src/server.ts": "api_internal_flow",
+    "apps/api/src/server.test.ts": "tests",
+    "apps/overlay/src/main.tsx": "overlay_runtime",
+    "apps/web/app/**": "web_ui_safety",
+    "docs/**": "docs",
+    "migrations/**": "db_schema",
+    "package.json": "package_metadata",
+    "pnpm-lock.yaml": "lockfile",
+    "vitest.config.ts": "test_config"
+  },
+  "codeReviewMonitorEvidence": {
+    "riskSummaryPresent": true,
+    "rollbackOrStopConditionPresent": true,
+    "packageVerificationPresent": true,
+    "currentHeadOwnerConfirmationPresent": true,
+    "apiCompatibilitySummaryPresent": true,
+    "reviewScopeAndVerificationPresent": true,
+    "stubFeatureClaimReplaced": true,
+    "runtimeReadinessClaimed": false
+  },
+  "bestOfNEvidence": {
+    "strategy": "single implementation with explicit review and test evidence",
+    "bestOfNRequired": false,
+    "reason": "PR #2 is constrained to durable boundary work and does not choose among competing runtime algorithms."
+  }
+}

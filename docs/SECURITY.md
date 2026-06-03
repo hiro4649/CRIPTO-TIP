@@ -30,3 +30,11 @@ form-action 'none';
 The overlay must not load user-provided images, URLs, scripts, audio, or HTML.
 
 The MVP accepts `WS /overlay/:streamId/ws?token=...` using a mock token. Production must replace this with a stream-scoped overlay token whose stored value is hashed, read-only, rotated per live session, and never shared with AI prompts or viewer-facing APIs.
+
+Database security decisions:
+
+- Store raw message and sanitized message separately.
+- Store `display_name_raw`, `display_name_sanitized`, and `display_name_llm_safe` separately.
+- Do not include wallet address in AI reaction requests or memory candidates.
+- Store overlay token hashes only in production.
+- Admin mutations must write `audit_logs`.

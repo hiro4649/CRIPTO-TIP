@@ -13,7 +13,15 @@ Checked on 2026-06-02 using npm registry metadata after `npm view` commands time
 | wagmi | 3.6.16 | Included for future wallet UI contracts. |
 | @openzeppelin/contracts | 5.6.1 | Use Solidity imports through Foundry dependency. |
 | vitest | 4.1.8 | Use `^4.1.8` for unit tests. |
+| ws | 8.21.0 | Use `^8.21.0` as a test-only WebSocket client so overlay negative tests run under Node 20 quality-gate. |
+| @types/ws | 8.18.1 | Use `^8.18.1` for TypeScript coverage of the test-only WebSocket client. |
 
 Production integrations remain mocked. No production YouTube API, RPC, or IRIS API dependency is required for CI.
 
-Contract CI dependency policy: Foundry dependencies should be pinned rather than cloning default branches. The current CI uses shallow clones for OpenZeppelin Contracts and forge-std as an MVP compatibility fix; the next hardening step should pin OpenZeppelin to `v5.6.1` and forge-std to a specific commit in either Foundry dependency metadata or CI clone commands.
+Contract CI dependency policy: Foundry and Solidity test dependencies are pinned in CI. The workflow uses Foundry `v1.7.1`, OpenZeppelin Contracts `v5.6.1`, forge-std `v1.7.1`, and ds-test commit `e282159d5170298eb2455a6c05280ab5a73a4ef0` instead of resolving default branches at run time.
+
+Package manager compatibility decision: the primary workspace remains pnpm. The root `npm test` entry is kept as a real test entry for quality-gate remote npm diagnostics and runs workspace test scripts rather than bypassing product tests.
+
+Node 20 quality-gate compatibility decision: Node 20 does not provide the same global `WebSocket` test surface as newer local Node versions. The API overlay rejection test now imports `ws` explicitly and handles rejected connection `error` events, preserving the negative auth test instead of weakening or skipping it.
+
+Queue dependency decision: PR #2 does not add Redis or BullMQ. A DB-backed outbox is sufficient for the current safety boundary, keeps CI free of external services, and makes idempotency/audit behavior reviewable in SQL.

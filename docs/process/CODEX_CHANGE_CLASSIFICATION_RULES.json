@@ -1,6 +1,6 @@
 {
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.3",
-  "harnessVersion": "1.0.2",
+  "harnessVersion": "1.0.3",
   "harnessFiles": [
     "AGENTS.md",
     ".github/pull_request_template.md",
@@ -15,6 +15,8 @@
   ],
   "docsFiles": [
     "README.md",
+    "COMPLIANCE.md",
+    "SECURITY.md",
     "docs/"
   ],
   "productSourceFiles": [
@@ -30,11 +32,17 @@
     "test/",
     "tests/",
     "__tests__/",
-    "scripts/run-tests.js"
+    "scripts/run-tests.js",
+    "apps/api/src/server.test.ts",
+    "apps/api/src/repositories/",
+    "apps/api/src/outbox/",
+    "apps/api/src/db/",
+    "apps/web/app/page.test.ts"
   ],
   "specFiles": [
     "specs/",
-    "docs/specs/"
+    "docs/specs/",
+    "migrations/"
   ],
   "packageFiles": [
     "package.json",
@@ -51,7 +59,9 @@
   "runtimeAssetFiles": [
     "public/",
     "assets/",
-    "runtime/"
+    "runtime/",
+    "apps/overlay/src/main.tsx",
+    "apps/web/app/"
   ],
   "configFiles": [
     "tsconfig.json",
@@ -59,9 +69,12 @@
     "next.config.*",
     "webpack.config.*",
     "eslint.config.*",
-    ".env*"
+    ".env*",
+    "vitest.config.ts",
+    "apps/api/src/config/"
   ],
   "authorityFiles": [
+    "AGENTS.md",
     "IRIS_SPEC_AUTHORITY.md",
     "*_SPEC_AUTHORITY.md",
     "docs/process/*AUTHORITY*.md"

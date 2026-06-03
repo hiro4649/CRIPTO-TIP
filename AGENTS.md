@@ -5,7 +5,7 @@ CRIPTO-TIP is an external IRIS Web Companion.
 It must not replace YouTube Super Chat payment.
 It must convert supported inputs into IRIS support.received events.
 All viewer names, messages, YouTube author names, wallet-derived labels, and display names are untrusted input.
-Render user input with textContent, never innerHTML.
+Render user input as text nodes, never as executable or parsed HTML.
 Pass only sanitized fields to any AI reaction adapter.
 Do not pass wallet addresses or secrets to AI prompts.
 Use tx_hash + log_index for on-chain uniqueness.
