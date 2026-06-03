@@ -5,7 +5,7 @@
   "prNumber": "2",
   "baseSha": "287d9540d59a0bea52f94964890f5d400ac3280c",
   "headSha": "current PR head",
-  "artifactId": "7374500499",
+  "artifactId": "7374890965",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "targetRollout": false,
@@ -22,6 +22,30 @@
     "confirmedByRole": "project-owner",
     "productCodeChanged": true,
     "runtimeReadinessClaimed": false
+  },
+  "changeClassification": {
+    "status": "complete",
+    "unknownFiles": 0,
+    "registryFile": ".codex/change-classification.json"
+  },
+  "taskContract": {
+    "status": "present",
+    "source": ".codex/task-contract.json",
+    "taskMode": "product_minor_r2",
+    "doneCriteriaPresent": true,
+    "verificationSurfacePresent": true
+  },
+  "reviewIndependence": {
+    "writerEvidencePresent": true,
+    "reviewEvidencePresent": true,
+    "reviewChecklistPresent": true,
+    "source": ".codex/review-independence.json"
+  },
+  "testCoverageEvidence": {
+    "status": "present",
+    "testFiles": 9,
+    "tests": 45,
+    "source": ".codex/test-coverage-evidence.json"
   },
   "safeSummaryOnly": true
 }

@@ -55,4 +55,24 @@ Yes. PR #2 changes API repository boundaries, outbox worker boundaries, config v
 
 ## Current Verification
 
-`corepack pnpm test` passed with 9 test files and 45 tests. `npm test` passed locally with 9 test files and 45 tests. Node 20 Vitest reproduction passed with 9 test files and 45 tests after the WebSocket negative auth test compatibility repair. GitHub CI runs `26835142098` and `26858338314` passed `typescript` and `contracts`.
+`corepack pnpm test` passed with 9 test files and 45 tests. `npm test` passed locally with 9 test files and 45 tests. Node 20 Vitest reproduction passed with 9 test files and 45 tests after the WebSocket negative auth test compatibility repair. GitHub CI run `26860944234` passed `typescript` and `contracts`.
+
+## Verification Surface
+
+- API repository boundary.
+- Public TipIntent DTO safety.
+- Moderation gate side effects.
+- Support event idempotency.
+- Postgres SQL parameterization.
+- Outbox retry and DLQ boundary.
+- Config validation.
+- Overlay token and text-only boundary.
+- Package and lockfile test compatibility.
+- Contracts CI.
+
+## Load-Bearing Evidence
+
+- `.codex/task-contract.json` records `doneCriteria`, `verificationSurface`, storage oracle, release gate oracle, and split plan.
+- `.codex/product-verification.json` records pass/partial/not_started product verification statuses.
+- `.codex/test-coverage-evidence.json` records 9 test files and 45 tests.
+- `.codex/review-independence.json` records writer evidence, review evidence, and human review fields.

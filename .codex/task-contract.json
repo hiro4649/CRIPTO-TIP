@@ -40,5 +40,71 @@
     "moderation_gates_preserved",
     "idempotency_preserved",
     "test_count_matches_pr_body"
-  ]
+  ],
+  "doneCriteria": [
+    "typescript_ci_pass",
+    "contracts_ci_pass",
+    "quality_gate_pass",
+    "server_no_direct_inmemory_internals",
+    "public_tipintent_dto_safe",
+    "moderation_gates_preserved",
+    "idempotency_preserved",
+    "evidence_docs_updated",
+    "pr_body_test_count_matches_actual_output"
+  ],
+  "verificationSurface": [
+    "api_repository_boundary",
+    "public_tipintent_dto_safety",
+    "moderation_gate_side_effects",
+    "support_event_idempotency",
+    "postgres_sql_parameterization",
+    "outbox_retry_dlq_boundary",
+    "config_validation",
+    "overlay_token_and_text_only_boundary",
+    "package_lockfile_test_compatibility",
+    "contracts_ci"
+  ],
+  "riskSurface": [
+    "db_schema",
+    "repository_boundary",
+    "outbox_dlq_boundary",
+    "api_internal_flow",
+    "config_validation",
+    "package_lockfile"
+  ],
+  "loadBearingEvidence": [
+    ".codex/change-classification.json",
+    ".codex/product-verification.json",
+    ".codex/test-coverage-evidence.json",
+    ".codex/review-independence.json",
+    "docs/API_COMPATIBILITY_SUMMARY.md",
+    "docs/CODE_REVIEW_MONITOR.md",
+    "docs/COMPLEXITY_GOVERNANCE.md",
+    "docs/CONTRACT_GOVERNANCE.md",
+    "docs/RISK_REGISTER.md"
+  ],
+  "solvabilityConstraints": [
+    "no_production_chain_listener_in_pr2",
+    "no_official_youtube_connector_in_pr2",
+    "no_production_iris_delivery_in_pr2",
+    "no_live_postgres_required_for_ci",
+    "in_memory_repository_tests_cover_mvp_boundary",
+    "postgres_repository_sql_boundary_uses_parameterized_queries"
+  ],
+  "verificationOracle": "Local and remote tests prove repository injection, public DTO safety, moderation gates, idempotency, outbox retry/DLQ, config validation, overlay auth, package compatibility, and contracts CI.",
+  "storageOracle": "Migration tests assert required tables and unique constraints; repository tests assert durable idempotency boundaries without requiring live DB credentials.",
+  "releaseGateOracle": "PR #2 is G2 durable MVP partial only; production integration and runtime readiness are explicitly not claimed.",
+  "splitRequired": true,
+  "splitProvided": true,
+  "splitReason": "Large storage/API/config diff is intentionally limited to durable boundary work; chain listener, official YouTube connector, production IRIS delivery, stale lock reclamation, and admin DLQ retry endpoint are deferred.",
+  "splitPlan": [
+    "PR3 production chain listener and confirmation/reorg handling",
+    "PR4 official YouTube connector",
+    "PR5 IRIS Core delivery adapter and retry endpoint",
+    "PR6 live Postgres integration tests and overlay token rotation"
+  ],
+  "planEvidencePresent": true,
+  "contractEvidencePresent": true,
+  "verificationEvidencePresent": true,
+  "attemptEvidencePresent": true
 }

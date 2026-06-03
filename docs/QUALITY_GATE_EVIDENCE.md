@@ -1,8 +1,10 @@
 # Quality Gate Evidence
 
-Latest failed quality-gate runs inspected: `26835148559` and `26858353061`.
+Latest failed quality-gate runs inspected: `26859916066`, `26860961085`, and `26861097867`.
 
-Latest product CI runs inspected: `26835142098` and `26858338314`.
+Latest quality-gate artifact inspected: `7374890965`.
+
+Latest product CI run inspected: `26860944234`.
 
 Latest local test result: 9 test files, 45 tests.
 
@@ -21,7 +23,7 @@ Latest Node 20 reproduction result: `npx -y node@20 ./node_modules/vitest/vitest
 | `productVerificationStatus` | Added explicit product behavior verification and unverified scope. | `docs/PRODUCT_VERIFICATION.md`. |
 | `productVerificationEvidenceStatus` | Added command-backed evidence and risk-to-test mapping. | `docs/PRODUCT_VERIFICATION.md`, `docs/TEST_COVERAGE_EVIDENCE.md`. |
 | `classificationCoverageStatus` | Classified docs, migration, workflow, package, env, tests, API, repository, and outbox files. | `docs/CHANGE_CLASSIFICATION.md`. |
-| `remoteProductEvidenceExecutionStatus` | npm entry remains a real test entry and product CI passes through pnpm. Local `npm test` and Node 20 Vitest reproduction passed with 9 test files and 45 tests after the WebSocket test compatibility repair. If remote npm diagnostic still fails, inspect the latest safe artifact before changing code. | `package.json`, `apps/api/src/server.test.ts`, GitHub CI run `26858338314`. |
+| `remoteProductEvidenceExecutionStatus` | npm entry remains a real test entry and product CI passes through pnpm. Local `npm test` and Node 20 Vitest reproduction passed with 9 test files and 45 tests after the WebSocket test compatibility repair. If remote npm diagnostic still fails, inspect the latest safe artifact before changing code. | `package.json`, `apps/api/src/server.test.ts`, GitHub CI run `26860944234`. |
 | `formalEvidencePrecedenceStatus` | Current-head evidence is documented by SHA, CI run, local commands, and PR body. | `docs/REVIEW_INDEPENDENCE.md`, `docs/pr-durable-events-db-queue.md`. |
 | `remoteNpmDiagnosticNormalizationStatus` | npm diagnostic was failing with safe-summary-only because the raw npm log is not uploaded. Root npm entry is kept as real tests, not a bypass; local `npm test` and Node 20 Vitest reproduction passed with 9 test files and 45 tests after adding explicit `ws` test client handling. | `package.json`, `apps/api/src/server.test.ts`, `docs/QUALITY_GATE_EVIDENCE.md`. |
 | `reviewIndependenceStatus` | Added evidence not based solely on Codex self-report. | `docs/REVIEW_INDEPENDENCE.md`. |
@@ -32,8 +34,8 @@ Latest Node 20 reproduction result: `npx -y node@20 ./node_modules/vitest/vitest
 | `bestOfNEvidenceStatus` | Added current-head evidence docs and explicit residual risk tracking. | `docs/QUALITY_GATE_EVIDENCE.md`, `docs/RISK_REGISTER.md`. |
 | `testCoverageEvidenceStatus` | Added exact test count and risk-to-test mapping. | `docs/TEST_COVERAGE_EVIDENCE.md`. |
 | `targetQualityScoreStatus` | This evidence set addresses blocking documentation/evidence gaps without weakening checks. | This file and linked evidence docs. |
-| `remoteProductBaselineStatus` | Manual confirmation required: baseline product CI is currently pass for TypeScript and contracts. | GitHub CI runs `26835142098`, `26858338314`. |
-| `remoteNpmDiagnosticStatus` | Manual confirmation required: remote npm artifact was inspected; npm entry remains real tests and Node 20 compatibility was repaired. | quality-gate runs `26835148559`, `26858353061`, `package.json`, `apps/api/src/server.test.ts`. |
+| `remoteProductBaselineStatus` | Manual confirmation required: baseline product CI is currently pass for TypeScript and contracts. | GitHub CI run `26860944234`. |
+| `remoteNpmDiagnosticStatus` | Manual confirmation required: remote npm artifact was inspected; npm entry remains real tests and Node 20 compatibility was repaired. | quality-gate runs `26859916066`, `26860961085`, `26861097867`, `package.json`, `apps/api/src/server.test.ts`. |
 | `v085StabilityStatus` | Manual confirmation required: PR profile is product durable MVP evidence repair, not production readiness. | `docs/PRODUCTION_GATES.md`, `docs/TASK_CONTRACT.md`. |
 
 ## Safe Placeholder Inventory
@@ -65,7 +67,7 @@ Expected result: no match.
 ## Machine-Readable Evidence
 
 - `.codex/change-classification.json`: classifies every PR #2 changed file, including `.codex/**`, `docs/**`, `.env.example`, migration, package, lockfile, and test config.
-- `.codex/task-contract.json`: records `product_minor_r2`, `productCodeChanged: true`, `runtimeReadinessClaimed: false`, allowed scope, forbidden scope, and acceptance criteria.
+- `.codex/task-contract.json`: records `product_minor_r2`, `productCodeChanged: true`, `runtimeReadinessClaimed: false`, allowed scope, forbidden scope, done criteria, verification surface, storage oracle, release gate oracle, and split plan.
 - `.codex/product-verification.json`: records pass/not_started product verification states.
 - `.codex/test-coverage-evidence.json`: records 9 test files and 45 tests with risk coverage.
 - `.codex/review-independence.json`: records reviewer role, review checklist, and human review required fields.

@@ -31,6 +31,6 @@
     "apps/api/src/outbox/worker.test.ts",
     "apps/api/src/config/env.test.ts",
     "apps/overlay/src/main.test.ts",
-    "GitHub CI run 26859906074"
+    "GitHub CI run 26860944234"
   ]
 }

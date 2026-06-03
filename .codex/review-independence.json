@@ -6,6 +6,24 @@
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
+  "writerEvidence": {
+    "present": true,
+    "files": [
+      "docs/pr-durable-events-db-queue.md",
+      ".codex/task-contract.json",
+      ".codex/product-verification.json"
+    ]
+  },
+  "reviewEvidence": {
+    "present": true,
+    "files": [
+      "docs/REVIEW_INDEPENDENCE.md",
+      "docs/CODE_REVIEW_MONITOR.md",
+      "docs/API_COMPATIBILITY_SUMMARY.md",
+      "docs/RISK_REGISTER.md"
+    ],
+    "independentFromWriterOnlyClaim": true
+  },
   "reviewerRole": "project-owner",
   "headSha": "current PR head",
   "productCodeChanged": true,
@@ -26,5 +44,16 @@
     "head SHA",
     "remaining blockers",
     "merge decision"
-  ]
+  ],
+  "currentHeadOwnerConfirmation": {
+    "required": true,
+    "confirmedByRole": "project-owner",
+    "fields": [
+      "quality_gate_status",
+      "CI status",
+      "head SHA",
+      "remaining blockers",
+      "merge decision"
+    ]
+  }
 }
