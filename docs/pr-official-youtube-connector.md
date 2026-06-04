@@ -22,9 +22,9 @@ Base SHA: 6f3cd069a899801dab93e25df63392f1fd695810
 
 Head SHA: updated after final push
 
-Product CI: pending
+Product CI: archived pre-merge evidence
 
-Quality-gate: pending
+Quality-gate: archived pre-merge evidence
 
 Commit SHA: updated after final push
 
