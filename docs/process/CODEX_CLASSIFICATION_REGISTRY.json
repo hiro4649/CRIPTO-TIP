@@ -389,6 +389,15 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "PR body for YouTube operations hardening evidence."
+    },
+    {
+      "pathPattern": ".codex/review-independence.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable review independence evidence."
     }
   ],
   "safeSummaryOnly": true

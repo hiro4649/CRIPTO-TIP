@@ -28,5 +28,8 @@
     "quota_dashboard_exporter",
     "alert_routing",
     "provider_specific_secret_manager_wiring"
-  ]
+  ],
+  "tests": 100,
+  "testCoverageEvidenceStatus": "pass",
+  "evidencePresent": true
 }

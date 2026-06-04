@@ -25,7 +25,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "pending_after_commit",
+  "headSha": "3cf91bff1387a991beaa07bb3e89001ceabf7ad5",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
@@ -44,5 +44,6 @@
     "head SHA",
     "remaining blockers",
     "merge decision"
-  ]
+  ],
+  "reviewIndependenceStatus": "pass"
 }
