@@ -1,25 +1,24 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.4",
+  "harnessVersion": "1.0.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
-  "qualityGateStatus": "pending_after_official_youtube_connector",
+  "qualityGateExpectedStatus": "pending_until_github_actions",
   "reasonCodeMappings": {
-    "secretScan": "security grep and safe placeholder inventory; no production RPC secret is committed",
     "changeClassificationStatus": ".codex/change-classification.json",
     "classificationCoverageStatus": ".codex/change-classification.json",
     "productVerificationStatus": ".codex/product-verification.json and docs/PRODUCT_VERIFICATION.md",
-    "productVerificationEvidenceStatus": "apps/api/src/youtube/connector.test.ts, apps/api/src/youtube/verification.test.ts, packages/shared/src/index.test.ts, and docs/YOUTUBE_CONNECTOR.md, including 403 quota/rate-limit retry classification",
-    "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json and docs/TEST_COVERAGE_EVIDENCE.md",
-    "taskBriefCompilerStatus": ".codex/task-contract.json and docs/pr-production-chain-listener-reorg.md",
-    "codeReviewMonitorStatus": "docs/pr-production-chain-listener-reorg.md review focus and docs/RISK_REGISTER.md",
-    "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md",
-    "contractGovernanceStatus": "no Solidity contract change in this PR; existing contract CI remains required",
-    "targetQualityScoreStatus": "pending GitHub quality-gate run"
+    "productVerificationEvidenceStatus": ".codex/product-verification.json and docs/TEST_COVERAGE_EVIDENCE.md",
+    "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json",
+    "taskBriefCompilerStatus": ".codex/task-contract.json",
+    "secretScan": ".env.example placeholder inventory and security grep",
+    "codeReviewMonitorStatus": "docs/pr-youtube-ops-hardening.md and docs/RISK_REGISTER.md",
+    "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
   },
   "safePlaceholderInventory": [
-    "MOCK_ADMIN_TOKEN",
-    "MOCK_INTERNAL_TOKEN",
-    "MOCK_OVERLAY_TOKEN"
-  ]
+    "YOUTUBE_API_KEY empty placeholder",
+    "YOUTUBE_OAUTH_TOKEN empty placeholder",
+    "YOUTUBE_CREDENTIAL_SOURCE local_env for local/test only"
+  ],
+  "runtimeReadinessClaimed": false
 }

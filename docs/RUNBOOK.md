@@ -101,3 +101,23 @@ YouTube connector failures:
 10. Do not use scraping, HTML parsing, browser automation, or user-provided URLs for YouTube chat ingestion.
 
 Quota dashboarding is planned for the production YouTube operations hardening PR.
+
+## YouTube Production Credential And Operations Hardening
+
+Production official connector mode must use credentials supplied through the deployment secret manager. Do not store real `YOUTUBE_API_KEY` or `YOUTUBE_OAUTH_TOKEN` in the repository, `.env.example`, logs, or docs.
+
+Credential rotation:
+
+1. Create or rotate the YouTube API key or OAuth credential in the approved secret manager.
+2. Deploy the updated secret reference without changing code.
+3. Confirm `youtube_connector_connected` returns to healthy state.
+4. Watch `youtube_quota_errors_total`, `youtube_rate_limit_errors_total`, and `youtube_stream_reconnect_total` for abnormal spikes.
+
+Quota and reconnect operations:
+
+- `youtube_quota_errors_total` or `youtube_rate_limit_errors_total` increasing: keep retry/backoff active, reduce polling pressure, and inspect the YouTube quota dashboard.
+- `youtube_stream_reconnect_total` increasing: inspect WebSocket/streamList disconnects and confirm fallback behavior.
+- `youtube_list_fallback_total` increasing: confirm `streamList` availability and verify that `pollingIntervalMillis` is respected.
+- Verification failures: inspect `youtube_verification_code_failed_total` and confirm code expiry, one-time use, and stream scoping.
+
+`liveChatId` must come from the live session boundary. Operators must not use scraping, browser automation, or HTML parsing to acquire it.

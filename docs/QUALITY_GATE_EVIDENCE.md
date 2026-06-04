@@ -116,3 +116,13 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Connector evidence: `apps/api/src/youtube/connector.test.ts` verifies streamList, list fallback, Super Chat, Super Sticker, regular chat, 403 quota/rate-limit retry reasons, 429/5xx retry, non-retry auth/forbidden/page token cases, malformed error body safety, and no HTML/scraping endpoint use.
 - Verification evidence: `apps/api/src/youtube/verification.test.ts` verifies `IRIS-XXXXXX` detection, 10-minute expiry, one-time use, and stream scoping.
 - Shared schema evidence: `packages/shared/src/index.test.ts` verifies Super Sticker normalization and regular chat sanitization.
+
+## PR youtube-ops-hardening Evidence
+
+- Product code changed: yes.
+- Runtime readiness claim: no.
+- Targeted test command: `corepack pnpm test apps/api/src/youtube apps/api/src/config/env.test.ts` passed with 14 test files, 100 passed tests, and 6 skipped tests.
+- Config evidence: `apps/api/src/config/env.test.ts` verifies production official YouTube connector mode requires `YOUTUBE_CREDENTIAL_SOURCE=secret_manager`.
+- Operations evidence: `apps/api/src/youtube/operations.test.ts` verifies metrics names, liveChatId acquisition boundary, quota/rate-limit classification, non-retry operator actions, reconnect bounds, fallback bounds, polling interval respect, and deterministic mock soak.
+- Safe boundary evidence: `.env.example` contains placeholders only; no real YouTube API key or OAuth token is committed.
+- Quality-gate status for PR #10: pass on run 26928828159.

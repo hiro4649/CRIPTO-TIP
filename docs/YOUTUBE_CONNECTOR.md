@@ -24,3 +24,22 @@ Viewer names and messages are untrusted. The connector sanitizes display names, 
 Quota and rate-limit errors are retryable at the adapter boundary, including 403 responses with `rateLimitExceeded`, `quotaExceeded`, or `userRateLimitExceeded`, plus 429 and 5xx responses. 403 `forbidden`, `liveChatDisabled`, and `liveChatEnded` are not retried. 400 `pageTokenInvalid` requires token reset or operator action. 401 auth failures require credential/OAuth review.
 
 If `streamList` is unavailable, the connector falls back to `list`. Production credentials are environment boundaries only; no real OAuth token or API key is committed.
+
+## Production Operations Hardening
+
+Production official connector mode requires a secret manager credential source. Local `.env` values are allowed only for local/test; production must use `YOUTUBE_CREDENTIAL_SOURCE=secret_manager` with either `YOUTUBE_API_KEY` or `YOUTUBE_OAUTH_TOKEN`.
+
+Reserved metrics:
+
+- `youtube_connector_connected`
+- `youtube_events_per_minute`
+- `youtube_quota_errors_total`
+- `youtube_rate_limit_errors_total`
+- `youtube_stream_reconnect_total`
+- `youtube_list_fallback_total`
+- `youtube_verification_code_detected_total`
+- `youtube_verification_code_failed_total`
+
+`liveChatId` must come from the live session boundary. It must not be discovered by scraping YouTube pages, browser automation, or HTML parsing.
+
+`streamList` reconnects only for retryable operational errors and only while attempts remain. `list` fallback respects YouTube `pollingIntervalMillis` with a local minimum to avoid tight polling loops. Long-running behavior is covered by deterministic mock soak tests; live API soak remains a deployment follow-up.
