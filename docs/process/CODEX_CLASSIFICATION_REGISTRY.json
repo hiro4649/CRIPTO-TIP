@@ -4,6 +4,177 @@
   "harnessVersion": "1.0.2",
   "entries": [
     {
+      "pathPattern": ".env.example",
+      "classification": "config",
+      "surface": "config",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Safe placeholder env example and local/test config surface."
+    },
+    {
+      "pathPattern": "docs/ARCHITECTURE.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product architecture documentation."
+    },
+    {
+      "pathPattern": "docs/EVENT_SCHEMA.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product event schema documentation."
+    },
+    {
+      "pathPattern": "docs/PRODUCTION_GATES.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Production gate documentation."
+    },
+    {
+      "pathPattern": "docs/PRODUCT_VERIFICATION.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product verification evidence documentation."
+    },
+    {
+      "pathPattern": "docs/QUALITY_GATE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Quality gate evidence documentation."
+    },
+    {
+      "pathPattern": "docs/RISK_REGISTER.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product risk register documentation."
+    },
+    {
+      "pathPattern": "docs/RUNBOOK.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Operational runbook documentation."
+    },
+    {
+      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Test coverage evidence documentation."
+    },
+    {
+      "pathPattern": "docs/YOUTUBE_CONNECTOR.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "YouTube connector documentation."
+    },
+    {
+      "pathPattern": "docs/pr-official-youtube-connector.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body source documentation."
+    },
+    {
+      "pathPattern": ".codex/change-classification.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable change classification evidence."
+    },
+    {
+      "pathPattern": ".codex/evidence-pack.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable current-head PR evidence pack."
+    },
+    {
+      "pathPattern": ".codex/product-verification.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable product verification evidence."
+    },
+    {
+      "pathPattern": ".codex/quality-gate-evidence.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable quality gate evidence mapping."
+    },
+    {
+      "pathPattern": ".codex/task-contract.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable task contract evidence."
+    },
+    {
+      "pathPattern": ".codex/test-coverage-evidence.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable test coverage evidence."
+    },
+    {
+      "pathPattern": "packages/shared/src/index.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared product schema and normalizer source."
+    },
+    {
+      "pathPattern": "packages/shared/src/index.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared schema and normalizer tests."
+    },
+    {
       "pathPattern": "scripts/codex-*",
       "classification": "harness_managed",
       "surface": "harness",

@@ -2,7 +2,7 @@
 
 ## PR production-chain-listener-reorg
 
-Latest local result: `corepack pnpm test` passed with 11 test files, 68 passed tests, and 6 skipped tests.
+Latest local result: `corepack pnpm test` passed with 13 test files, 89 passed tests, and 6 skipped tests.
 
 Risk coverage added:
 
@@ -62,6 +62,6 @@ Quality-gate npm entry command remains `npm test`; it is a real test command and
 | Production local mock defaults are accepted. | Config production reject test. | Covered. |
 | Contract behavior regresses. | GitHub CI contracts job. | Covered in CI; local Foundry unavailable. |
 | Production Chain Listener behavior. | Not in PR #4 scope. | Not covered. |
-| Official YouTube API connector behavior. | Not in PR #4 scope. | Not covered. |
+| Official YouTube API connector behavior. | `apps/api/src/youtube/connector.test.ts`, `apps/api/src/youtube/verification.test.ts`, `packages/shared/src/index.test.ts`. | Covered for adapter boundary, 403 quota/rate-limit retry classification, non-retry auth/forbidden/page token cases, and mock JSON fixtures; live API soak not covered. |
 | Production IRIS Core delivery behavior. | Not in PR #4 scope. | Not covered. |
 

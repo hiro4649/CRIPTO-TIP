@@ -20,6 +20,8 @@ Events:
 - `overlay.tip_alert`
 - `youtube.chat.message.received`
 - `youtube.viewer.verified`
+- `support.received` from `youtube_super_chat`
+- `support.received` from `youtube_super_sticker`
 
 All event producers must validate with schemas before enqueueing or calling IRIS adapters.
 

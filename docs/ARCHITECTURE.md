@@ -4,7 +4,11 @@
 
 The Chain Listener observes TipRouterV1 `TipSent` logs through an injected EVM RPC provider adapter. It records durable `tip_transactions`, persists `chain_cursors`, waits for confirmation, handles reorg status transitions, and enqueues `support.normalize` only after confirmation.
 
-This boundary does not implement token sale, token exchange, cash-out, custody, internal balances, investment wording, official YouTube connector, or production IRIS Core delivery.
+This boundary does not implement token sale, token exchange, cash-out, custody, internal balances, investment wording, or YouTube scraping.
+
+## YouTube Connector Boundary
+
+The YouTube connector uses official YouTube Live API JSON responses. It normalizes Super Chat, Super Sticker, and regular chat events without scraping, browser automation, or HTML parsing. It does not replace YouTube Super Chat payment and does not represent IRIS Token Tip as YouTube Super Chat.
 
 ## IRIS Core Delivery Boundary
 
@@ -31,4 +35,4 @@ PR #2 adds a durable persistence boundary:
 - SQL migrations define live sessions, identities, wallet links, Tip intents, chain transactions, support events, affinity ledger, overlay events, reaction requests, outbox, DLQ, and audit logs.
 - API code uses a repository interface with `InMemoryRepository` for local tests and a `PostgresRepository` boundary for production-like paths.
 - DB-backed outbox is the preferred queue model for the next phase. It provides at-least-once delivery; consumers must remain idempotent.
-- Production chain listener and official YouTube connector are intentionally still out of scope.
+- Production credential rollout and live YouTube API soak testing remain out of scope.

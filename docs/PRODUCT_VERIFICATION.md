@@ -68,6 +68,25 @@ Verified product behavior:
 
 Deferred behavior:
 
-- Official YouTube connector.
+- Official YouTube connector production credential rollout.
 - Multiple IRIS Core environment auto-routing.
 - Production credential provisioning and rotation automation.
+
+## PR official-youtube-connector
+
+Verified product behavior:
+
+- `liveChatMessages.streamList` JSON events normalize into Super Chat, Super Sticker, and regular chat events.
+- `liveChatMessages.list` fallback is used when streamList is unavailable.
+- Super Chat and Super Sticker normalize to distinct `support.received` sources.
+- Super Chat comments pass through moderation.
+- Regular chat normalizes to `youtube.chat.message.received`.
+- `IRIS-XXXXXX` verification codes are 10-minute, one-time, and stream-scoped.
+- Quota and rate-limit errors retry through the connector boundary, including 403 `rateLimitExceeded`, `quotaExceeded`, and `userRateLimitExceeded`, plus 429 and 5xx responses.
+- 403 `forbidden`, `liveChatDisabled`, `liveChatEnded`, 400 `pageTokenInvalid`, and 401 auth failures are non-retryable.
+- The adapter uses official YouTube JSON API URLs only; no scraping or HTML parsing dependency is introduced.
+
+Deferred behavior:
+
+- Production OAuth/API key provisioning.
+- Long-running live YouTube API soak test.

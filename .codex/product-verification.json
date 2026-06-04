@@ -15,7 +15,19 @@
     "rpc_error_retry_boundary": "pass",
     "block_cursor_persistence": "pass",
     "no_user_personal_data_on_chain_payload": "pass",
-    "official_youtube_connector": "not_started",
+    "official_youtube_connector": "pass",
+    "youtube_streamlist_normalization": "pass",
+    "youtube_list_fallback": "pass",
+    "youtube_superchat_normalization": "pass",
+    "youtube_supersticker_normalization": "pass",
+    "youtube_verification_code_boundary": "pass",
+    "youtube_no_scraping": "pass",
+    "youtube_403_quota_rate_limit_retry": "pass",
+    "youtube_403_forbidden_non_retry": "pass",
+    "youtube_400_page_token_non_retry": "pass",
+    "youtube_401_auth_non_retry": "pass",
+    "youtube_malformed_error_body_safe": "pass",
+    "youtube_production_credentials": "not_started",
     "production_iris_delivery": "pass",
     "iris_delivery_idempotency": "pass",
     "iris_delivery_retry_dlq": "pass",
@@ -32,8 +44,12 @@
     "apps/api/src/db/migration.test.ts",
     "docs/CHAIN_LISTENER.md",
     "apps/api/src/iris/delivery-worker.test.ts",
-    "docs/IRIS_CORE_DELIVERY.md"
+    "docs/IRIS_CORE_DELIVERY.md",
+    "apps/api/src/youtube/connector.test.ts",
+    "apps/api/src/youtube/verification.test.ts",
+    "docs/YOUTUBE_CONNECTOR.md"
   ],
   "iris_core_delivery_adapter": "pass",
-  "iris_core_delivery_tests": "pass"
+  "iris_core_delivery_tests": "pass",
+  "official_youtube_connector_boundary": "pass"
 }

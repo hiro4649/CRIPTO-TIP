@@ -21,4 +21,15 @@ describe("config validation", () => {
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production" })).toThrow(/IRIS_CORE_API_URL/);
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", IRIS_CORE_API_URL: "https://iris.example.test", IRIS_CORE_SHARED_SECRET: "change-me-iris-core-secret" })).toThrow(/IRIS_CORE_SHARED_SECRET/);
   });
+
+  it("production config rejects official YouTube connector without credential boundary", () => {
+    const tokenEnv = {
+      MOCK_ADMIN_TOKEN: "admin-realistic-placeholder",
+      MOCK_INTERNAL_TOKEN: "internal-realistic-placeholder",
+      MOCK_OVERLAY_TOKEN: "overlay-realistic-placeholder",
+      IRIS_CORE_API_URL: "https://iris.example.test",
+      IRIS_CORE_SHARED_SECRET: "prod-secret-placeholder"
+    };
+    expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CONNECTOR_MODE: "official" })).toThrow(/YOUTUBE_API_KEY|YOUTUBE_OAUTH_TOKEN/);
+  });
 });

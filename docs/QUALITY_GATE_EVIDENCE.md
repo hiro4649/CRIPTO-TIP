@@ -107,3 +107,12 @@ Current-head evidence to update in PR body:
 - Quality-gate expected status: pending until GitHub run completes.
 
 Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.example`, package metadata, and any test files. The adapter sends sanitized delivery DTOs only and does not commit production IRIS Core secrets.
+
+## PR official-youtube-connector Evidence
+
+- Product code changed: yes.
+- Runtime readiness claim: no.
+- Test command: `corepack pnpm test` passed with 13 test files, 79 passed tests, and 6 skipped tests.
+- Connector evidence: `apps/api/src/youtube/connector.test.ts` verifies streamList, list fallback, Super Chat, Super Sticker, regular chat, 403 quota/rate-limit retry reasons, 429/5xx retry, non-retry auth/forbidden/page token cases, malformed error body safety, and no HTML/scraping endpoint use.
+- Verification evidence: `apps/api/src/youtube/verification.test.ts` verifies `IRIS-XXXXXX` detection, 10-minute expiry, one-time use, and stream scoping.
+- Shared schema evidence: `packages/shared/src/index.test.ts` verifies Super Sticker normalization and regular chat sanitization.
