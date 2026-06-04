@@ -2,6 +2,9 @@
 
 Adds production YouTube credential and operations hardening for CRIPTO-TIP without connecting to a real production YouTube account or committing secrets.
 
+PR profile: product_minor_r2
+Task mode: feature
+
 ## Task Contract
 
 Task mode: product_minor_r2
@@ -15,6 +18,16 @@ Forbidden scope: token sale; token exchange; cash-out; custody; internal balance
 Runtime readiness claim: no
 
 Product code changed: yes
+
+Done criteria: `corepack pnpm lint` pass; `corepack pnpm typecheck` pass; `corepack pnpm test` pass; `npm test` pass; GitHub typescript pass; GitHub contracts pass; GitHub quality-gate pass; production official YouTube connector rejects local-env credential source; operations tests cover metrics, liveChatId boundary, reconnect, fallback, polling interval, and deterministic soak; no scraping scan has no runtime scraping dependency.
+
+Verification surface: config validation tests, YouTube operations unit tests, existing connector tests, local lint/typecheck/test, GitHub CI, quality-gate, secret/risky rendering scan, prohibited wording scan, and no-scraping scan.
+
+Solvability constraints: no production YouTube account is used; no real credential is committed; no production runtime readiness is claimed; only deterministic tests and documented operational boundaries are added.
+
+Release gate oracle: required GitHub checks must pass on the current head before merge; project-owner review decides merge.
+
+Rollback condition: revert this commit if production credential validation blocks local/test mode, if connector tests regress, or if quality-gate fails on current head.
 
 ## Evidence Integrity
 
@@ -42,11 +55,51 @@ Evidence freshness: current local head before push.
 - Fallback polling respects `pollingIntervalMillis` with a local minimum.
 - Deterministic mock soak covers long-running behavior without network, secrets, sleeping, scraping, or HTML parsing.
 
+## Tests or checks run
+
+- `corepack pnpm install`: pass.
+- `corepack pnpm lint`: pass.
+- `corepack pnpm typecheck`: pass.
+- `corepack pnpm test`: pass, 14 test files, 100 passed tests, 6 skipped tests.
+- `npm test`: pass, 14 test files, 100 passed tests, 6 skipped tests.
+- `forge test`: local forge unavailable; contracts are covered by GitHub CI.
+- Secret/risky rendering scan, prohibited wording scan, no-scraping scan, and `node scripts/codex-secret-safety-scan.mjs`: run.
+
 ## Testing and review
 
 Tests or checks run locally before commit: `corepack pnpm install` pass; `corepack pnpm lint` pass; `corepack pnpm typecheck` pass; `corepack pnpm test` pass with 14 test files, 100 passed tests, and 6 skipped tests; `npm test` pass with 14 test files, 100 passed tests, and 6 skipped tests; local forge unavailable; secret/risky rendering scan, prohibited wording scan, no-scraping scan, and `node scripts/codex-secret-safety-scan.mjs` run.
 
 Review focus: credential boundary, no secret commit, no scraping, quota metrics, reconnect/fallback behavior, liveChatId boundary, and deferred production runtime claims.
+
+Writer evidence: implementation files, tests, `.codex/*.json`, and this PR body.
+Review evidence: project-owner review required before merge; Codex self-report is not sufficient for merge.
+Review checklist: correctness, regression, security, data integrity, runtime safety, test evidence, diff scope, known gaps.
+Risk summary: product code, config, runtime-operation docs, and API-adjacent YouTube boundary changed; no database migration, package change, production connector activation, or runtime readiness claim.
+
+## API Compatibility Summary
+
+Public API: no public API surface changes.
+Internal API: adds YouTube operations helper functions and production credential config fields.
+Breaking changes: none intended.
+Compatibility: local/test default mode remains `mock`; production official mode gains stricter credential source validation.
+
+## Best of N Evidence
+
+Candidate count: 3.
+Candidates: document-only operations hardening; implement production provider-specific secret manager client; add config/operations boundary with deterministic tests.
+Selected candidate: add config/operations boundary with deterministic tests.
+Reason selected: it improves production readiness evidence without adding real secrets, provider coupling, live YouTube dependencies, or runtime readiness claims.
+
+## Complexity Governance
+
+Reasoning evidence: this is a product_minor_r2 operations-hardening change with config, runtime-operation boundary, docs, and evidence files.
+Auth oracle: `apps/api/src/config/env.test.ts` verifies production official connector mode requires secret manager credential source.
+API compatibility oracle: this PR adds internal helpers only and preserves public API compatibility.
+Split reason: provider-specific secret manager wiring, dashboard exporter, alert routing, and live YouTube soak are split out to deployment/observability work.
+
+## Residual risks
+
+Live YouTube API soak, real dashboard wiring, alert routing, provider-specific secret manager integration, and production account authorization review remain follow-up work.
 
 ## Security Boundaries
 

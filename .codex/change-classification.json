@@ -117,6 +117,14 @@
     {
       "path": "docs/pr-youtube-ops-hardening.md",
       "classification": "docs"
+    },
+    {
+      "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/review-independence.json",
+      "classification": "verification_relevant"
     }
   ]
 }

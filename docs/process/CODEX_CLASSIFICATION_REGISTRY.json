@@ -380,6 +380,15 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Codex v1.0.2 source harness scripts."
+    },
+    {
+      "pathPattern": "docs/pr-youtube-ops-hardening.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for YouTube operations hardening evidence."
     }
   ],
   "safeSummaryOnly": true

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.4",
+  "harnessVersion": "1.0.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": "10",
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
@@ -29,15 +29,13 @@
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
-    "abi_decode_correctness",
-    "duplicate_log_idempotency",
-    "confirmation_window",
-    "reorg_status_transition",
-    "cursor_persistence",
-    "outbox_enqueue_timing",
-    "no_user_personal_data_on_chain_payload",
-    "security_scans",
+    "correctness",
+    "regression",
+    "security",
+    "data_integrity",
+    "runtime_safety",
     "test_evidence",
+    "diff_scope",
     "known_gaps"
   ],
   "humanReviewRequiredFields": [
