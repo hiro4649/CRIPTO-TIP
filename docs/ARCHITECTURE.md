@@ -10,6 +10,8 @@ This boundary does not implement token sale, token exchange, cash-out, custody, 
 
 The YouTube connector uses official YouTube Live API JSON responses. It normalizes Super Chat, Super Sticker, and regular chat events without scraping, browser automation, or HTML parsing. It does not replace YouTube Super Chat payment and does not represent IRIS Token Tip as YouTube Super Chat.
 
+Production YouTube operations hardening adds credential source validation, metric name contracts, `liveChatId` acquisition from live session state, bounded reconnect decisions, list fallback polling interval handling, and deterministic mock soak coverage. It still does not claim production runtime readiness, provider-specific secret manager wiring, live account authorization, dashboard implementation, or alert routing.
+
 ## IRIS Core Delivery Boundary
 
 PR iris-core-delivery-adapter adds an injected IRIS Core client and an `iris.deliver` outbox handler. Confirmed support events can be delivered to IRIS Core internal event, reaction, affinity, and memory endpoints through sanitized DTOs. Wallet addresses, secrets, raw names, raw messages, YouTube IDs, and wallet labels are excluded from delivery payloads.

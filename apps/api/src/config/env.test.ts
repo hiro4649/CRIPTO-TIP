@@ -32,4 +32,18 @@ describe("config validation", () => {
     };
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CONNECTOR_MODE: "official" })).toThrow(/YOUTUBE_API_KEY|YOUTUBE_OAUTH_TOKEN/);
   });
+
+  it("production official YouTube connector requires secret manager credential source", () => {
+    const tokenEnv = {
+      MOCK_ADMIN_TOKEN: "admin-realistic-placeholder",
+      MOCK_INTERNAL_TOKEN: "internal-realistic-placeholder",
+      MOCK_OVERLAY_TOKEN: "overlay-realistic-placeholder",
+      IRIS_CORE_API_URL: "https://iris.example.test",
+      IRIS_CORE_SHARED_SECRET: "prod-secret-placeholder",
+      YOUTUBE_CONNECTOR_MODE: "official",
+      YOUTUBE_API_KEY: "youtube-key-placeholder"
+    };
+    expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "local_env" })).toThrow(/YOUTUBE_CREDENTIAL_SOURCE/);
+    expect(loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager" }).YOUTUBE_CREDENTIAL_SOURCE).toBe("secret_manager");
+  });
 });

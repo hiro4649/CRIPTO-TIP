@@ -25,3 +25,5 @@ G4 production ready: not started. This repository is still not production ready.
 | G4 production ready | Production secrets, token rotation, reorg-tested chain listener, admin DLQ retry, monitoring, and legal/security signoff are complete. | Not started. |
 
 PR #4 completes the storage/queue portion of G2. It is not production ready.
+
+PR youtube-ops-hardening advances G3 operational readiness by adding credential source validation, metric name contracts, reconnect/fallback operation boundaries, and deterministic mock soak tests. It is still not G4 production ready because real secret manager wiring, live account authorization review, dashboard implementation, and alert routing remain deployment work.

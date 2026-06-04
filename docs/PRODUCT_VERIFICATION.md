@@ -90,3 +90,22 @@ Deferred behavior:
 
 - Production OAuth/API key provisioning.
 - Long-running live YouTube API soak test.
+
+## PR youtube-ops-hardening
+
+Verified product behavior:
+
+- Production official YouTube connector mode rejects local-env credential source and requires a secret manager boundary.
+- YouTube operations metrics are defined without adding a production exporter dependency.
+- `liveChatId` acquisition is constrained to the live session boundary.
+- 403 `quotaExceeded`, `rateLimitExceeded`, and `userRateLimitExceeded` classify as retry/backoff operational errors.
+- 401 auth, 400 `pageTokenInvalid`, and non-quota 403 states remain non-retryable.
+- `streamList` reconnect is bounded by retryability and max attempts.
+- `liveChatMessages.list` fallback remains limited to streamList unavailable responses and respects `pollingIntervalMillis`.
+- Deterministic mock soak verifies long-running counter behavior without network, secrets, sleeping, scraping, or HTML parsing.
+
+Deferred behavior:
+
+- Live YouTube API soak against a production account.
+- Real dashboard integration and alert routing.
+- Secret manager provider-specific wiring.

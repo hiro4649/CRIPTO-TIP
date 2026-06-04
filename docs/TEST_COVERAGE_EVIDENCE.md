@@ -65,3 +65,20 @@ Quality-gate npm entry command remains `npm test`; it is a real test command and
 | Official YouTube API connector behavior. | `apps/api/src/youtube/connector.test.ts`, `apps/api/src/youtube/verification.test.ts`, `packages/shared/src/index.test.ts`. | Covered for adapter boundary, 403 quota/rate-limit retry classification, non-retry auth/forbidden/page token cases, and mock JSON fixtures; live API soak not covered. |
 | Production IRIS Core delivery behavior. | Not in PR #4 scope. | Not covered. |
 
+## PR youtube-ops-hardening
+
+Latest local targeted result before full-suite replay: `corepack pnpm test apps/api/src/youtube apps/api/src/config/env.test.ts` passed with 14 test files, 100 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- Production YouTube credential source boundary: `apps/api/src/config/env.test.ts`.
+- YouTube metrics name contract: `apps/api/src/youtube/operations.test.ts`.
+- `liveChatId` acquisition boundary: `apps/api/src/youtube/operations.test.ts`.
+- Quota/rate-limit operational classification: `apps/api/src/youtube/operations.test.ts`.
+- Non-retry operator action classification: `apps/api/src/youtube/operations.test.ts`.
+- Bounded streamList reconnect and list fallback conditions: `apps/api/src/youtube/operations.test.ts`.
+- `pollingIntervalMillis` handling for fallback polling: `apps/api/src/youtube/operations.test.ts`.
+- Deterministic long-running mock soak boundary: `apps/api/src/youtube/operations.test.ts`.
+
+Still uncovered by live production tests: real YouTube account authorization, live quota dashboard ingestion, alert routing, and production secret manager provider wiring.
+
