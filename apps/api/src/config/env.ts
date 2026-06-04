@@ -19,6 +19,8 @@ export const AppConfigSchema = z.object({
   IRIS_CORE_TIMEOUT_MS: z.coerce.number().int().positive().default(3000),
   YOUTUBE_API_KEY: z.string().optional(),
   YOUTUBE_OAUTH_TOKEN: z.string().optional(),
+  YOUTUBE_API_KEY_SECRET_NAME: z.string().optional(),
+  YOUTUBE_OAUTH_TOKEN_SECRET_NAME: z.string().optional(),
   YOUTUBE_CONNECTOR_MODE: z.enum(["mock", "official"]).default("mock"),
   YOUTUBE_CREDENTIAL_SOURCE: z.enum(["local_env", "secret_manager"]).default("local_env"),
   YOUTUBE_STREAM_RECONNECT_MAX_ATTEMPTS: z.coerce.number().int().positive().default(5),
@@ -37,8 +39,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     }
     if (!config.IRIS_CORE_API_URL) throw new Error("IRIS_CORE_API_URL is required in production");
     if (!config.IRIS_CORE_SHARED_SECRET || config.IRIS_CORE_SHARED_SECRET === "change-me-iris-core-secret") throw new Error("IRIS_CORE_SHARED_SECRET must not use the local mock default in production");
-    if (config.YOUTUBE_CONNECTOR_MODE === "official" && !config.YOUTUBE_API_KEY && !config.YOUTUBE_OAUTH_TOKEN) throw new Error("Official YouTube connector requires YOUTUBE_API_KEY or YOUTUBE_OAUTH_TOKEN in production");
     if (config.YOUTUBE_CONNECTOR_MODE === "official" && config.YOUTUBE_CREDENTIAL_SOURCE !== "secret_manager") throw new Error("Official YouTube connector requires YOUTUBE_CREDENTIAL_SOURCE=secret_manager in production");
+    if (config.YOUTUBE_CONNECTOR_MODE === "official" && !config.YOUTUBE_API_KEY_SECRET_NAME && !config.YOUTUBE_OAUTH_TOKEN_SECRET_NAME) throw new Error("Official YouTube connector requires YOUTUBE_API_KEY_SECRET_NAME or YOUTUBE_OAUTH_TOKEN_SECRET_NAME in production");
   }
   return config;
 }

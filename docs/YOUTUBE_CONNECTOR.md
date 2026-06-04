@@ -27,7 +27,7 @@ If `streamList` is unavailable, the connector falls back to `list`. Production c
 
 ## Production Operations Hardening
 
-Production official connector mode requires a secret manager credential source. Local `.env` values are allowed only for local/test; production must use `YOUTUBE_CREDENTIAL_SOURCE=secret_manager` with either `YOUTUBE_API_KEY` or `YOUTUBE_OAUTH_TOKEN`.
+Production official connector mode requires a secret manager credential source. Local `.env` values are allowed only for local/test; production must use `YOUTUBE_CREDENTIAL_SOURCE=secret_manager` with `YOUTUBE_API_KEY_SECRET_NAME` or `YOUTUBE_OAUTH_TOKEN_SECRET_NAME`. The secret names are deploy-time references; real credential values must not be committed.
 
 Reserved metrics:
 
@@ -39,6 +39,9 @@ Reserved metrics:
 - `youtube_list_fallback_total`
 - `youtube_verification_code_detected_total`
 - `youtube_verification_code_failed_total`
+- `youtube_live_chat_id_missing_total`
+- `youtube_auth_errors_total`
+- `youtube_invalid_page_token_total`
 
 `liveChatId` must come from the live session boundary. It must not be discovered by scraping YouTube pages, browser automation, or HTML parsing.
 

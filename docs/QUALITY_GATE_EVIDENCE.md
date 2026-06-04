@@ -126,3 +126,14 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Operations evidence: `apps/api/src/youtube/operations.test.ts` verifies metrics names, liveChatId acquisition boundary, quota/rate-limit classification, non-retry operator actions, reconnect bounds, fallback bounds, polling interval respect, and deterministic mock soak.
 - Safe boundary evidence: `.env.example` contains placeholders only; no real YouTube API key or OAuth token is committed.
 - Quality-gate status for PR #10: pass on run 26928828159.
+
+## PR youtube-prod-observability Evidence
+
+- Task mode: product_minor_r2 feature.
+- Runtime readiness claim: no.
+- Product code changed: yes, limited to YouTube credential provider and observability boundaries.
+- Evidence files: `.codex/change-classification.json`, `.codex/task-contract.json`, `.codex/product-verification.json`, `.codex/test-coverage-evidence.json`.
+- Secret safety: `.env.example` contains secret names and blank credential values only; no real YouTube API key or OAuth token is committed.
+- Product verification: credential provider boundary, production local-env rejection, metrics mapping, manual live soak skip gate, and no-scraping scan.
+- Complexity evidence: `.codex/task-contract.json` records verification surface, auth oracle, API compatibility summary, split reason, and reasoning evidence for the high-complexity credential/observability surface.
+- Review independence evidence: `.codex/review-independence.json` and `docs/pr-youtube-prod-observability.md` record writer evidence, review evidence, review checklist, review scope, and known gaps.

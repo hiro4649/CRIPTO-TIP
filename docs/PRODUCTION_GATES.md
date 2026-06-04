@@ -27,3 +27,5 @@ G4 production ready: not started. This repository is still not production ready.
 PR #4 completes the storage/queue portion of G2. It is not production ready.
 
 PR youtube-ops-hardening advances G3 operational readiness by adding credential source validation, metric name contracts, reconnect/fallback operation boundaries, and deterministic mock soak tests. It is still not G4 production ready because real secret manager wiring, live account authorization review, dashboard implementation, and alert routing remain deployment work.
+
+PR youtube-prod-observability advances G3 operational readiness by adding a credential provider interface, secret manager resolver boundary, expanded metric mapping, manual live soak gating, and operations docs. It is still not G4 production ready because provider-specific deployment apply, real dashboard exporter, alert delivery, and live YouTube account operation remain gated.

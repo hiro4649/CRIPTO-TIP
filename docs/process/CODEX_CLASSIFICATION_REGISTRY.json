@@ -22,6 +22,15 @@
       "notes": "Product architecture documentation."
     },
     {
+      "pathPattern": "docs/API_COMPATIBILITY_SUMMARY.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "API compatibility summary documentation."
+    },
+    {
       "pathPattern": "docs/EVENT_SCHEMA.md",
       "classification": "docs",
       "surface": "docs",
@@ -389,6 +398,33 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "PR body for YouTube operations hardening evidence."
+    },
+    {
+      "pathPattern": "docs/YOUTUBE_CREDENTIALS.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "YouTube credential boundary documentation."
+    },
+    {
+      "pathPattern": "docs/YOUTUBE_OBSERVABILITY.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "YouTube observability documentation."
+    },
+    {
+      "pathPattern": "docs/pr-youtube-prod-observability.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for YouTube production observability evidence."
     },
     {
       "pathPattern": ".codex/review-independence.json",

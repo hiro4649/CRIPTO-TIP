@@ -109,3 +109,20 @@ Deferred behavior:
 - Live YouTube API soak against a production account.
 - Real dashboard integration and alert routing.
 - Secret manager provider-specific wiring.
+
+## PR youtube-prod-observability
+
+Verified product behavior:
+
+- Secret manager credential provider boundary resolves YouTube credentials by secret name and rejects production local-env credential source.
+- Credential presence is fail-closed when no API key or OAuth token is returned.
+- Metric contract includes quota, rate-limit, reconnect, fallback, verification, liveChatId missing, auth error, and invalid page token metrics.
+- Operational error recording maps quota, rate-limit, auth, invalid page token, and missing liveChatId to explicit metrics.
+- Manual live YouTube soak remains skipped unless an explicit flag and secret manager credential boundary are present.
+
+Deferred behavior:
+
+- Provider-specific deployment apply.
+- Real secret manager SDK integration.
+- Real dashboard exporter and alert delivery.
+- Live YouTube account operation.

@@ -82,3 +82,19 @@ Risk coverage added:
 
 Still uncovered by live production tests: real YouTube account authorization, live quota dashboard ingestion, alert routing, and production secret manager provider wiring.
 
+## PR youtube-prod-observability
+
+Latest local result after this PR: full-suite `corepack pnpm test` and `npm test` pass with 15 test files, 108 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- Secret manager credential provider mock: `apps/api/src/youtube/credentials.test.ts`.
+- Production rejects local-env YouTube credential source: `apps/api/src/youtube/credentials.test.ts`, `apps/api/src/config/env.test.ts`.
+- Credential rotation boundary via secret names: `apps/api/src/youtube/credentials.test.ts`, `docs/YOUTUBE_CREDENTIALS.md`.
+- Metrics names contract: `apps/api/src/youtube/operations.test.ts`.
+- Quota/rate-limit/auth/invalid-page-token metric mapping: `apps/api/src/youtube/operations.test.ts`.
+- liveChatId missing metric: `apps/api/src/youtube/operations.test.ts`.
+- Manual live YouTube soak skip gate: `apps/api/src/youtube/operations.test.ts`.
+
+Still uncovered by automated tests: provider-specific secret manager SDK, real dashboard exporter, alert delivery, and live YouTube account operation.
+

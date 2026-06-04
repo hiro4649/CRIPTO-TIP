@@ -8,7 +8,10 @@ export const youtubeMetricNames = [
   "youtube_stream_reconnect_total",
   "youtube_list_fallback_total",
   "youtube_verification_code_detected_total",
-  "youtube_verification_code_failed_total"
+  "youtube_verification_code_failed_total",
+  "youtube_live_chat_id_missing_total",
+  "youtube_auth_errors_total",
+  "youtube_invalid_page_token_total"
 ] as const;
 
 export type YouTubeMetricName = typeof youtubeMetricNames[number];
@@ -37,8 +40,8 @@ export function classifyYouTubeOperationalError(error: unknown) {
     };
   }
   if (isRetryableYouTubeError(error)) return { retryable: true, operatorAction: "retry_with_backoff", metric: undefined as YouTubeMetricName | undefined };
-  if (error.statusCode === 401) return { retryable: false, operatorAction: "check_youtube_credentials", metric: undefined as YouTubeMetricName | undefined };
-  if (error.statusCode === 400 && error.reason === "pageTokenInvalid") return { retryable: false, operatorAction: "reset_page_token_or_operator_action", metric: undefined as YouTubeMetricName | undefined };
+  if (error.statusCode === 401) return { retryable: false, operatorAction: "check_youtube_credentials", metric: "youtube_auth_errors_total" as const };
+  if (error.statusCode === 400 && error.reason === "pageTokenInvalid") return { retryable: false, operatorAction: "reset_page_token_or_operator_action", metric: "youtube_invalid_page_token_total" as const };
   return { retryable: false, operatorAction: "operator_review", metric: undefined as YouTubeMetricName | undefined };
 }
 
@@ -74,4 +77,44 @@ export async function runDeterministicYouTubeConnectorSoak(args: {
     pageToken = lastResult.nextPageToken;
   }
   return { counters, lastResult };
+}
+
+export interface YouTubeMetricsSink {
+  increment(name: YouTubeMetricName, value?: number): void;
+  snapshot(): Partial<Record<YouTubeMetricName, number>>;
+}
+
+export class InMemoryYouTubeMetricsSink implements YouTubeMetricsSink {
+  private readonly counters: Partial<Record<YouTubeMetricName, number>> = {};
+
+  increment(name: YouTubeMetricName, value = 1) {
+    this.counters[name] = (this.counters[name] ?? 0) + value;
+  }
+
+  snapshot() {
+    return { ...this.counters };
+  }
+}
+
+export function recordYouTubeOperationalErrorMetric(error: unknown, sink: YouTubeMetricsSink) {
+  const classified = classifyYouTubeOperationalError(error);
+  if (classified.metric) sink.increment(classified.metric);
+  return classified;
+}
+
+export function recordLiveChatIdMissingMetric(sink: YouTubeMetricsSink) {
+  sink.increment("youtube_live_chat_id_missing_total");
+}
+
+export function createManualLiveYouTubeSoakPlan(env: {
+  RUN_LIVE_YOUTUBE_SOAK_TESTS?: string;
+  YOUTUBE_CREDENTIAL_SOURCE?: string;
+  YOUTUBE_API_KEY_SECRET_NAME?: string;
+  YOUTUBE_OAUTH_TOKEN_SECRET_NAME?: string;
+}) {
+  const enabled = env.RUN_LIVE_YOUTUBE_SOAK_TESTS === "true";
+  const hasSecretBoundary = env.YOUTUBE_CREDENTIAL_SOURCE === "secret_manager" && Boolean(env.YOUTUBE_API_KEY_SECRET_NAME || env.YOUTUBE_OAUTH_TOKEN_SECRET_NAME);
+  if (!enabled) return { status: "skipped" as const, reason: "manual_live_youtube_soak_disabled" };
+  if (!hasSecretBoundary) return { status: "skipped" as const, reason: "secret_manager_credential_boundary_missing" };
+  return { status: "ready" as const, reason: "manual_gate_and_secret_boundary_present" };
 }
