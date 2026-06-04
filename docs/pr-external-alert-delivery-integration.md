@@ -27,6 +27,8 @@ Runtime readiness claim: no
 
 Product code changed: yes
 
+Runtime check: no server startup or provider connection is required for this additive helper boundary; local typecheck and unit tests verify the runtime import surface.
+
 Done criteria: local lint/typecheck/test pass, GitHub typescript/contracts/quality-gate pass, external alert provider mock test pass, provider-specific alert provider boundary test pass, alert delivery plan generation test pass, dry-run test pass, manual alert apply gate test pass, credential missing fail-closed test pass, alert routing parity test pass, payload safety test pass, rollback/disable plan test pass, no secret scan pass, and no scraping scan pass.
 
 Verification surface: `apps/api/src/youtube/alert-delivery.test.ts`, `docs/ALERT_DELIVERY.md`, `docs/youtube-dashboard-contract.json`, `corepack pnpm lint`, `corepack pnpm typecheck`, `corepack pnpm test`, `npm test`, secret scan, prohibited wording scan, and no-scraping scan.
@@ -66,6 +68,8 @@ Evidence freshness: GitHub checks must pass for the pushed PR head before merge 
 - Rollback and disable plan generation is available as operator steps.
 
 ## Acceptance Criteria
+
+Acceptance criteria:
 
 - External alert provider mock test passes.
 - Provider-specific alert provider boundary test passes.
