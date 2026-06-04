@@ -112,6 +112,24 @@
       "notes": "PR body source documentation."
     },
     {
+      "pathPattern": "docs/pr-bootstrap-mvp.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
+    },
+    {
+      "pathPattern": "docs/pr-durable-events-db-queue.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
+    },
+    {
       "pathPattern": ".codex/change-classification.json",
       "classification": "verification_relevant",
       "surface": "quality_evidence",
@@ -434,6 +452,15 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "PR body for YouTube deployment dashboard evidence."
+    },
+    {
+      "pathPattern": "docs/pr-production-chain-listener-reorg.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
     },
     {
       "pathPattern": "docs/youtube-dashboard-contract.json",

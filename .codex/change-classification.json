@@ -75,7 +75,12 @@
     { "path": "docs/YOUTUBE_CREDENTIALS.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_OBSERVABILITY.md", "classification": "docs" },
     { "path": "docs/pr-observability-exporter-integration.md", "classification": "docs" },
+    { "path": "docs/pr-bootstrap-mvp.md", "classification": "docs" },
+    { "path": "docs/pr-durable-events-db-queue.md", "classification": "docs" },
     { "path": "docs/pr-youtube-deployment-dashboard.md", "classification": "docs" },
+    { "path": "docs/pr-official-youtube-connector.md", "classification": "docs" },
+    { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
+    { "path": "docs/pr-youtube-prod-observability.md", "classification": "docs" },
     { "path": "docs/youtube-dashboard-contract.json", "classification": "docs" },
     { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" }
   ]
