@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -139,21 +139,8 @@ function buildV090SelfTestReport() {
   const beforeQualityGateText = workflowText.slice(0, workflowText.indexOf('node scripts/codex-local-quality-gate.mjs'));
   assertCase('workflow_no_repo_root_lifeboat_before_quality_gate', !beforeQualityGateText.includes('CODEX_LIFEBOAT_MIRROR_PATH'), failures, cases, 'pass', []);
   assertCase('workflow_uploads_runner_temp_lifeboat', workflowText.includes('${{ runner.temp }}/codex-minimal-safe-failure.json'), failures, cases, 'pass', []);
-  const workflowDispatchMainEnv = {
-    CODEX_EVENT_NAME: 'workflow_dispatch',
-    CODEX_HARNESS_SOURCE_REPO: '1',
-    CODEX_HUMAN_CONFIRMATION_STRICT: '0',
-    CODEX_EVIDENCE_PACK_STRICT: '0',
-    CODEX_EVIDENCE_PACK_PATH: '',
-    CODEX_MANUAL_CONFIRMATION_PATH: '',
-    CODEX_PR_BODY: '',
-    CODEX_PR_BODY_PATH: '',
-    CODEX_PR_NUMBER: '',
-    GITHUB_REF: 'refs/heads/main',
-    GITHUB_EVENT_PATH: '',
-  };
-  assertCase('workflow_dispatch_main_does_not_require_human_confirmation', buildHumanConfirmationObjectReport(workflowDispatchMainEnv).humanConfirmationObjectStatus.status === 'not_required', failures, cases, 'pass', []);
-  assertCase('workflow_dispatch_main_does_not_require_evidence_pack', buildEvidencePackReport(workflowDispatchMainEnv).evidencePackStatus.status === 'not_applicable', failures, cases, 'pass', []);
+  assertCase('workflow_dispatch_main_does_not_require_human_confirmation', buildHumanConfirmationObjectReport({ CODEX_EVENT_NAME: 'workflow_dispatch', CODEX_HARNESS_SOURCE_REPO: '1', CODEX_HUMAN_CONFIRMATION_STRICT: '0' }).humanConfirmationObjectStatus.status === 'not_required', failures, cases, 'pass', []);
+  assertCase('workflow_dispatch_main_does_not_require_evidence_pack', buildEvidencePackReport({ CODEX_EVENT_NAME: 'workflow_dispatch', CODEX_HARNESS_SOURCE_REPO: '1', CODEX_EVIDENCE_PACK_STRICT: '0' }).evidencePackStatus.status === 'not_applicable', failures, cases, 'pass', []);
   const strictPrHumanStatus = buildHumanConfirmationObjectReport({ CODEX_EVENT_NAME: 'pull_request', CODEX_HARNESS_SOURCE_REPO: '1', CODEX_PR_NUMBER: '90' }).humanConfirmationObjectStatus.status;
   const strictPrEvidenceStatus = buildEvidencePackReport({ CODEX_EVENT_NAME: 'pull_request', CODEX_HARNESS_SOURCE_REPO: '1', CODEX_PR_NUMBER: '90' }).evidencePackStatus.status;
   assertCase('pull_request_still_requires_human_confirmation', ['fail', 'manual_confirmation_required'].includes(strictPrHumanStatus), failures, cases, strictPrHumanStatus, []);

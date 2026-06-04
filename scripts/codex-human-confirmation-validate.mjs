@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -60,7 +60,7 @@ function parseJsonBlocks(text, beginMarker, endMarker, property) {
 }
 
 function confirmationPath(env = process.env) {
-  if (Object.prototype.hasOwnProperty.call(env, 'CODEX_MANUAL_CONFIRMATION_PATH')) return env.CODEX_MANUAL_CONFIRMATION_PATH;
+  if (env.CODEX_MANUAL_CONFIRMATION_PATH) return env.CODEX_MANUAL_CONFIRMATION_PATH;
   return fs.existsSync(defaultConfirmationPath) ? defaultConfirmationPath : '';
 }
 
@@ -161,9 +161,7 @@ function pushCandidate(candidates, object, source) {
 
 function collectEvidencePackConfirmationCandidates(env) {
   const candidates = [];
-  const packPath = Object.prototype.hasOwnProperty.call(env, 'CODEX_EVIDENCE_PACK_PATH')
-    ? env.CODEX_EVIDENCE_PACK_PATH
-    : (fs.existsSync(path.join('.codex', 'evidence-pack.json')) ? path.join('.codex', 'evidence-pack.json') : '');
+  const packPath = env.CODEX_EVIDENCE_PACK_PATH || (fs.existsSync(path.join('.codex', 'evidence-pack.json')) ? path.join('.codex', 'evidence-pack.json') : '');
   if (packPath) {
     const pack = readJson(packPath);
     pushCandidate(candidates, pack?.humanConfirmation, 'evidence_pack_file');
