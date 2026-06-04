@@ -164,3 +164,25 @@ Deferred behavior:
 - Provider-specific dashboard deployment apply.
 - External alert delivery with real provider credentials.
 - Live YouTube account operation without manual gate.
+
+## PR dashboard-exporter-deployment
+
+Verified product behavior:
+
+- `DashboardProvider` deploys dashboard plans through an injected provider boundary.
+- `MockDashboardProvider` supports deterministic dry-run and manual-gated apply tests.
+- `ProviderSpecificDashboardProvider` wraps an injected provider without committing provider secrets.
+- Dashboard deployment plans are generated from the dashboard contract.
+- Dry-run succeeds without manual approval.
+- Apply fails closed unless `manualApproval` is true.
+- Missing dashboard provider credential secret names fail closed.
+- Dashboard panels reference declared metrics only.
+- Alert routing provider remains a stub and real external alert delivery remains disabled.
+- Provider errors map to operator actions.
+- Rollback plan generation is available as operator steps.
+
+Deferred behavior:
+
+- Real provider SDK deployment apply.
+- External alert delivery with real provider credentials.
+- Live YouTube account operation without manual gate.

@@ -57,3 +57,12 @@
 | Medium | Provider-specific dashboard deployment apply is still not implemented. | Backend/Observability | Dashboard provider PR | Exporter contract and output format tests are provider-neutral and do not store secrets. |
 | Medium | External alert delivery with real provider credentials is still not implemented. | Operations | Alert provider PR | Alert labels and routing contract are test-covered before provider integration. |
 | Medium | Live YouTube account soak remains manual-gated. | QA/Operations | Live environment validation | Manual soak result ingestion is safe-summary only and skipped without explicit flag and managed credential boundary. |
+
+## PR dashboard-exporter-deployment
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real provider SDK deployment apply is not implemented. | Backend/Observability | Provider SDK PR if selected | Provider-specific boundary remains injected; dry-run and manual gate tests cover current scope. |
+| Medium | External alert delivery with real credentials remains disabled. | Operations | Alert provider integration PR | Alert routing provider is a stub and real delivery is explicitly out of scope. |
+| Medium | Dashboard provider credentials are not provisioned by this repository. | DevOps | Deployment secret provisioning | Credential secret-name boundary fails closed when missing and never commits provider secret values. |
+| Medium | Live YouTube account operation remains manual-gated. | QA/Operations | Live environment validation | No live operation is added; deployment plan is contract-driven and dry-run first. |

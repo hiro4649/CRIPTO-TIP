@@ -142,3 +142,14 @@ The exporter boundary is provider-neutral. If dashboard export or alert routing 
 3. Confirm Prometheus/OpenTelemetry formatting tests still pass before changing provider-specific adapters.
 4. If alert delivery fails, inspect alert labels for `alert_id`, `operator_action`, and `source_metric`, then retry only after provider credentials and routing config are verified outside git.
 5. Manual live YouTube soak results may be ingested only as safe summaries and only after the explicit live soak flag and managed credential boundary are present.
+
+## Dashboard Deployment Dry-Run And Apply
+
+1. Generate a dashboard deployment plan from `docs/youtube-dashboard-contract.json`.
+2. Run dry-run first. Dry-run must not require manual approval and must not write to a provider.
+3. Confirm dashboard panels reference declared metrics only.
+4. Confirm alert routes include only safe labels: `alert_id`, `operator_action`, and `source_metric`.
+5. Verify the dashboard provider credential secret name exists in the approved secret manager. Do not paste provider tokens or API keys into `.env`, docs, PR bodies, or logs.
+6. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
+7. If provider apply fails, map the error to an operator action and do not retry with raw credentials in logs.
+8. Rollback by restoring the previous dashboard revision, verifying metric parity, confirming alert routes are disabled or restored, and recording operator review.

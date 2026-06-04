@@ -12,7 +12,7 @@
     "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json",
     "taskBriefCompilerStatus": ".codex/task-contract.json",
     "secretScan": ".env.example placeholder inventory and security grep",
-    "codeReviewMonitorStatus": "docs/pr-observability-exporter-integration.md, docs/OBSERVABILITY_EXPORTER.md, docs/YOUTUBE_OBSERVABILITY.md, and docs/youtube-dashboard-contract.json",
+    "codeReviewMonitorStatus": "docs/pr-dashboard-exporter-deployment.md, docs/DASHBOARD_DEPLOYMENT.md, docs/OBSERVABILITY_EXPORTER.md, and docs/youtube-dashboard-contract.json",
     "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
   },
   "safePlaceholderInventory": [
@@ -22,7 +22,8 @@
     "YOUTUBE_OAUTH_TOKEN_SECRET_NAME secret-name placeholder only",
     "RUN_LIVE_YOUTUBE_SOAK_TESTS false by default",
     "dashboard provider credentials are not present",
-    "external alert provider credentials are not present"
+    "external alert provider credentials are not present",
+    "dashboard provider apply requires manual approval"
   ],
   "runtimeReadinessClaimed": false
 }

@@ -481,6 +481,15 @@
       "notes": "Observability exporter boundary documentation."
     },
     {
+      "pathPattern": "docs/DASHBOARD_DEPLOYMENT.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Dashboard deployment boundary documentation."
+    },
+    {
       "pathPattern": "docs/pr-observability-exporter-integration.md",
       "classification": "docs",
       "surface": "docs",
@@ -488,6 +497,15 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "PR body for observability exporter integration evidence."
+    },
+    {
+      "pathPattern": "docs/pr-dashboard-exporter-deployment.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for dashboard exporter deployment evidence."
     },
     {
       "pathPattern": "apps/api/src/youtube/observability-exporter.ts",
@@ -506,6 +524,24 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "YouTube observability exporter integration tests."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/dashboard-deployment.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube dashboard deployment boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/dashboard-deployment.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube dashboard deployment tests."
     },
     {
       "pathPattern": ".codex/review-independence.json",
