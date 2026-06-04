@@ -1,0 +1,58 @@
+{
+  "title": "CRIPTO-TIP YouTube Connector Operations",
+  "metrics": [
+    "youtube_connector_connected",
+    "youtube_events_per_minute",
+    "youtube_quota_errors_total",
+    "youtube_rate_limit_errors_total",
+    "youtube_stream_reconnect_total",
+    "youtube_list_fallback_total",
+    "youtube_verification_code_detected_total",
+    "youtube_verification_code_failed_total",
+    "youtube_live_chat_id_missing_total",
+    "youtube_auth_errors_total",
+    "youtube_invalid_page_token_total"
+  ],
+  "alerts": [
+    "quota_exceeded",
+    "rate_limit_exceeded",
+    "auth_failure",
+    "invalid_page_token",
+    "live_chat_id_missing",
+    "stream_reconnect_storm",
+    "list_fallback_spike",
+    "zero_events_while_live",
+    "verification_failure_spike"
+  ],
+  "panels": [
+    {
+      "title": "Connector Health",
+      "metrics": ["youtube_connector_connected"]
+    },
+    {
+      "title": "Events",
+      "metrics": ["youtube_events_per_minute"]
+    },
+    {
+      "title": "Quota And Rate Limits",
+      "metrics": ["youtube_quota_errors_total", "youtube_rate_limit_errors_total"]
+    },
+    {
+      "title": "Reconnect And Fallback",
+      "metrics": ["youtube_stream_reconnect_total", "youtube_list_fallback_total"]
+    },
+    {
+      "title": "Operator Actions",
+      "metrics": ["youtube_auth_errors_total", "youtube_invalid_page_token_total", "youtube_live_chat_id_missing_total"]
+    },
+    {
+      "title": "Verification",
+      "metrics": ["youtube_verification_code_detected_total", "youtube_verification_code_failed_total"]
+    }
+  ],
+  "manualLiveSoak": {
+    "defaultCiBehavior": "skipped",
+    "requiresExplicitFlag": true,
+    "requiresManagedCredentialSource": true
+  }
+}

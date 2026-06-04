@@ -27,7 +27,7 @@ If `streamList` is unavailable, the connector falls back to `list`. Production c
 
 ## Production Operations Hardening
 
-Production official connector mode requires a secret manager credential source. Local `.env` values are allowed only for local/test; production must use `YOUTUBE_CREDENTIAL_SOURCE=secret_manager` with `YOUTUBE_API_KEY_SECRET_NAME` or `YOUTUBE_OAUTH_TOKEN_SECRET_NAME`. The secret names are deploy-time references; real credential values must not be committed.
+Production official connector mode rejects local `.env` credential values. Production must use `YOUTUBE_CREDENTIAL_SOURCE=secret_manager` or `YOUTUBE_CREDENTIAL_SOURCE=provider_specific` with `YOUTUBE_API_KEY_SECRET_NAME` or `YOUTUBE_OAUTH_TOKEN_SECRET_NAME`. The secret names are deploy-time references; real credential values must not be committed.
 
 Reserved metrics:
 

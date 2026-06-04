@@ -84,7 +84,9 @@ Still uncovered by live production tests: real YouTube account authorization, li
 
 ## PR youtube-prod-observability
 
-Latest local result after this PR: full-suite `corepack pnpm test` and `npm test` pass with 15 test files, 108 passed tests, and 6 skipped tests.
+Latest local result after this PR: full-suite `corepack pnpm test` passes with 16 test files, 124 passed tests, and 6 skipped tests. `npm test` must match this count before PR merge.
+
+Additional PR #12 coverage includes provider-specific YouTube credential provider boundary, credential rotation plan validation, dashboard contract JSON parity, alert routing config, quota/rate-limit/auth/page-token/liveChatId metric mappings, reconnect/fallback/verification alerts, zero-events-while-live alerting, and manual live YouTube soak default skip behavior.
 
 Risk coverage added:
 

@@ -6,6 +6,8 @@
   "productVerificationStatus": "pass",
   "behaviors": {
     "youtube_secret_manager_credential_provider_boundary": "pass",
+    "youtube_provider_specific_credential_provider_boundary": "pass",
+    "youtube_credential_rotation_plan_boundary": "pass",
     "youtube_production_rejects_local_env_credentials": "pass",
     "youtube_credential_presence_fail_closed": "pass",
     "youtube_metric_name_contract": "pass",
@@ -14,8 +16,11 @@
     "youtube_invalid_page_token_metric_mapping": "pass",
     "youtube_live_chat_id_missing_metric": "pass",
     "manual_live_youtube_soak_skipped_without_gate": "pass",
+    "youtube_dashboard_contract_json": "pass",
+    "youtube_alert_routing_contract": "pass",
     "youtube_no_scraping": "pass",
-    "provider_specific_secret_manager_sdk": "not_started",
+    "provider_specific_deployment_apply": "not_started",
+    "real_secret_manager_sdk_binding": "not_started",
     "real_dashboard_exporter": "not_started",
     "alert_delivery": "not_started",
     "live_youtube_account_operation": "not_started",
@@ -28,10 +33,12 @@
   },
   "evidence": [
     "apps/api/src/youtube/credentials.test.ts",
+    "apps/api/src/youtube/deployment-observability.test.ts",
     "apps/api/src/youtube/operations.test.ts",
     "apps/api/src/config/env.test.ts",
     "docs/YOUTUBE_CREDENTIALS.md",
-    "docs/YOUTUBE_OBSERVABILITY.md"
+    "docs/YOUTUBE_OBSERVABILITY.md",
+    "docs/youtube-dashboard-contract.json"
   ],
   "runtimeReadinessClaimed": false
 }

@@ -427,6 +427,24 @@
       "notes": "PR body for YouTube production observability evidence."
     },
     {
+      "pathPattern": "docs/pr-youtube-deployment-dashboard.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for YouTube deployment dashboard evidence."
+    },
+    {
+      "pathPattern": "docs/youtube-dashboard-contract.json",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable YouTube dashboard metric contract."
+    },
+    {
       "pathPattern": ".codex/review-independence.json",
       "classification": "verification_relevant",
       "surface": "evidence",

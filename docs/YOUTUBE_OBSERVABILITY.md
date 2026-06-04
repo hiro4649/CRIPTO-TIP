@@ -18,6 +18,8 @@ This metric contract covers the official YouTube Live API connector boundary. It
 
 ## Dashboard Panels
 
+The dashboard contract is fixed in `docs/youtube-dashboard-contract.json` and mirrored by `buildYouTubeDashboardContract`.
+
 - Connector connected state.
 - Events per minute by stream.
 - Quota and rate-limit errors.
@@ -28,6 +30,8 @@ This metric contract covers the official YouTube Live API connector boundary. It
 
 ## Alert Routing
 
+The alert routing contract is fixed by `youtubeAlertConfigs` and test-covered in `deployment-observability.test.ts`.
+
 - Auth errors: page the operator responsible for YouTube credentials and rotate credentials if needed.
 - Quota/rate-limit errors: notify operations, reduce polling pressure, and inspect the YouTube quota dashboard.
 - Reconnect storm: inspect network and streamList availability.
@@ -36,4 +40,4 @@ This metric contract covers the official YouTube Live API connector boundary. It
 
 ## Live Soak Boundary
 
-Live YouTube API soak remains manual-gated. It must be skipped unless an explicit live soak flag and secret manager credential boundary are present.
+Live YouTube API soak remains manual-gated. It must be skipped unless an explicit live soak flag and managed credential boundary are present. Deterministic mock soak remains the normal CI path.

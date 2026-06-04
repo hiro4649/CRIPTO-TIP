@@ -104,13 +104,17 @@ describe("YouTube operations hardening boundary", () => {
     });
   });
 
-  it("keeps manual live YouTube soak skipped unless explicitly gated with secret manager boundary", () => {
+  it("keeps manual live YouTube soak skipped unless explicitly gated with a managed credential boundary", () => {
     expect(createManualLiveYouTubeSoakPlan({}).status).toBe("skipped");
     expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "local_env" })).toEqual({
       status: "skipped",
-      reason: "secret_manager_credential_boundary_missing"
+      reason: "managed_credential_boundary_missing"
     });
     expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" })).toEqual({
+      status: "ready",
+      reason: "manual_gate_and_secret_boundary_present"
+    });
+    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "provider_specific", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" })).toEqual({
       status: "ready",
       reason: "manual_gate_and_secret_boundary_present"
     });

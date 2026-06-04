@@ -106,6 +106,8 @@ Quota dashboarding uses the metric contract documented in `docs/YOUTUBE_OBSERVAB
 
 Production official connector mode must use credentials supplied through the deployment secret manager. Do not store real `YOUTUBE_API_KEY` or `YOUTUBE_OAUTH_TOKEN` in the repository, `.env.example`, logs, or docs.
 
+Production may use `secret_manager` or `provider_specific` as the managed credential source. `local_env` is limited to local/test and must be rejected in production official connector mode.
+
 Credential rotation:
 
 1. Create or rotate the YouTube API key or OAuth credential in the approved secret manager.
@@ -113,6 +115,8 @@ Credential rotation:
 3. Confirm `youtube_connector_connected` returns to healthy state.
 4. Watch `youtube_quota_errors_total`, `youtube_rate_limit_errors_total`, and `youtube_stream_reconnect_total` for abnormal spikes.
 5. If credentials fail, check `youtube_auth_errors_total`, rotate the secret in the provider, and restart only the YouTube connector worker boundary.
+
+The credential rotation boundary requires distinct current and next secret names. Do not place credential values in `.env`, docs, PR bodies, logs, dashboard config, or alert payloads.
 
 Quota and reconnect operations:
 
@@ -122,5 +126,9 @@ Quota and reconnect operations:
 - Verification failures: inspect `youtube_verification_code_failed_total` and confirm code expiry, one-time use, and stream scoping.
 - Missing liveChatId: inspect `youtube_live_chat_id_missing_total`, confirm the live session record has `youtube_live_chat_id`, and do not scrape YouTube pages to discover it.
 - Invalid page token: inspect `youtube_invalid_page_token_total`, reset the stored page token, and resume from the official API boundary.
+- Zero events while live: inspect `youtube_events_per_minute`, connector connected state, live chat activity, and stream configuration.
+- Reconnect storm or fallback spike: inspect `youtube_stream_reconnect_total` and `youtube_list_fallback_total` before increasing polling pressure.
 
 `liveChatId` must come from the live session boundary. Operators must not use scraping, browser automation, or HTML parsing to acquire it.
+
+Dashboard contract JSON is stored in `docs/youtube-dashboard-contract.json`. External dashboard provisioning must treat that JSON as a contract, not as a place to store credentials or provider endpoints.

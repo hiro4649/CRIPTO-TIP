@@ -126,3 +126,23 @@ Deferred behavior:
 - Real secret manager SDK integration.
 - Real dashboard exporter and alert delivery.
 - Live YouTube account operation.
+
+## PR youtube-deployment-dashboard
+
+Verified product behavior:
+
+- Production official YouTube connector mode rejects `local_env` credential source and accepts managed `secret_manager` or `provider_specific` sources with secret names.
+- Provider-specific YouTube credential provider boundary resolves through an injected resolver and does not commit credential values.
+- Credential rotation plan requires distinct current and next secret names and keeps credential values outside the repository.
+- YouTube metrics snapshot includes every metric contract name and defaults missing counters to zero.
+- Dashboard contract JSON and runtime dashboard builder include the same metric contract.
+- Alert routing covers quota exceeded, rate limit exceeded, auth failure, invalid page token, liveChatId missing, reconnect storm, list fallback spike, zero YouTube events while live, and verification failure spike.
+- Manual live YouTube soak remains skipped unless explicit flag and managed credential boundary are present.
+
+Deferred behavior:
+
+- Provider-specific deployment apply.
+- Real production secret manager SDK binding.
+- Real dashboard exporter deployment.
+- Alert delivery into an external paging provider.
+- Live YouTube account operation without manual gate.
