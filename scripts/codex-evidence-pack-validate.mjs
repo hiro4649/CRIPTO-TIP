@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -116,7 +116,7 @@ export function selectValidEvidencePackCandidate(candidates, env = process.env) 
 }
 
 function evidencePackPath(env = process.env) {
-  if (Object.prototype.hasOwnProperty.call(env, 'CODEX_EVIDENCE_PACK_PATH')) return env.CODEX_EVIDENCE_PACK_PATH;
+  if (env.CODEX_EVIDENCE_PACK_PATH) return env.CODEX_EVIDENCE_PACK_PATH;
   return fs.existsSync(defaultPackPath) ? defaultPackPath : '';
 }
 

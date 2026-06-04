@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -72,7 +72,6 @@ function buildReport() {
 
   const goNoGoHeading = buildProductionReadinessReport({
     CODEX_EVENT_NAME: 'pull_request',
-    CODEX_EVIDENCE_PACK_PATH: '',
     CODEX_PR_HEAD_SHA: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
     CODEX_PR_BODY: [
       'Production Go/No-Go:',

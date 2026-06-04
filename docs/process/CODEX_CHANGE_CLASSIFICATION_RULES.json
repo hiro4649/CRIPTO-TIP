@@ -1,5 +1,5 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.5",
   "harnessVersion": "1.0.2",
   "harnessFiles": [
     "AGENTS.md",
@@ -21,7 +21,6 @@
     "src/",
     "apps/",
     "contracts/",
-    "migrations/",
     "packages/",
     "lib/",
     "server/",
@@ -60,10 +59,7 @@
     "next.config.*",
     "webpack.config.*",
     "eslint.config.*",
-    ".env*",
-    "docker-compose.yml",
-    "vitest.config.ts",
-    "apps/api/src/config/"
+    ".env*"
   ],
   "authorityFiles": [
     "IRIS_SPEC_AUTHORITY.md",

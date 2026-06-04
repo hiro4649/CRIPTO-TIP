@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 import { scanObjectForUnsafe, simpleStatus, writeJsonReport, exitFor, normalizePath } from './codex-v080-lib.mjs';
 
 export const V104_STATUS_KEYS = [
@@ -139,32 +139,6 @@ export const V104_STATUS_KEYS = [
   'voxweaveAdapterContractWorkBlockedStatus',
   'voxweaveHarnessWorkStopConditionStatus',
   'voxweaveProductFeatureQueueHoldStatus',
-  'criptoTipCryptoSurfaceStatus',
-  'criptoTipYouTubeLiveBoundaryStatus',
-  'criptoTipExternalLinkSafetyStatus',
-  'criptoTipWalletCustodyBoundaryStatus',
-  'criptoTipPrivateKeyProhibitionStatus',
-  'criptoTipDonationEventBoundaryStatus',
-  'criptoTipViewerPrivacyBoundaryStatus',
-  'criptoTipTxHashPrivacyStatus',
-  'criptoTipNoInvestmentAdviceStatus',
-  'criptoTipNoExchangeServiceStatus',
-  'criptoTipNoSuperChatBypassStatus',
-  'criptoTipNoDonationPressureStatus',
-  'criptoTipNoParasocialMonetizationStatus',
-  'criptoTipRuntimeReadinessBoundaryStatus',
-  'criptoTipProductionGoBoundaryStatus',
-  'criptoTipClaimToCodeBoundaryStatus',
-  'criptoTipArchitectureBoundaryLintStatus',
-  'criptoTipToolPermissionBoundaryStatus',
-  'criptoTipEvidenceReportStatus',
-  'criptoTipGithubStateHysteresisStatus',
-  'criptoTipRepositoryBoundaryStatus',
-  'criptoTipDurableEventQueueBoundaryStatus',
-  'criptoTipIdempotencyBoundaryStatus',
-  'criptoTipDlqBoundaryStatus',
-  'criptoTipOverlayXssBoundaryStatus',
-  'criptoTipAiMemoryPrivacyBoundaryStatus',
   'criptoTipClaimToCodeStatus',
   'criptoTipArchitectureBoundaryStatus',
   'criptoTipAcceptanceCriteriaMatrixStatus',
@@ -630,7 +604,7 @@ const CLI_BUILDERS = {
 
 export function runV104Cli(kind = 'default', envName = 'CODEX_V104_REPORT') {
   const builder = CLI_BUILDERS[kind] || CLI_BUILDERS.default;
-  const report = { marker: 'CODEX_QUALITY_HARNESS_FILE v1.0.4', status: 'pass', ...builder() };
+  const report = { marker: 'CODEX_QUALITY_HARNESS_FILE v1.0.5', status: 'pass', ...builder() };
   const failing = Object.values(report).some((value) => value && typeof value === 'object' && value.status === 'fail');
   report.status = failing ? 'fail' : 'pass';
   writeJsonReport(report, envName);

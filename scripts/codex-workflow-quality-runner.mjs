@@ -5,7 +5,7 @@
 
 
 
-// CODEX_QUALITY_HARNESS_FILE v1.0.4
+// CODEX_QUALITY_HARNESS_FILE v1.0.5
 
 
 
@@ -3956,10 +3956,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-  const summaryReport = mode === 'target' && report.targetQualityScoreStatus
-    ? { ...report, qualityScoreStatus: report.targetQualityScoreStatus }
-    : report;
-  const reasonSummary = buildCompactReasonSummary(summaryReport).summary || {
+  const reasonSummary = buildCompactReasonSummary(report).summary || {
 
 
 
@@ -4085,9 +4082,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-    qualityScoreStatus: mode === 'target'
-      ? (report.targetQualityScoreStatus || report.qualityScoreStatus || { status: 'missing' })
-      : (report.qualityScoreStatus || report.targetQualityScoreStatus || { status: 'missing' }),
+    qualityScoreStatus: report.qualityScoreStatus || report.targetQualityScoreStatus || { status: 'missing' },
 
 
 
