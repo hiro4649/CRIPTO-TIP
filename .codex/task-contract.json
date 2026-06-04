@@ -45,6 +45,11 @@
     "regular_chat_normalization_test",
     "verification_code_expiry_one_time_stream_scope_test",
     "quota_retry_test",
+    "403_quota_rate_limit_retry_test",
+    "403_forbidden_non_retry_test",
+    "400_page_token_non_retry_test",
+    "401_auth_non_retry_test",
+    "malformed_error_body_safe_test",
     "no_scraping_test",
     "superchat_moderation_test",
     "wallet_redaction_test"

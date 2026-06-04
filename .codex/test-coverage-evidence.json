@@ -4,7 +4,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
   "testFiles": 13,
-  "testsPassed": 79,
+  "testsPassed": 89,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -33,7 +33,10 @@
     "youtube_superchat_normalization",
     "youtube_supersticker_normalization",
     "youtube_verification_code_boundary",
-    "youtube_no_scraping"
+    "youtube_no_scraping",
+    "youtube_403_quota_rate_limit_retry",
+    "youtube_non_retry_error_classification",
+    "youtube_malformed_error_body_safe"
   ],
   "uncoveredRisks": [
     "production_rpc_secret_wiring",

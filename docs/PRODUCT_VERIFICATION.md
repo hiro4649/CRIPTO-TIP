@@ -82,7 +82,8 @@ Verified product behavior:
 - Super Chat comments pass through moderation.
 - Regular chat normalizes to `youtube.chat.message.received`.
 - `IRIS-XXXXXX` verification codes are 10-minute, one-time, and stream-scoped.
-- Quota and server errors retry through the connector boundary.
+- Quota and rate-limit errors retry through the connector boundary, including 403 `rateLimitExceeded`, `quotaExceeded`, and `userRateLimitExceeded`, plus 429 and 5xx responses.
+- 403 `forbidden`, `liveChatDisabled`, `liveChatEnded`, 400 `pageTokenInvalid`, and 401 auth failures are non-retryable.
 - The adapter uses official YouTube JSON API URLs only; no scraping or HTML parsing dependency is introduced.
 
 Deferred behavior:

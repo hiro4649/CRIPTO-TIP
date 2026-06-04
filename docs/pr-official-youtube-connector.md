@@ -38,13 +38,14 @@ Evidence freshness: current local branch before push.
 - Super Sticker to `support.received`: covered.
 - regular chat to `youtube.chat.message.received`: covered.
 - verification code detection/expiry/one-time/wrong stream: covered.
-- quota retry/backoff boundary: covered.
+- quota retry/backoff boundary: covered, including 403 `rateLimitExceeded`, `quotaExceeded`, and `userRateLimitExceeded`.
+- non-retry YouTube API errors: covered for 403 `forbidden`, `liveChatDisabled`, `liveChatEnded`, 400 `pageTokenInvalid`, and 401 auth failures.
 - no scraping dependency or HTML parsing: covered.
 - Super Chat moderation and wallet redaction: covered.
 
 ## Testing and review
 
-Tests or checks run locally: `corepack pnpm typecheck` pass; `corepack pnpm test` pass, 13 test files, 79 passed, 6 skipped. Full lint/npm/security checks are required before merge.
+Tests or checks run locally: `corepack pnpm install` pass; `corepack pnpm lint` pass; `corepack pnpm typecheck` pass; `corepack pnpm test` pass, 13 test files, 89 passed, 6 skipped; `npm test` pass, 13 test files, 89 passed, 6 skipped; local forge unavailable; security scans run.
 
 Review focus: official API boundary, no scraping, credential placeholders only, Super Chat not replaced, moderation safety, verification code one-time behavior, and no wallet/raw viewer data leakage.
 

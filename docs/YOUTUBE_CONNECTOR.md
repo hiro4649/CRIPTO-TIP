@@ -21,4 +21,6 @@ Viewer names and messages are untrusted. The connector sanitizes display names, 
 
 ## Operations
 
-Quota exceeded and server errors are retryable at the adapter boundary. If `streamList` is unavailable, the connector falls back to `list`. Production credentials are environment boundaries only; no real OAuth token or API key is committed.
+Quota and rate-limit errors are retryable at the adapter boundary, including 403 responses with `rateLimitExceeded`, `quotaExceeded`, or `userRateLimitExceeded`, plus 429 and 5xx responses. 403 `forbidden`, `liveChatDisabled`, and `liveChatEnded` are not retried. 400 `pageTokenInvalid` requires token reset or operator action. 401 auth failures require credential/OAuth review.
+
+If `streamList` is unavailable, the connector falls back to `list`. Production credentials are environment boundaries only; no real OAuth token or API key is committed.

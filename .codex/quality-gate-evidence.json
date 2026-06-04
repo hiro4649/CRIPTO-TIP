@@ -9,7 +9,7 @@
     "changeClassificationStatus": ".codex/change-classification.json",
     "classificationCoverageStatus": ".codex/change-classification.json",
     "productVerificationStatus": ".codex/product-verification.json and docs/PRODUCT_VERIFICATION.md",
-    "productVerificationEvidenceStatus": "apps/api/src/youtube/connector.test.ts, apps/api/src/youtube/verification.test.ts, packages/shared/src/index.test.ts, and docs/YOUTUBE_CONNECTOR.md",
+    "productVerificationEvidenceStatus": "apps/api/src/youtube/connector.test.ts, apps/api/src/youtube/verification.test.ts, packages/shared/src/index.test.ts, and docs/YOUTUBE_CONNECTOR.md, including 403 quota/rate-limit retry classification",
     "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json and docs/TEST_COVERAGE_EVIDENCE.md",
     "taskBriefCompilerStatus": ".codex/task-contract.json and docs/pr-production-chain-listener-reorg.md",
     "codeReviewMonitorStatus": "docs/pr-production-chain-listener-reorg.md review focus and docs/RISK_REGISTER.md",

@@ -31,7 +31,7 @@ export interface YouTubeConnector {
 }
 
 export class YouTubeApiError extends Error {
-  constructor(public readonly statusCode: number, message = `YouTube API error ${statusCode}`) {
+  constructor(public readonly statusCode: number, public readonly reason?: string, message = `YouTube API error ${statusCode}`) {
     super(message);
     this.name = "YouTubeApiError";
   }
@@ -89,7 +89,10 @@ export class OfficialYouTubeLiveConnector implements YouTubeConnector {
 
   private async request(method: "streamList" | "list", options: YouTubeConnectorOptions, usedFallback: boolean): Promise<YouTubePollResult> {
     const response = await this.fetchImpl(this.buildUrl(method, options), { headers: this.headers() });
-    if (!response.ok) throw new YouTubeApiError(response.status);
+    if (!response.ok) {
+      const errorBody = parseYouTubeApiErrorBody(await readJsonSafely(response));
+      throw new YouTubeApiError(response.status, errorBody.reason, errorBody.message ?? `YouTube API error ${response.status}`);
+    }
     const body = parseApiResponse(await response.json());
     const result: YouTubePollResult = { events: (body.items ?? []).map((item) => normalizeApiItem(item, options)), usedFallback };
     if (body.nextPageToken) result.nextPageToken = body.nextPageToken;
@@ -119,7 +122,33 @@ export class MockYouTubeConnector implements YouTubeConnector {
 }
 
 export function isRetryableYouTubeError(error: unknown) {
-  return error instanceof YouTubeApiError && (error.statusCode === 408 || error.statusCode === 429 || error.statusCode >= 500);
+  if (!(error instanceof YouTubeApiError)) return false;
+  if (error.statusCode === 403) return isRetryableYouTubeReason(error.reason);
+  return error.statusCode === 408 || error.statusCode === 429 || error.statusCode >= 500;
+}
+
+export function parseYouTubeApiErrorBody(value: unknown): { reason?: string; status?: string; message?: string } {
+  if (!value || typeof value !== "object") return {};
+  const root = value as { error?: unknown };
+  const error = root.error && typeof root.error === "object" ? root.error as { errors?: unknown; status?: unknown; message?: unknown } : undefined;
+  const firstError = Array.isArray(error?.errors) ? error.errors.find((item) => item && typeof item === "object") as { reason?: unknown } | undefined : undefined;
+  const parsed: { reason?: string; status?: string; message?: string } = {};
+  if (typeof firstError?.reason === "string") parsed.reason = firstError.reason;
+  if (typeof error?.status === "string") parsed.status = error.status;
+  if (typeof error?.message === "string") parsed.message = error.message;
+  return parsed;
+}
+
+async function readJsonSafely(response: { json(): Promise<unknown> }) {
+  try {
+    return await response.json();
+  } catch {
+    return undefined;
+  }
+}
+
+function isRetryableYouTubeReason(reason?: string) {
+  return reason === "rateLimitExceeded" || reason === "quotaExceeded" || reason === "userRateLimitExceeded";
 }
 
 function parseApiResponse(value: unknown): LiveChatApiResponse {

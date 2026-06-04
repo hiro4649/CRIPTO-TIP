@@ -7,6 +7,14 @@ function response(status: number, body: unknown) {
   return { ok: status >= 200 && status < 300, status, async json() { return body; } };
 }
 
+function malformedResponse(status: number) {
+  return { ok: false, status, async json(): Promise<unknown> { throw new Error("malformed json"); } };
+}
+
+function youtubeError(reason: string, message = reason) {
+  return { error: { errors: [{ reason }], status: reason.toUpperCase(), message } };
+}
+
 const options = { liveChatId: "live_chat", streamId: "stream_1", characterId: "char_mio", youtubeVideoId: "yt_video" };
 
 describe("OfficialYouTubeLiveConnector", () => {
@@ -54,23 +62,63 @@ describe("OfficialYouTubeLiveConnector", () => {
     expect(result.events[0]?.kind).toBe("chat");
   });
 
-  it("retries quota exceeded and server errors", async () => {
+  it.each(["rateLimitExceeded", "quotaExceeded", "userRateLimitExceeded"])("retries 403 %s and succeeds", async (reason) => {
     let calls = 0;
     const fetchImpl = async () => {
       calls += 1;
-      return calls === 1 ? response(429, {}) : response(200, { items: [] });
+      return calls === 1 ? response(403, youtubeError(reason)) : response(200, { items: [] });
     };
     await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).resolves.toMatchObject({ events: [] });
     expect(calls).toBe(2);
   });
 
-  it("does not retry non-retryable API errors", async () => {
+  it.each(["forbidden", "liveChatDisabled", "liveChatEnded"])("does not retry 403 %s", async (reason) => {
     let calls = 0;
     const fetchImpl = async () => {
       calls += 1;
-      return response(401, {});
+      return response(403, youtubeError(reason));
+    };
+    await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).rejects.toMatchObject({ statusCode: 403, reason });
+    expect(calls).toBe(1);
+  });
+
+  it("does not retry 400 pageTokenInvalid", async () => {
+    let calls = 0;
+    const fetchImpl = async () => {
+      calls += 1;
+      return response(400, youtubeError("pageTokenInvalid"));
+    };
+    await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).rejects.toMatchObject({ statusCode: 400, reason: "pageTokenInvalid" });
+    expect(calls).toBe(1);
+  });
+
+  it("does not retry 401 auth failures", async () => {
+    let calls = 0;
+    const fetchImpl = async () => {
+      calls += 1;
+      return response(401, youtubeError("authError"));
     };
     await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).rejects.toBeInstanceOf(YouTubeApiError);
+    expect(calls).toBe(1);
+  });
+
+  it.each([429, 500, 503])("retries HTTP %s and succeeds", async (status) => {
+    let calls = 0;
+    const fetchImpl = async () => {
+      calls += 1;
+      return calls === 1 ? response(status, {}) : response(200, { items: [] });
+    };
+    await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).resolves.toMatchObject({ events: [] });
+    expect(calls).toBe(2);
+  });
+
+  it("does not crash on malformed non-retryable error bodies", async () => {
+    let calls = 0;
+    const fetchImpl = async () => {
+      calls += 1;
+      return malformedResponse(403);
+    };
+    await expect(new OfficialYouTubeLiveConnector({ apiKey: "test-key", fetchImpl, maxAttempts: 2 }).pollLiveChat(options)).rejects.toMatchObject({ statusCode: 403 });
     expect(calls).toBe(1);
   });
 
