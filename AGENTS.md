@@ -21,7 +21,7 @@ After contract changes run cd contracts && forge test.
 Report repo URL, local path, branch, commit SHA, files changed, commands run, test results, security checks, GitHub/browser confirmations, remaining risks, and next recommended action.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.0.4
+CODEX_QUALITY_HARNESS_FILE v1.0.5
 
 ## Prime Directive
 

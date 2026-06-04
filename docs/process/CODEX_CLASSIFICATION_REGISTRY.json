@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.2",
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.5",
   "harnessVersion": "1.0.2",
   "entries": [
     {
@@ -247,41 +247,6 @@
       "notes": "Codex entrypoint map."
     },
     {
-      "pathPattern": ".codex/**",
-      "classification": "verification_relevant",
-      "surface": "quality_evidence",
-      "risk": "R2",
-      "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Machine-readable PR evidence for target quality gate."
-    },
-    {
-      "pathPattern": ".env.example",
-      "classification": "config",
-      "surface": "config",
-      "risk": "R2",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Safe placeholder env example and local/test config surface."
-    },
-    {
-      "pathPattern": "docs/**",
-      "classification": "docs",
-      "surface": "docs",
-      "risk": "R1",
-      "requiresProductVerification": false,
-      "allowsFastPath": false,
-      "notes": "Product docs and PR evidence docs."
-    },
-    {
-      "pathPattern": "docker-compose.yml",
-      "classification": "config",
-      "surface": "local_integration",
-      "risk": "R2",
-      "requiresProductVerification": true,
-      "allowsFastPath": false
-    },
-    {
       "pathPattern": "README.md",
       "classification": "docs",
       "surface": "docs",
@@ -325,24 +290,6 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Product app source."
-    },
-    {
-      "pathPattern": "packages/**",
-      "classification": "product_source",
-      "surface": "runtime",
-      "risk": "R3",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Shared product packages and schemas."
-    },
-    {
-      "pathPattern": "migrations/**",
-      "classification": "product_source",
-      "surface": "database",
-      "risk": "R3",
-      "requiresProductVerification": true,
-      "allowsFastPath": false,
-      "notes": "Product database migrations."
     },
     {
       "pathPattern": "contracts/**",
