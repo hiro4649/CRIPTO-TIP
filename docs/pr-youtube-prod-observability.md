@@ -43,13 +43,19 @@ Done criteria: `corepack pnpm lint` pass, `corepack pnpm typecheck` pass, `corep
 
 Base SHA: 25d62361b1ba3fc9a724ce1e1e435b3a468e4033
 
-Head SHA: see current PR body Evidence Integrity.
+Head SHA: 173e89c52d5b1061940c8a5c41948f32ee65d755
 
-Product CI: pending until GitHub Actions run
+Product CI: success
 
-Quality-gate: pending until GitHub Actions run
+Quality-gate: success
 
-Commit SHA: see current PR body Evidence Integrity.
+ci run: 26932627816
+
+quality-gate run: 26932645945
+
+quality-gate artifact: 7403699374
+
+Commit SHA: 173e89c52d5b1061940c8a5c41948f32ee65d755
 
 Evidence freshness: local evidence before push; GitHub checks must pass on current head before merge.
 
