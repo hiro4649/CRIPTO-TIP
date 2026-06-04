@@ -23,6 +23,8 @@ Done criteria: `corepack pnpm lint` pass; `corepack pnpm typecheck` pass; `corep
 
 Verification surface: config validation tests, YouTube operations unit tests, existing connector tests, local lint/typecheck/test, GitHub CI, quality-gate, secret/risky rendering scan, prohibited wording scan, and no-scraping scan.
 
+Risk surface: production credential source validation, auth/config boundary, internal YouTube operations API, runtime reconnect/fallback decision logic, release gate evidence, and docs/evidence parser inputs.
+
 Solvability constraints: no production YouTube account is used; no real credential is committed; no production runtime readiness is claimed; only deterministic tests and documented operational boundaries are added.
 
 Release gate oracle: required GitHub checks must pass on the current head before merge; project-owner review decides merge.
