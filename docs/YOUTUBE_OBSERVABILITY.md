@@ -41,3 +41,7 @@ The alert routing contract is fixed by `youtubeAlertConfigs` and test-covered in
 ## Live Soak Boundary
 
 Live YouTube API soak remains manual-gated. It must be skipped unless an explicit live soak flag and managed credential boundary are present. Deterministic mock soak remains the normal CI path.
+
+## Exporter Boundary
+
+`ObservabilityExporter` publishes YouTube metric snapshots through provider-neutral metric points. The current implementation includes a mock exporter, Prometheus-compatible text formatting, OpenTelemetry-compatible metric objects, dashboard contract parity tests, and alert label parity tests. It does not deploy a dashboard provider, send real external alerts, commit provider secrets, or run a live YouTube account without a manual gate.

@@ -100,3 +100,20 @@ Risk coverage added:
 
 Still uncovered by automated tests: provider-specific secret manager SDK, real dashboard exporter, alert delivery, and live YouTube account operation.
 
+## PR observability-exporter-integration
+
+Latest local targeted result before full-suite replay: `corepack pnpm test apps/api/src/youtube/observability-exporter.test.ts` passed as part of the full workspace command with 17 test files, 140 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- Observability exporter mock boundary: `apps/api/src/youtube/observability-exporter.test.ts`.
+- Prometheus-compatible metric output: `apps/api/src/youtube/observability-exporter.test.ts`.
+- OpenTelemetry-compatible metric output: `apps/api/src/youtube/observability-exporter.test.ts`.
+- YouTube metric snapshot publishing: `apps/api/src/youtube/observability-exporter.test.ts`.
+- Dashboard contract parity: `apps/api/src/youtube/observability-exporter.test.ts`.
+- Alert routing label parity: `apps/api/src/youtube/observability-exporter.test.ts`.
+- Quota, rate-limit, auth, invalid page token, liveChatId missing, stream reconnect storm, list fallback spike, zero events while live, and verification failure alert export mappings: `apps/api/src/youtube/observability-exporter.test.ts`.
+- Manual live YouTube soak result ingestion gate: `apps/api/src/youtube/observability-exporter.test.ts`.
+
+Still uncovered by automated tests: provider-specific dashboard deployment apply, external alert delivery with real provider credentials, and live YouTube account operation.
+

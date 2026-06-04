@@ -132,3 +132,13 @@ Quota and reconnect operations:
 `liveChatId` must come from the live session boundary. Operators must not use scraping, browser automation, or HTML parsing to acquire it.
 
 Dashboard contract JSON is stored in `docs/youtube-dashboard-contract.json`. External dashboard provisioning must treat that JSON as a contract, not as a place to store credentials or provider endpoints.
+
+## Observability Exporter Failure
+
+The exporter boundary is provider-neutral. If dashboard export or alert routing fails:
+
+1. Confirm metric snapshot construction still emits every metric in `docs/youtube-dashboard-contract.json`.
+2. Check the exporter worker logs for safe status summaries only. Do not log API keys, OAuth tokens, Secret Manager payloads, raw YouTube messages, wallet addresses, or user display names.
+3. Confirm Prometheus/OpenTelemetry formatting tests still pass before changing provider-specific adapters.
+4. If alert delivery fails, inspect alert labels for `alert_id`, `operator_action`, and `source_metric`, then retry only after provider credentials and routing config are verified outside git.
+5. Manual live YouTube soak results may be ingested only as safe summaries and only after the explicit live soak flag and managed credential boundary are present.

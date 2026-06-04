@@ -13,8 +13,8 @@
       "pathPattern": "apps/api/src/youtube/**",
       "classification": "product_source",
       "riskLevel": "medium",
-      "verification": "apps/api/src/youtube/credentials.test.ts, operations.test.ts, and deployment-observability.test.ts",
-      "scope": "youtube_credentials_and_observability"
+      "verification": "apps/api/src/youtube/credentials.test.ts, operations.test.ts, deployment-observability.test.ts, and observability-exporter.test.ts",
+      "scope": "youtube_credentials_and_observability_exporter"
     },
     {
       "pathPattern": "apps/api/src/config/**",
@@ -59,6 +59,8 @@
     { "path": "apps/api/src/youtube/credentials.ts", "classification": "product_source" },
     { "path": "apps/api/src/youtube/deployment-observability.test.ts", "classification": "test" },
     { "path": "apps/api/src/youtube/deployment-observability.ts", "classification": "product_source" },
+    { "path": "apps/api/src/youtube/observability-exporter.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/observability-exporter.ts", "classification": "product_source" },
     { "path": "apps/api/src/youtube/operations.test.ts", "classification": "test" },
     { "path": "apps/api/src/youtube/operations.ts", "classification": "product_source" },
     { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
@@ -68,9 +70,11 @@
     { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
     { "path": "docs/RUNBOOK.md", "classification": "docs" },
     { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/OBSERVABILITY_EXPORTER.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_CONNECTOR.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_CREDENTIALS.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_OBSERVABILITY.md", "classification": "docs" },
+    { "path": "docs/pr-observability-exporter-integration.md", "classification": "docs" },
     { "path": "docs/pr-youtube-deployment-dashboard.md", "classification": "docs" },
     { "path": "docs/youtube-dashboard-contract.json", "classification": "docs" },
     { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" }

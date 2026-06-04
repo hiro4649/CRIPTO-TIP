@@ -146,3 +146,21 @@ Deferred behavior:
 - Real dashboard exporter deployment.
 - Alert delivery into an external paging provider.
 - Live YouTube account operation without manual gate.
+
+## PR observability-exporter-integration
+
+Verified product behavior:
+
+- `ObservabilityExporter` publishes YouTube metric snapshots through an injected provider-neutral boundary.
+- `MockObservabilityExporter` stores published points for deterministic tests.
+- Prometheus-compatible metric output preserves metric names and sanitized labels.
+- OpenTelemetry-compatible output preserves metric names, values, and attributes.
+- Exporter output remains in parity with `docs/youtube-dashboard-contract.json`.
+- Alert routing labels include `alert_id`, `operator_action`, and `source_metric` for quota, rate-limit, auth, invalid page token, missing liveChatId, reconnect storm, list fallback spike, zero events while live, and verification failure spike.
+- Manual live YouTube soak result ingestion is skipped by default and only accepts safe summary data when explicit flag and managed credential source are present.
+
+Deferred behavior:
+
+- Provider-specific dashboard deployment apply.
+- External alert delivery with real provider credentials.
+- Live YouTube account operation without manual gate.

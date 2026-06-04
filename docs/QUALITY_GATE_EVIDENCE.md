@@ -138,3 +138,13 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Product verification: credential provider boundary, production local-env rejection, metrics mapping, manual live soak skip gate, and no-scraping scan.
 - Complexity evidence: `.codex/task-contract.json` records verification surface, auth oracle, API compatibility summary, split reason, and reasoning evidence for the high-complexity credential/observability surface.
 - Review independence evidence: `.codex/review-independence.json` and `docs/pr-youtube-prod-observability.md` record writer evidence, review evidence, review checklist, review scope, and known gaps.
+
+## PR observability-exporter-integration Evidence
+
+- Task mode: product_minor_r2 feature.
+- Runtime readiness claim: no.
+- Product code changed: yes, limited to YouTube observability exporter boundary and tests.
+- Local targeted evidence before full-suite replay: `corepack pnpm test apps/api/src/youtube/observability-exporter.test.ts` passed as part of the workspace command with 17 test files, 140 passed tests, and 6 skipped tests.
+- Exporter evidence: `apps/api/src/youtube/observability-exporter.test.ts` verifies mock publishing, Prometheus-compatible output, OpenTelemetry-compatible output, dashboard parity, alert label parity, and manual live soak safe-summary gate.
+- Secret safety: no real dashboard provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
+- Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.

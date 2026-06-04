@@ -10,6 +10,8 @@ Production YouTube credentials are deployment secrets, not repository configurat
 
 The repository may store secret names such as `YOUTUBE_API_KEY_SECRET_NAME` or `YOUTUBE_OAUTH_TOKEN_SECRET_NAME`. It must not store real `YOUTUBE_API_KEY` or `YOUTUBE_OAUTH_TOKEN` values.
 
+Observability exporter configuration must also avoid credential values. Dashboard and alert providers receive metric names, numeric values, and sanitized labels only; provider-specific credentials remain outside git.
+
 ## Provider Boundary
 
 `apps/api/src/youtube/credentials.ts` defines:
