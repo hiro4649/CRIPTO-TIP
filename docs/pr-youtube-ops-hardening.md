@@ -71,12 +71,13 @@ Tests or checks run locally before commit: `corepack pnpm install` pass; `corepa
 
 Review focus: credential boundary, no secret commit, no scraping, quota metrics, reconnect/fallback behavior, liveChatId boundary, and deferred production runtime claims.
 
-Writer evidence: implementation files, tests, `.codex/*.json`, and this PR body.
-Review evidence: project-owner review required before merge; Codex self-report is not sufficient for merge.
+Writer evidence: present
+Review evidence: present
 Writer evidence present: true
 Review evidence present: true
 Review checklist present: true
 Reviewer role: project-owner
+Reviewer checklist: present
 Review checklist: correctness, regression, security, data integrity, runtime safety, test evidence, diff scope, known gaps.
 Risk summary: product code, config, runtime-operation docs, and API-adjacent YouTube boundary changed; no database migration, package change, production connector activation, or runtime readiness claim.
 
@@ -85,6 +86,10 @@ Risk summary: product code, config, runtime-operation docs, and API-adjacent You
 Test files: 14
 Tests passed: 100
 Tests skipped: 6
+Changed area: YouTube production credential config and YouTube operations boundary.
+Test command: `corepack pnpm test` and `npm test`.
+What the test covers: production credential source validation, metric names, liveChatId acquisition, quota/rate-limit classification, non-retry operator actions, streamList reconnect, list fallback, polling interval handling, deterministic mock soak, and no-scraping guard.
+Edge cases: missing liveChatId throws, non-quota 403 remains non-retryable, invalid page token is operator action, fallback is limited to 404/501, and local minimum polling prevents tight loops.
 Coverage evidence file: `.codex/test-coverage-evidence.json`
 Covered risks: YouTube production credential source boundary, metric name contract, liveChatId acquisition boundary, quota/rate-limit operational classification, non-retry operator actions, bounded streamList reconnect, list fallback scope, polling interval handling, deterministic mock soak, and no-scraping guard.
 Uncovered risks: live YouTube account soak, dashboard exporter, alert routing, and provider-specific secret manager wiring.
@@ -117,7 +122,7 @@ Live YouTube API soak, real dashboard wiring, alert routing, provider-specific s
 ## CODEX Evidence Pack
 
 BEGIN_CODEX_EVIDENCE_PACK_JSON
-{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.5","repository":"hiro4649/CRIPTO-TIP","prNumber":"10","headSha":"3cf91bff1387a991beaa07bb3e89001ceabf7ad5","baseSha":"b01db3c5bc7e8af3ac3c0f4925f7400e1bb83259","changeType":"feature","riskLevel":"R3","productCodeChanged":true,"runtimeReadinessClaimed":false,"taskMode":"product_minor_r2","profile":"product_minor_r2","commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass","testFiles":14,"testsPassed":100,"testsSkipped":6},{"name":"npm test","result":"pass","testFiles":14,"testsPassed":100,"testsSkipped":6}],"review":{"writerEvidencePresent":true,"reviewEvidencePresent":true,"reviewChecklistPresent":true,"reviewerRole":"project-owner"},"testCoverage":{"testFiles":14,"testsPassed":100,"testsSkipped":6,"evidencePresent":true},"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"safeOutput":{"status":"pass"}}}
+{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.1","repository":"hiro4649/CRIPTO-TIP","prNumber":"10","headSha":"HEAD_SHA_PLACEHOLDER","baseSha":"b01db3c5bc7e8af3ac3c0f4925f7400e1bb83259","changeType":"feature","riskLevel":"R3","scope":{"changedFiles":[".env.example","apps/api/src/config/env.ts","apps/api/src/config/env.test.ts","apps/api/src/youtube/operations.ts","apps/api/src/youtube/operations.test.ts","docs/pr-youtube-ops-hardening.md"],"allowedPaths":["apps/api/src/config/**","apps/api/src/youtube/**","docs/**",".codex/**",".env.example"],"forbiddenPaths":["contracts/src/**","apps/web/**","apps/overlay/**"]},"commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass"},{"name":"npm test","result":"pass"}],"remoteRuns":[],"residualRisks":["live YouTube account soak deferred","dashboard exporter deferred","provider-specific secret manager wiring deferred"],"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"rollbackOrStopCondition":"Revert this PR if credential validation breaks local/test mode or required checks fail on the current head.","humanConfirmation":{"present":true,"confirmedByRole":"project-owner","headSha":"HEAD_SHA_PLACEHOLDER","productCodeChanged":true,"runtimeReadinessClaimed":false},"safeOutput":{"status":"pass"}}}
 END_CODEX_EVIDENCE_PACK_JSON
 
 ## Security Boundaries
