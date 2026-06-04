@@ -43,19 +43,19 @@ Split reason: real provider SDK deployment apply, dashboard exporter deployment,
 
 Base SHA: d839280fdac6738e23c35b0ee0761277e3abc0da
 
-Head SHA: current PR head
+Head SHA: ffd4634abd4ecb9991b1a95795333362a835acfe
 
-Product CI: required on current PR head before merge
+Product CI: success
 
-Quality-gate: required on current PR head before merge
+Quality-gate: success
 
-ci run: current PR check run
+ci run: 26935712878
 
-quality-gate run: current PR check run
+quality-gate run: 26935845346
 
-quality-gate artifact: current PR check artifact
+quality-gate artifact: 7404897734
 
-Commit SHA: current PR head
+Commit SHA: ffd4634abd4ecb9991b1a95795333362a835acfe
 
 Evidence freshness: local evidence collected before push; GitHub checks must pass on the current head before merge.
 
@@ -167,5 +167,5 @@ Project-owner review required before merge: CI status, quality-gate status, head
 ## CODEX Evidence Pack
 
 BEGIN_CODEX_EVIDENCE_PACK_JSON
-{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.5","repository":"hiro4649/CRIPTO-TIP","prNumber":"current PR","headSha":"current PR body","baseSha":"d839280fdac6738e23c35b0ee0761277e3abc0da","changeType":"feature","riskLevel":"R3","scope":{"changedFiles":["apps/api/src/config/env.ts","apps/api/src/config/env.test.ts","apps/api/src/youtube/credentials.ts","apps/api/src/youtube/credentials.test.ts","apps/api/src/youtube/deployment-observability.ts","apps/api/src/youtube/deployment-observability.test.ts","apps/api/src/youtube/operations.ts","apps/api/src/youtube/operations.test.ts","docs/YOUTUBE_CONNECTOR.md","docs/YOUTUBE_CREDENTIALS.md","docs/YOUTUBE_OBSERVABILITY.md","docs/youtube-dashboard-contract.json","docs/pr-youtube-deployment-dashboard.md"],"allowedPaths":["apps/api/src/config/**","apps/api/src/youtube/**","docs/**",".codex/**"],"forbiddenPaths":["contracts/src/**","apps/web/**","apps/overlay/**"]},"commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass"},{"name":"npm test","result":"pass"}],"remoteRuns":[],"residualRisks":["provider-specific deployment apply deferred","real dashboard exporter deferred","alert delivery deferred","live YouTube account operation deferred"],"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"rollbackOrStopCondition":"Revert this PR if credential provider validation breaks local/test mode or required checks fail on the current head.","humanConfirmation":{"present":true,"confirmedByRole":"project-owner","headSha":"current PR body","productCodeChanged":true,"runtimeReadinessClaimed":false},"safeOutput":{"status":"pass"}}}
+{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.5","repository":"hiro4649/CRIPTO-TIP","prNumber":"12","headSha":"ffd4634abd4ecb9991b1a95795333362a835acfe","baseSha":"d839280fdac6738e23c35b0ee0761277e3abc0da","changeType":"feature","riskLevel":"R3","scope":{"changedFiles":["apps/api/src/config/env.ts","apps/api/src/config/env.test.ts","apps/api/src/youtube/credentials.ts","apps/api/src/youtube/credentials.test.ts","apps/api/src/youtube/deployment-observability.ts","apps/api/src/youtube/deployment-observability.test.ts","apps/api/src/youtube/operations.ts","apps/api/src/youtube/operations.test.ts","docs/YOUTUBE_CONNECTOR.md","docs/YOUTUBE_CREDENTIALS.md","docs/YOUTUBE_OBSERVABILITY.md","docs/youtube-dashboard-contract.json","docs/pr-youtube-deployment-dashboard.md"],"allowedPaths":["apps/api/src/config/**","apps/api/src/youtube/**","docs/**",".codex/**"],"forbiddenPaths":["contracts/src/**","apps/web/**","apps/overlay/**"]},"commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass"},{"name":"npm test","result":"pass"}],"remoteRuns":[{"workflow":"ci","runId":"26935712878","status":"success"},{"workflow":"quality-gate","runId":"26935845346","artifactId":"7404897734","status":"success"}],"residualRisks":["provider-specific deployment apply deferred","real dashboard exporter deferred","alert delivery deferred","live YouTube account operation deferred"],"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"rollbackOrStopCondition":"Revert this PR if credential provider validation breaks local/test mode or required checks fail on the current head.","humanConfirmation":{"present":true,"confirmedByRole":"project-owner","headSha":"ffd4634abd4ecb9991b1a95795333362a835acfe","productCodeChanged":true,"runtimeReadinessClaimed":false},"safeOutput":{"status":"pass"}}}
 END_CODEX_EVIDENCE_PACK_JSON
