@@ -4,6 +4,78 @@
   "harnessVersion": "1.0.2",
   "entries": [
     {
+      "pathPattern": ".codex/change-classification.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable change classification evidence."
+    },
+    {
+      "pathPattern": ".codex/evidence-pack.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable current-head PR evidence pack."
+    },
+    {
+      "pathPattern": ".codex/product-verification.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable product verification evidence."
+    },
+    {
+      "pathPattern": ".codex/quality-gate-evidence.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable quality gate evidence mapping."
+    },
+    {
+      "pathPattern": ".codex/task-contract.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable task contract evidence."
+    },
+    {
+      "pathPattern": ".codex/test-coverage-evidence.json",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable test coverage evidence."
+    },
+    {
+      "pathPattern": "packages/shared/src/index.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared product schema and normalizer source."
+    },
+    {
+      "pathPattern": "packages/shared/src/index.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared schema and normalizer tests."
+    },
+    {
       "pathPattern": "scripts/codex-*",
       "classification": "harness_managed",
       "surface": "harness",

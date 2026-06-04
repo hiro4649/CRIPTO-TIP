@@ -172,7 +172,7 @@
     { "path": "docs/pr-iris-core-delivery-adapter.md", "classification": "docs" },
     { "path": "docs/pr-official-youtube-connector.md", "classification": "docs" },
     { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
-    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "harness_managed" },
+    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" },
     { "path": "migrations/0002_chain_listener_reorg.sql", "classification": "product_source" },
     { "path": "package.json", "classification": "package" },
     { "path": "packages/shared/src/index.test.ts", "classification": "test" },
