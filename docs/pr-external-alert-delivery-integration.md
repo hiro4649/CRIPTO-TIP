@@ -173,6 +173,8 @@ Test command: `corepack pnpm test` and `npm test`.
 
 What the test covers: mock provider, provider-specific wrapper, delivery plan generation, dry-run, manual apply gate, credential missing fail-closed behavior, alert routing parity, declared metrics, safe payload labels, severity mapping, provider error mapping, rollback/disable plan, and real external alert delivery disabled without manual gate.
 
+Edge cases and failure paths: missing credential secret names throw, apply without manual approval throws, unsafe label keys are removed from alert payloads, provider credential and rate-limit failures map to operator actions, and real provider delivery remains disabled without manual gate.
+
 Uncovered risks: real provider SDK alert delivery apply, external alert delivery with real provider credentials, and live YouTube account operation.
 
 ## Residual risks
