@@ -2,6 +2,8 @@
 
 The YouTube connector uses official YouTube Live API JSON responses only. It does not scrape YouTube pages, parse YouTube HTML, use browser automation, or replace YouTube Super Chat payment.
 
+Observability export uses provider-neutral metric points derived from the connector metrics snapshot. It does not include YouTube credential values, raw chat messages, wallet addresses, or user display names.
+
 ## Scope
 
 - `liveChatMessages.streamList` adapter boundary.

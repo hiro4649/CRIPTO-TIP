@@ -112,6 +112,24 @@
       "notes": "PR body source documentation."
     },
     {
+      "pathPattern": "docs/pr-bootstrap-mvp.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
+    },
+    {
+      "pathPattern": "docs/pr-durable-events-db-queue.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
+    },
+    {
       "pathPattern": ".codex/change-classification.json",
       "classification": "verification_relevant",
       "surface": "quality_evidence",
@@ -436,6 +454,15 @@
       "notes": "PR body for YouTube deployment dashboard evidence."
     },
     {
+      "pathPattern": "docs/pr-production-chain-listener-reorg.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Archived PR body source documentation."
+    },
+    {
       "pathPattern": "docs/youtube-dashboard-contract.json",
       "classification": "docs",
       "surface": "docs",
@@ -443,6 +470,42 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Machine-readable YouTube dashboard metric contract."
+    },
+    {
+      "pathPattern": "docs/OBSERVABILITY_EXPORTER.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Observability exporter boundary documentation."
+    },
+    {
+      "pathPattern": "docs/pr-observability-exporter-integration.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for observability exporter integration evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/observability-exporter.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube observability exporter integration boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/observability-exporter.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube observability exporter integration tests."
     },
     {
       "pathPattern": ".codex/review-independence.json",

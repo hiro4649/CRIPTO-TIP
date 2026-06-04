@@ -49,3 +49,11 @@
 | Medium | Alert delivery into a paging provider is not implemented. | Operations | Alert provider integration PR | Alert routing config and runbook define operator actions for quota, auth, invalid token, missing liveChatId, reconnect storm, fallback spike, zero events, and verification failures. |
 | Medium | Live YouTube account soak remains manual-gated. | QA/Operations | Live environment validation | Tests keep live soak skipped unless an explicit flag and managed credential boundary are present. |
 | Low | Local forge may be unavailable on this Windows machine. | Contract owner | toolchain setup PR if needed | GitHub contracts CI remains required before merge. |
+
+## PR observability-exporter-integration
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Provider-specific dashboard deployment apply is still not implemented. | Backend/Observability | Dashboard provider PR | Exporter contract and output format tests are provider-neutral and do not store secrets. |
+| Medium | External alert delivery with real provider credentials is still not implemented. | Operations | Alert provider PR | Alert labels and routing contract are test-covered before provider integration. |
+| Medium | Live YouTube account soak remains manual-gated. | QA/Operations | Live environment validation | Manual soak result ingestion is safe-summary only and skipped without explicit flag and managed credential boundary. |

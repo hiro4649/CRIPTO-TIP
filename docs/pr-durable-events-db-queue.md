@@ -36,7 +36,7 @@ Default mode: enforce.
 
 ## Evidence Integrity
 Base SHA: 287d9540d59a0bea52f94964890f5d400ac3280c
-Head SHA: current PR head; PR body is updated after push with final head SHA.
+Head SHA: archived PR head; PR body is updated after push with final head SHA.
 Quality-gate artifact: previous 7374500499; latest inspected 7375148482.
 CI runs: product CI 26861738968; latest inspected quality-gate 26861752050.
 Stale evidence: current head only.

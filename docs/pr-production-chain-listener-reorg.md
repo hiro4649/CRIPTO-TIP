@@ -24,9 +24,9 @@ Base SHA: 62c4795b134464596c8668276d0b51c91a060a45
 
 Head SHA: updated in GitHub PR body after push
 
-Product CI: pending for PR creation
+Product CI: archived before PR creation
 
-Quality-gate: pending for PR creation
+Quality-gate: archived before PR creation
 
 quality-gate run: pending
 

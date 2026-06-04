@@ -7,15 +7,19 @@
   "runtimeReadinessClaimed": false,
   "taskMode": "product_minor_r2",
   "profile": "product_minor_r2",
-  "goal": "Add provider-specific YouTube credential deployment wiring boundaries and production observability metric contracts without committing secrets or claiming production readiness.",
+  "goal": "Add provider-neutral observability exporter integration for YouTube metric snapshots without committing secrets, applying dashboard deployment, or claiming production readiness.",
   "allowedScope": [
     "youtube_credential_provider_boundary",
     "secret_manager_resolver_boundary",
     "provider_specific_credential_provider_boundary",
     "credential_rotation_boundary",
     "youtube_metrics_contract",
+    "observability_exporter_boundary",
+    "prometheus_metric_output_boundary",
+    "opentelemetry_metric_output_boundary",
     "dashboard_contract",
     "alert_routing_contract",
+    "manual_live_soak_result_safe_summary_gate",
     "manual_live_soak_gate",
     "tests",
     "docs",
@@ -36,7 +40,9 @@
     "multiple_tokens",
     "wallet_custody",
     "real_secret_commit",
-    "provider_specific_deployment_apply"
+    "provider_specific_deployment_apply",
+    "provider_specific_dashboard_deployment_apply",
+    "external_alert_delivery_with_real_credentials"
   ],
   "acceptanceCriteria": [
     "typescript_pass",
@@ -46,6 +52,12 @@
     "metrics_names_contract_test",
     "dashboard_contract_test",
     "alert_routing_config_test",
+    "observability_exporter_mock_test",
+    "prometheus_metric_output_test",
+    "opentelemetry_metric_output_test",
+    "dashboard_exporter_parity_test",
+    "alert_exporter_label_parity_test",
+    "manual_live_soak_result_ingestion_gate_test",
     "quota_dashboard_metric_mapping_test",
     "rate_limit_metric_mapping_test",
     "auth_error_metric_mapping_test",
@@ -58,6 +70,7 @@
   "verificationSurface": [
     "apps/api/src/youtube/credentials.test.ts",
     "apps/api/src/youtube/operations.test.ts",
+    "apps/api/src/youtube/observability-exporter.test.ts",
     "apps/api/src/config/env.test.ts",
     "corepack pnpm lint",
     "corepack pnpm typecheck",
@@ -67,10 +80,10 @@
     "no scraping scan"
   ],
   "authOracle": "Production official YouTube connector rejects local_env credential source and requires secret_manager with a secret name; credential provider tests verify resolver-only secret retrieval.",
-  "apiCompatibilitySummary": "Public API unchanged; internal YouTube credential provider and operations helper surfaces are additive; no breaking runtime route changes.",
-  "splitReason": "Provider-specific secret manager SDK, real dashboard exporter, alert delivery, and live YouTube account operation are split out to deployment/runtime PRs to avoid mixing boundary contracts with production operation.",
-  "reasoningEvidence": "Plan-first scope separates credential source validation, secret resolver boundary, metrics contract, manual live soak gate, docs, and quality evidence.",
-  "verificationOracle": "Local typecheck and tests verify credential provider boundaries plus YouTube observability metric mapping; GitHub CI and quality-gate verify current head.",
+  "apiCompatibilitySummary": "Public API unchanged; internal YouTube observability exporter helper surface is additive; no breaking runtime route changes.",
+  "splitReason": "Provider-specific dashboard deployment, external alert delivery with real credentials, and live YouTube account operation are split out to deployment/runtime PRs to avoid mixing boundary contracts with production operation.",
+  "reasoningEvidence": "Plan-first scope separates metric exporter boundary, output formatting, dashboard parity, alert label parity, manual live soak safe-summary ingestion, docs, and quality evidence.",
+  "verificationOracle": "Local typecheck and tests verify YouTube observability exporter output and dashboard/alert parity; GitHub CI and quality-gate verify current head.",
   "storageOracle": "No DB migration or storage format change in this PR.",
   "releaseGateOracle": "This PR advances G3 partial operations readiness only and does not claim G4 production readiness."
 }

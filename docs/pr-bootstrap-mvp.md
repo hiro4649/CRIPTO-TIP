@@ -90,4 +90,4 @@ Low: overlay token is a shared mock token in MVP and must become stream-scoped, 
 
 # Commit SHA
 
-See current PR head SHA.
+See archived PR head SHA.
