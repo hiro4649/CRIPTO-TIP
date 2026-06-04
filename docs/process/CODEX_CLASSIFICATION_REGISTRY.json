@@ -551,6 +551,42 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Machine-readable review independence evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/alert-delivery.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube external alert delivery boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/alert-delivery.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube external alert delivery tests."
+    },
+    {
+      "pathPattern": "docs/ALERT_DELIVERY.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "External alert delivery boundary documentation."
+    },
+    {
+      "pathPattern": "docs/pr-external-alert-delivery-integration.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for external alert delivery integration evidence."
     }
   ],
   "safeSummaryOnly": true

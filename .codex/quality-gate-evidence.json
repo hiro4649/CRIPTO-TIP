@@ -6,13 +6,13 @@
   "qualityGateExpectedStatus": "pending_until_github_actions",
   "reasonCodeMappings": {
     "changeClassificationStatus": ".codex/change-classification.json",
-    "classificationCoverageStatus": ".codex/change-classification.json",
-    "productVerificationStatus": ".codex/product-verification.json and docs/PRODUCT_VERIFICATION.md",
-    "productVerificationEvidenceStatus": ".codex/product-verification.json and docs/TEST_COVERAGE_EVIDENCE.md",
-    "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json",
+    "classificationCoverageStatus": ".codex/change-classification.json classifies alert delivery files",
+    "productVerificationStatus": ".codex/product-verification.json and docs/PRODUCT_VERIFICATION.md include external alert delivery evidence",
+    "productVerificationEvidenceStatus": "apps/api/src/youtube/alert-delivery.test.ts and docs/ALERT_DELIVERY.md",
+    "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json includes alert delivery risk coverage",
     "taskBriefCompilerStatus": ".codex/task-contract.json",
     "secretScan": ".env.example placeholder inventory and security grep",
-    "codeReviewMonitorStatus": "docs/pr-dashboard-exporter-deployment.md, docs/DASHBOARD_DEPLOYMENT.md, docs/OBSERVABILITY_EXPORTER.md, and docs/youtube-dashboard-contract.json",
+    "codeReviewMonitorStatus": "docs/pr-external-alert-delivery-integration.md includes review focus and residual risks",
     "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
   },
   "safePlaceholderInventory": [
@@ -23,7 +23,9 @@
     "RUN_LIVE_YOUTUBE_SOAK_TESTS false by default",
     "dashboard provider credentials are not present",
     "external alert provider credentials are not present",
-    "dashboard provider apply requires manual approval"
+    "dashboard provider apply requires manual approval",
+    "alert provider secret-name placeholders only"
   ],
-  "runtimeReadinessClaimed": false
+  "runtimeReadinessClaimed": false,
+  "currentTask": "external-alert-delivery-integration"
 }

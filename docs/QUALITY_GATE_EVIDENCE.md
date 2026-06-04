@@ -149,6 +149,15 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Secret safety: no real dashboard provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
 - Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.
 
+## PR external-alert-delivery-integration Evidence
+
+- Task mode: product_minor_r2 feature.
+- Runtime readiness claim: no.
+- Product code changed: yes, limited to external alert delivery provider boundary and tests.
+- Alert delivery evidence: `apps/api/src/youtube/alert-delivery.test.ts` verifies mock provider, provider-specific wrapper, plan generation, dry-run, manual apply gate, credential missing fail-closed behavior, alert routing parity, safe payload labels, provider error mapping, and rollback/disable plan.
+- Secret safety: no real alert provider key, webhook URL, dashboard provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
+- Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.
+
 ## PR dashboard-exporter-deployment Evidence
 
 - Task mode: product_minor_r2 feature.

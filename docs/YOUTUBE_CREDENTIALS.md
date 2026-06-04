@@ -14,6 +14,8 @@ Observability exporter configuration must also avoid credential values. Dashboar
 
 Dashboard provider credentials follow the same rule. Production dashboard deployment uses a `secret_manager` or `provider_specific` credential reference with a secret name; real provider tokens and API keys must not appear in docs, PR bodies, logs, or repository files.
 
+Alert provider credentials follow the same rule. Alert delivery plans may reference a secret name, but real alert provider tokens, webhook URLs, API keys, and private URLs must not be committed or included in alert payload labels.
+
 ## Provider Boundary
 
 `apps/api/src/youtube/credentials.ts` defines:

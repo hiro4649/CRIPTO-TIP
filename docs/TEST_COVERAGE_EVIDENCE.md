@@ -135,3 +135,21 @@ Risk coverage added:
 
 Still uncovered by automated tests: real provider SDK deployment apply, external alert delivery with real credentials, and live YouTube account operation.
 
+## PR external-alert-delivery-integration
+
+Latest local result after implementation: full-suite `corepack pnpm test` passes with 19 test files, 163 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- External alert provider mock boundary: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Provider-specific alert provider boundary: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Alert delivery plan generation: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Alert delivery dry-run: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Manual gate required for alert apply: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Alert provider credential missing fail-closed behavior: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Alert routing contract parity and declared metric payloads: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Alert payload excludes secrets and raw user data: `apps/api/src/youtube/alert-delivery.test.ts`.
+- Provider error operator action mapping and rollback/disable plan: `apps/api/src/youtube/alert-delivery.test.ts`.
+
+Still uncovered by automated tests: real provider SDK delivery apply, real external alert provider credentials, and live YouTube account operation.
+

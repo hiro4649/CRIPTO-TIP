@@ -47,5 +47,12 @@
     "remaining blockers",
     "merge decision"
   ],
-  "reviewIndependenceStatus": "pass"
+  "reviewIndependenceStatus": "pass",
+  "evidenceFiles": [
+    "docs/pr-external-alert-delivery-integration.md",
+    "docs/ALERT_DELIVERY.md",
+    ".codex/task-contract.json",
+    ".codex/product-verification.json",
+    ".codex/test-coverage-evidence.json"
+  ]
 }
