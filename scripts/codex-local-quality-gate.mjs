@@ -10702,6 +10702,7 @@ async function runTargetHarnessGate() {
     'versionLineageStatus',
     'activeSelfTestRegistryStatus',
     'knowledgeGovernanceStatus',
+    'v085SelfTestStatus',
     'versionSuccessionStatus',
     'v087SelfTestStatus',
     'v092SelfTestStatus',

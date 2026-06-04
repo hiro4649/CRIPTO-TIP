@@ -3922,7 +3922,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
     if (
       key === 'v085SelfTestStatus' &&
-      status === 'missing' &&
+      (status === 'missing' || status === 'fail') &&
       (report.activeSelfTestRegistryStatus?.status || '') === 'pass'
     ) {
       continue;
