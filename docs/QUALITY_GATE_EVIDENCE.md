@@ -148,3 +148,13 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Exporter evidence: `apps/api/src/youtube/observability-exporter.test.ts` verifies mock publishing, Prometheus-compatible output, OpenTelemetry-compatible output, dashboard parity, alert label parity, and manual live soak safe-summary gate.
 - Secret safety: no real dashboard provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
 - Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.
+
+## PR dashboard-exporter-deployment Evidence
+
+- Task mode: product_minor_r2 feature.
+- Runtime readiness claim: no.
+- Product code changed: yes, limited to dashboard provider deployment boundary and tests.
+- Local targeted evidence before full-suite replay: `corepack pnpm test apps/api/src/youtube/dashboard-deployment.test.ts` passed as part of the workspace command with 18 test files, 151 passed tests, and 6 skipped tests.
+- Deployment evidence: `apps/api/src/youtube/dashboard-deployment.test.ts` verifies mock provider, provider-specific wrapper, deployment plan generation, dry-run, manual apply gate, credential missing fail-closed behavior, dashboard contract parity, alert stub, provider error mapping, and rollback plan.
+- Secret safety: no real dashboard provider key, alert provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
+- Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.

@@ -12,6 +12,8 @@ The repository may store secret names such as `YOUTUBE_API_KEY_SECRET_NAME` or `
 
 Observability exporter configuration must also avoid credential values. Dashboard and alert providers receive metric names, numeric values, and sanitized labels only; provider-specific credentials remain outside git.
 
+Dashboard provider credentials follow the same rule. Production dashboard deployment uses a `secret_manager` or `provider_specific` credential reference with a secret name; real provider tokens and API keys must not appear in docs, PR bodies, logs, or repository files.
+
 ## Provider Boundary
 
 `apps/api/src/youtube/credentials.ts` defines:

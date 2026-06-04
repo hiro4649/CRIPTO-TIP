@@ -117,3 +117,21 @@ Risk coverage added:
 
 Still uncovered by automated tests: provider-specific dashboard deployment apply, external alert delivery with real provider credentials, and live YouTube account operation.
 
+## PR dashboard-exporter-deployment
+
+Latest local targeted result before full-suite replay: `corepack pnpm test apps/api/src/youtube/dashboard-deployment.test.ts` passed as part of the workspace command with 18 test files, 151 passed tests, and 6 skipped tests.
+
+Risk coverage added:
+
+- Dashboard provider mock boundary: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Provider-specific dashboard provider boundary: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Dashboard deployment plan generation: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Dashboard deployment dry-run: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Manual gate required for apply: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Dashboard provider credential missing fail-closed behavior: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Dashboard contract parity and panel metric declaration: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Dashboard alert label parity and alert routing provider stub: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+- Provider error operator action mapping and rollback plan: `apps/api/src/youtube/dashboard-deployment.test.ts`.
+
+Still uncovered by automated tests: real provider SDK deployment apply, external alert delivery with real credentials, and live YouTube account operation.
+

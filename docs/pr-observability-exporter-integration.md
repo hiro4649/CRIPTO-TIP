@@ -41,7 +41,7 @@ Split reason: provider-specific dashboard deployment, external alert delivery, r
 
 Base SHA: 032d68390f005680b18d888241c20e65e9e71b7e
 
-Head SHA: final pushed commit recorded in GitHub PR body
+Head SHA: recorded in PR #13 body at merge review
 
 Product CI: success
 
@@ -51,9 +51,9 @@ quality-gate run: 26940189299
 
 quality-gate artifact: 7406617724
 
-Commit SHA: final pushed commit recorded in GitHub PR body
+Commit SHA: recorded in PR #13 body at merge review
 
-Evidence freshness: local evidence collected before push; GitHub checks must pass on the current head before merge.
+Evidence freshness: GitHub checks passed for PR #13 before merge review.
 
 ## Product Verification
 

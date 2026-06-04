@@ -9,7 +9,7 @@
   "writerEvidence": {
     "present": true,
     "files": [
-      "docs/pr-observability-exporter-integration.md",
+      "docs/pr-dashboard-exporter-deployment.md",
       ".codex/task-contract.json",
       ".codex/product-verification.json"
     ]
@@ -17,6 +17,7 @@
   "reviewEvidence": {
     "present": true,
     "files": [
+      "docs/DASHBOARD_DEPLOYMENT.md",
       "docs/OBSERVABILITY_EXPORTER.md",
       "docs/YOUTUBE_OBSERVABILITY.md",
       "docs/QUALITY_GATE_EVIDENCE.md",

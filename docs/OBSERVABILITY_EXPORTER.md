@@ -39,3 +39,7 @@ Manual live YouTube soak result ingestion is safe-summary only. It is skipped un
 - Real production secret commit.
 - Live YouTube account operation without manual gate.
 - YouTube scraping, browser automation, or HTML parsing.
+
+## Dashboard Deployment Boundary
+
+The deployment layer builds a provider-neutral dashboard plan from the dashboard contract. Dry-run is allowed without manual approval; apply requires an explicit manual approval gate. The provider-specific wrapper is an injected boundary and does not commit provider credentials or import a provider SDK in this PR.
