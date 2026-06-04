@@ -2,14 +2,14 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "10",
+  "prNumber": "11",
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
   "writerEvidence": {
     "present": true,
     "files": [
-      "docs/pr-production-chain-listener-reorg.md",
+      "docs/pr-youtube-prod-observability.md",
       ".codex/task-contract.json",
       ".codex/product-verification.json"
     ]
@@ -17,7 +17,8 @@
   "reviewEvidence": {
     "present": true,
     "files": [
-      "docs/CHAIN_LISTENER.md",
+      "docs/YOUTUBE_CREDENTIALS.md",
+      "docs/YOUTUBE_OBSERVABILITY.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/RISK_REGISTER.md",
       "docs/RUNBOOK.md"
@@ -25,7 +26,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "3cf91bff1387a991beaa07bb3e89001ceabf7ad5",
+  "headSha": "dfc1d63360da766e149f864f5dc63ee55fc9375d",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [

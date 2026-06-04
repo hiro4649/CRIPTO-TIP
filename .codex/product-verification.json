@@ -5,19 +5,20 @@
   "prNumber": "pending",
   "productVerificationStatus": "pass",
   "behaviors": {
-    "youtube_production_credential_secret_manager_boundary": "pass",
+    "youtube_secret_manager_credential_provider_boundary": "pass",
+    "youtube_production_rejects_local_env_credentials": "pass",
+    "youtube_credential_presence_fail_closed": "pass",
     "youtube_metric_name_contract": "pass",
-    "youtube_live_chat_id_session_boundary": "pass",
-    "youtube_quota_rate_limit_operational_classification": "pass",
-    "youtube_non_retry_operator_actions": "pass",
-    "youtube_stream_reconnect_bounded": "pass",
-    "youtube_list_fallback_bounds": "pass",
-    "youtube_polling_interval_respected": "pass",
-    "youtube_deterministic_mock_soak": "pass",
+    "youtube_quota_rate_limit_metric_mapping": "pass",
+    "youtube_auth_error_metric_mapping": "pass",
+    "youtube_invalid_page_token_metric_mapping": "pass",
+    "youtube_live_chat_id_missing_metric": "pass",
+    "manual_live_youtube_soak_skipped_without_gate": "pass",
     "youtube_no_scraping": "pass",
-    "real_youtube_account_live_soak": "not_started",
-    "dashboard_alert_routing": "not_started",
-    "provider_specific_secret_manager_wiring": "not_started",
+    "provider_specific_secret_manager_sdk": "not_started",
+    "real_dashboard_exporter": "not_started",
+    "alert_delivery": "not_started",
+    "live_youtube_account_operation": "not_started",
     "token_sale": "forbidden",
     "token_exchange": "forbidden",
     "cash_out": "forbidden",
@@ -26,10 +27,11 @@
     "youtube_scraping": "forbidden"
   },
   "evidence": [
-    "apps/api/src/config/env.test.ts",
+    "apps/api/src/youtube/credentials.test.ts",
     "apps/api/src/youtube/operations.test.ts",
-    "docs/YOUTUBE_CONNECTOR.md",
-    "docs/RUNBOOK.md"
+    "apps/api/src/config/env.test.ts",
+    "docs/YOUTUBE_CREDENTIALS.md",
+    "docs/YOUTUBE_OBSERVABILITY.md"
   ],
   "runtimeReadinessClaimed": false
 }

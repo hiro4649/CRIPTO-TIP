@@ -24,3 +24,14 @@ None intended.
 
 Live DB integration is not wired. Production DB mode requires integration tests before production use.
 
+## PR youtube-prod-observability
+
+Public API: unchanged.
+
+Internal API: additive YouTube credential provider and operations metrics helpers.
+
+Compatibility: local/test modes still allow local env placeholders; production official mode requires `secret_manager` plus a secret name.
+
+Breaking changes: none intended for public routes.
+
+Known gaps: provider-specific secret manager SDK, dashboard exporter, alert routing, and live YouTube account operation remain deployment work.

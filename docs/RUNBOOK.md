@@ -100,7 +100,7 @@ YouTube connector failures:
 9. If verification codes fail, confirm the code matches `IRIS-XXXXXX`, is for the same stream, is unexpired, and has not been consumed.
 10. Do not use scraping, HTML parsing, browser automation, or user-provided URLs for YouTube chat ingestion.
 
-Quota dashboarding is planned for the production YouTube operations hardening PR.
+Quota dashboarding uses the metric contract documented in `docs/YOUTUBE_OBSERVABILITY.md`.
 
 ## YouTube Production Credential And Operations Hardening
 
@@ -112,6 +112,7 @@ Credential rotation:
 2. Deploy the updated secret reference without changing code.
 3. Confirm `youtube_connector_connected` returns to healthy state.
 4. Watch `youtube_quota_errors_total`, `youtube_rate_limit_errors_total`, and `youtube_stream_reconnect_total` for abnormal spikes.
+5. If credentials fail, check `youtube_auth_errors_total`, rotate the secret in the provider, and restart only the YouTube connector worker boundary.
 
 Quota and reconnect operations:
 
@@ -119,5 +120,7 @@ Quota and reconnect operations:
 - `youtube_stream_reconnect_total` increasing: inspect WebSocket/streamList disconnects and confirm fallback behavior.
 - `youtube_list_fallback_total` increasing: confirm `streamList` availability and verify that `pollingIntervalMillis` is respected.
 - Verification failures: inspect `youtube_verification_code_failed_total` and confirm code expiry, one-time use, and stream scoping.
+- Missing liveChatId: inspect `youtube_live_chat_id_missing_total`, confirm the live session record has `youtube_live_chat_id`, and do not scrape YouTube pages to discover it.
+- Invalid page token: inspect `youtube_invalid_page_token_total`, reset the stored page token, and resume from the official API boundary.
 
 `liveChatId` must come from the live session boundary. Operators must not use scraping, browser automation, or HTML parsing to acquire it.

@@ -30,3 +30,12 @@
 | Medium | Production YouTube credential provider wiring remains deferred. | Backend/operations | deployment integration PR | Production config rejects official connector mode unless credential source is `secret_manager`. |
 | Medium | Live YouTube API soak and dashboard alert routing remain deferred. | Operations | production observability PR | Deterministic mock soak and metrics name contract are covered now. |
 | Low | `liveChatId` acquisition still depends on upstream live session population. | YouTube integration owner | live session acquisition PR if needed | The connector boundary refuses missing `liveChatId` and does not scrape. |
+
+## PR youtube-prod-observability
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Provider-specific secret manager SDK is not wired. | Backend/DevOps | Deployment provider PR | This PR adds interface and resolver boundary only; deployment injects provider SDK later. |
+| Medium | Real dashboard exporter is not implemented. | Backend/Observability | Dashboard exporter PR | Metric names and mapping are fixed by tests and docs. |
+| Medium | Alert routing is documentation-only. | Operations | Alert integration PR | RUNBOOK and `docs/YOUTUBE_OBSERVABILITY.md` define routing and operator actions. |
+| Medium | Live YouTube soak is manual-gated and not run in CI. | QA/Operations | Live environment validation | Tests prove the gate stays skipped unless explicit flag and secret manager boundary exist. |

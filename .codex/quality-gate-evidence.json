@@ -12,13 +12,15 @@
     "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json",
     "taskBriefCompilerStatus": ".codex/task-contract.json",
     "secretScan": ".env.example placeholder inventory and security grep",
-    "codeReviewMonitorStatus": "docs/pr-youtube-ops-hardening.md and docs/RISK_REGISTER.md",
+    "codeReviewMonitorStatus": "docs/pr-youtube-prod-observability.md, docs/YOUTUBE_CREDENTIALS.md, and docs/YOUTUBE_OBSERVABILITY.md",
     "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
   },
   "safePlaceholderInventory": [
     "YOUTUBE_API_KEY empty placeholder",
     "YOUTUBE_OAUTH_TOKEN empty placeholder",
-    "YOUTUBE_CREDENTIAL_SOURCE local_env for local/test only"
+    "YOUTUBE_API_KEY_SECRET_NAME secret-name placeholder only",
+    "YOUTUBE_OAUTH_TOKEN_SECRET_NAME secret-name placeholder only",
+    "RUN_LIVE_YOUTUBE_SOAK_TESTS false by default"
   ],
   "runtimeReadinessClaimed": false
 }

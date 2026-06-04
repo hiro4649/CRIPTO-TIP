@@ -13,15 +13,15 @@
       "pathPattern": "apps/api/src/youtube/**",
       "classification": "product_source",
       "riskLevel": "medium",
-      "verification": "apps/api/src/youtube/operations.test.ts and connector.test.ts",
-      "scope": "youtube_operations_hardening"
+      "verification": "apps/api/src/youtube/credentials.test.ts and operations.test.ts",
+      "scope": "youtube_credentials_and_observability"
     },
     {
       "pathPattern": "apps/api/src/config/**",
       "classification": "config_validation",
       "riskLevel": "medium",
       "verification": "apps/api/src/config/env.test.ts",
-      "scope": "youtube_credential_boundary"
+      "scope": "youtube_secret_name_boundary"
     },
     {
       "pathPattern": "docs/**",
@@ -46,85 +46,30 @@
     }
   ],
   "changedFiles": [
-    {
-      "path": ".codex/change-classification.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/product-verification.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/quality-gate-evidence.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/task-contract.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/test-coverage-evidence.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".env.example",
-      "classification": "config_example"
-    },
-    {
-      "path": "apps/api/src/config/env.test.ts",
-      "classification": "test"
-    },
-    {
-      "path": "apps/api/src/config/env.ts",
-      "classification": "config_validation"
-    },
-    {
-      "path": "apps/api/src/youtube/operations.test.ts",
-      "classification": "test"
-    },
-    {
-      "path": "apps/api/src/youtube/operations.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "docs/PRODUCT_VERIFICATION.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/PRODUCTION_GATES.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/QUALITY_GATE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RISK_REGISTER.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RUNBOOK.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/YOUTUBE_CONNECTOR.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/pr-youtube-ops-hardening.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/review-independence.json",
-      "classification": "verification_relevant"
-    }
+    { "path": ".codex/change-classification.json", "classification": "verification_relevant" },
+    { "path": ".codex/product-verification.json", "classification": "verification_relevant" },
+    { "path": ".codex/quality-gate-evidence.json", "classification": "verification_relevant" },
+    { "path": ".codex/review-independence.json", "classification": "verification_relevant" },
+    { "path": ".codex/task-contract.json", "classification": "verification_relevant" },
+    { "path": ".codex/test-coverage-evidence.json", "classification": "verification_relevant" },
+    { "path": ".env.example", "classification": "config_example" },
+    { "path": "apps/api/src/config/env.test.ts", "classification": "test" },
+    { "path": "apps/api/src/config/env.ts", "classification": "config_validation" },
+    { "path": "apps/api/src/youtube/credentials.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/credentials.ts", "classification": "product_source" },
+    { "path": "apps/api/src/youtube/operations.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/operations.ts", "classification": "product_source" },
+    { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
+    { "path": "docs/API_COMPATIBILITY_SUMMARY.md", "classification": "docs" },
+    { "path": "docs/PRODUCTION_GATES.md", "classification": "docs" },
+    { "path": "docs/QUALITY_GATE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
+    { "path": "docs/RUNBOOK.md", "classification": "docs" },
+    { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
+    { "path": "docs/YOUTUBE_CONNECTOR.md", "classification": "docs" },
+    { "path": "docs/YOUTUBE_CREDENTIALS.md", "classification": "docs" },
+    { "path": "docs/YOUTUBE_OBSERVABILITY.md", "classification": "docs" },
+    { "path": "docs/pr-youtube-prod-observability.md", "classification": "docs" },
+    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" }
   ]
 }

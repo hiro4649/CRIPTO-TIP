@@ -4,6 +4,10 @@ import {
   acquireLiveChatIdFromLiveSession,
   classifyYouTubeOperationalError,
   nextListFallbackDelayMillis,
+  InMemoryYouTubeMetricsSink,
+  createManualLiveYouTubeSoakPlan,
+  recordLiveChatIdMissingMetric,
+  recordYouTubeOperationalErrorMetric,
   runDeterministicYouTubeConnectorSoak,
   shouldFallbackToList,
   shouldReconnectStreamList,
@@ -22,7 +26,10 @@ describe("YouTube operations hardening boundary", () => {
       "youtube_stream_reconnect_total",
       "youtube_list_fallback_total",
       "youtube_verification_code_detected_total",
-      "youtube_verification_code_failed_total"
+      "youtube_verification_code_failed_total",
+      "youtube_live_chat_id_missing_total",
+      "youtube_auth_errors_total",
+      "youtube_invalid_page_token_total"
     ]);
   });
 
@@ -39,9 +46,13 @@ describe("YouTube operations hardening boundary", () => {
   });
 
   it("keeps credential, ended-chat, and invalid-page-token errors non-retryable", () => {
-    expect(classifyYouTubeOperationalError(new YouTubeApiError(401, "authError")).retryable).toBe(false);
+    const auth = classifyYouTubeOperationalError(new YouTubeApiError(401, "authError"));
+    expect(auth.retryable).toBe(false);
+    expect(auth.metric).toBe("youtube_auth_errors_total");
     expect(classifyYouTubeOperationalError(new YouTubeApiError(403, "liveChatEnded")).retryable).toBe(false);
-    expect(classifyYouTubeOperationalError(new YouTubeApiError(400, "pageTokenInvalid")).operatorAction).toBe("reset_page_token_or_operator_action");
+    const invalidPageToken = classifyYouTubeOperationalError(new YouTubeApiError(400, "pageTokenInvalid"));
+    expect(invalidPageToken.operatorAction).toBe("reset_page_token_or_operator_action");
+    expect(invalidPageToken.metric).toBe("youtube_invalid_page_token_total");
   });
 
   it("reconnects streamList only while retryable attempts remain", () => {
@@ -75,5 +86,33 @@ describe("YouTube operations hardening boundary", () => {
     expect(result.counters.youtube_events_per_minute).toBe(3);
     expect(result.counters.youtube_list_fallback_total).toBe(3);
     expect(result.lastResult?.pollingIntervalMillis).toBe(1500);
+  });
+
+  it("records quota, auth, invalid page token, and missing liveChatId metrics", () => {
+    const sink = new InMemoryYouTubeMetricsSink();
+    recordYouTubeOperationalErrorMetric(new YouTubeApiError(403, "quotaExceeded"), sink);
+    recordYouTubeOperationalErrorMetric(new YouTubeApiError(403, "rateLimitExceeded"), sink);
+    recordYouTubeOperationalErrorMetric(new YouTubeApiError(401, "authError"), sink);
+    recordYouTubeOperationalErrorMetric(new YouTubeApiError(400, "pageTokenInvalid"), sink);
+    recordLiveChatIdMissingMetric(sink);
+    expect(sink.snapshot()).toMatchObject({
+      youtube_quota_errors_total: 1,
+      youtube_rate_limit_errors_total: 1,
+      youtube_auth_errors_total: 1,
+      youtube_invalid_page_token_total: 1,
+      youtube_live_chat_id_missing_total: 1
+    });
+  });
+
+  it("keeps manual live YouTube soak skipped unless explicitly gated with secret manager boundary", () => {
+    expect(createManualLiveYouTubeSoakPlan({}).status).toBe("skipped");
+    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "local_env" })).toEqual({
+      status: "skipped",
+      reason: "secret_manager_credential_boundary_missing"
+    });
+    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" })).toEqual({
+      status: "ready",
+      reason: "manual_gate_and_secret_boundary_present"
+    });
   });
 });

@@ -3,8 +3,8 @@
   "harnessVersion": "1.0.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
-  "testFiles": 14,
-  "testsPassed": 100,
+  "testFiles": 15,
+  "testsPassed": 108,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -12,24 +12,24 @@
     "npm test"
   ],
   "riskCoverage": [
-    "youtube_production_credential_boundary",
+    "youtube_secret_manager_credential_provider_boundary",
+    "youtube_production_rejects_local_env_credentials",
+    "youtube_credential_presence_fail_closed",
     "youtube_metrics_contract",
-    "youtube_livechatid_boundary",
-    "youtube_quota_rate_limit_ops_classification",
-    "youtube_non_retry_operator_actions",
-    "youtube_stream_reconnect_boundary",
-    "youtube_list_fallback_boundary",
-    "youtube_polling_interval_respect",
-    "youtube_deterministic_mock_soak",
+    "youtube_quota_rate_limit_metric_mapping",
+    "youtube_auth_error_metric_mapping",
+    "youtube_invalid_page_token_metric_mapping",
+    "youtube_livechatid_missing_metric",
+    "youtube_manual_live_soak_gate",
     "youtube_no_scraping"
   ],
   "uncoveredRisks": [
-    "real_youtube_account_live_soak",
-    "quota_dashboard_exporter",
-    "alert_routing",
-    "provider_specific_secret_manager_wiring"
+    "provider_specific_secret_manager_sdk",
+    "real_dashboard_exporter",
+    "alert_delivery",
+    "live_youtube_account_operation"
   ],
-  "tests": 100,
+  "tests": 108,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true
 }
