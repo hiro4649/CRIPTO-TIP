@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertYouTubeCredentialsPresent, createYouTubeCredentialProvider } from "./credentials.js";
+import { assertYouTubeCredentialsPresent, createYouTubeCredentialProvider, createYouTubeCredentialRotationPlan } from "./credentials.js";
 
 const baseConfig = {
   APP_ENV: "test" as const,
@@ -22,7 +22,7 @@ describe("YouTube credential provider boundary", () => {
   });
 
   it("rejects local env credential source in production", () => {
-    expect(() => createYouTubeCredentialProvider({ ...baseConfig, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_API_KEY: "youtube-api-key-placeholder" })).toThrow(/secret_manager/);
+    expect(() => createYouTubeCredentialProvider({ ...baseConfig, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_API_KEY: "youtube-api-key-placeholder" })).toThrow(/secret_manager or provider_specific/);
   });
 
   it("requires a resolver and secret name for secret manager source", () => {
@@ -55,8 +55,46 @@ describe("YouTube credential provider boundary", () => {
     expect(requested).toEqual(["projects/example/secrets/youtube-api-key", "projects/example/secrets/youtube-oauth-token"]);
   });
 
+  it("wraps provider-specific credentials through a managed resolver boundary", async () => {
+    const provider = createYouTubeCredentialProvider(
+      {
+        ...baseConfig,
+        APP_ENV: "production",
+        NODE_ENV: "production",
+        YOUTUBE_CREDENTIAL_SOURCE: "provider_specific",
+        YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key"
+      },
+      {
+        resolveSecret: async (name) => `${name}-resolved-placeholder`
+      }
+    );
+    const credentials = await assertYouTubeCredentialsPresent(provider);
+    expect(credentials.source).toBe("provider_specific");
+    expect(credentials.providerName).toBe("placeholder-provider");
+    expect(credentials.apiKey).toContain("youtube-api-key");
+    expect(credentials.oauthToken).toBeUndefined();
+  });
+
   it("fails closed when a provider returns no credential material", async () => {
     const provider = createYouTubeCredentialProvider({ ...baseConfig, YOUTUBE_API_KEY: undefined, YOUTUBE_OAUTH_TOKEN: undefined });
     await expect(assertYouTubeCredentialsPresent(provider)).rejects.toThrow(/no API key or OAuth token/);
+  });
+
+  it("builds a credential rotation plan only for distinct managed secret names", () => {
+    expect(createYouTubeCredentialRotationPlan({ source: "secret_manager" })).toEqual({
+      status: "blocked",
+      reason: "secret_name_pair_required"
+    });
+    expect(createYouTubeCredentialRotationPlan({ source: "provider_specific", currentSecretName: "youtube-api-key-v1", nextSecretName: "youtube-api-key-v1" })).toEqual({
+      status: "blocked",
+      reason: "next_secret_name_must_differ"
+    });
+    const plan = createYouTubeCredentialRotationPlan({ source: "provider_specific", currentSecretName: "youtube-api-key-v1", nextSecretName: "youtube-api-key-v2" });
+    expect(plan.status).toBe("ready");
+    if (plan.status === "ready") {
+      expect(plan.source).toBe("provider_specific");
+      expect(plan.steps).toContain("provision_next_secret_outside_git");
+      expect(plan.steps).toContain("retire_previous_secret_after_observation_window");
+    }
   });
 });

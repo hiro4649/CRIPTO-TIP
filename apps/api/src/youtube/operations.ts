@@ -113,8 +113,9 @@ export function createManualLiveYouTubeSoakPlan(env: {
   YOUTUBE_OAUTH_TOKEN_SECRET_NAME?: string;
 }) {
   const enabled = env.RUN_LIVE_YOUTUBE_SOAK_TESTS === "true";
-  const hasSecretBoundary = env.YOUTUBE_CREDENTIAL_SOURCE === "secret_manager" && Boolean(env.YOUTUBE_API_KEY_SECRET_NAME || env.YOUTUBE_OAUTH_TOKEN_SECRET_NAME);
+  const hasManagedCredentialSource = env.YOUTUBE_CREDENTIAL_SOURCE === "secret_manager" || env.YOUTUBE_CREDENTIAL_SOURCE === "provider_specific";
+  const hasSecretBoundary = hasManagedCredentialSource && Boolean(env.YOUTUBE_API_KEY_SECRET_NAME || env.YOUTUBE_OAUTH_TOKEN_SECRET_NAME);
   if (!enabled) return { status: "skipped" as const, reason: "manual_live_youtube_soak_disabled" };
-  if (!hasSecretBoundary) return { status: "skipped" as const, reason: "secret_manager_credential_boundary_missing" };
+  if (!hasSecretBoundary) return { status: "skipped" as const, reason: "managed_credential_boundary_missing" };
   return { status: "ready" as const, reason: "manual_gate_and_secret_boundary_present" };
 }

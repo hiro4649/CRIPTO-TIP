@@ -33,7 +33,7 @@ describe("config validation", () => {
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CONNECTOR_MODE: "official" })).toThrow(/YOUTUBE_CREDENTIAL_SOURCE/);
   });
 
-  it("production official YouTube connector requires secret manager credential source and secret name", () => {
+  it("production official YouTube connector requires managed credential source and secret name", () => {
     const tokenEnv = {
       MOCK_ADMIN_TOKEN: "admin-realistic-placeholder",
       MOCK_INTERNAL_TOKEN: "internal-realistic-placeholder",
@@ -45,6 +45,7 @@ describe("config validation", () => {
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "local_env" })).toThrow(/YOUTUBE_CREDENTIAL_SOURCE/);
     expect(() => loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager" })).toThrow(/YOUTUBE_API_KEY_SECRET_NAME|YOUTUBE_OAUTH_TOKEN_SECRET_NAME/);
     expect(loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" }).YOUTUBE_CREDENTIAL_SOURCE).toBe("secret_manager");
+    expect(loadConfig({ ...tokenEnv, APP_ENV: "production", NODE_ENV: "production", YOUTUBE_CREDENTIAL_SOURCE: "provider_specific", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" }).YOUTUBE_CREDENTIAL_SOURCE).toBe("provider_specific");
   });
 
   it("keeps YouTube secret manager identifiers as names, not committed secret values", () => {

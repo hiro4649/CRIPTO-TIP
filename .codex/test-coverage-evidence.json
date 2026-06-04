@@ -3,8 +3,8 @@
   "harnessVersion": "1.0.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
-  "testFiles": 15,
-  "testsPassed": 108,
+  "testFiles": 16,
+  "testsPassed": 124,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -13,9 +13,13 @@
   ],
   "riskCoverage": [
     "youtube_secret_manager_credential_provider_boundary",
+    "youtube_provider_specific_credential_provider_boundary",
+    "youtube_credential_rotation_plan_boundary",
     "youtube_production_rejects_local_env_credentials",
     "youtube_credential_presence_fail_closed",
     "youtube_metrics_contract",
+    "youtube_dashboard_contract_json",
+    "youtube_alert_routing_contract",
     "youtube_quota_rate_limit_metric_mapping",
     "youtube_auth_error_metric_mapping",
     "youtube_invalid_page_token_metric_mapping",
@@ -29,7 +33,7 @@
     "alert_delivery",
     "live_youtube_account_operation"
   ],
-  "tests": 108,
+  "tests": 124,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true
 }

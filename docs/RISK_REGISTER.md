@@ -39,3 +39,13 @@
 | Medium | Real dashboard exporter is not implemented. | Backend/Observability | Dashboard exporter PR | Metric names and mapping are fixed by tests and docs. |
 | Medium | Alert routing is documentation-only. | Operations | Alert integration PR | RUNBOOK and `docs/YOUTUBE_OBSERVABILITY.md` define routing and operator actions. |
 | Medium | Live YouTube soak is manual-gated and not run in CI. | QA/Operations | Live environment validation | Tests prove the gate stays skipped unless explicit flag and secret manager boundary exist. |
+
+## PR youtube-deployment-dashboard
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Provider-specific deployment apply is not executed by this repository. | Backend/DevOps | Deployment apply PR | `ProviderSpecificYouTubeCredentialProvider` and config validation exist; actual provider SDK/apply remains manual-gated and outside git secrets. |
+| Medium | Real dashboard exporter deployment is not implemented. | Backend/Observability | Exporter integration PR | Metric snapshot builder, dashboard contract JSON, and tests fix the contract before exporter wiring. |
+| Medium | Alert delivery into a paging provider is not implemented. | Operations | Alert provider integration PR | Alert routing config and runbook define operator actions for quota, auth, invalid token, missing liveChatId, reconnect storm, fallback spike, zero events, and verification failures. |
+| Medium | Live YouTube account soak remains manual-gated. | QA/Operations | Live environment validation | Tests keep live soak skipped unless an explicit flag and managed credential boundary are present. |
+| Low | Local forge may be unavailable on this Windows machine. | Contract owner | toolchain setup PR if needed | GitHub contracts CI remains required before merge. |

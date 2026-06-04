@@ -13,7 +13,7 @@
       "pathPattern": "apps/api/src/youtube/**",
       "classification": "product_source",
       "riskLevel": "medium",
-      "verification": "apps/api/src/youtube/credentials.test.ts and operations.test.ts",
+      "verification": "apps/api/src/youtube/credentials.test.ts, operations.test.ts, and deployment-observability.test.ts",
       "scope": "youtube_credentials_and_observability"
     },
     {
@@ -57,6 +57,8 @@
     { "path": "apps/api/src/config/env.ts", "classification": "config_validation" },
     { "path": "apps/api/src/youtube/credentials.test.ts", "classification": "test" },
     { "path": "apps/api/src/youtube/credentials.ts", "classification": "product_source" },
+    { "path": "apps/api/src/youtube/deployment-observability.test.ts", "classification": "test" },
+    { "path": "apps/api/src/youtube/deployment-observability.ts", "classification": "product_source" },
     { "path": "apps/api/src/youtube/operations.test.ts", "classification": "test" },
     { "path": "apps/api/src/youtube/operations.ts", "classification": "product_source" },
     { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
@@ -69,7 +71,8 @@
     { "path": "docs/YOUTUBE_CONNECTOR.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_CREDENTIALS.md", "classification": "docs" },
     { "path": "docs/YOUTUBE_OBSERVABILITY.md", "classification": "docs" },
-    { "path": "docs/pr-youtube-prod-observability.md", "classification": "docs" },
+    { "path": "docs/pr-youtube-deployment-dashboard.md", "classification": "docs" },
+    { "path": "docs/youtube-dashboard-contract.json", "classification": "docs" },
     { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" }
   ]
 }

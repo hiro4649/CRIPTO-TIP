@@ -12,7 +12,7 @@
     "testCoverageEvidenceStatus": ".codex/test-coverage-evidence.json",
     "taskBriefCompilerStatus": ".codex/task-contract.json",
     "secretScan": ".env.example placeholder inventory and security grep",
-    "codeReviewMonitorStatus": "docs/pr-youtube-prod-observability.md, docs/YOUTUBE_CREDENTIALS.md, and docs/YOUTUBE_OBSERVABILITY.md",
+    "codeReviewMonitorStatus": "docs/pr-youtube-deployment-dashboard.md, docs/YOUTUBE_CREDENTIALS.md, docs/YOUTUBE_OBSERVABILITY.md, and docs/youtube-dashboard-contract.json",
     "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
   },
   "safePlaceholderInventory": [
