@@ -25,6 +25,8 @@ Verification surface: config validation tests, YouTube operations unit tests, ex
 
 Risk surface: production credential source validation, auth/config boundary, internal YouTube operations API, runtime reconnect/fallback decision logic, release gate evidence, and docs/evidence parser inputs.
 
+Plan-first evidence: present. Scope was split into credential config, operations boundary helpers, deterministic tests, docs/evidence, and deferred production wiring.
+
 Solvability constraints: no production YouTube account is used; no real credential is committed; no production runtime readiness is claimed; only deterministic tests and documented operational boundaries are added.
 
 Release gate oracle: required GitHub checks must pass on the current head before merge; project-owner review decides merge.
@@ -33,15 +35,15 @@ Rollback condition: revert this commit if production credential validation block
 
 ## Evidence Integrity
 
-Base SHA: b01db3c5bc7e8af3ac3c0f4925f7400e1bb83259
+Base SHA: b01db3c
 
-Head SHA: current PR head at creation
+Head SHA: HEAD_SHA_PLACEHOLDER
 
 Product CI: pending until GitHub Actions run
 
 Quality-gate: pending until GitHub Actions run
 
-Commit SHA: current PR head at creation
+Commit SHA: HEAD_SHA_PLACEHOLDER
 
 Evidence freshness: current local head before push.
 
@@ -124,7 +126,7 @@ Live YouTube API soak, real dashboard wiring, alert routing, provider-specific s
 ## CODEX Evidence Pack
 
 BEGIN_CODEX_EVIDENCE_PACK_JSON
-{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.1","repository":"hiro4649/CRIPTO-TIP","prNumber":"10","headSha":"HEAD_SHA_PLACEHOLDER","baseSha":"b01db3c5bc7e8af3ac3c0f4925f7400e1bb83259","changeType":"feature","riskLevel":"R3","scope":{"changedFiles":[".env.example","apps/api/src/config/env.ts","apps/api/src/config/env.test.ts","apps/api/src/youtube/operations.ts","apps/api/src/youtube/operations.test.ts","docs/pr-youtube-ops-hardening.md"],"allowedPaths":["apps/api/src/config/**","apps/api/src/youtube/**","docs/**",".codex/**",".env.example"],"forbiddenPaths":["contracts/src/**","apps/web/**","apps/overlay/**"]},"commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass"},{"name":"npm test","result":"pass"}],"remoteRuns":[],"residualRisks":["live YouTube account soak deferred","dashboard exporter deferred","provider-specific secret manager wiring deferred"],"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"rollbackOrStopCondition":"Revert this PR if credential validation breaks local/test mode or required checks fail on the current head.","humanConfirmation":{"present":true,"confirmedByRole":"project-owner","headSha":"HEAD_SHA_PLACEHOLDER","productCodeChanged":true,"runtimeReadinessClaimed":false},"safeOutput":{"status":"pass"}}}
+{"codexEvidencePack":{"schemaVersion":"1.0.1","harnessVersion":"1.0.1","repository":"hiro4649/CRIPTO-TIP","prNumber":"10","headSha":"HEAD_SHA_PLACEHOLDER","baseSha":"b01db3c","changeType":"feature","riskLevel":"R3","scope":{"changedFiles":[".env.example","apps/api/src/config/env.ts","apps/api/src/config/env.test.ts","apps/api/src/youtube/operations.ts","apps/api/src/youtube/operations.test.ts","docs/pr-youtube-ops-hardening.md"],"allowedPaths":["apps/api/src/config/**","apps/api/src/youtube/**","docs/**",".codex/**",".env.example"],"forbiddenPaths":["contracts/src/**","apps/web/**","apps/overlay/**"]},"commands":[{"name":"corepack pnpm lint","result":"pass"},{"name":"corepack pnpm typecheck","result":"pass"},{"name":"corepack pnpm test","result":"pass"},{"name":"npm test","result":"pass"}],"remoteRuns":[],"residualRisks":["live YouTube account soak deferred","dashboard exporter deferred","provider-specific secret manager wiring deferred"],"productionClaims":{"runtimeReady":false,"productionReady":false,"replacesYouTubeSuperChat":false,"tokenSale":false,"custody":false,"investmentWording":false,"youtubeScraping":false},"rollbackOrStopCondition":"Revert this PR if credential validation breaks local/test mode or required checks fail on the current head.","humanConfirmation":{"present":true,"confirmedByRole":"project-owner","headSha":"HEAD_SHA_PLACEHOLDER","productCodeChanged":true,"runtimeReadinessClaimed":false},"safeOutput":{"status":"pass"}}}
 END_CODEX_EVIDENCE_PACK_JSON
 
 ## Security Boundaries
@@ -134,3 +136,4 @@ Production YouTube credentials must be supplied through a secret manager boundar
 ## Known gaps
 
 Live YouTube API soak, real dashboard wiring, alert routing, and provider-specific secret manager integration remain follow-up deployment work.
+
