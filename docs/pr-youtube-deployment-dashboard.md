@@ -57,7 +57,7 @@ quality-gate artifact: 7404897734
 
 Commit SHA: supplied in GitHub PR body after final push
 
-Evidence freshness: local evidence collected before push; GitHub checks must pass on the current head before merge.
+Evidence freshness: GitHub checks passed for PR #12 before merge review.
 
 ## Product Verification
 

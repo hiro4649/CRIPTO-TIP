@@ -111,7 +111,7 @@
       "gate": "ciReplay",
       "severity": "error",
       "safeMessage": "Local replay and CI context do not agree.",
-      "nextBestFix": "Replay with the current PR body and head SHA.",
+      "nextBestFix": "Replay with the active pull request body and head SHA.",
       "canManualConfirmationOverride": false
     },
     {

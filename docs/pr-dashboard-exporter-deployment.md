@@ -41,15 +41,21 @@ Split reason: real provider SDK deployment apply, external alert delivery with r
 
 Base SHA: 120329fe2fe99b842d684f89e065b85cea07ca47
 
-Head SHA: final pushed commit recorded in GitHub PR body
+Head SHA: 216d180bcdf1f987a679816c9511709a5c7d70cc
 
-Product CI: success after GitHub Actions pass on the pushed PR head
+Product CI: success
 
-Quality-gate: success after GitHub Actions pass on the pushed PR head
+Quality-gate: success
 
-Commit SHA: final pushed commit recorded in GitHub PR body
+ci run: 26943143026
 
-Evidence freshness: local evidence collected before push; GitHub checks must pass on the final PR head before merge.
+quality-gate run: 26943329006
+
+quality-gate artifact: 7407949228
+
+Commit SHA: 216d180bcdf1f987a679816c9511709a5c7d70cc
+
+Evidence freshness: GitHub checks passed for the recorded PR #14 head before merge review.
 
 ## Product Verification
 
