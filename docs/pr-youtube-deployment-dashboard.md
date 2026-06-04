@@ -138,6 +138,8 @@ Test command: `corepack pnpm test` and `npm test`.
 
 What the test covers: provider-specific managed credential provider boundary, production local-env credential source rejection, credential rotation boundary, metric snapshot contract, dashboard contract, alert routing config, quota/rate-limit/auth/invalid-page-token/liveChatId/reconnect/fallback/verification alert mappings, and manual live soak gating.
 
+Edge cases and failure paths: missing managed resolver, missing secret name, missing credential material, production `local_env` rejection, same-secret rotation rejection, zero events while live alerting, live soak disabled by default, and dashboard panels referencing undeclared metrics.
+
 Uncovered risks: provider-specific deployment apply, real dashboard exporter, external alert delivery, and live YouTube account operation.
 
 ## Best of N Evidence
