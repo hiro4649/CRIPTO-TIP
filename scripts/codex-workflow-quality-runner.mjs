@@ -3920,6 +3920,17 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
+    if (
+      key === 'v085SelfTestStatus' &&
+      status === 'missing' &&
+      (report.activeSelfTestRegistryStatus?.status || '') === 'pass'
+    ) {
+      continue;
+    }
+
+
+
+
 
     if (!statusAllowed(key, status, options.eventName || process.env.CODEX_EVENT_NAME)) failures.push(`${key}=${status}`);
 

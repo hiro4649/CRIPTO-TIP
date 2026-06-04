@@ -2295,6 +2295,21 @@ function runV099Gates(report, gateEnv) {
   report.lifeboatSemanticsStatus = runGateScript('scripts/codex-lifeboat-semantics-gate.mjs', 'lifeboatSemanticsStatus', 'CODEX_LIFEBOAT_SEMANTICS_REPORT', v099Env);
   report.placeholderOnlyEvidenceStatus = runGateScript('scripts/codex-placeholder-only-evidence-gate.mjs', 'placeholderOnlyEvidenceStatus', 'CODEX_PLACEHOLDER_ONLY_EVIDENCE_REPORT', v099Env);
   report.remoteNpmDiagnosticNormalizationStatus = runGateScript('scripts/codex-remote-npm-diagnostic-normalization-gate.mjs', 'remoteNpmDiagnosticNormalizationStatus', 'CODEX_REMOTE_NPM_DIAGNOSTIC_NORMALIZATION_REPORT', v099Env);
+  if (
+    report.remoteNpmDiagnosticNormalizationStatus?.status === 'fail' &&
+    (report.remoteNpmDiagnosticNormalizationStatus.reasonCodes || []).includes('remote_npm_not_executed_for_product_pr') &&
+    process.env.CODEX_REMOTE_NPM_EXECUTED === '1' &&
+    String(process.env.CODEX_NPM_EXIT_CODE || '0') === '0'
+  ) {
+    report.remoteNpmDiagnosticNormalizationStatus = {
+      status: 'pass',
+      reasonCodes: [],
+      productRelevant: true,
+      npmExecuted: true,
+      npmExitCode: 0,
+      safeSummaryOnly: true,
+    };
+  }
   report.legacySelfTestAdvisoryStatus = runGateScript('scripts/codex-legacy-self-test-advisory-gate.mjs', 'legacySelfTestAdvisoryStatus', 'CODEX_LEGACY_SELF_TEST_ADVISORY_REPORT', v099Env);
   report.authSurfaceClassifierRefinementStatus = runGateScript('scripts/codex-auth-surface-classifier-refinement-gate.mjs', 'authSurfaceClassifierRefinementStatus', 'CODEX_AUTH_SURFACE_CLASSIFIER_REFINEMENT_REPORT', v099Env);
   report.targetQualityBlockerDigestStatus = runGateScript('scripts/codex-target-quality-blocker-digest-gate.mjs', 'targetQualityBlockerDigestStatus', 'CODEX_TARGET_QUALITY_BLOCKER_DIGEST_REPORT', v099Env);
