@@ -35,6 +35,8 @@ Risk surface: credential/auth boundary, provider-specific deployment boundary, i
 
 Oracle provided: test.
 
+Auth oracle: negative test evidence in `apps/api/src/config/env.test.ts` verifies production official connector mode rejects `local_env`; security test evidence in `apps/api/src/youtube/credentials.test.ts` verifies missing managed resolver or missing credential material fails closed.
+
 Split reason: real provider SDK deployment apply, dashboard exporter deployment, external alert delivery, and live YouTube account operation are deliberately split out to deployment/runtime work.
 
 ## Evidence Integrity
@@ -71,6 +73,8 @@ Evidence freshness: local evidence collected before push; GitHub checks must pas
 
 ## Acceptance criteria
 
+Acceptance criteria: managed credential source boundary includes `secret_manager` and `provider_specific`; production official connector rejects `local_env`; credential rotation rejects missing or same secret names; metric contract includes all required YouTube metrics; dashboard contract JSON exists; alert routing maps each production operator target; manual live YouTube soak is skipped by default; no public API route changes; no YouTube scraping or real secret commit.
+
 - Managed credential source boundary includes `secret_manager` and `provider_specific`.
 - Production official connector rejects `local_env`.
 - Credential rotation boundary rejects missing or same secret names.
@@ -104,6 +108,8 @@ Evidence freshness: local evidence collected before push; GitHub checks must pas
 
 Local test counts: 16 test files, 124 passed tests, and 6 skipped tests.
 
+Risk summary: product code, config validation, auth/credential boundary, runtime observability helper surface, dashboard contract JSON, tests, and docs changed. No DB migration, public route, contract, wallet custody, token sale, exchange, cash-out, investment behavior, YouTube scraping, or production deployment apply changed.
+
 Review focus: credential source boundary, no real secret commit, provider-specific wrapper semantics, rotation plan safety, metric name compatibility, dashboard JSON parity, alert routing, manual live soak gate, no scraping, and no production readiness claim.
 
 Writer evidence: present
@@ -133,6 +139,16 @@ Test command: `corepack pnpm test` and `npm test`.
 What the test covers: provider-specific managed credential provider boundary, production local-env credential source rejection, credential rotation boundary, metric snapshot contract, dashboard contract, alert routing config, quota/rate-limit/auth/invalid-page-token/liveChatId/reconnect/fallback/verification alert mappings, and manual live soak gating.
 
 Uncovered risks: provider-specific deployment apply, real dashboard exporter, external alert delivery, and live YouTube account operation.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Selected candidate: additive managed credential provider boundary plus dashboard/alert contract and tests.
+
+Reason selected: it verifies production credential and observability contracts without committing secrets, coupling to a provider SDK, adding exporter runtime dependencies, or claiming production readiness.
+
+Rejected alternatives: provider-specific SDK deployment apply in this PR was too broad; docs-only dashboard plan lacked executable tests.
 
 ## Residual risks
 
