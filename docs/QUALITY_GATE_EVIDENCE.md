@@ -125,4 +125,4 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Config evidence: `apps/api/src/config/env.test.ts` verifies production official YouTube connector mode requires `YOUTUBE_CREDENTIAL_SOURCE=secret_manager`.
 - Operations evidence: `apps/api/src/youtube/operations.test.ts` verifies metrics names, liveChatId acquisition boundary, quota/rate-limit classification, non-retry operator actions, reconnect bounds, fallback bounds, polling interval respect, and deterministic mock soak.
 - Safe boundary evidence: `.env.example` contains placeholders only; no real YouTube API key or OAuth token is committed.
-- Quality-gate expected status: pending until GitHub Actions run on the PR branch.
+- Quality-gate status for PR #10: pass on run 26928828159.
