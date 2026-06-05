@@ -57,6 +57,13 @@
       "riskLevel": "medium",
       "verification": "apps/api/src/evidence-rendering.test.ts and refresh-pr-evidence command",
       "scope": "pr_body_evidence_refresh"
+    },
+    {
+      "pathPattern": "scripts/fetch-github-run-evidence.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts and refresh-pr-evidence command",
+      "scope": "github_run_artifact_evidence_refresh"
     }
   ],
   "changedFiles": [

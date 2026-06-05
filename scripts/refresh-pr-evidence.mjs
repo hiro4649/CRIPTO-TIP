@@ -27,10 +27,21 @@ if (!repo) {
   process.exit(1);
 }
 
-const fetchArgs = ["scripts/fetch-github-run-evidence.mjs", "--pr", pr, "--repo", repo, "--input", evidencePackPath, "--output", evidencePackPath];
+const fetchArgs = [
+  "scripts/fetch-github-run-evidence.mjs",
+  "--pr",
+  pr,
+  "--repo",
+  repo,
+  "--input",
+  evidencePackPath,
+  "--output",
+  evidencePackPath,
+  "--allow-head-refresh"
+];
 if (hasFlag("--offline-readonly")) fetchArgs.push("--offline-readonly");
 run("node", fetchArgs);
 if (hasFlag("--offline-readonly")) process.exit(0);
-run("node", ["scripts/render-pr-evidence.mjs", "--input", ".codex/evidence-pack.json", "--output", bodyFile]);
+run("node", ["scripts/render-pr-evidence.mjs", "--input", evidencePackPath, "--output", bodyFile]);
 run("node", ["scripts/check-evidence-placeholders.mjs"]);
 if (!hasFlag("--no-edit")) run("gh", ["pr", "edit", pr, "--repo", repo, "--body-file", bodyFile]);

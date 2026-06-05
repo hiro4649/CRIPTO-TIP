@@ -10,11 +10,11 @@
   "riskLevel": "R3",
   "title": "feat: add provider safe deployment apply",
   "goal": "Add a shared provider-safe deployment apply boundary behind approved manual gate records, safe audit evidence, dry-run/apply separation, rollback references, and dashboard/external alert integration.",
-  "headSha": "23b047c8dc19a23ef988250c6f47acf0399968ec",
+  "headSha": "278c6b38881a5218daa2f489f5f7ed02589e5030",
   "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
-  "ciRunId": "27032951279",
-  "qualityGateRunId": "27033076377",
-  "qualityGateArtifactId": "7444057679",
+  "ciRunId": "27033331710",
+  "qualityGateRunId": "27033331722",
+  "qualityGateArtifactId": "7444164396",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -47,6 +47,7 @@
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/pr-provider-safe-deployment-apply.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "scripts/fetch-github-run-evidence.mjs",
       "scripts/refresh-pr-evidence.mjs"
     ],
     "allowedPaths": [
@@ -58,6 +59,7 @@
       "apps/api/src/youtube/alert-delivery.ts",
       "apps/api/src/youtube/alert-delivery.test.ts",
       "docs/**",
+      "scripts/fetch-github-run-evidence.mjs",
       "scripts/refresh-pr-evidence.mjs"
     ],
     "forbiddenPaths": [
@@ -104,14 +106,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27032951279",
+      "runId": "27033331710",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27033076377",
+      "runId": "27033331722",
       "result": "success",
-      "artifactId": "7444057679"
+      "artifactId": "7444164396"
     }
   ],
   "productionClaims": {

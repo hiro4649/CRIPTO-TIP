@@ -21,7 +21,7 @@ Done criteria: provider deployment dry-run succeeds without manual gate; provide
 
 ## Evidence Integrity
 
-Head SHA: 23b047c8dc19a23ef988250c6f47acf0399968ec
+Head SHA: 278c6b38881a5218daa2f489f5f7ed02589e5030
 
 Base SHA: 6da1bba9084a189e24116c7594c72211db4881b8
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27032951279
+CI run: 27033331710
 
-Quality-gate run: 27033076377
+Quality-gate run: 27033331722
 
-Quality-gate artifact: 7444057679
+Quality-gate artifact: 7444164396
 
 Tests: 22 test files, 205 passed, 6 skipped
 

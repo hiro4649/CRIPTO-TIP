@@ -90,11 +90,11 @@ function runIdOf(run) {
   return String(run.databaseId || run.id || run.run_number || "");
 }
 
-export function buildGithubEvidence({ pack, pr, runs, artifacts }) {
+export function buildGithubEvidence({ pack, pr, runs, artifacts, allowHeadRefresh = false }) {
   const headSha = pr.headRefOid || pr.head_sha || pr.headSha;
   const baseSha = pr.baseRefOid || pr.base_sha || pr.baseSha || pack.baseSha;
   if (!headSha) throw new Error("PR head SHA missing");
-  if (isConcreteSha(pack.headSha) && pack.headSha !== headSha) {
+  if (!allowHeadRefresh && isConcreteSha(pack.headSha) && pack.headSha !== headSha) {
     throw new Error("Evidence pack head SHA does not match PR head");
   }
   const ciRun = selectLatestSuccessfulRun(runs, "ci", headSha);
@@ -140,7 +140,7 @@ async function main() {
   const qualityRun = selectLatestSuccessfulRun(runs, "quality-gate", pr.headRefOid || pr.headSha);
   if (!artifacts) artifacts = fetchArtifacts(repo, runIdOf(qualityRun));
 
-  const next = buildGithubEvidence({ pack, pr, runs, artifacts });
+  const next = buildGithubEvidence({ pack, pr, runs, artifacts, allowHeadRefresh: hasFlag("--allow-head-refresh") });
   if (!hasFlag("--dry-run")) writeText(output, JSON.stringify(next, null, 2));
   console.log(`GitHub evidence updated: head ${next.headSha}, ci ${next.ciRunId}, quality-gate ${next.qualityGateRunId}, artifact ${next.qualityGateArtifactId}`);
 }
