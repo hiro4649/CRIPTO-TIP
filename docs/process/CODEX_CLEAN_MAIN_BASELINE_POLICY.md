@@ -2,7 +2,7 @@
 
 CODEX_QUALITY_HARNESS_FILE v1.0.7
 
-Classify whether a failure belongs to clean main, the current PR, legacy
+Classify whether a failure belongs to clean main, the active pull request, legacy
 self-test drift, fixture orchestration, support-file materialization, product
 code, remote infrastructure, or an unknown owner before product PR recovery.
 

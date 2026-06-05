@@ -209,6 +209,87 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Codex v1.0.2 source harness scripts."
+    },
+    {
+      "pathPattern": ".codex/**",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Machine-readable safe evidence and manual gate summaries."
+    },
+    {
+      "pathPattern": "docs/**",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Product and quality evidence documentation."
+    },
+    {
+      "pathPattern": "scripts/evidence-lib.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Evidence rendering shared library."
+    },
+    {
+      "pathPattern": "scripts/render-pr-evidence.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence renderer."
+    },
+    {
+      "pathPattern": "scripts/validate-evidence-freshness.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Current-head evidence freshness validator."
+    },
+    {
+      "pathPattern": "scripts/check-evidence-placeholders.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Placeholder prevention checker."
+    },
+    {
+      "pathPattern": "scripts/write-test-summary.mjs",
+      "classification": "test",
+      "surface": "verification",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Vitest summary extraction."
+    },
+    {
+      "pathPattern": "scripts/check-quality-gate-self-protection.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Quality-gate self-protection checker."
+    },
+    {
+      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Evidence rendering and validation tests."
     }
   ],
   "safeSummaryOnly": true

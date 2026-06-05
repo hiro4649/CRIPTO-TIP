@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": "18",
+  "writerEvidencePresent": true,
+  "reviewEvidencePresent": true,
+  "reviewChecklistPresent": true,
+  "writerEvidence": {
+    "present": true,
+    "files": [
+      "docs/pr-dashboard-exporter-deployment.md",
+      ".codex/task-contract.json",
+      ".codex/product-verification.json"
+    ]
+  },
+  "reviewEvidence": {
+    "present": true,
+    "files": [
+      "docs/DASHBOARD_DEPLOYMENT.md",
+      "docs/OBSERVABILITY_EXPORTER.md",
+      "docs/YOUTUBE_OBSERVABILITY.md",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/RISK_REGISTER.md",
+      "docs/RUNBOOK.md"
+    ],
+    "independentFromWriterOnlyClaim": true
+  },
+  "reviewerRole": "project-owner",
+  "headSha": "current_pr_head",
+  "productCodeChanged": true,
+  "runtimeReadinessClaimed": false,
+  "reviewChecklist": [
+    "correctness",
+    "regression",
+    "security",
+    "data_integrity",
+    "runtime_safety",
+    "test_evidence",
+    "diff_scope",
+    "known_gaps"
+  ],
+  "humanReviewRequiredFields": [
+    "quality_gate_status",
+    "CI status",
+    "head SHA",
+    "remaining blockers",
+    "merge decision"
+  ],
+  "reviewIndependenceStatus": "pass",
+  "evidenceFiles": [
+    "docs/pr-external-alert-delivery-integration.md",
+    "docs/ALERT_DELIVERY.md",
+    ".codex/task-contract.json",
+    ".codex/product-verification.json",
+    ".codex/test-coverage-evidence.json"
+  ],
+  "codeLevelEvidenceFiles": [
+    ".codex/evidence-pack.json",
+    ".codex/risk-register.json",
+    ".codex/manual-gates/manual-gates.json",
+    ".codex/test-summary.json",
+    "scripts/evidence-lib.mjs",
+    "scripts/render-pr-evidence.mjs",
+    "scripts/validate-evidence-freshness.mjs",
+    "scripts/check-evidence-placeholders.mjs",
+    "scripts/write-test-summary.mjs",
+    "scripts/check-quality-gate-self-protection.mjs",
+    "apps/api/src/evidence-rendering.test.ts",
+    "docs/process/EVIDENCE_RENDERING.md",
+    "docs/pr-evidence-single-source-of-truth.md",
+    "package.json"
+  ],
+  "ciRun": "27019489153",
+  "qualityGateRun": "current_head_quality_gate_rerun_required",
+  "qualityGateArtifact": "current_head_quality_gate_rerun_required"
+}

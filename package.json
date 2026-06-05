@@ -10,7 +10,12 @@
     "test": "vitest run packages/shared apps/api apps/overlay apps/web",
     "dev:web": "corepack pnpm --filter @cripto-tip/web dev",
     "dev:api": "corepack pnpm --filter @cripto-tip/api dev",
-    "dev:overlay": "corepack pnpm --filter @cripto-tip/overlay dev"
+    "dev:overlay": "corepack pnpm --filter @cripto-tip/overlay dev",
+    "evidence:render": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md",
+    "evidence:validate": "node scripts/validate-evidence-freshness.mjs",
+    "evidence:test-summary": "node scripts/write-test-summary.mjs",
+    "evidence:check-placeholders": "node scripts/check-evidence-placeholders.mjs",
+    "quality:self-protection": "node scripts/check-quality-gate-self-protection.mjs"
   },
   "devDependencies": {
     "@cripto-tip/shared": "file:packages/shared",

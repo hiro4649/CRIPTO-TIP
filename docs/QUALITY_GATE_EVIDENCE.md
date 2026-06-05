@@ -175,3 +175,6 @@ Manual gate registry evidence: `.codex/manual-gates/schema.json`, `apps/api/src/
 ## Production-Like Apply Enforcement Update
 
 Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+## Evidence Single Source Of Truth
+
+This PR adds `.codex/evidence-pack.json` as the safe summary source for generated PR evidence, plus placeholder and freshness validators. It does not weaken quality-gate behavior; it makes stale evidence easier to reject before merge.

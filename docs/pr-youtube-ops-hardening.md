@@ -47,7 +47,7 @@ quality-gate run: 26928828159
 
 Commit SHA: 7db7153e6dd42f24d3103a98010bd94dc803b6ee
 
-Evidence freshness: current local head before push.
+Evidence freshness: recorded branch evidence was refreshed before merge.
 
 ## Product Verification
 

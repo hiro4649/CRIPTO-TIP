@@ -7,7 +7,7 @@
       "gate": "evidence",
       "severity": "error",
       "safeMessage": "Current head SHA evidence is missing.",
-      "nextBestFix": "Record the current PR head SHA in structured evidence.",
+      "nextBestFix": "Record the active pull request head SHA in structured evidence.",
       "canManualConfirmationOverride": false
     },
     {
@@ -111,7 +111,7 @@
       "gate": "ciReplay",
       "severity": "error",
       "safeMessage": "Local replay and CI context do not agree.",
-      "nextBestFix": "Replay with the current PR body and head SHA.",
+      "nextBestFix": "Replay with the live pull request body and head SHA.",
       "canManualConfirmationOverride": false
     },
     {
@@ -1815,7 +1815,7 @@
       "gate": "remoteLocalParity",
       "severity": "error",
       "safeMessage": "Remote changed files differ from local changed files.",
-      "nextBestFix": "Refresh changed-file evidence for the current PR head.",
+      "nextBestFix": "Refresh changed-file evidence for the active pull request head.",
       "canManualConfirmationOverride": false
     },
     {
@@ -2151,7 +2151,7 @@
       "gate": "dockerSmokeArtifact",
       "severity": "error",
       "safeMessage": "Docker smoke artifact head does not match PR head.",
-      "nextBestFix": "Regenerate Docker smoke for the current PR head.",
+      "nextBestFix": "Regenerate Docker smoke for the active pull request head.",
       "canManualConfirmationOverride": false
     },
     {
