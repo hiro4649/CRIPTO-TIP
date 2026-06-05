@@ -2,22 +2,21 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "taskMode": "product_minor_r2",
   "profile": "product_minor_r2",
-  "goal": "automatic GitHub run and quality-gate artifact injection with fail-closed evidence freshness",
+  "goal": "Require quality-gate self-protection and evidence fail-closed checks in CI.",
   "allowedScope": [
-    "github_evidence_fetcher",
-    "quality_gate_artifact_discovery",
-    "evidence_refresh_command",
-    "freshness_validator",
-    "placeholder_checker",
-    "quality_gate_self_protection",
-    "tests",
+    "quality_gate_self_protection_requiredization",
+    "evidence_ci_fail_closed",
+    "placeholder_checker_required",
+    "freshness_validator_required",
+    "negative_fixtures",
+    "provider_safe_deployment_evidence",
     "docs",
-    "quality_evidence"
+    "tests"
   ],
   "forbiddenScope": [
     "token_sale",
@@ -78,9 +77,9 @@
   "verificationOracle": "Local typecheck and tests verify alert delivery plan, provider boundaries, dry-run/apply gate, credential failure, payload safety, provider error mapping, and rollback plan; GitHub CI and quality-gate verify pushed head.",
   "storageOracle": "No DB migration or storage format change in this PR.",
   "releaseGateOracle": "Evidence tooling only; no production runtime readiness claimed.",
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
-  "ciRun": "27023126833",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616"
+  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "ciRun": "27030286624",
+  "qualityGateRun": "27030892160",
+  "qualityGateArtifact": "7443194743"
 }

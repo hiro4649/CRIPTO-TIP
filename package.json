@@ -14,10 +14,12 @@
     "evidence:render": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-github-run-artifact-auto-injection.md",
     "evidence:fetch-github": "node scripts/fetch-github-run-evidence.mjs",
     "evidence:validate": "node scripts/validate-evidence-freshness.mjs",
+    "evidence:ci": "node scripts/check-evidence-placeholders.mjs && node scripts/validate-evidence-freshness.mjs --ci && node scripts/check-quality-gate-self-protection.mjs",
     "evidence:refresh-pr": "node scripts/refresh-pr-evidence.mjs",
     "evidence:test-summary": "node scripts/write-test-summary.mjs",
     "evidence:check-placeholders": "node scripts/check-evidence-placeholders.mjs",
-    "quality:self-protection": "node scripts/check-quality-gate-self-protection.mjs"
+    "quality:self-protection": "node scripts/check-quality-gate-self-protection.mjs",
+    "quality:self-protection:test": "vitest run apps/api/src/evidence-rendering.test.ts"
   },
   "devDependencies": {
     "@cripto-tip/shared": "file:packages/shared",

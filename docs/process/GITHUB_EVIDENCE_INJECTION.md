@@ -34,3 +34,13 @@ failure is a command failure.
 No secret values are fetched or stored by this process. Evidence contains only
 GitHub run identifiers, artifact identifiers, safe summaries, and review
 metadata.
+
+## CI Required Mode
+
+`evidence:ci` is the non-mutating required mode. It runs placeholder checks,
+freshness structure validation, and quality-gate self-protection. It must not
+call `gh pr edit`, mutate PR body content, or fetch provider secrets.
+
+`evidence:refresh-pr` remains an operator command. It may fetch GitHub
+run/artifact evidence, render the PR document, run placeholder checks, and update
+the PR body. If PR body update fails, the command fails.

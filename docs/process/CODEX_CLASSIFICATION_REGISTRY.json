@@ -301,6 +301,24 @@
       "notes": "Quality-gate self-protection checker."
     },
     {
+      "pathPattern": "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
+      "classification": "harness_policy",
+      "surface": "harness_policy",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Quality-gate self-protection required path policy."
+    },
+    {
+      "pathPattern": "docs/pr-quality-gate-self-protection-required.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for required self-protection."
+    },
+    {
       "pathPattern": "apps/api/src/evidence-rendering.test.ts",
       "classification": "test",
       "surface": "test",

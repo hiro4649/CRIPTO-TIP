@@ -25,8 +25,8 @@ export function resolvedEvidencePack(pack, overrides = {}) {
   const resolved = { ...pack, testSummary: { ...(pack.testSummary || {}) } };
   const head = overrides.head || process.env.CODEX_PR_HEAD_SHA || process.env.GITHUB_SHA || "";
   const base = overrides.base || process.env.CODEX_PR_BASE_SHA || "";
-  if (resolved.headSha === "current_pr_head") resolved.headSha = head;
-  if (resolved.baseSha === "current_pr_base") resolved.baseSha = base;
+  if (resolved.headSha === "current_pr_head" && head) resolved.headSha = head;
+  if (resolved.baseSha === "current_pr_base" && base) resolved.baseSha = base;
   return resolved;
 }
 
@@ -68,6 +68,7 @@ export function renderPrEvidence(pack) {
   const packageVerification = pack.packageVerification || {};
   const apiCompatibility = pack.apiCompatibilitySummary || {};
   const reviewScope = pack.reviewScope || {};
+  const prBodyPath = pack.prBodyPath || "docs/pr-github-run-artifact-auto-injection.md";
   return [
     "# Summary",
     "",
@@ -116,7 +117,7 @@ export function renderPrEvidence(pack) {
     "- `corepack pnpm test`",
     "- `npm test`",
     "- `node scripts/write-test-summary.mjs`",
-    "- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-github-run-artifact-auto-injection.md`",
+    `- \`node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output ${prBodyPath}\``,
     "- `node scripts/check-evidence-placeholders.mjs`",
     "",
     "Product verification:",

@@ -2,9 +2,9 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "testFiles": 21,
-  "testsPassed": 196,
+  "testsPassed": 199,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -68,7 +68,12 @@
     "freshness_validation",
     "placeholder_prevention",
     "risk_register_rendering",
-    "manual_gate_rendering"
+    "manual_gate_rendering",
+    "quality_gate_self_protection_required_path",
+    "evidence_ci_placeholder_check",
+    "evidence_ci_freshness_check",
+    "quality_gate_workflow_negative_fixtures",
+    "provider_safe_deployment_evidence"
   ],
   "uncoveredRisks": [
     "provider_specific_secret_manager_sdk",
@@ -76,14 +81,14 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 196,
+  "tests": 199,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
-  "passed": 196,
+  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "passed": 199,
   "skipped": 6,
-  "ciRun": "27023126833",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b"
+  "ciRun": "27030286624",
+  "qualityGateRun": "27030892160",
+  "qualityGateArtifact": "7443194743",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d"
 }

@@ -79,3 +79,12 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 ## Rendered Risk Register Source
 
 Risk register entries can be rendered from `.codex/risk-register.json`. The JSON source is used to prevent drift between review evidence and documentation.
+
+## PR quality-gate-self-protection-required
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| High | Quality-gate workflow could be weakened by removing required run, summary, or artifact steps. | Harness owner | This PR | `quality:self-protection` and `evidence:ci` are required in CI and covered by negative fixtures. |
+| High | Evidence placeholders or stale evidence could appear in PR docs after automation changes. | Harness owner | This PR | `evidence:check-placeholders` and `evidence:validate --ci` run in CI without mutating the PR body. |
+| Medium | GitHub run/artifact auto-refresh still depends on GitHub API/gh availability. | Harness owner | Follow-up hardening | Fetch remains fail-closed outside explicit offline-readonly mode; PR body refresh failures remain blockers. |
+| Medium | Provider-safe deployment evidence can drift from manual gate implementation. | Operations | Manual gate persistence PR | Manual-gate tests and docs keep production-like apply bound to approved gate records and secret-reference-only evidence. |
