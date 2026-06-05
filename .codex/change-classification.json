@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.6",
+  "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": "20",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -92,6 +92,41 @@
       "riskLevel": "high",
       "verification": "apps/api/src/manual-gates.test.ts",
       "scope": "manual_gate_registry"
+    },
+    {
+      "pathPattern": "scripts/fetch-github-run-evidence.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "github_run_artifact_evidence_fetcher"
+    },
+    {
+      "pathPattern": "scripts/refresh-pr-evidence.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "pr_body_evidence_refresh"
+    },
+    {
+      "pathPattern": "scripts/validate-evidence-freshness.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "evidence_freshness_validator"
+    },
+    {
+      "pathPattern": "scripts/check-quality-gate-self-protection.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "quality_gate_self_protection"
+    },
+    {
+      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
+      "classification": "tests",
+      "riskLevel": "medium",
+      "verification": "corepack pnpm test",
+      "scope": "evidence_pipeline_tests"
     }
   ],
   "changedFiles": [
@@ -204,7 +239,11 @@
     "apps/api/src/evidence-rendering.test.ts",
     "docs/process/EVIDENCE_RENDERING.md",
     "docs/pr-evidence-single-source-of-truth.md",
-    "package.json"
+    "package.json",
+    "scripts/fetch-github-run-evidence.mjs",
+    "docs/process/GITHUB_EVIDENCE_INJECTION.md",
+    "docs/pr-github-run-artifact-auto-injection.md",
+    "scripts/refresh-pr-evidence.mjs"
   ],
   "classifications": [
     {
@@ -223,16 +262,26 @@
         "apps/api/src/evidence-rendering.test.ts",
         "docs/process/EVIDENCE_RENDERING.md",
         "docs/pr-evidence-single-source-of-truth.md",
-        "package.json"
+        "package.json",
+        "scripts/fetch-github-run-evidence.mjs",
+        "docs/process/GITHUB_EVIDENCE_INJECTION.md",
+        "docs/pr-github-run-artifact-auto-injection.md",
+        "scripts/refresh-pr-evidence.mjs"
       ],
       "riskLevel": "medium",
       "verification": [
         "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md",
         "node scripts/check-evidence-placeholders.mjs",
-        "corepack pnpm test"
+        "corepack pnpm test",
+        "node scripts/fetch-github-run-evidence.mjs --offline-readonly"
       ],
       "scope": "quality evidence rendering and validation only"
     }
   ],
-  "unknownFileTarget": 0
+  "unknownFileTarget": 0,
+  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
+  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
+  "ciRun": "27023126833",
+  "qualityGateRun": "27023240225",
+  "qualityGateArtifact": "7440070616"
 }

@@ -5,6 +5,7 @@
 Use:
 
 - `node scripts/write-test-summary.mjs`
+- `node scripts/fetch-github-run-evidence.mjs --pr <number> --repo hiro4649/CRIPTO-TIP`
 - `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md`
 - `node scripts/validate-evidence-freshness.mjs`
 - `node scripts/check-evidence-placeholders.mjs`
@@ -26,3 +27,8 @@ For source-of-truth PRs that modify the evidence pack itself, the pack may use
 validator resolves them from the GitHub pull request event and writes the actual
 SHA values into normalized safe artifacts. Rendered PR docs should still be
 generated with explicit `--head` and `--base` values before merge.
+
+GitHub run and artifact evidence is supplied by
+`scripts/fetch-github-run-evidence.mjs`. It selects only successful runs for the
+active pull request head and requires the `codex-quality-gate-safe-artifacts`
+artifact before mutating the evidence pack.

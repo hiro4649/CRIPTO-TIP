@@ -1,5 +1,30 @@
 # Test Coverage Evidence
 
+## PR github-run-artifact-auto-injection
+
+Latest local result: `corepack pnpm test` and `npm test` passed with 21 test
+files, 196 passed tests, and 6 skipped tests.
+
+Coverage added:
+
+- GitHub PR/run/artifact fixture parsing.
+- Latest successful `ci` run selection for the active pull request head.
+- Latest successful `quality-gate` run selection for the active pull request
+  head.
+- `codex-quality-gate-safe-artifacts` artifact ID extraction.
+- Quality-gate artifact rejection when artifact run/head metadata does not
+  match the selected quality-gate run.
+- Stale-head run rejection.
+- Concrete evidence-pack head mismatch rejection.
+- Missing quality-gate artifact rejection.
+- CI run and quality-gate artifact freshness validation.
+- Offline-readonly evidence mode without mutation.
+- Placeholder scanner coverage across `.codex`, docs, `.github`,
+  `README.md`, and `package.json`.
+
+Uncovered by local tests: live GitHub API permission drift and provider outage.
+The fetcher is fail-closed unless `--offline-readonly` is explicitly supplied.
+
 ## PR production-chain-listener-reorg
 
 Latest local result: `corepack pnpm test` passed with 13 test files, 89 passed tests, and 6 skipped tests.

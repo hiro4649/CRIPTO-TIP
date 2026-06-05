@@ -116,7 +116,7 @@ export function renderPrEvidence(pack) {
     "- `corepack pnpm test`",
     "- `npm test`",
     "- `node scripts/write-test-summary.mjs`",
-    "- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md`",
+    "- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-github-run-artifact-auto-injection.md`",
     "- `node scripts/check-evidence-placeholders.mjs`",
     "",
     "Product verification:",

@@ -247,6 +247,24 @@
       "notes": "PR evidence renderer."
     },
     {
+      "pathPattern": "scripts/fetch-github-run-evidence.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "GitHub run and quality-gate artifact evidence fetcher."
+    },
+    {
+      "pathPattern": "scripts/refresh-pr-evidence.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence refresh command that updates the GitHub PR body."
+    },
+    {
       "pathPattern": "scripts/validate-evidence-freshness.mjs",
       "classification": "verification_relevant",
       "surface": "verification",

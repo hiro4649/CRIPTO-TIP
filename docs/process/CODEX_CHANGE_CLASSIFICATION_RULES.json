@@ -17,7 +17,9 @@
     "scripts/validate-evidence-freshness.mjs",
     "scripts/check-evidence-placeholders.mjs",
     "scripts/write-test-summary.mjs",
-    "scripts/check-quality-gate-self-protection.mjs"
+    "scripts/check-quality-gate-self-protection.mjs",
+    "scripts/fetch-github-run-evidence.mjs",
+    "scripts/refresh-pr-evidence.mjs"
   ],
   "docsFiles": [
     "README.md",
