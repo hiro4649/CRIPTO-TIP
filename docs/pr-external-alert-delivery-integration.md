@@ -43,13 +43,13 @@ Split reason: real provider SDK alert apply, external alert credentials, and liv
 
 Base SHA: f064b58d5b320e6209e76ef3959aee8679f9ee9c
 
-Head SHA: bd695f92183951f0f056c6d874ec10b6fc6b712d
+Head SHA: da13c28db9acfae8cad1d330dfb0d1a39ebdce06
 
-Product CI: current-head GitHub Actions replay required after v1.0.6 evidence alignment push
+Product CI: current-head GitHub Actions replay required after legacy self-test advisory routing push
 
-Quality-gate: current-head GitHub Actions replay required after v1.0.6 evidence alignment push
+Quality-gate: current-head GitHub Actions replay required after legacy self-test advisory routing push
 
-Commit SHA: bd695f92183951f0f056c6d874ec10b6fc6b712d
+Commit SHA: da13c28db9acfae8cad1d330dfb0d1a39ebdce06
 
 Evidence freshness: GitHub checks must pass for the pushed PR head before merge review.
 
@@ -186,5 +186,6 @@ Uncovered risks: real provider SDK alert delivery apply, external alert delivery
 - Real provider SDK alert delivery apply remains manual-gated deployment work.
 - External alert delivery with real credentials remains provider integration work.
 - Live YouTube account operation remains manual-gated and out of CI.
+
 
 
