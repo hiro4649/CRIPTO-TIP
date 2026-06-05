@@ -40,3 +40,7 @@ PR external-alert-delivery-integration advances G3 operational readiness by addi
 ## Manual Gate Registry
 
 Manual gate registry work advances G3 operational control. It does not make the system G4 production ready because persistent approval storage, real provider apply, live YouTube operation, and production secret rotation execution still require manual review and deployment controls.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

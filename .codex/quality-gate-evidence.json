@@ -32,5 +32,9 @@
   "qualityGateRun": "26992071383",
   "qualityGateArtifact": "7427699516",
   "ciRun": "26992054650",
-  "headSha": "branch_head_sha_in_pr_metadata"
+  "headSha": "branch_head_sha_in_pr_metadata",
+  "manual_gate_production_registry_required": "pass",
+  "manual_gate_single_use_after_successful_apply": "pass",
+  "manual_gate_not_used_on_failed_apply": "pass",
+  "manual_approval_boolean_alone_rejected_for_production_like_apply": "pass"
 }

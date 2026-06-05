@@ -34,3 +34,7 @@ This boundary does not implement token sale, token exchange, cash-out, custody, 
 ## Manual Gate Registry
 
 Dry-run may be planned without an approved gate. Production-like apply requires an approved `external_alert_apply` manual gate bound to the target commit and environment. Missing provider credential secret names still fail closed.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

@@ -30,3 +30,7 @@ An approved gate is single-use for apply paths that receive a registry. After us
 ## Out Of Scope
 
 This boundary does not implement token sale, token exchange, cash-out, custody, internal balance, investment wording, speculative reward, YouTube scraping, real provider SDK apply, or live YouTube account operation without an approved manual gate.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

@@ -29,7 +29,7 @@ Quality-gate: GitHub Actions required on pushed head
 
 Commit SHA: branch head SHA in PR metadata
 
-Tests: 20 test files, 173 passed, 6 skipped
+Tests: 20 test files, 178 passed, 6 skipped
 
 ## Testing and review
 

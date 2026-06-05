@@ -23,6 +23,14 @@ describe("manual gate registry", () => {
   it("rejects secret values in secret_source_ref and evidence", () => {
     expect(() => validateManualGateApproval(makeManualGate("provider_secret_rotation", { secret_source_ref: "TOKEN=unsafe-value" }))).toThrow(/secret_source_ref/);
     expect(() => validateManualGateApproval(makeManualGate("provider_secret_rotation", { notes: ["Bearer", "abc"].join(" ") }))).toThrow(/unsafe secret/);
+    expect(() => validateManualGateApproval(makeManualGate("provider_secret_rotation", { notes: "private url https://private.example/callback" }))).toThrow(/unsafe/);
+    expect(() => validateManualGateApproval(makeManualGate("provider_secret_rotation", { notes: "wallet 0x1234567890123456789012345678901234567890" }))).toThrow(/unsafe/);
+    const tokenLike = ["sk", "12345678901234567890"].join("-");
+    expect(() => validateManualGateApproval(makeManualGate("provider_secret_rotation", { notes: `token ${tokenLike}` }))).toThrow(/unsafe/);
+  });
+
+  it("allows safe secret manager reference names", () => {
+    expect(validateManualGateApproval(makeManualGate("provider_secret_rotation", { secret_source_ref: "projects/example/secrets/provider-ref" })).secret_source_ref).toBe("projects/example/secrets/provider-ref");
   });
 
   it("rejects expired gates and wrong target commits", () => {

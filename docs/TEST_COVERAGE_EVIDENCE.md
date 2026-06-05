@@ -170,4 +170,4 @@ Added coverage:
 
 ## PR manual-gate-registry
 
-Added coverage for manual gate registry creation, approval, target commit validation, secret reference safety, expiry, single-use behavior, dashboard apply gate, external alert apply gate, manual live YouTube soak gate, and provider secret rotation gate. Final local counts: 20 test files, 173 passed tests, 6 skipped tests.
+Added coverage for manual gate registry creation, approval, target commit validation, secret reference safety, expiry, single-use behavior, dashboard apply gate, external alert apply gate, manual live YouTube soak gate, and provider secret rotation gate. Final local counts: 20 test files, 178 passed tests, 6 skipped tests.

@@ -72,3 +72,7 @@
 | --- | --- | --- | --- | --- |
 | Medium | manual gate registry is in-memory only | Operations | Persistence PR | Use the in-memory boundary for tests and require persistent approval storage before production apply. |
 | Medium | provider-specific apply remains manual-gated but not implemented | Operations | Provider apply PR | Keep dry-run and plan generation as the only automatic behavior until approved gate and provider-specific credentials exist. |
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

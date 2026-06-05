@@ -59,7 +59,11 @@
     "external_alert_apply_gate",
     "youtube_live_soak_gate",
     "provider_secret_rotation_gate",
-    "secret_reference_safety"
+    "secret_reference_safety",
+    "production_manual_gate_registry_required",
+    "manual_gate_single_use_after_apply",
+    "manual_gate_not_used_on_failed_apply",
+    "manual_approval_boolean_not_production_authorization"
   ],
   "uncoveredRisks": [
     "provider_specific_secret_manager_sdk",
@@ -67,8 +71,10 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 173,
+  "tests": 178,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "headSha": "branch_head_sha_in_pr_metadata"
+  "headSha": "branch_head_sha_in_pr_metadata",
+  "passed": 178,
+  "skipped": 6
 }

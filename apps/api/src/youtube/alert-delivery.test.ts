@@ -58,7 +58,9 @@ describe("external alert delivery integration boundary", () => {
     const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
     registry.createRequestedGate(makeManualGate("external_alert_apply"));
     const gate = registry.approveGate("external_alert_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
-    await expect(deliverExternalAlerts({ provider, plan, productionLike: true, targetCommitSha })).rejects.toThrow(/approved manual gate/);
+    await expect(deliverExternalAlerts({ provider, plan, productionLike: true, targetCommitSha })).rejects.toThrow(/manual gate registry/);
+    await expect(deliverExternalAlerts({ provider, plan, productionLike: true, targetCommitSha, targetEnvironment: "production", manualGate: gate })).rejects.toThrow(/manual gate registry/);
+    await expect(deliverExternalAlerts({ provider, plan, productionLike: true, targetCommitSha, targetEnvironment: "production", manualApproval: true })).rejects.toThrow(/manual gate registry/);
     await expect(deliverExternalAlerts({
       provider,
       plan,
@@ -69,6 +71,61 @@ describe("external alert delivery integration boundary", () => {
       manualGate: gate
     })).resolves.toMatchObject({ status: "delivered", dryRun: false });
     expect(registry.getGate("external_alert_apply-gate-1")?.status).toBe("used");
+    await expect(deliverExternalAlerts({
+      provider,
+      plan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGateRegistry: registry,
+      manualGate: registry.getGate("external_alert_apply-gate-1")!
+    })).rejects.toThrow(/not approved|already been used/);
+  });
+
+  it("does not mark external alert gate used for dry-run or failed provider apply", async () => {
+    const registry = new InMemoryManualGateRegistry();
+    registry.createRequestedGate(makeManualGate("external_alert_apply"));
+    const gate = registry.approveGate("external_alert_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
+    const dryRunPlan = buildAlertDeliveryPlan({ credentials, dryRun: true });
+    await expect(deliverExternalAlerts({
+      provider: new MockExternalAlertProvider(),
+      plan: dryRunPlan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGateRegistry: registry,
+      manualGate: gate
+    })).resolves.toMatchObject({ status: "planned" });
+    expect(registry.getGate("external_alert_apply-gate-1")?.status).toBe("approved");
+
+    const failingProvider = { deliver: async () => { throw new Error("provider unavailable"); } };
+    const applyPlan = buildAlertDeliveryPlan({ credentials, dryRun: false });
+    await expect(deliverExternalAlerts({
+      provider: failingProvider,
+      plan: applyPlan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGateRegistry: registry,
+      manualGate: gate
+    })).rejects.toThrow(/provider unavailable/);
+    expect(registry.getGate("external_alert_apply-gate-1")?.status).toBe("approved");
+  });
+
+  it("rejects external alert production gate with wrong target environment", async () => {
+    const registry = new InMemoryManualGateRegistry();
+    const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
+    registry.createRequestedGate(makeManualGate("external_alert_apply"));
+    const gate = registry.approveGate("external_alert_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
+    await expect(deliverExternalAlerts({
+      provider: new MockExternalAlertProvider(),
+      plan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "staging",
+      manualGateRegistry: registry,
+      manualGate: gate
+    })).rejects.toThrow(/target environment/);
   });
 
   it("fails closed when alert provider credential is missing", () => {

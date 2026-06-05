@@ -1,5 +1,5 @@
 import { buildYouTubeDashboardContract, youtubeAlertConfigs } from "./deployment-observability.js";
-import { assertManualGateApproval, manualGateExpectation, markManualGateUsed, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
+import { assertProductionManualGateAndRegistry, markManualGateUsedAfterApply, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
 import type { YouTubeMetricName } from "./operations.js";
 
 export type DashboardCredentialSource = "secret_manager" | "provider_specific";
@@ -91,18 +91,23 @@ export async function deployDashboard(args: {
   targetCommitSha?: string;
   targetEnvironment?: string;
 }) {
+  let productionGate: ManualGateApproval | undefined;
   if (!args.plan.dryRun && args.productionLike) {
-    assertManualGateApproval(args.manualGate, manualGateExpectation({
+    productionGate = assertProductionManualGateAndRegistry({
+      registry: args.manualGateRegistry,
+      gate: args.manualGate,
       gateType: "dashboard_apply",
       targetCommitSha: args.targetCommitSha ?? "",
       targetEnvironment: args.targetEnvironment
-    }));
+    });
   }
   const result = await args.provider.deploy(args.plan, {
     dryRun: args.plan.dryRun,
-    manualApproval: args.manualApproval === true || Boolean(args.manualGate)
+    manualApproval: args.manualApproval === true || Boolean(productionGate) || (!args.productionLike && Boolean(args.manualGate))
   });
-  if (!args.plan.dryRun && args.productionLike) markManualGateUsed(args.manualGateRegistry, args.manualGate);
+  if (!args.plan.dryRun && args.productionLike) {
+    markManualGateUsedAfterApply({ registry: args.manualGateRegistry, gate: productionGate });
+  }
   return result;
 }
 

@@ -130,6 +130,40 @@ export function markManualGateUsed(registry: ManualGateRegistry | undefined, gat
   registry.markUsed(gate.gate_id);
 }
 
+export function assertProductionManualGateAndRegistry(args: {
+  registry?: ManualGateRegistry | undefined;
+  gate?: ManualGateApproval | undefined;
+  gateType: ManualGateType;
+  targetCommitSha: string;
+  targetEnvironment?: string | undefined;
+  now?: Date | undefined;
+}) {
+  if (!args.registry) throw new Error("manual gate registry is required for production-like apply");
+  const gate = assertManualGateApproval(args.gate, manualGateExpectation({
+    gateType: args.gateType,
+    targetCommitSha: args.targetCommitSha,
+    targetEnvironment: args.targetEnvironment,
+    now: args.now
+  }));
+  const storedGate = args.registry.getGate(gate.gate_id);
+  if (!storedGate) throw new Error("manual gate record must exist in registry");
+  assertManualGateApproval(storedGate, manualGateExpectation({
+    gateType: args.gateType,
+    targetCommitSha: args.targetCommitSha,
+    targetEnvironment: args.targetEnvironment,
+    now: args.now
+  }));
+  return storedGate;
+}
+
+export function markManualGateUsedAfterApply(args: {
+  registry?: ManualGateRegistry | undefined;
+  gate?: ManualGateApproval | undefined;
+}) {
+  if (!args.registry || !args.gate) throw new Error("manual gate registry and gate are required before marking used");
+  return args.registry.markUsed(args.gate.gate_id);
+}
+
 function assertSafeSecretSourceRef(secretSourceRef: string) {
   if (!secretSourceRef) throw new Error("manual gate secret_source_ref is required");
   if (/=|Bearer\s+|https?:\/\/|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}/.test(secretSourceRef)) {
