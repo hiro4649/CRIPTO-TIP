@@ -63,7 +63,13 @@ export async function buildV085SelfTestReport() {
     CODEX_CHANGE_CLASSIFICATION_JSON: classification({ status: 'pass', classification: { harnessOnly: true }, productRelevantChanged: false }),
     CODEX_FAST_PATH_JSON: fastPath({ status: 'pass', fastPathAllowed: true, pathMode: 'target_harness_fast_path' }),
   });
-  assertCase('harness-only change with no product claim -> pass', result.status === 'pass', failures, cases, result.status);
+  assertCase(
+    'harness-only change with no product claim -> manual_confirmation_required',
+    result.status === 'manual_confirmation_required',
+    failures,
+    cases,
+    result.status,
+  );
 
   result = await runV085({
     CODEX_EVENT_NAME: 'pull_request',

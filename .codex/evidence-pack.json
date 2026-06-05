@@ -94,7 +94,7 @@
     "productionReady": false,
     "deploymentApplied": false
   },
-  "rollbackOrStopCondition": "Revert this PR if evidence rendering, freshness validation, placeholder prevention, or quality-gate self-protection preparation fails on the current PR head.",
+  "rollbackOrStopCondition": "Revert this PR if evidence rendering, freshness validation, placeholder prevention, or quality-gate self-protection preparation fails on the active pull request head.",
   "safeOutput": {
     "status": "pass"
   },

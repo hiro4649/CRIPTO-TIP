@@ -42,7 +42,7 @@ quality-gate run: 26875592817
 
 Stale evidence: current head only
 
-current-head evidence: local checks and GitHub CI checks are tied to the current PR head.
+current-head evidence: local checks and GitHub CI checks are tied to the active pull request head.
 
 Unknown file target: 0
 
