@@ -21,9 +21,9 @@ Done criteria: quality:self-protection runs in required CI path; evidence:check-
 
 ## Evidence Integrity
 
-Head SHA: b289df9215c31caefbece4c9922fefd825e5266d
+Head SHA: 
 
-Base SHA: b289df9215c31caefbece4c9922fefd825e5266d
+Base SHA: 
 
 Product CI: awaiting_github_actions_after_pr_creation
 

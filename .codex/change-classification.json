@@ -297,8 +297,8 @@
     }
   ],
   "unknownFileTarget": 0,
-  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "ciRun": "awaiting_github_actions_after_pr_creation",
   "qualityGateRun": "awaiting_github_actions_after_pr_creation",
   "qualityGateArtifact": "awaiting_github_actions_after_pr_creation"

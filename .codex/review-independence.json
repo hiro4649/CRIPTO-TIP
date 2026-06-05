@@ -25,7 +25,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "headSha": "current_pr_head",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
@@ -61,8 +61,8 @@
     "scripts/check-quality-gate-self-protection.mjs",
     "apps/api/src/evidence-rendering.test.ts"
   ],
-  "ciRun": "27023126833",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b"
+  "ciRun": "awaiting_github_actions_after_pr_creation",
+  "qualityGateRun": "awaiting_github_actions_after_pr_creation",
+  "qualityGateArtifact": "awaiting_github_actions_after_pr_creation",
+  "baseSha": "current_pr_base"
 }

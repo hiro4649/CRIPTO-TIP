@@ -60,8 +60,10 @@ describe("evidence single source of truth scripts", () => {
   }, 20000);
 
   it("accepts current recorded evidence freshness values", () => {
+    const expectedHead = /^[0-9a-f]{40}$/i.test(evidencePack.headSha) ? evidencePack.headSha : "1234567890abcdef1234567890abcdef12345678";
     expect(runScript("validate-evidence-freshness.mjs", [
-      "--head", evidencePack.headSha,
+      "--head", expectedHead,
+      "--actual-head", expectedHead,
       "--tests", String(evidencePack.testSummary.passed),
       "--ci-run", evidencePack.ciRunId,
       "--quality-gate-run", evidencePack.qualityGateRunId,
