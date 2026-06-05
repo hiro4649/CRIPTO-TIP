@@ -3,7 +3,7 @@
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "pending",
-  "testFiles": 20,
+  "testFiles": 21,
   "testsPassed": 173,
   "testsSkipped": 6,
   "commands": [
@@ -63,7 +63,12 @@
     "production_manual_gate_registry_required",
     "manual_gate_single_use_after_apply",
     "manual_gate_not_used_on_failed_apply",
-    "manual_approval_boolean_not_production_authorization"
+    "manual_approval_boolean_not_production_authorization",
+    "evidence_rendering",
+    "freshness_validation",
+    "placeholder_prevention",
+    "risk_register_rendering",
+    "manual_gate_rendering"
   ],
   "uncoveredRisks": [
     "provider_specific_secret_manager_sdk",
@@ -71,10 +76,10 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 178,
+  "tests": 185,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
   "headSha": "branch_head_sha_in_pr_metadata",
-  "passed": 178,
+  "passed": 185,
   "skipped": 6
 }

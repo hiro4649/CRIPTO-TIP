@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "risks": [
+    {
+      "severity": "Medium",
+      "risk": "Evidence run IDs can become stale after PR body edits.",
+      "owner": "quality-owner",
+      "nextPr": "evidence automation follow-up",
+      "mitigation": "Render PR evidence from .codex/evidence-pack.json and run placeholder/freshness validators."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Manual gate approval evidence is not durable production storage.",
+      "owner": "deployment-owner",
+      "nextPr": "manual gate persistence",
+      "mitigation": "Keep production-like apply fail-closed and require approved manual gate records."
+    },
+    {
+      "severity": "Low",
+      "risk": "Local forge remains unavailable on this workstation.",
+      "owner": "contracts-owner",
+      "nextPr": "developer environment hardening",
+      "mitigation": "GitHub contracts CI remains required before merge."
+    }
+  ]
+}

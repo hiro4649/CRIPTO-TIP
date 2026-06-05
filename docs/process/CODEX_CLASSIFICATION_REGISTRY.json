@@ -304,5 +304,47 @@
       "notes": "Manual gate PR body."
     }
   ],
-  "safeSummaryOnly": true
+  "safeSummaryOnly": true,
+  "pathPatterns": [
+    {
+      "pathPattern": ".codex/evidence-pack.json",
+      "classification": "evidence_single_source"
+    },
+    {
+      "pathPattern": ".codex/risk-register.json",
+      "classification": "risk_register_source"
+    },
+    {
+      "pathPattern": ".codex/manual-gates/**",
+      "classification": "manual_gate_evidence"
+    },
+    {
+      "pathPattern": "scripts/render-pr-evidence.mjs",
+      "classification": "evidence_renderer"
+    },
+    {
+      "pathPattern": "scripts/validate-evidence-freshness.mjs",
+      "classification": "evidence_freshness_validator"
+    },
+    {
+      "pathPattern": "scripts/check-evidence-placeholders.mjs",
+      "classification": "evidence_placeholder_checker"
+    },
+    {
+      "pathPattern": "scripts/write-test-summary.mjs",
+      "classification": "test_summary_extractor"
+    },
+    {
+      "pathPattern": "scripts/check-quality-gate-self-protection.mjs",
+      "classification": "quality_gate_self_protection"
+    },
+    {
+      "pathPattern": "docs/process/EVIDENCE_RENDERING.md",
+      "classification": "process_docs"
+    },
+    {
+      "pathPattern": "docs/pr-evidence-single-source-of-truth.md",
+      "classification": "pr_body"
+    }
+  ]
 }

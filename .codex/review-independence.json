@@ -54,5 +54,21 @@
     ".codex/task-contract.json",
     ".codex/product-verification.json",
     ".codex/test-coverage-evidence.json"
+  ],
+  "codeLevelEvidenceFiles": [
+    ".codex/evidence-pack.json",
+    ".codex/risk-register.json",
+    ".codex/manual-gates/manual-gates.json",
+    ".codex/test-summary.json",
+    "scripts/evidence-lib.mjs",
+    "scripts/render-pr-evidence.mjs",
+    "scripts/validate-evidence-freshness.mjs",
+    "scripts/check-evidence-placeholders.mjs",
+    "scripts/write-test-summary.mjs",
+    "scripts/check-quality-gate-self-protection.mjs",
+    "apps/api/src/evidence-rendering.test.ts",
+    "docs/process/EVIDENCE_RENDERING.md",
+    "docs/pr-evidence-single-source-of-truth.md",
+    "package.json"
   ]
 }

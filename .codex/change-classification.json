@@ -190,6 +190,49 @@
     {
       "path": "docs/pr-manual-gate-registry.md",
       "classification": "docs"
+    },
+    ".codex/evidence-pack.json",
+    ".codex/risk-register.json",
+    ".codex/manual-gates/manual-gates.json",
+    ".codex/test-summary.json",
+    "scripts/evidence-lib.mjs",
+    "scripts/render-pr-evidence.mjs",
+    "scripts/validate-evidence-freshness.mjs",
+    "scripts/check-evidence-placeholders.mjs",
+    "scripts/write-test-summary.mjs",
+    "scripts/check-quality-gate-self-protection.mjs",
+    "apps/api/src/evidence-rendering.test.ts",
+    "docs/process/EVIDENCE_RENDERING.md",
+    "docs/pr-evidence-single-source-of-truth.md",
+    "package.json"
+  ],
+  "classifications": [
+    {
+      "category": "evidence_single_source_of_truth",
+      "files": [
+        ".codex/evidence-pack.json",
+        ".codex/risk-register.json",
+        ".codex/manual-gates/manual-gates.json",
+        ".codex/test-summary.json",
+        "scripts/evidence-lib.mjs",
+        "scripts/render-pr-evidence.mjs",
+        "scripts/validate-evidence-freshness.mjs",
+        "scripts/check-evidence-placeholders.mjs",
+        "scripts/write-test-summary.mjs",
+        "scripts/check-quality-gate-self-protection.mjs",
+        "apps/api/src/evidence-rendering.test.ts",
+        "docs/process/EVIDENCE_RENDERING.md",
+        "docs/pr-evidence-single-source-of-truth.md",
+        "package.json"
+      ],
+      "riskLevel": "medium",
+      "verification": [
+        "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md",
+        "node scripts/check-evidence-placeholders.mjs",
+        "corepack pnpm test"
+      ],
+      "scope": "quality evidence rendering and validation only"
     }
-  ]
+  ],
+  "unknownFileTarget": 0
 }

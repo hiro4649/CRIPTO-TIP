@@ -171,3 +171,6 @@ Added coverage:
 ## PR manual-gate-registry
 
 Added coverage for manual gate registry creation, approval, target commit validation, secret reference safety, expiry, single-use behavior, dashboard apply gate, external alert apply gate, manual live YouTube soak gate, and provider secret rotation gate. Final local counts: 20 test files, 178 passed tests, 6 skipped tests.
+## Evidence Rendering Coverage
+
+Evidence renderer tests cover PR doc generation, required quality-gate headings, stale head SHA rejection, stale test count rejection, stale quality-gate run rejection, placeholder rejection, test-summary parsing, risk register rendering, manual gate rendering, and quality-gate self-protection preparation.

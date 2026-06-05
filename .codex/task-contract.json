@@ -7,7 +7,7 @@
   "runtimeReadinessClaimed": false,
   "taskMode": "product_minor_r2",
   "profile": "product_minor_r2",
-  "goal": "Add manual gate registry and deployment approval evidence boundary.",
+  "goal": "evidence single source of truth and manual gate evidence renderer",
   "allowedScope": [
     "manual_gate_registry",
     "manual_gate_schema",
@@ -17,7 +17,14 @@
     "provider_secret_rotation_gate",
     "tests",
     "docs",
-    "quality_evidence"
+    "quality_evidence",
+    "evidence_pack",
+    "risk_register_source",
+    "manual_gate_evidence_source",
+    "pr_evidence_renderer",
+    "freshness_validator",
+    "placeholder_checker",
+    "test_summary_extraction"
   ],
   "forbiddenScope": [
     "token_sale",
@@ -60,7 +67,11 @@
     "alert_delivery_rollback_disable_plan_test",
     "real_external_alert_delivery_disabled_without_manual_gate_test",
     "no_scraping_scan",
-    "no_secret_scan"
+    "no_secret_scan",
+    "render_pr_evidence_generates_pr_doc",
+    "freshness_validator_rejects_stale_values",
+    "placeholder_checker_rejects_forbidden_placeholders",
+    "test_summary_extraction_works"
   ],
   "verificationSurface": [
     "apps/api/src/youtube/alert-delivery.test.ts",
