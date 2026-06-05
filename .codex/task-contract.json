@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "taskMode": "product_minor_r2",

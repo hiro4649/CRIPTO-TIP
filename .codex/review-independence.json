@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
@@ -27,7 +27,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "pending-final-head",
+  "headSha": "ae83f825f278e8e49af975dfb4383b0c6f45f7a9",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [

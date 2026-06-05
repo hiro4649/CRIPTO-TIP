@@ -245,6 +245,27 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "PR body for external alert delivery integration evidence."
+    },
+    {
+      "pathPattern": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
+    },
+    {
+      "pathPattern": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
     }
   ],
   "safeSummaryOnly": true

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -43,6 +43,27 @@
       "riskLevel": "medium",
       "verification": "secret scan and config validation tests",
       "scope": "config_credential_boundary"
+    },
+    {
+      "pathPattern": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate and v106 self-test",
+      "scope": "quality_gate_version_alignment"
+    },
+    {
+      "pathPattern": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate and v097 self-test",
+      "scope": "target_manifest_fallback"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate",
+      "scope": "target_harness_manifest"
     }
   ],
   "changedFiles": [
@@ -129,6 +150,18 @@
     {
       "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "classification": "verification_relevant"
+    },
+    {
+      "path": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest"
+    },
+    {
+      "path": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support"
     }
   ]
 }

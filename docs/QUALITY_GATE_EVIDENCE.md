@@ -8,7 +8,7 @@ Latest local Chain Listener evidence:
 - `corepack pnpm test`: passed with 10 test files, 60 passed tests, and 6 skipped tests.
 - New tests cover TipSent decode, duplicate log idempotency, `eth_getLogs` catch-up, WebSocket subscription boundary, confirmation window gating, reorg status transition, `support.normalize` enqueue only after confirmation, RPC error retry/backoff boundary, block cursor persistence, and no user personal text fields in decoded on-chain log payloads.
 
-Quality-gate status for the new PR is pending until the branch is pushed and GitHub Actions run. Evidence files are updated for Harness v1.0.4 ingestion and current changed files are classified in `.codex/change-classification.json`.
+Quality-gate evidence is maintained for Harness v1.0.6. Current changed files are classified in `.codex/change-classification.json`, and GitHub Actions replay is required after each pushed head before merge.
 
 Latest failed quality-gate runs inspected: `26859916066`, `26860961085`, `26861097867`, and `26861752050`.
 
@@ -167,3 +167,4 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Deployment evidence: `apps/api/src/youtube/dashboard-deployment.test.ts` verifies mock provider, provider-specific wrapper, deployment plan generation, dry-run, manual apply gate, credential missing fail-closed behavior, dashboard contract parity, alert stub, provider error mapping, and rollback plan.
 - Secret safety: no real dashboard provider key, alert provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
 - Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.
+

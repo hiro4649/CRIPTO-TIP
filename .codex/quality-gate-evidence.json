@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
-  "qualityGateExpectedStatus": "pending_until_github_actions",
+  "prNumber": 15,
+  "qualityGateExpectedStatus": "requires_github_actions_replay_for_new_head",
   "reasonCodeMappings": {
     "changeClassificationStatus": ".codex/change-classification.json",
     "classificationCoverageStatus": ".codex/change-classification.json classifies alert delivery files",
