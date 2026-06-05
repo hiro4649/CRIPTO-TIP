@@ -49,3 +49,6 @@ Live YouTube API soak remains manual-gated. It must be skipped unless an explici
 `ObservabilityExporter` publishes YouTube metric snapshots through provider-neutral metric points. The current implementation includes a mock exporter, Prometheus-compatible text formatting, OpenTelemetry-compatible metric objects, dashboard contract parity tests, and alert label parity tests. It does not deploy a dashboard provider, send real external alerts, commit provider secrets, or run a live YouTube account without a manual gate.
 
 Dashboard deployment plans are generated from the same contract and can run in dry-run mode without manual approval. Actual apply requires a manual approval gate and managed provider credential reference. External alert delivery follows the same manual-gated pattern and keeps payloads limited to declared metric, severity, operator action, and sanitized labels.
+## Manual Gate Registry
+
+Manual live YouTube soak requires an approved `youtube_live_soak` gate for the target commit and environment when the managed credential boundary is present. Normal CI remains deterministic and does not operate a live YouTube account.

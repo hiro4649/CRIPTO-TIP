@@ -266,6 +266,42 @@
       "riskLevel": "medium",
       "scope": "quality_gate_support",
       "verification": "active self-test registry gate"
+    },
+    {
+      "pathPattern": ".codex/manual-gates/**",
+      "classification": "verification_relevant",
+      "surface": "quality_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Manual gate schema evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/manual-gates**",
+      "classification": "product_relevant",
+      "surface": "manual_gate_boundary",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Manual gate runtime boundary and tests."
+    },
+    {
+      "pathPattern": "docs/MANUAL_GATES.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Manual gate documentation."
+    },
+    {
+      "pathPattern": "docs/pr-manual-gate-registry.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Manual gate PR body."
     }
   ],
   "safeSummaryOnly": true

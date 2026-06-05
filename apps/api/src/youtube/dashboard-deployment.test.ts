@@ -12,6 +12,8 @@ import {
 } from "./dashboard-deployment.js";
 import { youtubeAlertConfigs } from "./deployment-observability.js";
 import { youtubeMetricNames } from "./operations.js";
+import { InMemoryManualGateRegistry } from "../manual-gates.js";
+import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 
 const credentials = { source: "secret_manager" as const, secretName: "projects/example/secrets/dashboard-provider" };
 
@@ -59,6 +61,25 @@ describe("dashboard exporter deployment boundary", () => {
     const plan = buildDashboardDeploymentPlan({ credentials, dryRun: false });
     await expect(deployDashboard({ provider, plan })).rejects.toThrow(/manual approval/);
     await expect(deployDashboard({ provider, plan, manualApproval: true })).resolves.toMatchObject({ status: "applied", dryRun: false });
+  });
+
+  it("requires an approved dashboard_apply gate for production apply", async () => {
+    const provider = new MockDashboardProvider();
+    const registry = new InMemoryManualGateRegistry();
+    const plan = buildDashboardDeploymentPlan({ credentials, dryRun: false });
+    registry.createRequestedGate(makeManualGate("dashboard_apply"));
+    const gate = registry.approveGate("dashboard_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
+    await expect(deployDashboard({ provider, plan, productionLike: true, targetCommitSha })).rejects.toThrow(/approved manual gate/);
+    await expect(deployDashboard({
+      provider,
+      plan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGateRegistry: registry,
+      manualGate: gate
+    })).resolves.toMatchObject({ status: "applied", dryRun: false });
+    expect(registry.getGate("dashboard_apply-gate-1")?.status).toBe("used");
   });
 
   it("fails closed when dashboard provider credential is missing", () => {

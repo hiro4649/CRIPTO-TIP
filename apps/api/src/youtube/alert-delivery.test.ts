@@ -11,6 +11,8 @@ import {
 } from "./alert-delivery.js";
 import { youtubeAlertConfigs } from "./deployment-observability.js";
 import { youtubeMetricNames } from "./operations.js";
+import { InMemoryManualGateRegistry } from "../manual-gates.js";
+import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 
 const credentials = { source: "secret_manager" as const, secretName: "projects/example/secrets/alert-provider" };
 
@@ -48,6 +50,25 @@ describe("external alert delivery integration boundary", () => {
     const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
     await expect(deliverExternalAlerts({ provider, plan })).rejects.toThrow(/manual approval/);
     await expect(deliverExternalAlerts({ provider, plan, manualApproval: true })).resolves.toMatchObject({ status: "delivered", dryRun: false });
+  });
+
+  it("requires an approved external_alert_apply gate for production apply", async () => {
+    const provider = new MockExternalAlertProvider();
+    const registry = new InMemoryManualGateRegistry();
+    const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
+    registry.createRequestedGate(makeManualGate("external_alert_apply"));
+    const gate = registry.approveGate("external_alert_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
+    await expect(deliverExternalAlerts({ provider, plan, productionLike: true, targetCommitSha })).rejects.toThrow(/approved manual gate/);
+    await expect(deliverExternalAlerts({
+      provider,
+      plan,
+      productionLike: true,
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGateRegistry: registry,
+      manualGate: gate
+    })).resolves.toMatchObject({ status: "delivered", dryRun: false });
+    expect(registry.getGate("external_alert_apply-gate-1")?.status).toBe("used");
   });
 
   it("fails closed when alert provider credential is missing", () => {

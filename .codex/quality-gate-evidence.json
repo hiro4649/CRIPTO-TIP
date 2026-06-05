@@ -2,8 +2,8 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 15,
-  "qualityGateExpectedStatus": "success",
+  "prNumber": "pending",
+  "qualityGateExpectedStatus": "github_actions_required_on_pushed_head",
   "reasonCodeMappings": {
     "changeClassificationStatus": ".codex/change-classification.json",
     "classificationCoverageStatus": ".codex/change-classification.json classifies alert delivery files",
@@ -13,7 +13,8 @@
     "taskBriefCompilerStatus": ".codex/task-contract.json",
     "secretScan": ".env.example placeholder inventory and security grep",
     "codeReviewMonitorStatus": "docs/pr-external-alert-delivery-integration.md includes review focus and residual risks",
-    "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md"
+    "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and docs/RISK_REGISTER.md",
+    "manualGateRegistryStatus": ".codex/manual-gates/schema.json and apps/api/src/manual-gates.test.ts"
   },
   "safePlaceholderInventory": [
     "YOUTUBE_API_KEY empty placeholder",
@@ -27,9 +28,9 @@
     "alert provider secret-name placeholders only"
   ],
   "runtimeReadinessClaimed": false,
-  "currentTask": "external-alert-delivery-integration",
+  "currentTask": "manual-gate-registry",
   "qualityGateRun": "26992071383",
   "qualityGateArtifact": "7427699516",
   "ciRun": "26992054650",
-  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9"
+  "headSha": "branch_head_sha_in_pr_metadata"
 }

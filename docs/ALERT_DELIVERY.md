@@ -31,3 +31,6 @@ The rollback plan disables the external alert route, verifies dashboard visibili
 ## Out Of Scope
 
 This boundary does not implement token sale, token exchange, cash-out, custody, internal balance, investment wording, speculative reward, YouTube scraping, live YouTube account operation, or external alert delivery with real provider credentials without a manual gate.
+## Manual Gate Registry
+
+Dry-run may be planned without an approved gate. Production-like apply requires an approved `external_alert_apply` manual gate bound to the target commit and environment. Missing provider credential secret names still fail closed.

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "harnessVersion": "1.0.6",
+  "manualGateTypes": [
+    "youtube_live_soak",
+    "dashboard_apply",
+    "external_alert_apply",
+    "provider_secret_rotation",
+    "provider_specific_deployment_apply",
+    "production_rpc_enable",
+    "iris_core_delivery_enable",
+    "overlay_token_rotation_apply"
+  ],
+  "statuses": ["not_requested", "requested", "approved", "rejected", "expired", "used"],
+  "requiredFields": [
+    "gate_id",
+    "gate_type",
+    "status",
+    "required_before",
+    "target_environment",
+    "target_commit_sha",
+    "requested_by",
+    "approved_by_role",
+    "approval_timestamp",
+    "required_evidence",
+    "rollback_plan_ref",
+    "operator_runbook_ref",
+    "secret_source_ref",
+    "expires_at",
+    "notes"
+  ],
+  "secretPolicy": "secret_source_ref stores references only; raw OAuth tokens, API keys, webhook URLs, private URLs, wallet addresses, and secret values are forbidden.",
+  "safeSummaryOnly": true
+}

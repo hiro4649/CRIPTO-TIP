@@ -13,6 +13,7 @@ import {
   shouldReconnectStreamList,
   youtubeMetricNames
 } from "./operations.js";
+import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 
 const connectorOptions = { liveChatId: "live_chat", streamId: "stream_1", characterId: "char_mio" };
 
@@ -110,11 +111,12 @@ describe("YouTube operations hardening boundary", () => {
       status: "skipped",
       reason: "managed_credential_boundary_missing"
     });
-    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" })).toEqual({
+    expect(() => createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key", targetCommitSha })).toThrow(/approved manual gate/);
+    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "secret_manager", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key", targetCommitSha, targetEnvironment: "production", manualGate: makeManualGate("youtube_live_soak") })).toEqual({
       status: "ready",
       reason: "manual_gate_and_secret_boundary_present"
     });
-    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "provider_specific", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key" })).toEqual({
+    expect(createManualLiveYouTubeSoakPlan({ RUN_LIVE_YOUTUBE_SOAK_TESTS: "true", YOUTUBE_CREDENTIAL_SOURCE: "provider_specific", YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key", targetCommitSha, targetEnvironment: "production", manualGate: makeManualGate("youtube_live_soak") })).toEqual({
       status: "ready",
       reason: "manual_gate_and_secret_boundary_present"
     });

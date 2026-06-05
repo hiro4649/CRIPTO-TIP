@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { assertYouTubeCredentialsPresent, createYouTubeCredentialProvider, createYouTubeCredentialRotationPlan } from "./credentials.js";
+import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 
 const baseConfig = {
   APP_ENV: "test" as const,
@@ -89,7 +90,15 @@ describe("YouTube credential provider boundary", () => {
       status: "blocked",
       reason: "next_secret_name_must_differ"
     });
-    const plan = createYouTubeCredentialRotationPlan({ source: "provider_specific", currentSecretName: "youtube-api-key-v1", nextSecretName: "youtube-api-key-v2" });
+    expect(() => createYouTubeCredentialRotationPlan({ source: "provider_specific", currentSecretName: "youtube-api-key-v1", nextSecretName: "youtube-api-key-v2", targetCommitSha })).toThrow(/approved manual gate/);
+    const plan = createYouTubeCredentialRotationPlan({
+      source: "provider_specific",
+      currentSecretName: "youtube-api-key-v1",
+      nextSecretName: "youtube-api-key-v2",
+      targetCommitSha,
+      targetEnvironment: "production",
+      manualGate: makeManualGate("provider_secret_rotation")
+    });
     expect(plan.status).toBe("ready");
     if (plan.status === "ready") {
       expect(plan.source).toBe("provider_specific");

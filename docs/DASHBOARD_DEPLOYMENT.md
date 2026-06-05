@@ -27,3 +27,6 @@ The external alert delivery boundary uses the same alert contract and keeps prov
 - Do not store dashboard provider secrets, alert provider secrets, YouTube OAuth tokens, or API keys in git.
 - Do not apply production dashboard changes without manual approval.
 - Do not use this boundary for YouTube scraping, token sale, exchange, cash-out, custody, internal balance, investment wording, or speculative reward behavior.
+## Manual Gate Registry
+
+Dry-run may be planned without an approved gate. Production-like apply requires an approved `dashboard_apply` manual gate bound to the target commit and environment. Missing provider credential secret names still fail closed.

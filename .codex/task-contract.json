@@ -2,23 +2,19 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 15,
+  "prNumber": "pending",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "taskMode": "product_minor_r2",
   "profile": "product_minor_r2",
-  "goal": "Add provider-specific external alert delivery boundary with dry-run, manual apply gate, payload safety, and rollback plan without committing secrets or claiming production readiness.",
+  "goal": "Add manual gate registry and deployment approval evidence boundary.",
   "allowedScope": [
-    "external_alert_provider_boundary",
-    "provider_specific_alert_provider_boundary",
-    "alert_delivery_plan_generation",
-    "alert_delivery_dry_run",
-    "alert_manual_apply_gate",
-    "alert_credential_fail_closed_boundary",
-    "alert_payload_safety",
-    "alert_routing_contract",
-    "alert_delivery_rollback_disable_plan",
-    "provider_error_operator_action",
+    "manual_gate_registry",
+    "manual_gate_schema",
+    "dashboard_apply_gate",
+    "external_alert_apply_gate",
+    "youtube_live_soak_gate",
+    "provider_secret_rotation_gate",
     "tests",
     "docs",
     "quality_evidence"
@@ -41,7 +37,11 @@
     "provider_specific_dashboard_deployment_apply",
     "external_alert_delivery_with_real_credentials_without_manual_gate",
     "actual_production_deployment_apply_without_manual_gate",
-    "live_youtube_account_operation_without_manual_gate"
+    "live_youtube_account_operation_without_manual_gate",
+    "real_secret_commit",
+    "actual_production_deployment_apply_without_manual_gate",
+    "external_alert_delivery_with_real_credentials_without_approved_manual_gate",
+    "live_youtube_account_operation_without_approved_manual_gate"
   ],
   "acceptanceCriteria": [
     "typescript_pass",
@@ -77,5 +77,6 @@
   "reasoningEvidence": "Plan-first scope separates alert provider boundary, dry-run, manual apply gate, credential fail-closed checks, payload safety, rollback plan, docs, and quality evidence.",
   "verificationOracle": "Local typecheck and tests verify alert delivery plan, provider boundaries, dry-run/apply gate, credential failure, payload safety, provider error mapping, and rollback plan; GitHub CI and quality-gate verify pushed head.",
   "storageOracle": "No DB migration or storage format change in this PR.",
-  "releaseGateOracle": "This PR advances G3 partial operations readiness only and does not claim G4 production readiness."
+  "releaseGateOracle": "This PR advances G3 partial operations readiness only and does not claim G4 production readiness.",
+  "headSha": "branch_head_sha_in_pr_metadata"
 }

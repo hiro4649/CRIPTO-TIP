@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 15,
+  "prNumber": "pending",
   "productVerificationStatus": "pass",
   "behaviors": {
     "youtube_secret_manager_credential_provider_boundary": "pass",
@@ -79,5 +79,14 @@
     "docs/pr-external-alert-delivery-integration.md"
   ],
   "runtimeReadinessClaimed": false,
-  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9"
+  "headSha": "branch_head_sha_in_pr_metadata",
+  "manualGateRegistryStatus": "pass",
+  "verifiedBehaviors": [
+    "manual_gate_requested_and_approved",
+    "secret_source_ref_rejects_secret_values",
+    "dashboard_apply_requires_gate",
+    "external_alert_apply_requires_gate",
+    "youtube_live_soak_requires_gate",
+    "provider_secret_rotation_requires_gate"
+  ]
 }
