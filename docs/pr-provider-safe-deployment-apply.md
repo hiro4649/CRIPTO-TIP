@@ -21,19 +21,19 @@ Done criteria: provider deployment dry-run succeeds without manual gate; provide
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 23b047c8dc19a23ef988250c6f47acf0399968ec
 
-Base SHA: current_pr_base
+Base SHA: 6da1bba9084a189e24116c7594c72211db4881b8
 
-Product CI: not_yet_verified_for_new_pr
+Product CI: success
 
-Quality-gate: not_yet_verified_for_new_pr
+Quality-gate: success
 
-CI run: not_yet_assigned_for_new_pr
+CI run: 27032951279
 
-Quality-gate run: not_yet_assigned_for_new_pr
+Quality-gate run: 27033076377
 
-Quality-gate artifact: not_yet_assigned_for_new_pr
+Quality-gate artifact: 7444057679
 
 Tests: 22 test files, 205 passed, 6 skipped
 
@@ -85,7 +85,7 @@ Runtime smoke rationale:
 
 Review scope and verification:
 
-- Scope: Provider-safe deployment apply executor, dashboard/external alert integration, manual gate enforcement, safe audit evidence, docs, and tests.
+- Scope: Provider-safe deployment apply executor, dashboard/external alert integration, manual gate enforcement, safe audit evidence, docs, and tests. Evidence refresh body-file routing.
 - Risk summary: Main risk is allowing production-like provider apply without an approved gate or leaking secret-like values into apply evidence; real provider SDK apply remains out of scope.
 - Verification oracle: Provider deployment tests, dashboard and external alert integration tests, manual gate tests, evidence CI, self-protection, secret scan, and no-scraping scan.
 

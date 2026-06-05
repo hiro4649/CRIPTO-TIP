@@ -10,13 +10,13 @@
   "riskLevel": "R3",
   "title": "feat: add provider safe deployment apply",
   "goal": "Add a shared provider-safe deployment apply boundary behind approved manual gate records, safe audit evidence, dry-run/apply separation, rollback references, and dashboard/external alert integration.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRunId": "not_yet_assigned_for_new_pr",
-  "qualityGateRunId": "not_yet_assigned_for_new_pr",
-  "qualityGateArtifactId": "not_yet_assigned_for_new_pr",
-  "productCiStatus": "not_yet_verified_for_new_pr",
-  "qualityGateStatus": "not_yet_verified_for_new_pr",
+  "headSha": "23b047c8dc19a23ef988250c6f47acf0399968ec",
+  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
+  "ciRunId": "27032951279",
+  "qualityGateRunId": "27033076377",
+  "qualityGateArtifactId": "7444057679",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -46,7 +46,8 @@
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/pr-provider-safe-deployment-apply.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "scripts/refresh-pr-evidence.mjs"
     ],
     "allowedPaths": [
       ".codex/**",
@@ -56,7 +57,8 @@
       "apps/api/src/youtube/dashboard-deployment.test.ts",
       "apps/api/src/youtube/alert-delivery.ts",
       "apps/api/src/youtube/alert-delivery.test.ts",
-      "docs/**"
+      "docs/**",
+      "scripts/refresh-pr-evidence.mjs"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
@@ -102,14 +104,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27030286624",
+      "runId": "27032951279",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27030892160",
+      "runId": "27033076377",
       "result": "success",
-      "artifactId": "7443194743"
+      "artifactId": "7444057679"
     }
   ],
   "productionClaims": {
@@ -215,7 +217,7 @@
   },
   "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes provider apply boundary code, tests, and docs; local tests and GitHub CI are the applicable smoke boundary.",
   "reviewScope": {
-    "scope": "Provider-safe deployment apply executor, dashboard/external alert integration, manual gate enforcement, safe audit evidence, docs, and tests.",
+    "scope": "Provider-safe deployment apply executor, dashboard/external alert integration, manual gate enforcement, safe audit evidence, docs, and tests. Evidence refresh body-file routing.",
     "riskSummary": "Main risk is allowing production-like provider apply without an approved gate or leaking secret-like values into apply evidence; real provider SDK apply remains out of scope.",
     "verificationOracle": "Provider deployment tests, dashboard and external alert integration tests, manual gate tests, evidence CI, self-protection, secret scan, and no-scraping scan."
   },

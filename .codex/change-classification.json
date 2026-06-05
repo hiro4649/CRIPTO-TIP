@@ -50,6 +50,13 @@
       "riskLevel": "low",
       "verification": "machine-readable evidence",
       "scope": "quality_evidence"
+    },
+    {
+      "pathPattern": "scripts/refresh-pr-evidence.mjs",
+      "classification": "verification_relevant",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts and refresh-pr-evidence command",
+      "scope": "pr_body_evidence_refresh"
     }
   ],
   "changedFiles": [

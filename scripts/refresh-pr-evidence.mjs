@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
+import { readJson } from "./evidence-lib.mjs";
 
 const args = process.argv.slice(2);
 function valueAfter(flag) {
@@ -15,7 +16,8 @@ function run(command, commandArgs) {
 
 const pr = valueAfter("--pr");
 const repo = valueAfter("--repo") || process.env.GITHUB_REPOSITORY;
-const bodyFile = valueAfter("--body-file") || "docs/pr-github-run-artifact-auto-injection.md";
+const evidencePackPath = valueAfter("--input") || ".codex/evidence-pack.json";
+const bodyFile = valueAfter("--body-file") || readJson(evidencePackPath).prBodyPath || "docs/pr-github-run-artifact-auto-injection.md";
 if (!pr) {
   console.error("--pr is required");
   process.exit(1);
@@ -25,7 +27,7 @@ if (!repo) {
   process.exit(1);
 }
 
-const fetchArgs = ["scripts/fetch-github-run-evidence.mjs", "--pr", pr, "--repo", repo];
+const fetchArgs = ["scripts/fetch-github-run-evidence.mjs", "--pr", pr, "--repo", repo, "--input", evidencePackPath, "--output", evidencePackPath];
 if (hasFlag("--offline-readonly")) fetchArgs.push("--offline-readonly");
 run("node", fetchArgs);
 if (hasFlag("--offline-readonly")) process.exit(0);
