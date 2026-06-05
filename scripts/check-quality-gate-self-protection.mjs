@@ -32,6 +32,12 @@ function assertWorkflowProtected(workflowPath) {
   if (/continue-on-error\s*:\s*true/i.test(text)) {
     throw new Error("quality-gate workflow must not use continue-on-error: true");
   }
+  if (/node\s+scripts\/codex-workflow-quality-runner\.mjs[\s\S]*\|\|\s*true/i.test(text)) {
+    throw new Error("quality-gate runner must not be made optional");
+  }
+  if (/codex-quality-gate-safe-artifacts[\s\S]*if-no-files-found:\s*error/i.test(text) === false) {
+    throw new Error("safe quality artifact upload must fail when artifacts are missing");
+  }
 }
 
 function assertExecutableScriptsProtected(scriptsDir) {

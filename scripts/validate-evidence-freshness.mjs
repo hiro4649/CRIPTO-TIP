@@ -12,12 +12,17 @@ const expectedTests = valueAfter("--tests");
 const expectedCiRun = valueAfter("--ci-run");
 const expectedQualityGateRun = valueAfter("--quality-gate-run");
 const expectedQualityGateArtifact = valueAfter("--quality-gate-artifact");
+const ciMode = process.argv.includes("--ci");
+const requireCurrentHead = process.argv.includes("--require-current-head");
 const pack = resolvedEvidencePack(readJson(valueAfter("--input") || ".codex/evidence-pack.json"), {
-  head: valueAfter("--actual-head") || expectedHead,
+  head: valueAfter("--actual-head") || expectedHead || process.env.CODEX_PR_HEAD_SHA,
   base: valueAfter("--base")
 });
 
+const inferredHead = ciMode ? process.env.CODEX_PR_HEAD_SHA : undefined;
 if (expectedHead && pack.headSha !== expectedHead) throw new Error("evidence head SHA is stale");
+if (ciMode && requireCurrentHead && inferredHead && pack.headSha !== inferredHead) throw new Error("evidence head SHA is stale");
+if (ciMode && /^(current_pr_head|branch_head_sha_in_pr_metadata|HEAD_SHA_PLACEHOLDER)$/i.test(String(pack.headSha || ""))) throw new Error("evidence head SHA is unresolved");
 if (expectedTests && Number(pack.testSummary?.passed) !== Number(expectedTests)) throw new Error("evidence test count is stale");
 if (expectedCiRun && pack.ciRunId !== expectedCiRun) throw new Error("evidence CI run ID is stale");
 if (expectedQualityGateRun && pack.qualityGateRunId !== expectedQualityGateRun) throw new Error("evidence quality-gate run ID is stale");

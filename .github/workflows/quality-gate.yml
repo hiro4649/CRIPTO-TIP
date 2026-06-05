@@ -384,4 +384,4 @@ jobs:
             codex-browser-smoke-json-artifact.safe.json
             codex-runtime-latency-measurement.safe.json
             codex-owner-decision-digest.safe.json
-          if-no-files-found: ignore
+          if-no-files-found: error

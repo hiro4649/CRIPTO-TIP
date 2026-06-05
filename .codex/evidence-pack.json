@@ -3,50 +3,60 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
-  "title": "feat: add github evidence auto injection",
-  "goal": "Add automatic GitHub run and quality-gate artifact injection, evidence refresh commands, freshness validation hardening, and quality-gate self-protection requiredization.",
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
-  "ciRunId": "27023126833",
-  "qualityGateRunId": "27023240225",
-  "qualityGateArtifactId": "7440070616",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: require quality gate self protection",
+  "goal": "Require quality-gate self-protection, evidence placeholder checks, and fail-closed evidence validation in CI while adding negative fixtures for quality-gate weakening and provider-safe deployment evidence.",
+  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "ciRunId": "awaiting_github_actions_after_pr_creation",
+  "qualityGateRunId": "awaiting_github_actions_after_pr_creation",
+  "qualityGateArtifactId": "awaiting_github_actions_after_pr_creation",
+  "productCiStatus": "awaiting_github_actions_after_pr_creation",
+  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/quality-gate.yml",
       ".codex/evidence-pack.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/test-summary.json",
+      ".codex/test-coverage-evidence.json",
+      ".codex/change-classification.json",
+      ".codex/product-verification.json",
+      ".codex/task-contract.json",
+      ".codex/review-independence.json",
       "apps/api/src/evidence-rendering.test.ts",
+      "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
       "docs/process/GITHUB_EVIDENCE_INJECTION.md",
       "docs/process/EVIDENCE_RENDERING.md",
-      "docs/pr-github-run-artifact-auto-injection.md",
-      "scripts/fetch-github-run-evidence.mjs",
-      "scripts/evidence-lib.mjs",
-      "scripts/render-pr-evidence.mjs",
-      "scripts/validate-evidence-freshness.mjs",
-      "scripts/check-evidence-placeholders.mjs",
-      "scripts/check-quality-gate-self-protection.mjs",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "docs/MANUAL_GATES.md",
+      "docs/PRODUCTION_GATES.md",
+      "docs/RISK_REGISTER.md",
+      "docs/pr-quality-gate-self-protection-required.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "package.json",
-      "scripts/refresh-pr-evidence.mjs"
+      "scripts/check-quality-gate-self-protection.mjs",
+      "scripts/validate-evidence-freshness.mjs",
+      "scripts/evidence-lib.mjs"
     ],
     "allowedPaths": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/quality-gate.yml",
       ".codex/**",
       "apps/api/src/evidence-rendering.test.ts",
       "docs/**",
-      "scripts/fetch-github-run-evidence.mjs",
-      "scripts/evidence-lib.mjs",
-      "scripts/render-pr-evidence.mjs",
-      "scripts/validate-evidence-freshness.mjs",
-      "scripts/check-evidence-placeholders.mjs",
-      "scripts/check-quality-gate-self-protection.mjs",
       "package.json",
-      "scripts/refresh-pr-evidence.mjs"
+      "scripts/check-quality-gate-self-protection.mjs",
+      "scripts/validate-evidence-freshness.mjs",
+      "scripts/evidence-lib.mjs"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
@@ -99,17 +109,19 @@
     "productionReady": false,
     "deploymentApplied": false
   },
-  "rollbackOrStopCondition": "Revert this PR if GitHub evidence fetch, PR body refresh, freshness validation, placeholder prevention, or quality-gate self-protection fails on the active pull request head.",
+  "rollbackOrStopCondition": "Revert this PR if required self-protection, evidence placeholder checks, freshness validation, or provider-safe manual gate evidence checks fail on the active pull request head.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "github_evidence_fetcher",
-    "quality_gate_artifact_discovery",
-    "evidence_refresh_command",
-    "freshness_validator",
-    "placeholder_checker",
-    "quality_gate_self_protection",
+    "quality_gate_self_protection_requiredization",
+    "evidence_ci_fail_closed",
+    "placeholder_checker_required",
+    "freshness_validator_required",
+    "github_run_artifact_freshness_check",
+    "negative_fixtures",
+    "provider_safe_deployment_evidence",
+    "manual_gate_evidence_enforcement",
     "docs",
     "tests"
   ],
@@ -133,20 +145,24 @@
     "live YouTube account operation without approved manual gate"
   ],
   "doneCriteria": [
-    "fetch-github-run-evidence parses PR, run, and artifact JSON",
-    "fetch-github-run-evidence selects latest successful ci run for the active head",
-    "fetch-github-run-evidence selects latest successful quality-gate run for the active head",
-    "fetch-github-run-evidence records codex-quality-gate-safe-artifacts artifact ID",
-    "fetch-github-run-evidence rejects stale-head runs and missing artifacts",
-    "offline-readonly mode does not mutate evidence",
-    "evidence refresh scripts render PR body from refreshed evidence",
-    "placeholder checker scans evidence, docs, workflows, package metadata, and README",
-    "quality-gate self-protection remains required through package script",
-    "evidence refresh command updates PR body through gh pr edit unless --no-edit is supplied"
+    "quality:self-protection runs in required CI path",
+    "evidence:check-placeholders runs in required CI path",
+    "evidence:validate runs in required CI path without mutating PR body",
+    "quality-gate workflow rejects missing safe artifact upload output",
+    "self-protection detects removed Run Codex quality gate step",
+    "self-protection detects removed Upload safe quality artifacts step",
+    "self-protection detects unsafe artifact upload ignore behavior",
+    "self-protection detects continue-on-error on quality-gate job",
+    "self-protection detects always pass wording in executable scripts",
+    "placeholder fixture fails evidence check",
+    "stale head/run/artifact fixtures fail freshness validation",
+    "manual gate evidence keeps production-like apply manual-gated and secret-free",
+    "no secret scan passes",
+    "no scraping scan passes"
   ],
   "testSummary": {
     "testFiles": 21,
-    "passed": 196,
+    "passed": 199,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -168,38 +184,36 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 196,
-  "tests": 196,
+  "passed": 199,
+  "tests": 199,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
-    "node scripts/write-test-summary.mjs: pass",
-    "node scripts/fetch-github-run-evidence.mjs fixture tests: covered by Vitest",
-    "node scripts/render-pr-evidence.mjs: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/refresh-pr-evidence.mjs --pr <number> --repo hiro4649/CRIPTO-TIP --no-edit: required before PR body update"
+    "corepack pnpm test: pass with 21 test files, 199 passed, 6 skipped",
+    "npm test: pending full replay",
+    "corepack pnpm quality:self-protection: pass",
+    "corepack pnpm evidence:check-placeholders: pass",
+    "corepack pnpm evidence:validate: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": true,
     "runtimeDependenciesAdded": false,
-    "verification": "package.json adds evidence automation scripts only; no runtime dependency is added."
+    "verification": "package.json adds required evidence/self-protection scripts only; no runtime dependency is added."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR adds offline GitHub evidence tooling and tests."
+    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR hardens CI/evidence tooling only."
   },
   "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes offline GitHub evidence tooling and tests, so package verification, evidence script checks, and GitHub CI are the applicable smoke boundary.",
   "reviewScope": {
-    "scope": "GitHub run/artifact evidence fetcher, evidence refresh command, freshness validator integration, placeholder prevention, self-protection script routing, and docs.",
-    "riskSummary": "Main risk is accepting stale run/artifact evidence or mutating evidence when GitHub context is unavailable; product runtime behavior is intentionally unchanged.",
-    "verificationOracle": "Fixture-based run/artifact selection tests, fail-closed tests, placeholder checker, freshness validator, package verification, and GitHub checks."
+    "scope": "Quality-gate workflow self-protection required path, evidence CI validation, negative fixtures, provider-safe deployment evidence docs, and package scripts.",
+    "riskSummary": "Main risk is accidentally weakening quality-gate or allowing stale/placeholder evidence to pass CI; product runtime behavior is intentionally unchanged.",
+    "verificationOracle": "Required CI evidence scripts, self-protection fixtures, freshness validator fixtures, placeholder checker, package verification, and GitHub checks."
   },
-  "testsPassed": 196
+  "testsPassed": 199,
+  "prBodyPath": "docs/pr-quality-gate-self-protection-required.md"
 }

@@ -55,6 +55,8 @@ describe("evidence single source of truth scripts", () => {
     expect(runScriptResult("validate-evidence-freshness.mjs", ["--ci-run", "1"]).stderr).toMatch(/stale/);
     expect(runScriptResult("validate-evidence-freshness.mjs", ["--quality-gate-run", "1"]).stderr).toMatch(/stale/);
     expect(runScriptResult("validate-evidence-freshness.mjs", ["--quality-gate-artifact", "1"]).stderr).toMatch(/stale/);
+    const unresolvedPack = writeJsonFixture("pack", { ...evidencePack, headSha: "branch_head_sha_in_pr_metadata" });
+    expect(runScriptResult("validate-evidence-freshness.mjs", ["--input", unresolvedPack, "--ci"]).stderr).toMatch(/unresolved/);
   }, 20000);
 
   it("accepts current recorded evidence freshness values", () => {
@@ -224,6 +226,72 @@ describe("evidence single source of truth scripts", () => {
     fs.writeFileSync(workflow, "name: quality-gate\njobs:\n  quality-gate:\n    continue-on-error: true\n");
     const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
     expect(result.stderr).toMatch(/missing required protection|continue-on-error/);
+  });
+
+  it("quality-gate self-protection detects removed required workflow steps", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cripto-tip-qg-missing-"));
+    const workflow = path.join(dir, "quality-gate.yml");
+    fs.writeFileSync(workflow, [
+      "name: quality-gate",
+      "jobs:",
+      "  quality-gate:",
+      "    steps:",
+      "      - name: Write safe quality summary",
+      "        run: echo summary",
+      "      - name: Upload safe quality artifacts",
+      "        uses: actions/upload-artifact@v4",
+      "        with:",
+      "          name: codex-quality-gate-safe-artifacts",
+      "          if-no-files-found: error"
+    ].join("\n"));
+    const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
+    expect(result.stderr).toMatch(/Run Codex quality gate/);
+  });
+
+  it("quality-gate self-protection detects unsafe artifact upload behavior", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cripto-tip-qg-artifact-"));
+    const workflow = path.join(dir, "quality-gate.yml");
+    fs.writeFileSync(workflow, [
+      "name: quality-gate",
+      "jobs:",
+      "  quality-gate:",
+      "    steps:",
+      "      - name: Run Codex quality gate",
+      "        run: node scripts/codex-local-quality-gate.mjs",
+      "      - name: Write safe quality summary",
+      "        run: echo summary",
+      "      - name: Upload safe quality artifacts",
+      "        uses: actions/upload-artifact@v4",
+      "        with:",
+      "          name: codex-quality-gate-safe-artifacts",
+      "          if-no-files-found: ignore"
+    ].join("\n"));
+    const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
+    expect(result.stderr).toMatch(/artifact upload/);
+  });
+
+  it("quality-gate self-protection detects executable always-pass wording", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cripto-tip-qg-script-"));
+    const workflow = path.join(dir, "quality-gate.yml");
+    const script = path.join(dir, "unsafe.mjs");
+    fs.writeFileSync(workflow, [
+      "name: quality-gate",
+      "jobs:",
+      "  quality-gate:",
+      "    steps:",
+      "      - name: Run Codex quality gate",
+      "        run: node scripts/codex-local-quality-gate.mjs",
+      "      - name: Write safe quality summary",
+      "        run: echo summary",
+      "      - name: Upload safe quality artifacts",
+      "        uses: actions/upload-artifact@v4",
+      "        with:",
+      "          name: codex-quality-gate-safe-artifacts",
+      "          if-no-files-found: error"
+    ].join("\n"));
+    fs.writeFileSync(script, "export const note = 'always pass';\n");
+    const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
+    expect(result.stderr).toMatch(/always pass/);
   });
 
   it("marks remote npm diagnostic as executed when npm exit code is present", async () => {

@@ -47,3 +47,9 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 ## Evidence Automation Gate
 
 Evidence single source of truth is a review automation boundary. It does not claim production runtime readiness and does not authorize provider apply, live YouTube operation, token sale, exchange, cash-out, custody, or internal balance behavior.
+
+Quality-gate self-protection requiredization strengthens the evidence gate by
+requiring placeholder checks, freshness structure checks, and workflow
+self-protection in CI. It still does not make the system G4 production ready;
+provider apply, external alert delivery with real credentials, and live YouTube
+operation remain manual-gated.

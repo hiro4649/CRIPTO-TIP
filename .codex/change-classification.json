@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -127,6 +127,20 @@
       "riskLevel": "medium",
       "verification": "corepack pnpm test",
       "scope": "evidence_pipeline_tests"
+    },
+    {
+      "pathPattern": ".github/workflows/ci.yml",
+      "classification": "workflow_required_evidence",
+      "riskLevel": "high",
+      "verification": "GitHub ci required checks and apps/api/src/evidence-rendering.test.ts",
+      "scope": "required evidence ci path"
+    },
+    {
+      "pathPattern": ".github/workflows/quality-gate.yml",
+      "classification": "workflow_quality_gate",
+      "riskLevel": "high",
+      "verification": "scripts/check-quality-gate-self-protection.mjs",
+      "scope": "quality gate required path"
     }
   ],
   "changedFiles": [
@@ -243,7 +257,11 @@
     "scripts/fetch-github-run-evidence.mjs",
     "docs/process/GITHUB_EVIDENCE_INJECTION.md",
     "docs/pr-github-run-artifact-auto-injection.md",
-    "scripts/refresh-pr-evidence.mjs"
+    "scripts/refresh-pr-evidence.mjs",
+    ".github/workflows/ci.yml",
+    ".github/workflows/quality-gate.yml",
+    "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
+    "docs/pr-quality-gate-self-protection-required.md"
   ],
   "classifications": [
     {
@@ -279,9 +297,9 @@
     }
   ],
   "unknownFileTarget": 0,
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
-  "ciRun": "27023126833",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616"
+  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "ciRun": "awaiting_github_actions_after_pr_creation",
+  "qualityGateRun": "awaiting_github_actions_after_pr_creation",
+  "qualityGateArtifact": "awaiting_github_actions_after_pr_creation"
 }

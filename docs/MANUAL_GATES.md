@@ -34,6 +34,14 @@ This boundary does not implement token sale, token exchange, cash-out, custody, 
 ## Production-Like Apply Enforcement Update
 
 Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## CI Evidence Enforcement
+
+Quality-gate self-protection requiredization keeps manual gate evidence in the
+required verification path. Evidence must remain safe-summary only. Manual gate
+records may contain secret names or provider references, but never secret values,
+private URLs, wallet addresses, raw messages, raw display names, OAuth tokens,
+API keys, webhook URLs, or provider credentials.
 ## Rendered Evidence Source
 
 Manual gate registry documentation can be rendered from `.codex/manual-gates/manual-gates.json`. The rendered source is documentation evidence only; production-like apply still requires runtime validation through `ManualGateRegistry`.

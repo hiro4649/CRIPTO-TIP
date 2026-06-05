@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "qualityGateExpectedStatus": "success",
   "reasonCodeMappings": {
     "secretScan": "node scripts/codex-secret-safety-scan.mjs and placeholder-only evidence files",
@@ -15,8 +15,8 @@
     "reviewIndependenceStatus": ".codex/review-independence.json",
     "codeReviewMonitorStatus": "docs/pr-github-run-artifact-auto-injection.md review scope and verification oracle",
     "complexityGovernanceStatus": "docs/PRODUCTION_GATES.md and .codex/task-contract.json",
-    "qualityGateSelfProtectionStatus": "scripts/check-quality-gate-self-protection.mjs and package.json quality:self-protection",
-    "evidenceFreshnessStatus": "scripts/validate-evidence-freshness.mjs validates head, tests, ci run, quality-gate run, and artifact ID"
+    "qualityGateSelfProtectionStatus": "scripts/check-quality-gate-self-protection.mjs, package.json quality:self-protection, and CI evidence:ci required path",
+    "evidenceFreshnessStatus": "scripts/validate-evidence-freshness.mjs and package.json evidence:ci required path"
   },
   "safePlaceholderInventory": [
     "YOUTUBE_API_KEY empty placeholder",
@@ -30,11 +30,11 @@
     "alert provider secret-name placeholders only"
   ],
   "runtimeReadinessClaimed": false,
-  "currentTask": "github-run-artifact-auto-injection",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616",
-  "ciRun": "27023126833",
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
+  "currentTask": "quality-gate-self-protection-required",
+  "qualityGateRun": "awaiting_github_actions_after_pr_creation",
+  "qualityGateArtifact": "awaiting_github_actions_after_pr_creation",
+  "ciRun": "awaiting_github_actions_after_pr_creation",
+  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
   "manual_gate_production_registry_required": "pass",
   "manual_gate_single_use_after_successful_apply": "pass",
   "manual_gate_not_used_on_failed_apply": "pass",
@@ -43,9 +43,9 @@
   "placeholder_checker": "scripts/check-evidence-placeholders.mjs",
   "freshness_validator": "scripts/validate-evidence-freshness.mjs",
   "manual_gate_renderer": ".codex/manual-gates/manual-gates.json",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
-  "latestQualityGateRun": "27023240225",
-  "latestQualityGateArtifact": "7440070616",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success"
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "latestQualityGateRun": "awaiting_github_actions_after_pr_creation",
+  "latestQualityGateArtifact": "awaiting_github_actions_after_pr_creation",
+  "productCiStatus": "awaiting_github_actions_after_pr_creation",
+  "qualityGateStatus": "awaiting_github_actions_after_pr_creation"
 }

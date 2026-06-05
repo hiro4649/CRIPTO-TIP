@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "20",
+  "prNumber": "21",
   "productVerificationStatus": "pass",
   "behaviors": {
     "github_run_evidence_fetcher_current_head_only": "pass",
@@ -38,7 +38,7 @@
     "docs/pr-github-run-artifact-auto-injection.md"
   ],
   "runtimeReadinessClaimed": false,
-  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
+  "headSha": "b289df9215c31caefbece4c9922fefd825e5266d",
   "manualGateRegistryStatus": "pass",
   "verifiedBehaviors": [
     "manual_gate_requested_and_approved",
@@ -57,12 +57,16 @@
   "placeholder_prevention": "pass",
   "freshness_validator": "pass",
   "manual_gate_evidence_renderer": "pass",
-  "ciRun": "27023126833",
-  "qualityGateRun": "27023240225",
-  "qualityGateArtifact": "7440070616",
+  "ciRun": "not_yet_available_for_new_pr",
+  "qualityGateRun": "not_yet_available_for_new_pr",
+  "qualityGateArtifact": "not_yet_available_for_new_pr",
   "packageVerification": "pass",
   "apiCompatibilitySummary": "pass",
   "runtimeSmokeRationale": "pass",
   "reviewScopeAndRiskSummary": "pass",
-  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b"
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "quality_gate_self_protection_required": "pass",
+  "evidence_ci_fail_closed": "pass",
+  "placeholder_checker_required": "pass",
+  "provider_safe_deployment_evidence": "pass"
 }

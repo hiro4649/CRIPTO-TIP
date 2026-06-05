@@ -199,3 +199,20 @@ Added coverage for manual gate registry creation, approval, target commit valida
 ## Evidence Rendering Coverage
 
 Evidence renderer tests cover PR doc generation, required quality-gate headings, stale head SHA rejection, stale test count rejection, stale quality-gate run rejection, placeholder rejection, test-summary parsing, risk register rendering, manual gate rendering, and quality-gate self-protection preparation.
+
+## Quality-Gate Self-Protection Requiredization
+
+Latest targeted evidence after adding required self-protection fixtures:
+`corepack pnpm test apps/api/src/evidence-rendering.test.ts` passed with 21 test
+files, 199 passed tests, and 6 skipped tests.
+
+Added coverage:
+
+- `evidence:ci` required path runs placeholder, freshness, and self-protection
+  checks without mutating PR body content.
+- Self-protection detects `continue-on-error: true` in the quality-gate
+  workflow.
+- Self-protection detects removed `Run Codex quality gate` evidence.
+- Self-protection detects unsafe safe-artifact upload behavior.
+- Self-protection detects always-pass wording in executable scripts.
+- Freshness validation rejects unresolved head placeholders in CI mode.

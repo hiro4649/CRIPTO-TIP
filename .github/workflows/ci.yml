@@ -38,6 +38,10 @@ jobs:
         env:
           RUN_LIVE_POSTGRES_TESTS: "true"
           DATABASE_URL: postgresql://cripto_tip:cripto_tip_dev@localhost:5432/cripto_tip
+      - run: pnpm evidence:ci
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
 
   contracts:
     runs-on: ubuntu-latest

@@ -197,3 +197,18 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 ## Evidence Single Source Of Truth
 
 This PR adds `.codex/evidence-pack.json` as the safe summary source for generated PR evidence, plus placeholder and freshness validators. It does not weaken quality-gate behavior; it makes stale evidence easier to reject before merge.
+
+## Quality-Gate Self-Protection Requiredization
+
+This PR makes quality-gate self-protection and evidence placeholder/freshness
+checks part of the CI verification path through `evidence:ci`. The check is
+non-mutating in CI: it does not edit PR bodies, fetch live secrets, or perform
+provider apply. It verifies the quality-gate workflow still runs the gate, writes
+the safe summary, uploads `codex-quality-gate-safe-artifacts`, rejects
+`continue-on-error: true`, and fails if safe artifacts are absent.
+
+Provider-safe deployment evidence remains manual-gated. Dashboard apply,
+external alert apply, live YouTube soak, provider secret rotation, and
+provider-specific deployment apply must keep approved manual gate evidence and
+must not store secret values, private URLs, wallet addresses, raw messages, raw
+display names, API keys, OAuth tokens, or webhook URLs.
