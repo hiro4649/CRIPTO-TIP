@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import { execFileSync } from "node:child_process";
-import { readJson, resolvedEvidencePack, writeText } from "./evidence-lib.mjs";
+import { readJson, writeText } from "./evidence-lib.mjs";
 
 const args = process.argv.slice(2);
 function valueAfter(flag) {
@@ -120,7 +120,7 @@ async function main() {
   const offlineReadonly = hasFlag("--offline-readonly");
   const input = valueAfter("--input") || ".codex/evidence-pack.json";
   const output = valueAfter("--output") || input;
-  const pack = resolvedEvidencePack(readJson(input));
+  const pack = readJson(input);
   const fixturePr = readJsonArg("--pr-json");
   const fixtureRuns = readJsonArg("--runs-json");
   const fixtureArtifacts = readJsonArg("--artifacts-json");
