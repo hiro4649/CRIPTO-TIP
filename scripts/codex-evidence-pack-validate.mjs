@@ -175,6 +175,12 @@ function normalizedStatus(value, allowed) {
   return allowed.includes(value) ? value : 'invalid';
 }
 
+function resolveEvidenceSha(value, expected) {
+  if (value === 'current_pr_head' && expected) return expected;
+  if (value === 'current_pr_base' && expected) return expected;
+  return value;
+}
+
 export function validateEvidencePack(pack, env = process.env) {
   const reasonCodes = [];
   const warnings = [];
@@ -189,8 +195,9 @@ export function validateEvidencePack(pack, env = process.env) {
     warnings.push('evidence_pack_harness_version_compatibility_warning');
   }
   const expectedHead = env.CODEX_PR_HEAD_SHA || env.GITHUB_SHA || '';
-  if (!pack.headSha) reasonCodes.push('missing_head_sha');
-  else if (expectedHead && String(pack.headSha).toLowerCase() !== String(expectedHead).toLowerCase()) {
+  const resolvedHeadSha = resolveEvidenceSha(pack.headSha, expectedHead);
+  if (!resolvedHeadSha) reasonCodes.push('missing_head_sha');
+  else if (expectedHead && String(resolvedHeadSha).toLowerCase() !== String(expectedHead).toLowerCase()) {
     reasonCodes.push('head_sha_mismatch');
   }
 
@@ -232,7 +239,8 @@ export function validateEvidencePack(pack, env = process.env) {
       schemaVersionPresent: Boolean(pack.schemaVersion),
       repositoryPresent: Boolean(pack.repository),
       prNumberPresent: Boolean(pack.prNumber),
-      headShaStatus: reasonCodes.includes('head_sha_mismatch') ? 'mismatch' : pack.headSha ? 'present' : 'missing',
+      headSha: String(resolvedHeadSha || ''),
+      headShaStatus: reasonCodes.includes('head_sha_mismatch') ? 'mismatch' : resolvedHeadSha ? 'present' : 'missing',
       commandCount: Array.isArray(pack.commands) ? pack.commands.length : 0,
       remoteRunCount: Array.isArray(pack.remoteRuns) ? pack.remoteRuns.length : 0,
       residualRiskCount: Array.isArray(pack.residualRisks) ? pack.residualRisks.length : 0,

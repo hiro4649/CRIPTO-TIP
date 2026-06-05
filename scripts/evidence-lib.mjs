@@ -17,6 +17,15 @@ export function readJson(path) {
   return JSON.parse(fs.readFileSync(path, "utf8"));
 }
 
+export function resolvedEvidencePack(pack, overrides = {}) {
+  const resolved = { ...pack, testSummary: { ...(pack.testSummary || {}) } };
+  const head = overrides.head || process.env.CODEX_PR_HEAD_SHA || process.env.GITHUB_SHA || "";
+  const base = overrides.base || process.env.CODEX_PR_BASE_SHA || "";
+  if (resolved.headSha === "current_pr_head") resolved.headSha = head;
+  if (resolved.baseSha === "current_pr_base") resolved.baseSha = base;
+  return resolved;
+}
+
 export function writeText(path, text) {
   fs.writeFileSync(path, text.endsWith("\n") ? text : `${text}\n`);
 }

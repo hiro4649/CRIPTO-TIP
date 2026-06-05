@@ -1,19 +1,103 @@
 {
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
   "schemaVersion": "1.0.0",
+  "harnessVersion": "1.0.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": "18",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
+  "changeType": "feature",
+  "riskLevel": "R3",
   "title": "feat: add evidence single source of truth",
   "goal": "Add evidence single source of truth, PR evidence rendering, freshness validation, placeholder prevention, test summary extraction, risk register rendering, and manual gate evidence rendering.",
-  "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
-  "baseSha": "f76d2fd13e2c4ab33ca198020b8261f05a45f9b7",
-  "ciRunId": "26996730632",
-  "qualityGateRunId": "26996730636",
-  "qualityGateArtifactId": "7429271448",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
+  "ciRunId": "27018668079",
+  "qualityGateRunId": "pending_current_head_rerun",
+  "qualityGateArtifactId": "pending_current_head_rerun",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
+  "scope": {
+    "changedFiles": [
+      ".codex/evidence-pack.json",
+      ".codex/risk-register.json",
+      ".codex/manual-gates/manual-gates.json",
+      ".codex/test-summary.json",
+      "apps/api/src/evidence-rendering.test.ts",
+      "docs/process/EVIDENCE_RENDERING.md",
+      "docs/pr-evidence-single-source-of-truth.md",
+      "scripts/evidence-lib.mjs",
+      "scripts/render-pr-evidence.mjs",
+      "scripts/validate-evidence-freshness.mjs",
+      "scripts/check-evidence-placeholders.mjs",
+      "scripts/write-test-summary.mjs",
+      "scripts/check-quality-gate-self-protection.mjs",
+      "package.json"
+    ],
+    "allowedPaths": [
+      ".codex/**",
+      "apps/api/src/evidence-rendering.test.ts",
+      "docs/**",
+      "scripts/evidence-lib.mjs",
+      "scripts/render-pr-evidence.mjs",
+      "scripts/validate-evidence-freshness.mjs",
+      "scripts/check-evidence-placeholders.mjs",
+      "scripts/write-test-summary.mjs",
+      "scripts/check-quality-gate-self-protection.mjs",
+      "package.json"
+    ],
+    "forbiddenPaths": [
+      "contracts/src/**",
+      "apps/api/src/chain/**",
+      "apps/api/src/youtube/connector.ts",
+      "apps/api/src/iris/**"
+    ]
+  },
+  "commands": [
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass"
+    }
+  ],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27018668079",
+      "result": "pass"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "pending_current_head_rerun",
+      "result": "pending_current_head_rerun"
+    }
+  ],
+  "productionClaims": {
+    "runtimeReady": false,
+    "productionReady": false,
+    "deploymentApplied": false
+  },
+  "rollbackOrStopCondition": "Revert this PR if evidence rendering, freshness validation, placeholder prevention, or quality-gate self-protection preparation fails on the current PR head.",
+  "safeOutput": {
+    "status": "pass"
+  },
   "allowedScope": [
     "evidence_pack",
     "risk_register_source",
@@ -60,7 +144,7 @@
   ],
   "testSummary": {
     "testFiles": 21,
-    "passed": 185,
+    "passed": 187,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -82,7 +166,7 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 185,
-  "tests": 185,
+  "passed": 187,
+  "tests": 187,
   "skipped": 6
 }

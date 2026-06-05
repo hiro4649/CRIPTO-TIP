@@ -1,10 +1,18 @@
 #!/usr/bin/env node
-import { readJson, renderManualGates, renderPrEvidence, renderRiskRegister, writeText, assertNoPlaceholders } from "./evidence-lib.mjs";
+import { readJson, renderManualGates, renderPrEvidence, renderRiskRegister, resolvedEvidencePack, writeText, assertNoPlaceholders } from "./evidence-lib.mjs";
 
 const args = process.argv.slice(2);
-const input = args[args.indexOf("--input") + 1] || ".codex/evidence-pack.json";
-const output = args[args.indexOf("--output") + 1] || "docs/pr-evidence-single-source-of-truth.md";
-const pack = readJson(input);
+function valueAfter(flag) {
+  const index = args.indexOf(flag);
+  return index >= 0 ? args[index + 1] : undefined;
+}
+
+const input = valueAfter("--input") || ".codex/evidence-pack.json";
+const output = valueAfter("--output") || "docs/pr-evidence-single-source-of-truth.md";
+const pack = resolvedEvidencePack(readJson(input), {
+  head: valueAfter("--head"),
+  base: valueAfter("--base")
+});
 const rendered = renderPrEvidence(pack);
 assertNoPlaceholders(rendered, output);
 writeText(output, rendered);

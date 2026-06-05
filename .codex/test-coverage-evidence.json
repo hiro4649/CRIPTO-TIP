@@ -4,7 +4,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "18",
   "testFiles": 21,
-  "testsPassed": 185,
+  "testsPassed": 187,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -76,10 +76,10 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 185,
+  "tests": 187,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
   "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
-  "passed": 185,
+  "passed": 187,
   "skipped": 6
 }

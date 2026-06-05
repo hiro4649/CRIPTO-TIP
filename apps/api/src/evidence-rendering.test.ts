@@ -39,7 +39,10 @@ describe("evidence single source of truth scripts", () => {
   });
 
   it("rejects stale evidence freshness values", () => {
-    expect(runScriptResult("validate-evidence-freshness.mjs", ["--head", "0000000000000000000000000000000000000000"]).stderr).toMatch(/stale/);
+    expect(runScriptResult("validate-evidence-freshness.mjs", [
+      "--head", "0000000000000000000000000000000000000000",
+      "--actual-head", "1234567890abcdef1234567890abcdef12345678"
+    ]).stderr).toMatch(/stale/);
     expect(runScriptResult("validate-evidence-freshness.mjs", ["--tests", "1"]).stderr).toMatch(/stale/);
     expect(runScriptResult("validate-evidence-freshness.mjs", ["--quality-gate-run", "1"]).stderr).toMatch(/stale/);
   }, 20000);
@@ -50,6 +53,31 @@ describe("evidence single source of truth scripts", () => {
       "--tests", String(evidencePack.testSummary.passed),
       "--quality-gate-run", evidencePack.qualityGateRunId
     ])).toContain("passed");
+  });
+
+  it("resolves current_pr_head when validating freshness", () => {
+    expect(runScript("validate-evidence-freshness.mjs", [
+      "--head", "1234567890abcdef1234567890abcdef12345678",
+      "--tests", String(evidencePack.testSummary.passed),
+      "--quality-gate-run", evidencePack.qualityGateRunId
+    ])).toContain("passed");
+  });
+
+  it("resolves current_pr_head in the strict evidence pack validator", () => {
+    const result = execFileSync("node", [path.join(root, "scripts", "codex-evidence-pack-validate.mjs"), "--json"], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_EVENT_NAME: "pull_request",
+        CODEX_PR_NUMBER: "18",
+        CODEX_PR_HEAD_SHA: "1234567890abcdef1234567890abcdef12345678",
+        CODEX_PR_BASE_SHA: "abcdef1234567890abcdef1234567890abcdef12",
+        CODEX_HARNESS_SOURCE_REPO: "1"
+      }
+    });
+    expect(JSON.parse(result).evidencePackStatus.status).toBe("pass");
+    expect(JSON.parse(result).normalizedEvidencePack.headSha).toBe("1234567890abcdef1234567890abcdef12345678");
   });
 
   it("rejects forbidden evidence placeholders", () => {

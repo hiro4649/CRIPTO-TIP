@@ -21,7 +21,7 @@ Done criteria: render-pr-evidence generates PR doc from evidence-pack; validate-
 
 ## Evidence Integrity
 
-Head SHA: a1707260eec6ea29ffe9fcd165c9eb6642beb3fd
+Head SHA: 3d295044b1793af8eaf920d6b02045bfaa717d85
 
 Base SHA: f76d2fd13e2c4ab33ca198020b8261f05a45f9b7
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 26996730632
+CI run: 27018668079
 
-Quality-gate run: 26996730636
+Quality-gate run: pending_current_head_rerun
 
-Quality-gate artifact: 7429271448
+Quality-gate artifact: pending_current_head_rerun
 
-Tests: 21 test files, 185 passed, 6 skipped
+Tests: 21 test files, 187 passed, 6 skipped
 
 ## Testing and review
 
@@ -50,7 +50,7 @@ Tests: 21 test files, 185 passed, 6 skipped
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 185 passed, 6 skipped.
+Current recorded test summary: 21 files, 187 passed, 6 skipped.
 
 ## Security Boundaries
 
