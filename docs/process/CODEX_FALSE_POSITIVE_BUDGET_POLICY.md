@@ -1,9 +1,9 @@
-<!-- CODEX_QUALITY_HARNESS_FILE v1.0.6 -->
+<!-- CODEX_QUALITY_HARNESS_FILE v1.0.7 -->
 # False Positive Budget Policy
 
 Version: v0.9.4
 
-Tracks body-only repair loops, near-miss headings, manual confirmation loops, reruns, artifact-awaiting counts, and classification false positives without weakening non-overridable gates.
+Tracks body-only repair loops, near-miss headings, manual confirmation loops, reruns, artifact-wait counts, and classification false positives without weakening non-overridable gates.
 
 ## Safety Constraints
 

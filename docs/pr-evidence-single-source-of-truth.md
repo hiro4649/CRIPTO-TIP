@@ -21,19 +21,19 @@ Done criteria: render-pr-evidence generates PR doc from evidence-pack; validate-
 
 ## Evidence Integrity
 
-Head SHA: branch_head_sha_in_pr_metadata
+Head SHA: a1707260eec6ea29ffe9fcd165c9eb6642beb3fd
 
-Base SHA: main_head_sha_in_pr_metadata
+Base SHA: f76d2fd13e2c4ab33ca198020b8261f05a45f9b7
 
-Product CI: github_actions_required_on_pushed_head
+Product CI: success
 
-Quality-gate: github_actions_required_on_pushed_head
+Quality-gate: success
 
-CI run: github_actions_required_on_pushed_head
+CI run: 26996730632
 
-Quality-gate run: github_actions_required_on_pushed_head
+Quality-gate run: 26996730636
 
-Quality-gate artifact: github_actions_required_on_pushed_head
+Quality-gate artifact: 7429271448
 
 Tests: 21 test files, 185 passed, 6 skipped
 

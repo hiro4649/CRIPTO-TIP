@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.6",
+  "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": "18",
   "testFiles": 21,
-  "testsPassed": 173,
+  "testsPassed": 185,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -79,7 +79,7 @@
   "tests": 185,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "headSha": "branch_head_sha_in_pr_metadata",
+  "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
   "passed": 185,
   "skipped": 6
 }

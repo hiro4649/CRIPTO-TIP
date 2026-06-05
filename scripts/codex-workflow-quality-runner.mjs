@@ -5,7 +5,7 @@
 
 
 
-// CODEX_QUALITY_HARNESS_FILE v1.0.6
+// CODEX_QUALITY_HARNESS_FILE v1.0.7
 
 
 
@@ -2007,6 +2007,13 @@ const sourceRequiredPass = [
 
 
 
+  'v085SelfTestStatus',
+
+
+
+
+
+
   'v086SelfTestStatus',
 
 
@@ -2029,6 +2036,13 @@ const sourceRequiredPass = [
 
 
   'v089SelfTestStatus',
+
+
+
+
+
+
+  'v090SelfTestStatus',
 
 
 
@@ -2535,6 +2549,13 @@ const targetRequiredPass = [
 
 
 
+  'v085SelfTestStatus',
+
+
+
+
+
+
   'v086SelfTestStatus',
 
 
@@ -2557,6 +2578,13 @@ const targetRequiredPass = [
 
 
   'v089SelfTestStatus',
+
+
+
+
+
+
+  'v090SelfTestStatus',
 
 
 
@@ -3195,6 +3223,42 @@ function statusAllowed(key, status, eventName) {
 
 
 
+}
+
+
+const targetRolloutAdvisoryRequired = new Set([
+  'promptGovernanceStatus',
+  'v080SelfTestStatus',
+  'v081SelfTestStatus',
+  'v082SelfTestStatus',
+  'v087SelfTestStatus',
+  'v090SelfTestStatus',
+  'v092SelfTestStatus',
+  'sameHeadArtifactEvidenceStatus',
+  'classificationCoverageStatus',
+  'pullRequestContextFidelityStatus',
+  'productVerificationContextStatus',
+  'v085StabilityStatus',
+  'codeReviewMonitorStatus',
+  'contractGovernanceStatus',
+  'complexityGovernanceStatus',
+  'reviewIndependenceStatus',
+  'taskBriefCompilerStatus',
+  'requiredHeadingHintStatus',
+  'prProfileStatus',
+  'bestOfNEvidenceStatus',
+  'testCoverageEvidenceStatus',
+]);
+
+
+function targetRolloutRequiredStatusAllowed(key, status, options = {}, report = {}) {
+  const eventName = options.eventName || process.env.CODEX_EVENT_NAME || '';
+  const harnessMode = options.harnessMode || process.env.CODEX_HARNESS_MODE || report.harnessMode || '';
+  const reportMode = report.targetQualityScoreStatus && !report.sourceHarnessValidationStatus ? 'target' : report.mode;
+  const isTargetRollout = harnessMode === 'target' || reportMode === 'target' || eventName === 'target_rollout';
+  if (!isTargetRollout) return false;
+  if (!targetRolloutAdvisoryRequired.has(key)) return false;
+  return ['advisory', 'fail', 'manual_confirmation_required', 'warning'].includes(status);
 }
 
 
@@ -3893,7 +3957,8 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-    if (!statusAllowed(key, status, options.eventName || process.env.CODEX_EVENT_NAME)) failures.push(`${key}=${status}`);
+    if (!statusAllowed(key, status, options.eventName || process.env.CODEX_EVENT_NAME)
+      && !targetRolloutRequiredStatusAllowed(key, status, options, report)) failures.push(`${key}=${status}`);
 
 
 
