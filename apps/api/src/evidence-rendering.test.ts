@@ -136,4 +136,29 @@ describe("evidence single source of truth scripts", () => {
     expect(parsed.remoteNpmDiagnosticStatus.npmExecuted).toBe(true);
     expect(parsed.remoteNpmDiagnosticStatus.npmExitCode).toBe(0);
   });
+
+  it("accepts diagnostic npm exit code as remote npm execution evidence", () => {
+    const result = execFileSync("node", [path.join(root, "scripts", "codex-remote-npm-diagnostic-normalization-gate.mjs")], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_QUALITY_REPORT: "json",
+        CODEX_CHANGE_CLASSIFICATION_JSON: JSON.stringify({
+          changeClassificationStatus: {
+            productRelevantChanged: true,
+            packageOrLockfileChanged: true,
+            runtimeReadinessClaimed: false
+          }
+        }),
+        CODEX_REMOTE_NPM_DIAGNOSTIC_JSON: JSON.stringify({
+          status: "pass",
+          diagnostic: {
+            npmExitCode: 0
+          }
+        })
+      }
+    });
+    expect(JSON.parse(result).remoteNpmDiagnosticNormalizationStatus.status).toBe("pass");
+  });
 });
