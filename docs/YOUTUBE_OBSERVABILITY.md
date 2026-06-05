@@ -32,6 +32,8 @@ The dashboard contract is fixed in `docs/youtube-dashboard-contract.json` and mi
 
 The alert routing contract is fixed by `youtubeAlertConfigs` and test-covered in `deployment-observability.test.ts`.
 
+External alert delivery plans are generated from the same contract in `apps/api/src/youtube/alert-delivery.ts`. Dry-run is allowed for verification. Apply requires manual approval, and provider credentials are represented by secret-name references only.
+
 - Auth errors: page the operator responsible for YouTube credentials and rotate credentials if needed.
 - Quota/rate-limit errors: notify operations, reduce polling pressure, and inspect the YouTube quota dashboard.
 - Reconnect storm: inspect network and streamList availability.
@@ -46,4 +48,4 @@ Live YouTube API soak remains manual-gated. It must be skipped unless an explici
 
 `ObservabilityExporter` publishes YouTube metric snapshots through provider-neutral metric points. The current implementation includes a mock exporter, Prometheus-compatible text formatting, OpenTelemetry-compatible metric objects, dashboard contract parity tests, and alert label parity tests. It does not deploy a dashboard provider, send real external alerts, commit provider secrets, or run a live YouTube account without a manual gate.
 
-Dashboard deployment plans are generated from the same contract and can run in dry-run mode without manual approval. Actual apply requires a manual approval gate and managed provider credential reference.
+Dashboard deployment plans are generated from the same contract and can run in dry-run mode without manual approval. Actual apply requires a manual approval gate and managed provider credential reference. External alert delivery follows the same manual-gated pattern and keeps payloads limited to declared metric, severity, operator action, and sanitized labels.

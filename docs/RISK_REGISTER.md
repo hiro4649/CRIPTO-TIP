@@ -63,6 +63,6 @@
 | Severity | Risk | Owner | Next PR | Mitigation |
 | --- | --- | --- | --- | --- |
 | Medium | Real provider SDK deployment apply is not implemented. | Backend/Observability | Provider SDK PR if selected | Provider-specific boundary remains injected; dry-run and manual gate tests cover current scope. |
-| Medium | External alert delivery with real credentials remains disabled. | Operations | Alert provider integration PR | Alert routing provider is a stub and real delivery is explicitly out of scope. |
+| Medium | External alert delivery with real credentials remains manual-gated. | Operations | Provider-specific alert apply PR | Alert delivery plan, dry-run, manual gate, payload safety, and rollback plan are test-covered before real provider credentials are used. |
 | Medium | Dashboard provider credentials are not provisioned by this repository. | DevOps | Deployment secret provisioning | Credential secret-name boundary fails closed when missing and never commits provider secret values. |
 | Medium | Live YouTube account operation remains manual-gated. | QA/Operations | Live environment validation | No live operation is added; deployment plan is contract-driven and dry-run first. |

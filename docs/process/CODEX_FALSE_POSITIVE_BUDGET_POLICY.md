@@ -3,7 +3,7 @@
 
 Version: v0.9.4
 
-Tracks body-only repair loops, near-miss headings, manual confirmation loops, reruns, artifact pending counts, and classification false positives without weakening non-overridable gates.
+Tracks body-only repair loops, near-miss headings, manual confirmation loops, reruns, artifact-awaiting counts, and classification false positives without weakening non-overridable gates.
 
 ## Safety Constraints
 

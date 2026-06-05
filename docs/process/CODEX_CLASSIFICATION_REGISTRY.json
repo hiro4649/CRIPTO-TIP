@@ -209,6 +209,63 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Codex v1.0.2 source harness scripts."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/alert-delivery.ts",
+      "classification": "product_source",
+      "surface": "runtime",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube external alert delivery boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/youtube/alert-delivery.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "YouTube external alert delivery tests."
+    },
+    {
+      "pathPattern": "docs/ALERT_DELIVERY.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "External alert delivery boundary documentation."
+    },
+    {
+      "pathPattern": "docs/pr-external-alert-delivery-integration.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R1",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "PR body for external alert delivery integration evidence."
+    },
+    {
+      "pathPattern": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
+    },
+    {
+      "pathPattern": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest",
+      "riskLevel": "medium",
+      "scope": "quality_gate_support",
+      "verification": "active self-test registry gate"
     }
   ],
   "safeSummaryOnly": true

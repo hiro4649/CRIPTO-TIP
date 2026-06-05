@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "reviewChecklistPresent": true,
@@ -27,7 +27,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "pending-final-head",
+  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
@@ -47,5 +47,12 @@
     "remaining blockers",
     "merge decision"
   ],
-  "reviewIndependenceStatus": "pass"
+  "reviewIndependenceStatus": "pass",
+  "evidenceFiles": [
+    "docs/pr-external-alert-delivery-integration.md",
+    "docs/ALERT_DELIVERY.md",
+    ".codex/task-contract.json",
+    ".codex/product-verification.json",
+    ".codex/test-coverage-evidence.json"
+  ]
 }

@@ -186,3 +186,36 @@ Deferred behavior:
 - Real provider SDK deployment apply.
 - External alert delivery with real provider credentials.
 - Live YouTube account operation without manual gate.
+
+## PR external-alert-delivery-integration
+
+Verified product behavior:
+
+- `ExternalAlertProvider` delivers alert plans through an injected provider boundary.
+- `MockExternalAlertProvider` supports deterministic dry-run and manual-gated apply tests.
+- `ProviderSpecificAlertProvider` wraps an injected provider without committing provider secrets.
+- Alert delivery plans are generated from the tested YouTube alert routing config.
+- Dry-run succeeds without manual approval.
+- Apply fails closed unless `manualApproval` is true.
+- Missing alert provider credential secret names fail closed.
+- Alert payload metrics are declared YouTube metrics only.
+- Alert payload labels exclude wallet addresses, OAuth tokens, API keys, raw messages, raw display names, secrets, and private URLs.
+- Provider errors map to operator actions.
+- Rollback and disable plan generation is available as operator steps.
+
+Deferred behavior:
+
+- Real provider SDK alert delivery apply.
+- External alert delivery with real provider credentials without manual approval.
+- Live YouTube account operation without manual gate.
+
+## PR external-alert-delivery-integration hardening
+
+Verified product behavior:
+
+- Alert payload label keys exclude wallet/address/token/secret/api_key/oauth/message/display_name/youtube_id/url patterns.
+- Alert payload label values redact wallet addresses, token-like strings, Bearer credentials, credential keywords, and private URLs.
+- Dry-run still succeeds without manual approval.
+- Apply still fails closed without manual approval.
+- Rollback plans do not expose credential secret names.
+

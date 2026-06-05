@@ -153,3 +153,13 @@ The exporter boundary is provider-neutral. If dashboard export or alert routing 
 6. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
 7. If provider apply fails, map the error to an operator action and do not retry with raw credentials in logs.
 8. Rollback by restoring the previous dashboard revision, verifying metric parity, confirming alert routes are disabled or restored, and recording operator review.
+
+## External Alert Delivery Dry-Run And Apply
+
+1. Generate an alert delivery plan from `youtubeAlertConfigs`.
+2. Run dry-run first. Dry-run must not require manual approval and must not send to a provider.
+3. Confirm alert payloads contain only metric name, severity, operator action, and safe labels.
+4. Verify alert provider credential secret names exist in the approved secret manager. Do not paste webhook URLs, provider tokens, API keys, or private URLs into `.env`, docs, PR bodies, or logs.
+5. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
+6. If provider apply fails, map credential failures to credential rotation, manual gate failures to approval, rate/quota failures to provider-limit review, and unknown failures to operator inspection.
+7. Rollback by disabling the external alert route, verifying dashboard alerts remain visible, rotating credentials if needed, and recording operator review.

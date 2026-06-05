@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -13,8 +13,8 @@
       "pathPattern": "apps/api/src/youtube/**",
       "classification": "product_source",
       "riskLevel": "medium",
-      "verification": "apps/api/src/youtube/credentials.test.ts, operations.test.ts, deployment-observability.test.ts, observability-exporter.test.ts, and dashboard-deployment.test.ts",
-      "scope": "youtube_credentials_observability_and_dashboard_deployment"
+      "verification": "apps/api/src/youtube/alert-delivery.test.ts and existing YouTube operations/observability tests",
+      "scope": "youtube_external_alert_delivery_boundary"
     },
     {
       "pathPattern": "apps/api/src/config/**",
@@ -43,49 +43,147 @@
       "riskLevel": "medium",
       "verification": "secret scan and config validation tests",
       "scope": "config_credential_boundary"
+    },
+    {
+      "pathPattern": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate and v106 self-test",
+      "scope": "quality_gate_version_alignment"
+    },
+    {
+      "pathPattern": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate and v097 self-test",
+      "scope": "target_manifest_fallback"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest",
+      "riskLevel": "medium",
+      "verification": "active self-test registry gate",
+      "scope": "target_harness_manifest"
+    },
+    {
+      "pathPattern": "scripts/codex-local-quality-gate.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "v106 active self-test and local target advisory routing",
+      "scope": "legacy_self_test_advisory_routing"
+    },
+    {
+      "pathPattern": "scripts/codex-workflow-quality-runner.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "workflow required status routing for v106 active self-test",
+      "scope": "legacy_self_test_advisory_routing"
     }
   ],
   "changedFiles": [
-    { "path": ".codex/change-classification.json", "classification": "verification_relevant" },
-    { "path": ".codex/product-verification.json", "classification": "verification_relevant" },
-    { "path": ".codex/quality-gate-evidence.json", "classification": "verification_relevant" },
-    { "path": ".codex/review-independence.json", "classification": "verification_relevant" },
-    { "path": ".codex/task-contract.json", "classification": "verification_relevant" },
-    { "path": ".codex/test-coverage-evidence.json", "classification": "verification_relevant" },
-    { "path": ".env.example", "classification": "config_example" },
-    { "path": "apps/api/src/config/env.test.ts", "classification": "test" },
-    { "path": "apps/api/src/config/env.ts", "classification": "config_validation" },
-    { "path": "apps/api/src/youtube/credentials.test.ts", "classification": "test" },
-    { "path": "apps/api/src/youtube/credentials.ts", "classification": "product_source" },
-    { "path": "apps/api/src/youtube/deployment-observability.test.ts", "classification": "test" },
-    { "path": "apps/api/src/youtube/deployment-observability.ts", "classification": "product_source" },
-    { "path": "apps/api/src/youtube/dashboard-deployment.test.ts", "classification": "test" },
-    { "path": "apps/api/src/youtube/dashboard-deployment.ts", "classification": "product_source" },
-    { "path": "apps/api/src/youtube/observability-exporter.test.ts", "classification": "test" },
-    { "path": "apps/api/src/youtube/observability-exporter.ts", "classification": "product_source" },
-    { "path": "apps/api/src/youtube/operations.test.ts", "classification": "test" },
-    { "path": "apps/api/src/youtube/operations.ts", "classification": "product_source" },
-    { "path": "docs/PRODUCT_VERIFICATION.md", "classification": "docs" },
-    { "path": "docs/API_COMPATIBILITY_SUMMARY.md", "classification": "docs" },
-    { "path": "docs/PRODUCTION_GATES.md", "classification": "docs" },
-    { "path": "docs/QUALITY_GATE_EVIDENCE.md", "classification": "docs" },
-    { "path": "docs/RISK_REGISTER.md", "classification": "docs" },
-    { "path": "docs/RUNBOOK.md", "classification": "docs" },
-    { "path": "docs/TEST_COVERAGE_EVIDENCE.md", "classification": "docs" },
-    { "path": "docs/DASHBOARD_DEPLOYMENT.md", "classification": "docs" },
-    { "path": "docs/OBSERVABILITY_EXPORTER.md", "classification": "docs" },
-    { "path": "docs/YOUTUBE_CONNECTOR.md", "classification": "docs" },
-    { "path": "docs/YOUTUBE_CREDENTIALS.md", "classification": "docs" },
-    { "path": "docs/YOUTUBE_OBSERVABILITY.md", "classification": "docs" },
-    { "path": "docs/pr-observability-exporter-integration.md", "classification": "docs" },
-    { "path": "docs/pr-dashboard-exporter-deployment.md", "classification": "docs" },
-    { "path": "docs/pr-bootstrap-mvp.md", "classification": "docs" },
-    { "path": "docs/pr-durable-events-db-queue.md", "classification": "docs" },
-    { "path": "docs/pr-youtube-deployment-dashboard.md", "classification": "docs" },
-    { "path": "docs/pr-official-youtube-connector.md", "classification": "docs" },
-    { "path": "docs/pr-production-chain-listener-reorg.md", "classification": "docs" },
-    { "path": "docs/pr-youtube-prod-observability.md", "classification": "docs" },
-    { "path": "docs/youtube-dashboard-contract.json", "classification": "docs" },
-    { "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json", "classification": "verification_relevant" }
+    {
+      "path": ".codex/change-classification.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/product-verification.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/quality-gate-evidence.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/review-independence.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/task-contract.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": ".codex/test-coverage-evidence.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": "apps/api/src/youtube/alert-delivery.test.ts",
+      "classification": "test"
+    },
+    {
+      "path": "apps/api/src/youtube/alert-delivery.ts",
+      "classification": "product_source"
+    },
+    {
+      "path": "docs/ALERT_DELIVERY.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/DASHBOARD_DEPLOYMENT.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/OBSERVABILITY_EXPORTER.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/PRODUCTION_GATES.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/PRODUCT_VERIFICATION.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/QUALITY_GATE_EVIDENCE.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/RISK_REGISTER.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/RUNBOOK.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/YOUTUBE_CREDENTIALS.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/YOUTUBE_OBSERVABILITY.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/pr-external-alert-delivery-integration.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "classification": "verification_relevant"
+    },
+    {
+      "path": "docs/process/CODEX_HARNESS_MANIFEST.json",
+      "classification": "harness_manifest"
+    },
+    {
+      "path": "scripts/codex-v080-lib.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-local-quality-gate.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-workflow-quality-runner.mjs",
+      "classification": "harness_support"
+    }
   ]
 }

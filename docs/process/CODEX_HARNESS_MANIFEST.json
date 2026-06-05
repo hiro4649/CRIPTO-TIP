@@ -82,5 +82,6 @@
   "superChatBypassImplemented": false,
   "investmentAdviceAdded": false,
   "donationPressureAdded": false,
-  "parasocialMonetizationAdded": false
+  "parasocialMonetizationAdded": false,
+  "activeSelfTestSourceFile": "scripts/codex-v106-self-test.mjs"
 }

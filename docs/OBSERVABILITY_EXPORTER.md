@@ -26,7 +26,7 @@ Exporter output must include every metric declared by `youtubeMetricNames` and `
 - `youtube_auth_errors_total`
 - `youtube_invalid_page_token_total`
 
-Alert labels include `alert_id`, `operator_action`, and `source_metric`. They must not include credentials, OAuth tokens, API keys, raw YouTube messages, wallet addresses, or user-provided display names.
+Alert labels include `alert_id`, `operator_action`, and `source_metric`. They must not include credentials, OAuth tokens, API keys, raw YouTube messages, wallet addresses, or user-provided display names. External alert delivery payloads keep the same safety boundary and add only declared metric, severity, operator action, and sanitized labels.
 
 ## Manual Live Soak Result Boundary
 
@@ -35,7 +35,7 @@ Manual live YouTube soak result ingestion is safe-summary only. It is skipped un
 ## Out Of Scope
 
 - Provider-specific dashboard deployment apply.
-- External alert delivery with real provider credentials.
+- External alert delivery with real provider credentials without a manual approval gate.
 - Real production secret commit.
 - Live YouTube account operation without manual gate.
 - YouTube scraping, browser automation, or HTML parsing.
@@ -43,3 +43,7 @@ Manual live YouTube soak result ingestion is safe-summary only. It is skipped un
 ## Dashboard Deployment Boundary
 
 The deployment layer builds a provider-neutral dashboard plan from the dashboard contract. Dry-run is allowed without manual approval; apply requires an explicit manual approval gate. The provider-specific wrapper is an injected boundary and does not commit provider credentials or import a provider SDK in this PR.
+
+## External Alert Delivery Boundary
+
+The alert delivery layer builds provider-neutral alert plans from `youtubeAlertConfigs`. Dry-run is allowed without manual approval; apply requires an explicit manual approval gate. The provider-specific wrapper is an injected boundary and does not commit provider credentials or import a provider SDK in this PR.

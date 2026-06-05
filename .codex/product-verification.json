@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.5",
+  "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": 15,
   "productVerificationStatus": "pass",
   "behaviors": {
     "youtube_secret_manager_credential_provider_boundary": "pass",
@@ -40,14 +40,27 @@
     "external_alert_delivery_with_real_credentials": "not_started",
     "real_secret_manager_sdk_binding": "not_started",
     "real_dashboard_exporter": "not_started",
-    "alert_delivery": "not_started",
+    "alert_delivery": "pass",
     "live_youtube_account_operation": "not_started",
     "token_sale": "forbidden",
     "token_exchange": "forbidden",
     "cash_out": "forbidden",
     "custody": "forbidden",
     "internal_balance": "forbidden",
-    "youtube_scraping": "forbidden"
+    "youtube_scraping": "forbidden",
+    "external_alert_provider_mock_boundary": "pass",
+    "provider_specific_alert_provider_boundary": "pass",
+    "alert_delivery_plan_generation": "pass",
+    "alert_delivery_dry_run": "pass",
+    "alert_manual_apply_gate": "pass",
+    "alert_credential_missing_fails_closed": "pass",
+    "alert_routing_contract_parity": "pass",
+    "alert_payload_declared_metrics_only": "pass",
+    "alert_payload_excludes_secrets_and_raw_user_data": "pass",
+    "alert_severity_mapping": "pass",
+    "alert_provider_error_operator_action": "pass",
+    "alert_delivery_rollback_disable_plan": "pass",
+    "real_external_alert_delivery_without_manual_gate": "forbidden"
   },
   "evidence": [
     "apps/api/src/youtube/credentials.test.ts",
@@ -60,7 +73,11 @@
     "docs/YOUTUBE_OBSERVABILITY.md",
     "docs/OBSERVABILITY_EXPORTER.md",
     "docs/DASHBOARD_DEPLOYMENT.md",
-    "docs/youtube-dashboard-contract.json"
+    "docs/youtube-dashboard-contract.json",
+    "apps/api/src/youtube/alert-delivery.test.ts",
+    "docs/ALERT_DELIVERY.md",
+    "docs/pr-external-alert-delivery-integration.md"
   ],
-  "runtimeReadinessClaimed": false
+  "runtimeReadinessClaimed": false,
+  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9"
 }

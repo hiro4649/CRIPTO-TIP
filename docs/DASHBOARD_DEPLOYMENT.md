@@ -20,6 +20,8 @@ The dashboard deployment boundary creates provider-neutral deployment plans from
 
 `StubAlertRoutingProvider` plans alert routes only. External alert delivery with real provider credentials remains out of scope.
 
+The external alert delivery boundary uses the same alert contract and keeps provider apply manual-gated. Dashboard deployment remains separate from provider alert delivery so dashboard parity and alert payload safety can be reviewed independently.
+
 ## Operator Rules
 
 - Do not store dashboard provider secrets, alert provider secrets, YouTube OAuth tokens, or API keys in git.
