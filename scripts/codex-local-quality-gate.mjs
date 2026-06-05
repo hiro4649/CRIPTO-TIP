@@ -11151,6 +11151,7 @@ async function runTargetHarnessGate() {
     'v082SelfTestStatus.failed',
     'v085SelfTestStatus.failed',
     'v087SelfTestStatus.failed',
+    'v090SelfTestStatus.failed',
     'v092SelfTestStatus.failed',
     'v098SelfTestStatus.failed',
     'v100SelfTestStatus.failed',

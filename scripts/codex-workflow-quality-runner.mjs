@@ -2007,13 +2007,6 @@ const sourceRequiredPass = [
 
 
 
-  'v085SelfTestStatus',
-
-
-
-
-
-
   'v086SelfTestStatus',
 
 
@@ -2036,13 +2029,6 @@ const sourceRequiredPass = [
 
 
   'v089SelfTestStatus',
-
-
-
-
-
-
-  'v090SelfTestStatus',
 
 
 
@@ -2549,13 +2535,6 @@ const targetRequiredPass = [
 
 
 
-  'v085SelfTestStatus',
-
-
-
-
-
-
   'v086SelfTestStatus',
 
 
@@ -2578,13 +2557,6 @@ const targetRequiredPass = [
 
 
   'v089SelfTestStatus',
-
-
-
-
-
-
-  'v090SelfTestStatus',
 
 
 

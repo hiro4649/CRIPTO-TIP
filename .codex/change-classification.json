@@ -64,6 +64,20 @@
       "riskLevel": "medium",
       "verification": "active self-test registry gate",
       "scope": "target_harness_manifest"
+    },
+    {
+      "pathPattern": "scripts/codex-local-quality-gate.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "v106 active self-test and local target advisory routing",
+      "scope": "legacy_self_test_advisory_routing"
+    },
+    {
+      "pathPattern": "scripts/codex-workflow-quality-runner.mjs",
+      "classification": "harness_support",
+      "riskLevel": "medium",
+      "verification": "workflow required status routing for v106 active self-test",
+      "scope": "legacy_self_test_advisory_routing"
     }
   ],
   "changedFiles": [
@@ -161,6 +175,14 @@
     },
     {
       "path": "scripts/codex-v097-gate-lib.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-local-quality-gate.mjs",
+      "classification": "harness_support"
+    },
+    {
+      "path": "scripts/codex-workflow-quality-runner.mjs",
       "classification": "harness_support"
     }
   ]
