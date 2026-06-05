@@ -208,3 +208,14 @@ Deferred behavior:
 - Real provider SDK alert delivery apply.
 - External alert delivery with real provider credentials without manual approval.
 - Live YouTube account operation without manual gate.
+
+## PR external-alert-delivery-integration hardening
+
+Verified product behavior:
+
+- Alert payload label keys exclude wallet/address/token/secret/api_key/oauth/message/display_name/youtube_id/url patterns.
+- Alert payload label values redact wallet addresses, token-like strings, Bearer credentials, credential keywords, and private URLs.
+- Dry-run still succeeds without manual approval.
+- Apply still fails closed without manual approval.
+- Rollback plans do not expose credential secret names.
+

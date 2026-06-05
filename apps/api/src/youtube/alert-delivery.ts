@@ -132,7 +132,21 @@ function sanitizeAlertLabels(labels: Record<string, string>) {
       .filter(([key]) => !unsafeKeys.test(key))
       .map(([key, value]) => [
         key.replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 64),
-        String(value).replace(/[\r\n]/g, " ").slice(0, 120)
+        sanitizeAlertLabelValue(value)
       ])
   );
+}
+
+function sanitizeAlertLabelValue(value: unknown) {
+  return String(value)
+    .replace(/[\r\n]/g, " ")
+    .replace(/0x[0-9a-fA-F]{40}/g, "[redacted]")
+    .replace(/ghp_[A-Za-z0-9_]+/g, "[redacted]")
+    .replace(/sk-[A-Za-z0-9_-]+/g, "[redacted]")
+    .replace(/xoxb-[A-Za-z0-9-]+/g, "[redacted]")
+    .replace(/AKIA[0-9A-Z]{16}/g, "[redacted]")
+    .replace(/Bearer\s+[A-Za-z0-9._~+/-]+=*/gi, "Bearer [redacted]")
+    .replace(/https?:\/\/\S+/gi, "[redacted-url]")
+    .replace(/\b(oauth|api_key|secret|token|private)\b/gi, "[redacted]")
+    .slice(0, 120);
 }

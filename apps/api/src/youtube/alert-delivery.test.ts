@@ -81,6 +81,35 @@ describe("external alert delivery integration boundary", () => {
     expect(serialized).not.toMatch(/0x1111111111111111111111111111111111111111|oauth|api_key|raw_message|display_name|private\.example/i);
   });
 
+  it("redacts unsafe values while keeping safe stream and environment labels", () => {
+    const wallet = `0x${"2".repeat(40)}`;
+    const githubLikeToken = ["ghp", "example"].join("_");
+    const openAiLikeToken = ["sk", "example"].join("-");
+    const slackLikeToken = ["xoxb", "1", "example"].join("-");
+    const awsLikeToken = ["AKIA", "1234567890ABCDEF"].join("");
+    const bearerToken = ["Bearer", "abc.def"].join(" ");
+    const privateUrl = ["https://", "private.example.test/path"].join("");
+    const plan = buildAlertDeliveryPlan({
+      credentials,
+      labels: {
+        stream_id: "stream_1",
+        environment: "production",
+        alert_context: [wallet, githubLikeToken, openAiLikeToken, slackLikeToken, awsLikeToken, bearerToken, "oauth", "api_key", "secret", "token", "private", privateUrl].join(" ")
+      }
+    });
+    const labels = plan.payloads[0]?.labels ?? {};
+    expect(labels.stream_id).toBe("stream_1");
+    expect(labels.environment).toBe("production");
+    expect(JSON.stringify(labels)).not.toContain(wallet);
+    expect(JSON.stringify(labels)).not.toContain(githubLikeToken);
+    expect(JSON.stringify(labels)).not.toContain(openAiLikeToken);
+    expect(JSON.stringify(labels)).not.toContain(slackLikeToken);
+    expect(JSON.stringify(labels)).not.toContain(awsLikeToken);
+    expect(JSON.stringify(labels)).not.toContain("abc.def");
+    expect(JSON.stringify(labels)).not.toMatch(/oauth|api_key|secret|token|private|https:\/\/private/i);
+    expect(labels.alert_context).toContain("[redacted]");
+  });
+
   it("maps alert severity for critical operator targets", () => {
     const plan = buildAlertDeliveryPlan({ credentials });
     expect(plan.payloads.find((payload) => payload.alertId === "auth_failure")?.severity).toBe("critical");
@@ -108,5 +137,11 @@ describe("external alert delivery integration boundary", () => {
     const provider = new ProviderSpecificAlertProvider(new MockExternalAlertProvider(), "example-alert-provider");
     const plan = buildAlertDeliveryPlan({ credentials: { source: "provider_specific", secretName: "projects/example/secrets/alert-provider", providerName: "example" }, dryRun: false });
     await expect(deliverExternalAlerts({ provider, plan })).rejects.toThrow(/manual approval/);
+  });
+
+  it("does not expose credential secret names in rollback plans", () => {
+    const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
+    const rollbackPlan = buildAlertDeliveryRollbackPlan(plan);
+    expect(JSON.stringify(rollbackPlan)).not.toContain(credentials.secretName);
   });
 });

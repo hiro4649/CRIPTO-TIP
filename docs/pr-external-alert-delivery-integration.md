@@ -43,13 +43,13 @@ Split reason: real provider SDK alert apply, external alert credentials, and liv
 
 Base SHA: f064b58d5b320e6209e76ef3959aee8679f9ee9c
 
-Head SHA: recorded in GitHub PR body after push
+Head SHA: see PR #15 `headRefOid` for the final pushed head
 
 Product CI: recorded in GitHub PR body after GitHub Actions pass
 
 Quality-gate: recorded in GitHub PR body after GitHub Actions pass
 
-Commit SHA: recorded in GitHub PR body after push
+Commit SHA: see PR #15 `headRefOid` for the final pushed head
 
 Evidence freshness: GitHub checks must pass for the pushed PR head before merge review.
 
@@ -129,11 +129,11 @@ Rejected alternative 2: docs-only alert plan. Rejected because it would not prov
 
 ## Tests or checks run
 
-- `corepack pnpm test`: pass, 19 test files, 163 passed tests, 6 skipped tests.
+- `corepack pnpm test`: pass, 19 test files, 165 passed tests, 6 skipped tests.
 
 ## Testing and review
 
-Local test counts: 19 test files, 163 passed tests, and 6 skipped tests.
+Local test counts: 19 test files, 165 passed tests, and 6 skipped tests.
 
 Risk summary: product code, alert delivery plan surface, provider-specific wrapper, manual apply gate, credential references, payload safety, docs, and quality evidence changed. No DB migration, public route, contract, wallet custody, token sale, exchange, cash-out, investment behavior, YouTube scraping, real provider delivery apply, or live account operation changed.
 
@@ -186,3 +186,4 @@ Uncovered risks: real provider SDK alert delivery apply, external alert delivery
 - Real provider SDK alert delivery apply remains manual-gated deployment work.
 - External alert delivery with real credentials remains provider integration work.
 - Live YouTube account operation remains manual-gated and out of CI.
+

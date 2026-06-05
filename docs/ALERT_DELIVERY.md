@@ -22,6 +22,7 @@ Alert payloads contain only:
 - sanitized safe labels
 
 Payloads exclude wallet addresses, YouTube OAuth tokens, API keys, raw user messages, raw display names, secrets, and private URLs.
+Unsafe label values are also redacted when a safe label key carries wallet-address, token-like, credential-like, or private URL text.
 
 ## Rollback And Disable
 

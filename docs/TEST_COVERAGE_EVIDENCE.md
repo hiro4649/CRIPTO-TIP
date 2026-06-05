@@ -137,7 +137,7 @@ Still uncovered by automated tests: real provider SDK deployment apply, external
 
 ## PR external-alert-delivery-integration
 
-Latest local result after implementation: full-suite `corepack pnpm test` passes with 19 test files, 163 passed tests, and 6 skipped tests.
+Latest local result after implementation: full-suite `corepack pnpm test` passes with 19 test files, 165 passed tests, and 6 skipped tests.
 
 Risk coverage added:
 
@@ -154,4 +154,17 @@ Risk coverage added:
 Edge cases and failure paths covered: missing credential secret names throw, apply without manual approval throws, unsafe label keys are removed from alert payloads, provider credential and rate-limit failures map to operator actions, and real provider delivery remains disabled without manual gate.
 
 Still uncovered by automated tests: real provider SDK delivery apply, real external alert provider credentials, and live YouTube account operation.
+
+
+
+## PR external-alert-delivery-integration hardening
+
+Latest local result after payload value redaction: full-suite `corepack pnpm test` and `npm test` pass with 19 test files, 165 passed tests, and 6 skipped tests.
+
+Added coverage:
+
+- Safe label value redacts wallet addresses, token-like strings, Bearer credentials, credential keywords, and private URLs.
+- Safe stream and environment labels are preserved.
+- Rollback plan does not include credential secret names.
+
 
