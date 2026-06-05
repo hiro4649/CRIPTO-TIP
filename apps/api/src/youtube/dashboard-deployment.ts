@@ -1,5 +1,6 @@
 import { buildYouTubeDashboardContract, youtubeAlertConfigs } from "./deployment-observability.js";
-import { assertProductionManualGateAndRegistry, markManualGateUsedAfterApply, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
+import type { ManualGateApproval, ManualGateRegistry } from "../manual-gates.js";
+import { executeProviderDeploymentApply } from "../provider-deployment.js";
 import type { YouTubeMetricName } from "./operations.js";
 
 export type DashboardCredentialSource = "secret_manager" | "provider_specific";
@@ -91,24 +92,27 @@ export async function deployDashboard(args: {
   targetCommitSha?: string;
   targetEnvironment?: string;
 }) {
-  let productionGate: ManualGateApproval | undefined;
-  if (!args.plan.dryRun && args.productionLike) {
-    productionGate = assertProductionManualGateAndRegistry({
-      registry: args.manualGateRegistry,
-      gate: args.manualGate,
+  const deployment = await executeProviderDeploymentApply({
+    operation: {
       gateType: "dashboard_apply",
-      targetCommitSha: args.targetCommitSha ?? "",
-      targetEnvironment: args.targetEnvironment
-    });
-  }
-  const result = await args.provider.deploy(args.plan, {
-    dryRun: args.plan.dryRun,
-    manualApproval: args.manualApproval === true || Boolean(productionGate) || (!args.productionLike && Boolean(args.manualGate))
+      dryRun: args.plan.dryRun,
+      targetCommitSha: args.targetCommitSha ?? "0".repeat(40),
+      targetEnvironment: args.targetEnvironment ?? "local",
+      rollbackPlanRef: "docs/DASHBOARD_DEPLOYMENT.md#rollback",
+      operatorRunbookRef: "docs/RUNBOOK.md#dashboard-deployment",
+      safeSummary: {
+        provider: "dashboard",
+        panelCount: args.plan.panels.length,
+        alertCount: args.plan.alerts.length
+      }
+    },
+    productionLike: args.productionLike,
+    manualApproval: args.manualApproval,
+    manualGate: args.manualGate,
+    manualGateRegistry: args.manualGateRegistry,
+    apply: (options) => args.provider.deploy(args.plan, options)
   });
-  if (!args.plan.dryRun && args.productionLike) {
-    markManualGateUsedAfterApply({ registry: args.manualGateRegistry, gate: productionGate });
-  }
-  return result;
+  return deployment.result;
 }
 
 export function buildDashboardRollbackPlan(plan: DashboardDeploymentPlan) {

@@ -216,3 +216,7 @@ Added coverage:
 - Self-protection detects unsafe safe-artifact upload behavior.
 - Self-protection detects always-pass wording in executable scripts.
 - Freshness validation rejects unresolved head placeholders in CI mode.
+
+## Provider-Safe Deployment Apply
+
+`apps/api/src/provider-deployment.test.ts` covers the shared provider-safe deployment apply boundary. Dashboard and external alert integration tests verify both surfaces use the shared boundary while preserving existing payload and dashboard contract behavior.

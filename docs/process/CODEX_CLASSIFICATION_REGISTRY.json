@@ -326,6 +326,33 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Evidence rendering and validation tests."
+    },
+    {
+      "pathPattern": "apps/api/src/provider-deployment.ts",
+      "classification": "product_source",
+      "surface": "provider_safe_deployment",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Shared provider-safe deployment apply boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/provider-deployment.test.ts",
+      "classification": "test",
+      "surface": "verification",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Provider-safe deployment apply tests."
+    },
+    {
+      "pathPattern": "docs/PROVIDER_SAFE_DEPLOYMENT.md",
+      "classification": "docs",
+      "surface": "docs",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Provider-safe deployment boundary docs."
     }
   ],
   "safeSummaryOnly": true

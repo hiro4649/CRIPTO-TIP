@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
+  "prNumber": "22",
   "productVerificationStatus": "pass",
   "behaviors": {
     "github_run_evidence_fetcher_current_head_only": "pass",
@@ -38,7 +38,7 @@
     "docs/pr-github-run-artifact-auto-injection.md"
   ],
   "runtimeReadinessClaimed": false,
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "headSha": "current_pr_head",
   "manualGateRegistryStatus": "pass",
   "verifiedBehaviors": [
     "manual_gate_requested_and_approved",
@@ -57,16 +57,21 @@
   "placeholder_prevention": "pass",
   "freshness_validator": "pass",
   "manual_gate_evidence_renderer": "pass",
-  "ciRun": "27030286624",
-  "qualityGateRun": "27030892160",
-  "qualityGateArtifact": "7443194743",
+  "ciRun": "not_yet_assigned_for_new_pr",
+  "qualityGateRun": "not_yet_assigned_for_new_pr",
+  "qualityGateArtifact": "not_yet_assigned_for_new_pr",
   "packageVerification": "pass",
   "apiCompatibilitySummary": "pass",
   "runtimeSmokeRationale": "pass",
   "reviewScopeAndRiskSummary": "pass",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "baseSha": "current_pr_base",
   "quality_gate_self_protection_required": "pass",
   "evidence_ci_fail_closed": "pass",
   "placeholder_checker_required": "pass",
-  "provider_safe_deployment_evidence": "pass"
+  "provider_safe_deployment_evidence": "pass",
+  "currentTask": "provider-safe-deployment-apply",
+  "latestQualityGateRun": "not_yet_assigned_for_new_pr",
+  "latestQualityGateArtifact": "not_yet_assigned_for_new_pr",
+  "productCiStatus": "not_yet_verified_for_new_pr",
+  "qualityGateStatus": "not_yet_verified_for_new_pr"
 }

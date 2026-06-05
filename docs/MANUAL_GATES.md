@@ -45,3 +45,7 @@ API keys, webhook URLs, or provider credentials.
 ## Rendered Evidence Source
 
 Manual gate registry documentation can be rendered from `.codex/manual-gates/manual-gates.json`. The rendered source is documentation evidence only; production-like apply still requires runtime validation through `ManualGateRegistry`.
+
+## Provider-Safe Deployment Apply
+
+Provider-specific deployment apply uses a shared boundary for dashboard apply, external alert apply, and future provider-specific apply operations. The shared boundary requires an approved manual gate and registry for production-like apply, rejects `manualApproval` boolean-only authorization, marks the gate used only after provider success, and keeps apply audit evidence safe-summary only.

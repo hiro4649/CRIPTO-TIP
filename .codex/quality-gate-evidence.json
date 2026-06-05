@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
+  "prNumber": "22",
   "qualityGateExpectedStatus": "success",
   "reasonCodeMappings": {
     "secretScan": "node scripts/codex-secret-safety-scan.mjs and placeholder-only evidence files",
@@ -30,11 +30,11 @@
     "alert provider secret-name placeholders only"
   ],
   "runtimeReadinessClaimed": false,
-  "currentTask": "quality-gate-self-protection-required",
-  "qualityGateRun": "27030892160",
-  "qualityGateArtifact": "7443194743",
-  "ciRun": "27030286624",
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "currentTask": "provider-safe-deployment-apply",
+  "qualityGateRun": "not_yet_assigned_for_new_pr",
+  "qualityGateArtifact": "not_yet_assigned_for_new_pr",
+  "ciRun": "not_yet_assigned_for_new_pr",
+  "headSha": "current_pr_head",
   "manual_gate_production_registry_required": "pass",
   "manual_gate_single_use_after_successful_apply": "pass",
   "manual_gate_not_used_on_failed_apply": "pass",
@@ -43,9 +43,9 @@
   "placeholder_checker": "scripts/check-evidence-placeholders.mjs",
   "freshness_validator": "scripts/validate-evidence-freshness.mjs",
   "manual_gate_renderer": ".codex/manual-gates/manual-gates.json",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
-  "latestQualityGateRun": "27030892160",
-  "latestQualityGateArtifact": "7443194743",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success"
+  "baseSha": "current_pr_base",
+  "latestQualityGateRun": "not_yet_assigned_for_new_pr",
+  "latestQualityGateArtifact": "not_yet_assigned_for_new_pr",
+  "productCiStatus": "not_yet_verified_for_new_pr",
+  "qualityGateStatus": "not_yet_verified_for_new_pr"
 }

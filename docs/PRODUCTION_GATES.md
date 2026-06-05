@@ -53,3 +53,7 @@ requiring placeholder checks, freshness structure checks, and workflow
 self-protection in CI. It still does not make the system G4 production ready;
 provider apply, external alert delivery with real credentials, and live YouTube
 operation remain manual-gated.
+
+## Provider-Safe Deployment
+
+Provider-specific deployment apply is not production-ready by default. Production-like apply requires an approved manual gate record, registry membership, target commit and environment match, rollback reference, operator runbook reference, and safe-summary result evidence. Real provider SDK apply and persistent manual gate storage remain future work.

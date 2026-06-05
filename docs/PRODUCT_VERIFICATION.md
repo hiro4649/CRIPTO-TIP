@@ -231,3 +231,7 @@ Verified product behavior:
 ## Production-Like Apply Enforcement Update
 
 Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## Provider-Safe Deployment Apply
+
+Provider-safe deployment apply is verified by `apps/api/src/provider-deployment.test.ts`, `apps/api/src/youtube/dashboard-deployment.test.ts`, and `apps/api/src/youtube/alert-delivery.test.ts`. The tests confirm production-like apply requires approved manual gate records and registry membership, while dry-run remains available without consuming a gate.

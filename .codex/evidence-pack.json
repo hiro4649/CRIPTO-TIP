@@ -3,26 +3,24 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
+  "prNumber": "22",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
-  "title": "feat: require quality gate self protection",
-  "goal": "Require quality-gate self-protection, evidence placeholder checks, and fail-closed evidence validation in CI while adding negative fixtures for quality-gate weakening and provider-safe deployment evidence.",
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
-  "ciRunId": "27030286624",
-  "qualityGateRunId": "27030892160",
-  "qualityGateArtifactId": "7443194743",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add provider safe deployment apply",
+  "goal": "Add a shared provider-safe deployment apply boundary behind approved manual gate records, safe audit evidence, dry-run/apply separation, rollback references, and dashboard/external alert integration.",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
+  "ciRunId": "not_yet_assigned_for_new_pr",
+  "qualityGateRunId": "not_yet_assigned_for_new_pr",
+  "qualityGateArtifactId": "not_yet_assigned_for_new_pr",
+  "productCiStatus": "not_yet_verified_for_new_pr",
+  "qualityGateStatus": "not_yet_verified_for_new_pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
-      ".github/workflows/ci.yml",
-      ".github/workflows/quality-gate.yml",
       ".codex/evidence-pack.json",
       ".codex/quality-gate-evidence.json",
       ".codex/test-summary.json",
@@ -31,32 +29,34 @@
       ".codex/product-verification.json",
       ".codex/task-contract.json",
       ".codex/review-independence.json",
-      "apps/api/src/evidence-rendering.test.ts",
-      "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-      "docs/process/EVIDENCE_RENDERING.md",
-      "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "apps/api/src/provider-deployment.ts",
+      "apps/api/src/provider-deployment.test.ts",
+      "apps/api/src/youtube/dashboard-deployment.ts",
+      "apps/api/src/youtube/dashboard-deployment.test.ts",
+      "apps/api/src/youtube/alert-delivery.ts",
+      "apps/api/src/youtube/alert-delivery.test.ts",
+      "docs/PROVIDER_SAFE_DEPLOYMENT.md",
       "docs/MANUAL_GATES.md",
-      "docs/PRODUCTION_GATES.md",
+      "docs/DASHBOARD_DEPLOYMENT.md",
+      "docs/ALERT_DELIVERY.md",
+      "docs/RUNBOOK.md",
       "docs/RISK_REGISTER.md",
-      "docs/pr-quality-gate-self-protection-required.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "package.json",
-      "scripts/check-quality-gate-self-protection.mjs",
-      "scripts/validate-evidence-freshness.mjs",
-      "scripts/evidence-lib.mjs"
+      "docs/PRODUCTION_GATES.md",
+      "docs/PRODUCT_VERIFICATION.md",
+      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/pr-provider-safe-deployment-apply.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
     ],
     "allowedPaths": [
-      ".github/workflows/ci.yml",
-      ".github/workflows/quality-gate.yml",
       ".codex/**",
-      "apps/api/src/evidence-rendering.test.ts",
-      "docs/**",
-      "package.json",
-      "scripts/check-quality-gate-self-protection.mjs",
-      "scripts/validate-evidence-freshness.mjs",
-      "scripts/evidence-lib.mjs"
+      "apps/api/src/provider-deployment.ts",
+      "apps/api/src/provider-deployment.test.ts",
+      "apps/api/src/youtube/dashboard-deployment.ts",
+      "apps/api/src/youtube/dashboard-deployment.test.ts",
+      "apps/api/src/youtube/alert-delivery.ts",
+      "apps/api/src/youtube/alert-delivery.test.ts",
+      "docs/**"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
@@ -80,6 +80,14 @@
     },
     {
       "name": "npm test",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
       "result": "pass"
     },
     {
@@ -114,14 +122,12 @@
     "status": "pass"
   },
   "allowedScope": [
-    "quality_gate_self_protection_requiredization",
-    "evidence_ci_fail_closed",
-    "placeholder_checker_required",
-    "freshness_validator_required",
-    "github_run_artifact_freshness_check",
-    "negative_fixtures",
-    "provider_safe_deployment_evidence",
-    "manual_gate_evidence_enforcement",
+    "provider_safe_deployment_apply_boundary",
+    "manual_gate_enforcement",
+    "dashboard_apply_boundary_hardening",
+    "external_alert_apply_boundary_hardening",
+    "safe_apply_audit_evidence",
+    "rollback_evidence",
     "docs",
     "tests"
   ],
@@ -142,39 +148,39 @@
     "real production secret commit",
     "production deployment apply without approved manual gate",
     "external alert delivery with real provider credentials without approved manual gate",
-    "live YouTube account operation without approved manual gate"
+    "live YouTube account operation without approved manual gate",
+    "real provider SDK apply",
+    "persistent manual gate DB storage"
   ],
   "doneCriteria": [
-    "quality:self-protection runs in required CI path",
-    "evidence:check-placeholders runs in required CI path",
-    "evidence:validate runs in required CI path without mutating PR body",
-    "quality-gate workflow rejects missing safe artifact upload output",
-    "self-protection detects removed Run Codex quality gate step",
-    "self-protection detects removed Upload safe quality artifacts step",
-    "self-protection detects unsafe artifact upload ignore behavior",
-    "self-protection detects continue-on-error on quality-gate job",
-    "self-protection detects always pass wording in executable scripts",
-    "placeholder fixture fails evidence check",
-    "stale head/run/artifact fixtures fail freshness validation",
-    "manual gate evidence keeps production-like apply manual-gated and secret-free",
+    "provider deployment dry-run succeeds without manual gate",
+    "provider deployment apply requires approved manual gate and registry",
+    "provider deployment apply rejects manualApproval boolean alone",
+    "provider deployment apply rejects wrong gate type, commit, environment, expired gate, and used gate",
+    "provider deployment apply marks gate used after success",
+    "provider deployment apply does not mark gate used after provider failure",
+    "provider deployment result excludes secret values, private URLs, wallet addresses, and raw user data",
+    "provider deployment rollback evidence is required",
+    "dashboard apply uses provider deployment apply boundary",
+    "external alert apply uses provider deployment apply boundary",
     "no secret scan passes",
     "no scraping scan passes"
   ],
   "testSummary": {
-    "testFiles": 21,
-    "passed": 199,
+    "testFiles": 22,
+    "passed": 205,
     "skipped": 6
   },
   "securityBoundaries": [
-    "Evidence files store safe summaries only.",
+    "Provider deployment apply results are safe-summary only.",
+    "Production-like apply requires an approved manual gate record and registry.",
     "Manual gate evidence stores secret references only, never secret values.",
-    "PR evidence renderer blocks placeholder text before merge.",
     "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is introduced."
   ],
   "residualRisks": [
-    "Provider-specific dashboard and alert apply remain manual-gated and out of scope.",
-    "Actual production deployment apply and live YouTube account operation remain out of scope.",
-    "GitHub API availability can block automatic evidence refresh; the script fails closed unless offline-readonly is explicit."
+    "Real provider SDK apply remains out of scope.",
+    "Persistent manual gate DB storage remains out of scope.",
+    "Actual production deployment apply and live YouTube account operation remain out of scope."
   ],
   "humanConfirmation": [
     "Merge decision",
@@ -183,19 +189,18 @@
     "Quality-gate status",
     "Remaining blockers"
   ],
-  "testFiles": 21,
-  "passed": 199,
-  "tests": 199,
+  "testFiles": 22,
+  "passed": 205,
+  "tests": 205,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass with 21 test files, 199 passed, 6 skipped",
-    "npm test: pass with 21 test files, 199 passed, 6 skipped",
+    "corepack pnpm test: pass with 22 test files, 205 passed, 6 skipped",
+    "npm test: pass with 22 test files, 205 passed, 6 skipped",
+    "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "corepack pnpm evidence:check-placeholders: pass",
-    "corepack pnpm evidence:validate: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass"
   ],
   "packageVerification": {
@@ -205,15 +210,15 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR hardens CI/evidence tooling only."
+    "internalRuntimeApiChanged": true,
+    "statement": "No public API endpoint, contract ABI, YouTube connector ingestion behavior, or IRIS delivery behavior is changed. Internal provider apply boundaries are hardened behind manual gates."
   },
-  "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes offline GitHub evidence tooling and tests, so package verification, evidence script checks, and GitHub CI are the applicable smoke boundary.",
+  "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes provider apply boundary code, tests, and docs; local tests and GitHub CI are the applicable smoke boundary.",
   "reviewScope": {
-    "scope": "Quality-gate workflow self-protection required path, evidence CI validation, negative fixtures, provider-safe deployment evidence docs, and package scripts.",
-    "riskSummary": "Main risk is accidentally weakening quality-gate or allowing stale/placeholder evidence to pass CI; product runtime behavior is intentionally unchanged.",
-    "verificationOracle": "Required CI evidence scripts, self-protection fixtures, freshness validator fixtures, placeholder checker, package verification, and GitHub checks."
+    "scope": "Provider-safe deployment apply executor, dashboard/external alert integration, manual gate enforcement, safe audit evidence, docs, and tests.",
+    "riskSummary": "Main risk is allowing production-like provider apply without an approved gate or leaking secret-like values into apply evidence; real provider SDK apply remains out of scope.",
+    "verificationOracle": "Provider deployment tests, dashboard and external alert integration tests, manual gate tests, evidence CI, self-protection, secret scan, and no-scraping scan."
   },
-  "testsPassed": 199,
-  "prBodyPath": "docs/pr-quality-gate-self-protection-required.md"
+  "testsPassed": 205,
+  "prBodyPath": "docs/pr-provider-safe-deployment-apply.md"
 }

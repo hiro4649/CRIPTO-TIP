@@ -88,3 +88,9 @@ Risk register entries can be rendered from `.codex/risk-register.json`. The JSON
 | High | Evidence placeholders or stale evidence could appear in PR docs after automation changes. | Harness owner | This PR | `evidence:check-placeholders` and `evidence:validate --ci` run in CI without mutating the PR body. |
 | Medium | GitHub run/artifact auto-refresh still depends on GitHub API/gh availability. | Harness owner | Follow-up hardening | Fetch remains fail-closed outside explicit offline-readonly mode; PR body refresh failures remain blockers. |
 | Medium | Provider-safe deployment evidence can drift from manual gate implementation. | Operations | Manual gate persistence PR | Manual-gate tests and docs keep production-like apply bound to approved gate records and secret-reference-only evidence. |
+
+## Provider-Safe Deployment Risk
+
+| Severity | Risk | Owner | Follow-up | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Provider-specific apply can become unsafe if manual gate enforcement is bypassed. | Operations owner | provider-safe deployment PR | Shared provider deployment boundary requires approved gate record, registry membership, rollback evidence, and safe-summary result checks. |

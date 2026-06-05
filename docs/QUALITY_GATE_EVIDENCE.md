@@ -212,3 +212,10 @@ external alert apply, live YouTube soak, provider secret rotation, and
 provider-specific deployment apply must keep approved manual gate evidence and
 must not store secret values, private URLs, wallet addresses, raw messages, raw
 display names, API keys, OAuth tokens, or webhook URLs.
+
+## Provider-Safe Deployment Evidence
+
+- Shared boundary: `apps/api/src/provider-deployment.ts` enforces production-like apply through approved manual gate records and registry membership.
+- Dashboard integration: `apps/api/src/youtube/dashboard-deployment.ts` routes apply through the shared boundary while keeping dashboard-specific plan generation separate.
+- External alert integration: `apps/api/src/youtube/alert-delivery.ts` routes apply through the shared boundary while keeping alert payload safety separate.
+- Tests verify dry-run without a gate, apply rejection without an approved gate, wrong gate type/commit/environment rejection, expired/used gate rejection, gate `used` marking after success, no `used` marking after provider failure, rollback evidence requirements, and safe-summary result constraints.
