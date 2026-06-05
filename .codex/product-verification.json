@@ -78,5 +78,6 @@
     "docs/ALERT_DELIVERY.md",
     "docs/pr-external-alert-delivery-integration.md"
   ],
-  "runtimeReadinessClaimed": false
+  "runtimeReadinessClaimed": false,
+  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9"
 }

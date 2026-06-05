@@ -3,7 +3,7 @@
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 15,
-  "qualityGateExpectedStatus": "requires_github_actions_replay_for_new_head",
+  "qualityGateExpectedStatus": "success",
   "reasonCodeMappings": {
     "changeClassificationStatus": ".codex/change-classification.json",
     "classificationCoverageStatus": ".codex/change-classification.json classifies alert delivery files",
@@ -27,5 +27,9 @@
     "alert provider secret-name placeholders only"
   ],
   "runtimeReadinessClaimed": false,
-  "currentTask": "external-alert-delivery-integration"
+  "currentTask": "external-alert-delivery-integration",
+  "qualityGateRun": "26992071383",
+  "qualityGateArtifact": "7427699516",
+  "ciRun": "26992054650",
+  "headSha": "2b4997e7b68668e2d42df533ba636f00093288f9"
 }
