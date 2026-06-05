@@ -77,9 +77,9 @@
   "verificationOracle": "Local typecheck and tests verify alert delivery plan, provider boundaries, dry-run/apply gate, credential failure, payload safety, provider error mapping, and rollback plan; GitHub CI and quality-gate verify pushed head.",
   "storageOracle": "No DB migration or storage format change in this PR.",
   "releaseGateOracle": "Evidence tooling only; no production runtime readiness claimed.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRun": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRun": "awaiting_github_actions_after_pr_creation",
-  "qualityGateArtifact": "awaiting_github_actions_after_pr_creation"
+  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "ciRun": "27030286624",
+  "qualityGateRun": "27030892160",
+  "qualityGateArtifact": "7443194743"
 }

@@ -21,19 +21,19 @@ Done criteria: quality:self-protection runs in required CI path; evidence:check-
 
 ## Evidence Integrity
 
-Head SHA: 267f965e5689cfa52e02aab355a9e9e7ad1148fb
+Head SHA: 28429d4eb3aa5ae6052d332d7c6ecb098b82d627
 
 Base SHA: b289df9215c31caefbece4c9922fefd825e5266d
 
-Product CI: awaiting_github_actions_after_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_github_actions_after_pr_creation
+Quality-gate: success
 
-CI run: awaiting_github_actions_after_pr_creation
+CI run: 27030286624
 
-Quality-gate run: awaiting_github_actions_after_pr_creation
+Quality-gate run: 27030892160
 
-Quality-gate artifact: awaiting_github_actions_after_pr_creation
+Quality-gate artifact: 7443194743
 
 Tests: 21 test files, 199 passed, 6 skipped
 
@@ -62,7 +62,7 @@ Product verification commands:
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
 - corepack pnpm test: pass with 21 test files, 199 passed, 6 skipped
-- npm test: pending full replay
+- npm test: pass with 21 test files, 199 passed, 6 skipped
 - corepack pnpm quality:self-protection: pass
 - corepack pnpm evidence:check-placeholders: pass
 - corepack pnpm evidence:validate: pass

@@ -10,13 +10,13 @@
   "riskLevel": "R3",
   "title": "feat: require quality gate self protection",
   "goal": "Require quality-gate self-protection, evidence placeholder checks, and fail-closed evidence validation in CI while adding negative fixtures for quality-gate weakening and provider-safe deployment evidence.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateArtifactId": "awaiting_github_actions_after_pr_creation",
-  "productCiStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
+  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
+  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
+  "ciRunId": "27030286624",
+  "qualityGateRunId": "27030892160",
+  "qualityGateArtifactId": "7443194743",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -94,14 +94,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27023126833",
+      "runId": "27030286624",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27023240225",
+      "runId": "27030892160",
       "result": "success",
-      "artifactId": "7440070616"
+      "artifactId": "7443194743"
     }
   ],
   "productionClaims": {
@@ -192,7 +192,7 @@
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass with 21 test files, 199 passed, 6 skipped",
-    "npm test: pending full replay",
+    "npm test: pass with 21 test files, 199 passed, 6 skipped",
     "corepack pnpm quality:self-protection: pass",
     "corepack pnpm evidence:check-placeholders: pass",
     "corepack pnpm evidence:validate: pass",
