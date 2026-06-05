@@ -1,4 +1,5 @@
 import { YouTubeApiError, isRetryableYouTubeError, type YouTubeConnector, type YouTubeConnectorOptions, type YouTubePollResult } from "./connector.js";
+import { assertManualGateApproval, manualGateExpectation, type ManualGateApproval } from "../manual-gates.js";
 
 export const youtubeMetricNames = [
   "youtube_connector_connected",
@@ -111,11 +112,19 @@ export function createManualLiveYouTubeSoakPlan(env: {
   YOUTUBE_CREDENTIAL_SOURCE?: string;
   YOUTUBE_API_KEY_SECRET_NAME?: string;
   YOUTUBE_OAUTH_TOKEN_SECRET_NAME?: string;
+  manualGate?: ManualGateApproval;
+  targetCommitSha?: string;
+  targetEnvironment?: string;
 }) {
   const enabled = env.RUN_LIVE_YOUTUBE_SOAK_TESTS === "true";
   const hasManagedCredentialSource = env.YOUTUBE_CREDENTIAL_SOURCE === "secret_manager" || env.YOUTUBE_CREDENTIAL_SOURCE === "provider_specific";
   const hasSecretBoundary = hasManagedCredentialSource && Boolean(env.YOUTUBE_API_KEY_SECRET_NAME || env.YOUTUBE_OAUTH_TOKEN_SECRET_NAME);
   if (!enabled) return { status: "skipped" as const, reason: "manual_live_youtube_soak_disabled" };
   if (!hasSecretBoundary) return { status: "skipped" as const, reason: "managed_credential_boundary_missing" };
+  assertManualGateApproval(env.manualGate, manualGateExpectation({
+    gateType: "youtube_live_soak",
+    targetCommitSha: env.targetCommitSha ?? "",
+    targetEnvironment: env.targetEnvironment
+  }));
   return { status: "ready" as const, reason: "manual_gate_and_secret_boundary_present" };
 }

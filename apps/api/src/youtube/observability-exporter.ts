@@ -1,5 +1,6 @@
 import { evaluateYouTubeAlerts, type YouTubeAlertConfig, type YouTubeMetricsSnapshot } from "./deployment-observability.js";
 import { createManualLiveYouTubeSoakPlan, youtubeMetricNames, type YouTubeMetricName } from "./operations.js";
+import type { ManualGateApproval } from "../manual-gates.js";
 
 export type ObservabilityMetricFormat = "prometheus" | "opentelemetry";
 
@@ -84,6 +85,9 @@ export function ingestManualLiveYouTubeSoakResult(args: {
     YOUTUBE_CREDENTIAL_SOURCE?: string;
     YOUTUBE_API_KEY_SECRET_NAME?: string;
     YOUTUBE_OAUTH_TOKEN_SECRET_NAME?: string;
+    manualGate?: ManualGateApproval;
+    targetCommitSha?: string;
+    targetEnvironment?: string;
   };
   observedEvents?: number;
   durationSeconds?: number;

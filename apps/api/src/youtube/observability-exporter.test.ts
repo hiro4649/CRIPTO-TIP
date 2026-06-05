@@ -11,6 +11,7 @@ import {
   publishYouTubeMetricsSnapshot
 } from "./observability-exporter.js";
 import { youtubeMetricNames, type YouTubeMetricName } from "./operations.js";
+import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 
 describe("YouTube observability exporter integration boundary", () => {
   const snapshot = buildYouTubeMetricsSnapshot({
@@ -127,7 +128,10 @@ describe("YouTube observability exporter integration boundary", () => {
         env: {
           RUN_LIVE_YOUTUBE_SOAK_TESTS: "true",
           YOUTUBE_CREDENTIAL_SOURCE: "secret_manager",
-          YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key"
+          YOUTUBE_API_KEY_SECRET_NAME: "projects/example/secrets/youtube-api-key",
+          targetCommitSha,
+          targetEnvironment: "production",
+          manualGate: makeManualGate("youtube_live_soak")
         },
         observedEvents: 7,
         durationSeconds: 60

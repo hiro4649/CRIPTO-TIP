@@ -163,3 +163,14 @@ The exporter boundary is provider-neutral. If dashboard export or alert routing 
 5. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
 6. If provider apply fails, map credential failures to credential rotation, manual gate failures to approval, rate/quota failures to provider-limit review, and unknown failures to operator inspection.
 7. Rollback by disabling the external alert route, verifying dashboard alerts remain visible, rotating credentials if needed, and recording operator review.
+## Manual Gate Registry
+
+Before any production-like dashboard apply, external alert apply, live YouTube soak, provider secret rotation, provider-specific deployment apply, production RPC enablement, IRIS Core delivery enablement, or overlay token rotation apply, create a manual gate record with the target commit SHA, target environment, required evidence, rollback plan reference, operator runbook reference, and secret source reference.
+
+Only a `project-owner` approval may move a gate to `approved`. Do not place raw OAuth tokens, API keys, webhook URLs, private URLs, bearer tokens, wallet addresses, raw messages, raw display names, or secret values in the gate record. Use secret references only.
+
+Apply operations that receive a registry mark the approved gate as `used`. If an apply fails after the gate is used, follow the rollback plan referenced by `rollback_plan_ref`, then request a new gate for any retry.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

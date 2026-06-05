@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 15,
+  "prNumber": "pending",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -78,75 +78,77 @@
       "riskLevel": "medium",
       "verification": "workflow required status routing for v106 active self-test",
       "scope": "legacy_self_test_advisory_routing"
+    },
+    {
+      "pathPattern": ".codex/manual-gates/**",
+      "classification": "manual_gate_schema",
+      "riskLevel": "medium",
+      "verification": "manual gate schema and secret scan",
+      "scope": "manual_gate_evidence"
+    },
+    {
+      "pathPattern": "apps/api/src/manual-gates**",
+      "classification": "manual_gate_boundary",
+      "riskLevel": "high",
+      "verification": "apps/api/src/manual-gates.test.ts",
+      "scope": "manual_gate_registry"
     }
   ],
   "changedFiles": [
     {
-      "path": ".codex/change-classification.json",
-      "classification": "verification_relevant"
+      "path": ".codex/manual-gates/schema.json",
+      "classification": "manual_gate_schema"
     },
     {
-      "path": ".codex/product-verification.json",
-      "classification": "verification_relevant"
+      "path": "apps/api/src/manual-gates.ts",
+      "classification": "manual_gate_boundary"
     },
     {
-      "path": ".codex/quality-gate-evidence.json",
-      "classification": "verification_relevant"
+      "path": "apps/api/src/manual-gates.test.ts",
+      "classification": "manual_gate_boundary"
     },
     {
-      "path": ".codex/review-independence.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/task-contract.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": ".codex/test-coverage-evidence.json",
-      "classification": "verification_relevant"
-    },
-    {
-      "path": "apps/api/src/youtube/alert-delivery.test.ts",
-      "classification": "test"
+      "path": "apps/api/src/manual-gates.test-support.ts",
+      "classification": "manual_gate_boundary"
     },
     {
       "path": "apps/api/src/youtube/alert-delivery.ts",
       "classification": "product_source"
     },
     {
-      "path": "docs/ALERT_DELIVERY.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/alert-delivery.test.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/DASHBOARD_DEPLOYMENT.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/dashboard-deployment.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/OBSERVABILITY_EXPORTER.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/dashboard-deployment.test.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/PRODUCTION_GATES.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/operations.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/PRODUCT_VERIFICATION.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/operations.test.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/QUALITY_GATE_EVIDENCE.md",
-      "classification": "docs"
+      "path": "apps/api/src/youtube/credentials.ts",
+      "classification": "product_source"
     },
     {
-      "path": "docs/RISK_REGISTER.md",
+      "path": "apps/api/src/youtube/credentials.test.ts",
+      "classification": "product_source"
+    },
+    {
+      "path": "docs/MANUAL_GATES.md",
       "classification": "docs"
     },
     {
       "path": "docs/RUNBOOK.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
       "classification": "docs"
     },
     {
@@ -158,32 +160,36 @@
       "classification": "docs"
     },
     {
-      "path": "docs/pr-external-alert-delivery-integration.md",
+      "path": "docs/DASHBOARD_DEPLOYMENT.md",
       "classification": "docs"
     },
     {
-      "path": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "classification": "verification_relevant"
+      "path": "docs/ALERT_DELIVERY.md",
+      "classification": "docs"
     },
     {
-      "path": "docs/process/CODEX_HARNESS_MANIFEST.json",
-      "classification": "harness_manifest"
+      "path": "docs/PRODUCTION_GATES.md",
+      "classification": "docs"
     },
     {
-      "path": "scripts/codex-v080-lib.mjs",
-      "classification": "harness_support"
+      "path": "docs/RISK_REGISTER.md",
+      "classification": "docs"
     },
     {
-      "path": "scripts/codex-v097-gate-lib.mjs",
-      "classification": "harness_support"
+      "path": "docs/QUALITY_GATE_EVIDENCE.md",
+      "classification": "docs"
     },
     {
-      "path": "scripts/codex-local-quality-gate.mjs",
-      "classification": "harness_support"
+      "path": "docs/PRODUCT_VERIFICATION.md",
+      "classification": "docs"
     },
     {
-      "path": "scripts/codex-workflow-quality-runner.mjs",
-      "classification": "harness_support"
+      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "classification": "docs"
+    },
+    {
+      "path": "docs/pr-manual-gate-registry.md",
+      "classification": "docs"
     }
   ]
 }

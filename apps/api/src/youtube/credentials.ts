@@ -1,4 +1,5 @@
 import type { AppConfig } from "../config/env.js";
+import { assertManualGateApproval, manualGateExpectation, type ManualGateApproval } from "../manual-gates.js";
 
 export type YouTubeCredentialSet = {
   apiKey?: string | undefined;
@@ -78,9 +79,17 @@ export function createYouTubeCredentialRotationPlan(args: {
   currentSecretName?: string;
   nextSecretName?: string;
   source: "secret_manager" | "provider_specific";
+  manualGate?: ManualGateApproval;
+  targetCommitSha?: string;
+  targetEnvironment?: string;
 }) {
   if (!args.currentSecretName || !args.nextSecretName) return { status: "blocked" as const, reason: "secret_name_pair_required" };
   if (args.currentSecretName === args.nextSecretName) return { status: "blocked" as const, reason: "next_secret_name_must_differ" };
+  assertManualGateApproval(args.manualGate, manualGateExpectation({
+    gateType: "provider_secret_rotation",
+    targetCommitSha: args.targetCommitSha ?? "",
+    targetEnvironment: args.targetEnvironment
+  }));
   return {
     status: "ready" as const,
     source: args.source,

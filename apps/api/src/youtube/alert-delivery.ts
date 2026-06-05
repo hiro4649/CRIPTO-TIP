@@ -1,4 +1,5 @@
 import { youtubeAlertConfigs, type YouTubeAlertConfig, type YouTubeAlertId } from "./deployment-observability.js";
+import { assertProductionManualGateAndRegistry, markManualGateUsedAfterApply, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
 import type { YouTubeMetricName } from "./operations.js";
 
 export type AlertCredentialSource = "secret_manager" | "provider_specific";
@@ -89,8 +90,30 @@ export async function deliverExternalAlerts(args: {
   provider: ExternalAlertProvider;
   plan: AlertDeliveryPlan;
   manualApproval?: boolean;
+  manualGate?: ManualGateApproval;
+  manualGateRegistry?: ManualGateRegistry;
+  productionLike?: boolean;
+  targetCommitSha?: string;
+  targetEnvironment?: string;
 }) {
-  return args.provider.deliver(args.plan, { dryRun: args.plan.dryRun, manualApproval: args.manualApproval === true });
+  let productionGate: ManualGateApproval | undefined;
+  if (!args.plan.dryRun && args.productionLike) {
+    productionGate = assertProductionManualGateAndRegistry({
+      registry: args.manualGateRegistry,
+      gate: args.manualGate,
+      gateType: "external_alert_apply",
+      targetCommitSha: args.targetCommitSha ?? "",
+      targetEnvironment: args.targetEnvironment
+    });
+  }
+  const result = await args.provider.deliver(args.plan, {
+    dryRun: args.plan.dryRun,
+    manualApproval: args.manualApproval === true || Boolean(productionGate) || (!args.productionLike && Boolean(args.manualGate))
+  });
+  if (!args.plan.dryRun && args.productionLike) {
+    markManualGateUsedAfterApply({ registry: args.manualGateRegistry, gate: productionGate });
+  }
+  return result;
 }
 
 export function buildAlertDeliveryRollbackPlan(plan: AlertDeliveryPlan) {

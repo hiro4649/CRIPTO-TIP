@@ -39,3 +39,6 @@ The code-level rotation plan requires distinct current and next secret names. It
 ## Manual Live Soak
 
 Live YouTube soak tests are skipped unless `RUN_LIVE_YOUTUBE_SOAK_TESTS=true` and a managed credential source such as `secret_manager` or `provider_specific` is configured with a secret name. Local `.env` credential values must not enable production-like live tests.
+## Manual Gate Registry
+
+Provider credential rotation is protected by the manual gate registry. A production-like rotation requires an approved `provider_secret_rotation` gate for the target commit and environment. The approval record may store only secret references, never raw credential values.

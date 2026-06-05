@@ -2,9 +2,9 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 15,
-  "testFiles": 19,
-  "testsPassed": 165,
+  "prNumber": "pending",
+  "testFiles": 20,
+  "testsPassed": 173,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -53,7 +53,17 @@
     "alert_payload_excludes_secrets_and_raw_user_data",
     "alert_severity_mapping",
     "alert_provider_error_operator_action",
-    "alert_delivery_rollback_disable_plan"
+    "alert_delivery_rollback_disable_plan",
+    "manual_gate_registry",
+    "dashboard_apply_gate",
+    "external_alert_apply_gate",
+    "youtube_live_soak_gate",
+    "provider_secret_rotation_gate",
+    "secret_reference_safety",
+    "production_manual_gate_registry_required",
+    "manual_gate_single_use_after_apply",
+    "manual_gate_not_used_on_failed_apply",
+    "manual_approval_boolean_not_production_authorization"
   ],
   "uncoveredRisks": [
     "provider_specific_secret_manager_sdk",
@@ -61,7 +71,10 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 165,
+  "tests": 178,
   "testCoverageEvidenceStatus": "pass",
-  "evidencePresent": true
+  "evidencePresent": true,
+  "headSha": "branch_head_sha_in_pr_metadata",
+  "passed": 178,
+  "skipped": 6
 }

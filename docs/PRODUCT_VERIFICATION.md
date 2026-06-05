@@ -219,3 +219,15 @@ Verified product behavior:
 - Apply still fails closed without manual approval.
 - Rollback plans do not expose credential secret names.
 
+## PR manual-gate-registry
+
+- Manual gate registry creates requested gates and approves them only with `project-owner` role.
+- Gate validation rejects missing target commit SHA, unsafe secret values, expired gates, wrong gate types, wrong target commits, and reused gates.
+- Dashboard apply requires an approved `dashboard_apply` gate in production-like mode.
+- External alert apply requires an approved `external_alert_apply` gate in production-like mode.
+- Manual live YouTube soak requires an approved `youtube_live_soak` gate.
+- Provider secret rotation requires an approved `provider_secret_rotation` gate.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.

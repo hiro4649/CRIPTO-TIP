@@ -168,3 +168,10 @@ Machine-readable evidence should classify `apps/api/src/iris/**`, docs, `.env.ex
 - Secret safety: no real dashboard provider key, alert provider key, YouTube API key, OAuth token, or Secret Manager payload is committed.
 - Quality-gate expected status: GitHub Actions must pass on the pushed PR head before merge.
 
+## PR manual-gate-registry Evidence
+
+Manual gate registry evidence: `.codex/manual-gates/schema.json`, `apps/api/src/manual-gates.ts`, and `apps/api/src/manual-gates.test.ts` define gate types, required fields, secret-reference safety, target commit binding, target environment binding, expiry, and single-use behavior. Dashboard apply, external alert apply, live YouTube soak, and provider secret rotation have production-like gate tests.
+
+## Production-Like Apply Enforcement Update
+
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
