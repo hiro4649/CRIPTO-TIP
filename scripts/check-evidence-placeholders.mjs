@@ -4,7 +4,7 @@ import path from "node:path";
 import { assertNoPlaceholders } from "./evidence-lib.mjs";
 
 const roots = process.argv.slice(2).filter((arg) => !arg.startsWith("--"));
-const scanRoots = roots.length ? roots : [".codex", "docs"];
+const scanRoots = roots.length ? roots : [".codex", "docs", ".github", "README.md", "package.json"];
 
 function walk(target) {
   if (!fs.existsSync(target)) return [];

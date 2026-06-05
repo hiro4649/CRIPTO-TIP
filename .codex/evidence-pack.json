@@ -3,50 +3,50 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "18",
+  "prNumber": "19",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
-  "title": "feat: add evidence single source of truth",
-  "goal": "Add evidence single source of truth, PR evidence rendering, freshness validation, placeholder prevention, test summary extraction, risk register rendering, and manual gate evidence rendering.",
+  "title": "feat: add github evidence auto injection",
+  "goal": "Add automatic GitHub run and quality-gate artifact injection, evidence refresh commands, freshness validation hardening, and quality-gate self-protection requiredization.",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
-  "ciRunId": "27019489153",
-  "qualityGateRunId": "current_head_quality_gate_rerun_required",
-  "qualityGateArtifactId": "current_head_quality_gate_rerun_required",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "ciRunId": "not_yet_created",
+  "qualityGateRunId": "not_yet_created",
+  "qualityGateArtifactId": "not_yet_created",
+  "productCiStatus": "awaiting_new_pr_creation",
+  "qualityGateStatus": "awaiting_new_pr_creation",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       ".codex/evidence-pack.json",
-      ".codex/risk-register.json",
-      ".codex/manual-gates/manual-gates.json",
-      ".codex/test-summary.json",
       "apps/api/src/evidence-rendering.test.ts",
+      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
       "docs/process/EVIDENCE_RENDERING.md",
-      "docs/pr-evidence-single-source-of-truth.md",
+      "docs/pr-github-run-artifact-auto-injection.md",
+      "scripts/fetch-github-run-evidence.mjs",
       "scripts/evidence-lib.mjs",
       "scripts/render-pr-evidence.mjs",
       "scripts/validate-evidence-freshness.mjs",
       "scripts/check-evidence-placeholders.mjs",
-      "scripts/write-test-summary.mjs",
       "scripts/check-quality-gate-self-protection.mjs",
-      "package.json"
+      "package.json",
+      "scripts/refresh-pr-evidence.mjs"
     ],
     "allowedPaths": [
       ".codex/**",
       "apps/api/src/evidence-rendering.test.ts",
       "docs/**",
+      "scripts/fetch-github-run-evidence.mjs",
       "scripts/evidence-lib.mjs",
       "scripts/render-pr-evidence.mjs",
       "scripts/validate-evidence-freshness.mjs",
       "scripts/check-evidence-placeholders.mjs",
-      "scripts/write-test-summary.mjs",
       "scripts/check-quality-gate-self-protection.mjs",
-      "package.json"
+      "package.json",
+      "scripts/refresh-pr-evidence.mjs"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
@@ -58,35 +58,39 @@
   "commands": [
     {
       "name": "corepack pnpm lint",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "npm test",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass"
+      "result": "required_before_merge"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "required_before_merge"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27019489153",
-      "result": "pass"
+      "runId": "not_yet_created",
+      "result": "awaiting_new_pr_creation"
     },
     {
       "name": "quality-gate",
-      "runId": "current_head_quality_gate_rerun_required",
-      "result": "pending_current_head_rerun"
+      "runId": "not_yet_created",
+      "result": "awaiting_new_pr_creation"
     }
   ],
   "productionClaims": {
@@ -94,19 +98,17 @@
     "productionReady": false,
     "deploymentApplied": false
   },
-  "rollbackOrStopCondition": "Revert this PR if evidence rendering, freshness validation, placeholder prevention, or quality-gate self-protection preparation fails on the active pull request head.",
+  "rollbackOrStopCondition": "Revert this PR if GitHub evidence fetch, PR body refresh, freshness validation, placeholder prevention, or quality-gate self-protection fails on the active pull request head.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "evidence_pack",
-    "risk_register_source",
-    "manual_gate_evidence_source",
-    "test_summary",
-    "pr_evidence_renderer",
+    "github_evidence_fetcher",
+    "quality_gate_artifact_discovery",
+    "evidence_refresh_command",
     "freshness_validator",
     "placeholder_checker",
-    "quality_gate_self_protection_preparation",
+    "quality_gate_self_protection",
     "docs",
     "tests"
   ],
@@ -130,21 +132,20 @@
     "live YouTube account operation without approved manual gate"
   ],
   "doneCriteria": [
-    "render-pr-evidence generates PR doc from evidence-pack",
-    "validate-evidence-freshness rejects stale head SHA",
-    "validate-evidence-freshness rejects stale test count",
-    "validate-evidence-freshness rejects stale quality-gate run ID",
-    "check-evidence-placeholders rejects stale placeholders",
-    "write-test-summary records exact test count",
-    "risk register JSON renders documentation section",
-    "manual gate JSON renders documentation section",
-    "rendered PR body includes required quality-gate headings",
-    "rendered PR body preserves forbidden scope",
-    "rendered PR body includes no secret values"
+    "fetch-github-run-evidence parses PR, run, and artifact JSON",
+    "fetch-github-run-evidence selects latest successful ci run for the active head",
+    "fetch-github-run-evidence selects latest successful quality-gate run for the active head",
+    "fetch-github-run-evidence records codex-quality-gate-safe-artifacts artifact ID",
+    "fetch-github-run-evidence rejects stale-head runs and missing artifacts",
+    "offline-readonly mode does not mutate evidence",
+    "evidence refresh scripts render PR body from refreshed evidence",
+    "placeholder checker scans evidence, docs, workflows, package metadata, and README",
+    "quality-gate self-protection remains required through package script",
+    "evidence refresh command updates PR body through gh pr edit unless --no-edit is supplied"
   ],
   "testSummary": {
     "testFiles": 21,
-    "passed": 189,
+    "passed": 192,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -154,9 +155,9 @@
     "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is introduced."
   ],
   "residualRisks": [
-    "GitHub run and artifact IDs still require post-push injection until provider automation is wired.",
-    "Manual gate evidence remains file-backed for review and is not durable production storage.",
-    "Quality-gate self-protection script is preparation only in this PR."
+    "Provider-specific dashboard and alert apply remain manual-gated and out of scope.",
+    "Actual production deployment apply and live YouTube account operation remain out of scope.",
+    "GitHub API availability can block automatic evidence refresh; the script fails closed unless offline-readonly is explicit."
   ],
   "humanConfirmation": [
     "Merge decision",
@@ -166,35 +167,37 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 189,
-  "tests": 189,
+  "passed": 192,
+  "tests": 192,
   "skipped": 6,
   "productVerificationCommands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass, 21 files, 189 passed, 6 skipped",
-    "npm test: pass, 21 files, 189 passed, 6 skipped",
-    "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass"
+    "corepack pnpm install: required before merge",
+    "corepack pnpm lint: required before merge",
+    "corepack pnpm typecheck: required before merge",
+    "corepack pnpm test: required before merge",
+    "npm test: required before merge",
+    "node scripts/write-test-summary.mjs: required before merge",
+    "node scripts/fetch-github-run-evidence.mjs fixture tests: covered by Vitest",
+    "node scripts/render-pr-evidence.mjs: required before merge",
+    "node scripts/check-evidence-placeholders.mjs: required before merge",
+    "node scripts/validate-evidence-freshness.mjs: required before merge",
+    "node scripts/check-quality-gate-self-protection.mjs: required before merge",
+    "node scripts/refresh-pr-evidence.mjs --pr <number> --repo hiro4649/CRIPTO-TIP --no-edit: required before PR body update"
   ],
   "packageVerification": {
     "packageScriptsChanged": true,
     "runtimeDependenciesAdded": false,
-    "verification": "package.json adds evidence scripts only; corepack pnpm install, corepack pnpm test, and npm test pass on this head."
+    "verification": "package.json adds evidence automation scripts only; no runtime dependency is added."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR adds offline evidence scripts and tests."
+    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR adds offline GitHub evidence tooling and tests."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed. The changed executable surface is offline evidence tooling, so lint, typecheck, Vitest, evidence script checks, and GitHub CI are the appropriate smoke boundary.",
+  "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes offline GitHub evidence tooling and tests, so package verification, evidence script checks, and GitHub CI are the applicable smoke boundary.",
   "reviewScope": {
-    "scope": "Evidence source-of-truth JSON, PR evidence renderer, freshness validator, placeholder checker, test summary writer, risk/manual gate renderers, and package scripts.",
-    "riskSummary": "High-risk failure mode is stale or placeholder evidence causing incorrect merge-readiness claims; product runtime behavior is unchanged and protected by existing CI.",
-    "verificationOracle": "Current-head generated PR body, strict placeholder scan, freshness validation, Vitest tests, package verification, and GitHub checks."
+    "scope": "GitHub run/artifact evidence fetcher, evidence refresh command, freshness validator integration, placeholder prevention, self-protection script routing, and docs.",
+    "riskSummary": "Main risk is accepting stale run/artifact evidence or mutating evidence when GitHub context is unavailable; product runtime behavior is intentionally unchanged.",
+    "verificationOracle": "Fixture-based run/artifact selection tests, fail-closed tests, placeholder checker, freshness validator, package verification, and GitHub checks."
   }
 }

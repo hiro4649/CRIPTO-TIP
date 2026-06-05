@@ -20,6 +20,12 @@ function runScriptResult(script: string, args: string[] = []) {
   });
 }
 
+function writeJsonFixture(name: string, value: unknown) {
+  const file = path.join(os.tmpdir(), `cripto-tip-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}.json`);
+  fs.writeFileSync(file, JSON.stringify(value, null, 2));
+  return file;
+}
+
 describe("evidence single source of truth scripts", () => {
   const evidencePack = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
 
@@ -113,6 +119,52 @@ describe("evidence single source of truth scripts", () => {
 
   it("keeps quality-gate self-protection preparation explicit", () => {
     expect(runScript("check-quality-gate-self-protection.mjs")).toContain("passed");
+  });
+
+  it("fetches GitHub run evidence from fixture JSON and injects run and artifact IDs", () => {
+    const head = "1234567890abcdef1234567890abcdef12345678";
+    const prJson = writeJsonFixture("pr", { headRefName: "feature", headRefOid: head, baseRefOid: "abcdef1234567890abcdef1234567890abcdef12" });
+    const runsJson = writeJsonFixture("runs", [
+      { databaseId: 1, workflowName: "ci", conclusion: "success", headSha: "stale", createdAt: "2026-01-01T00:00:00Z" },
+      { databaseId: 2, workflowName: "ci", conclusion: "success", headSha: head, createdAt: "2026-01-02T00:00:00Z" },
+      { databaseId: 3, workflowName: "quality-gate", conclusion: "success", headSha: head, createdAt: "2026-01-02T00:01:00Z" }
+    ]);
+    const artifactsJson = writeJsonFixture("artifacts", { artifacts: [{ id: 44, name: "codex-quality-gate-safe-artifacts" }] });
+    const packInput = writeJsonFixture("pack", evidencePack);
+    const packOutput = path.join(os.tmpdir(), `cripto-tip-pack-${Date.now()}.json`);
+    runScript("fetch-github-run-evidence.mjs", [
+      "--input", packInput,
+      "--output", packOutput,
+      "--pr-json", prJson,
+      "--runs-json", runsJson,
+      "--artifacts-json", artifactsJson
+    ]);
+    const updated = JSON.parse(fs.readFileSync(packOutput, "utf8"));
+    expect(updated.headSha).toBe(head);
+    expect(updated.ciRunId).toBe("2");
+    expect(updated.qualityGateRunId).toBe("3");
+    expect(updated.qualityGateArtifactId).toBe("44");
+  });
+
+  it("rejects stale-head GitHub runs and missing quality-gate artifact", () => {
+    const head = "1234567890abcdef1234567890abcdef12345678";
+    const prJson = writeJsonFixture("pr", { headRefName: "feature", headRefOid: head });
+    const staleRunsJson = writeJsonFixture("runs", [
+      { databaseId: 2, workflowName: "ci", conclusion: "success", headSha: "stale", createdAt: "2026-01-02T00:00:00Z" },
+      { databaseId: 3, workflowName: "quality-gate", conclusion: "success", headSha: "stale", createdAt: "2026-01-02T00:01:00Z" }
+    ]);
+    const goodRunsJson = writeJsonFixture("runs", [
+      { databaseId: 2, workflowName: "ci", conclusion: "success", headSha: head, createdAt: "2026-01-02T00:00:00Z" },
+      { databaseId: 3, workflowName: "quality-gate", conclusion: "success", headSha: head, createdAt: "2026-01-02T00:01:00Z" }
+    ]);
+    const missingArtifactJson = writeJsonFixture("artifacts", { artifacts: [{ id: 99, name: "other" }] });
+    const packInput = writeJsonFixture("pack", evidencePack);
+    expect(runScriptResult("fetch-github-run-evidence.mjs", ["--input", packInput, "--pr-json", prJson, "--runs-json", staleRunsJson, "--artifacts-json", missingArtifactJson]).stderr).toMatch(/No successful .* run/);
+    expect(runScriptResult("fetch-github-run-evidence.mjs", ["--input", packInput, "--pr-json", prJson, "--runs-json", goodRunsJson, "--artifacts-json", missingArtifactJson]).stderr).toMatch(/Missing codex-quality-gate-safe-artifacts/);
+  });
+
+  it("supports offline-readonly GitHub evidence validation without mutating evidence", () => {
+    expect(runScript("fetch-github-run-evidence.mjs", ["--offline-readonly"])).toContain("offline-readonly");
   });
 
   it("marks remote npm diagnostic as executed when npm exit code is present", async () => {
