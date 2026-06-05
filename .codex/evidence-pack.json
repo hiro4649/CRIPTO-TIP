@@ -144,7 +144,7 @@
   ],
   "testSummary": {
     "testFiles": 21,
-    "passed": 187,
+    "passed": 188,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -166,15 +166,15 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 187,
-  "tests": 187,
+  "passed": 188,
+  "tests": 188,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass, 21 files, 187 passed, 6 skipped",
-    "npm test: pass, 21 files, 187 passed, 6 skipped",
+    "corepack pnpm test: pass, 21 files, 188 passed, 6 skipped",
+    "npm test: pass, 21 files, 188 passed, 6 skipped",
     "node scripts/write-test-summary.mjs: pass",
     "node scripts/render-pr-evidence.mjs: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",

@@ -21,7 +21,7 @@ Done criteria: render-pr-evidence generates PR doc from evidence-pack; validate-
 
 ## Evidence Integrity
 
-Head SHA: ac7c2d82da8c72c2570371698ab2406c8a84cf48
+Head SHA: b11bb8b364f3bd242b853b4300639a60f3be6885
 
 Base SHA: bc76d53551fa6ccddf1987a971cd4cd3b4fa95a5
 
@@ -35,7 +35,7 @@ Quality-gate run: current_head_quality_gate_rerun_required
 
 Quality-gate artifact: current_head_quality_gate_rerun_required
 
-Tests: 21 test files, 187 passed, 6 skipped
+Tests: 21 test files, 188 passed, 6 skipped
 
 ## Testing and review
 
@@ -48,13 +48,21 @@ Tests: 21 test files, 187 passed, 6 skipped
 - `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md`
 - `node scripts/check-evidence-placeholders.mjs`
 
+Product verification:
+
+Repository checks and package verification were run on the current evidence head.
+
+Tests or checks run:
+
+The commands below are the merge-relevant checks for this evidence tooling change.
+
 Product verification commands:
 
 - corepack pnpm install: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
-- corepack pnpm test: pass, 21 files, 187 passed, 6 skipped
-- npm test: pass, 21 files, 187 passed, 6 skipped
+- corepack pnpm test: pass, 21 files, 188 passed, 6 skipped
+- npm test: pass, 21 files, 188 passed, 6 skipped
 - node scripts/write-test-summary.mjs: pass
 - node scripts/render-pr-evidence.mjs: pass
 - node scripts/check-evidence-placeholders.mjs: pass
@@ -85,7 +93,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 187 passed, 6 skipped.
+Current recorded test summary: 21 files, 188 passed, 6 skipped.
 
 ## Security Boundaries
 

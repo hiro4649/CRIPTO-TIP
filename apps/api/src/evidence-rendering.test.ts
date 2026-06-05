@@ -30,6 +30,8 @@ describe("evidence single source of truth scripts", () => {
     expect(rendered).toContain("## Task Contract");
     expect(rendered).toContain("## Evidence Integrity");
     expect(rendered).toContain("## Testing and review");
+    expect(rendered).toContain("Product verification:");
+    expect(rendered).toContain("Tests or checks run:");
     expect(rendered).toContain("## Test Coverage Evidence");
     expect(rendered).toContain("## Security Boundaries");
     expect(rendered).toContain("## Residual risks");
@@ -111,5 +113,27 @@ describe("evidence single source of truth scripts", () => {
 
   it("keeps quality-gate self-protection preparation explicit", () => {
     expect(runScript("check-quality-gate-self-protection.mjs")).toContain("passed");
+  });
+
+  it("marks remote npm diagnostic as executed when npm exit code is present", async () => {
+    const result = execFileSync("node", [path.join(root, "scripts", "codex-remote-npm-diagnostic-classify.mjs")], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_QUALITY_REPORT: "json",
+        CODEX_NPM_TEST_SAFE_SUMMARY_JSON: JSON.stringify({
+          schemaVersion: "0.8.3",
+          npmExitCode: 0,
+          safeFailureCategory: "test_assertion_failure",
+          rawValuesStored: false,
+          safeSummaryOnly: true
+        })
+      }
+    });
+    const parsed = JSON.parse(result);
+    expect(parsed.remoteNpmDiagnosticStatus.status).toBe("pass");
+    expect(parsed.remoteNpmDiagnosticStatus.npmExecuted).toBe(true);
+    expect(parsed.remoteNpmDiagnosticStatus.npmExitCode).toBe(0);
   });
 });
