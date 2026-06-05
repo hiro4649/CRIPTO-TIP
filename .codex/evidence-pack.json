@@ -3,20 +3,20 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "19",
+  "prNumber": "20",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
   "title": "feat: add github evidence auto injection",
   "goal": "Add automatic GitHub run and quality-gate artifact injection, evidence refresh commands, freshness validation hardening, and quality-gate self-protection requiredization.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRunId": "not_yet_created",
-  "qualityGateRunId": "not_yet_created",
-  "qualityGateArtifactId": "not_yet_created",
-  "productCiStatus": "awaiting_new_pr_creation",
-  "qualityGateStatus": "awaiting_new_pr_creation",
+  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
+  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b",
+  "ciRunId": "27023126833",
+  "qualityGateRunId": "27023240225",
+  "qualityGateArtifactId": "7440070616",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -58,39 +58,40 @@
   "commands": [
     {
       "name": "corepack pnpm lint",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "npm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "required_before_merge"
+      "result": "pass"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "not_yet_created",
-      "result": "awaiting_new_pr_creation"
+      "runId": "27023126833",
+      "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "not_yet_created",
-      "result": "awaiting_new_pr_creation"
+      "runId": "27023240225",
+      "result": "success",
+      "artifactId": "7440070616"
     }
   ],
   "productionClaims": {
@@ -145,7 +146,7 @@
   ],
   "testSummary": {
     "testFiles": 21,
-    "passed": 192,
+    "passed": 196,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -167,21 +168,21 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 192,
-  "tests": 192,
+  "passed": 196,
+  "tests": 196,
   "skipped": 6,
   "productVerificationCommands": [
-    "corepack pnpm install: required before merge",
-    "corepack pnpm lint: required before merge",
-    "corepack pnpm typecheck: required before merge",
-    "corepack pnpm test: required before merge",
-    "npm test: required before merge",
-    "node scripts/write-test-summary.mjs: required before merge",
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "node scripts/write-test-summary.mjs: pass",
     "node scripts/fetch-github-run-evidence.mjs fixture tests: covered by Vitest",
-    "node scripts/render-pr-evidence.mjs: required before merge",
-    "node scripts/check-evidence-placeholders.mjs: required before merge",
-    "node scripts/validate-evidence-freshness.mjs: required before merge",
-    "node scripts/check-quality-gate-self-protection.mjs: required before merge",
+    "node scripts/render-pr-evidence.mjs: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/refresh-pr-evidence.mjs --pr <number> --repo hiro4649/CRIPTO-TIP --no-edit: required before PR body update"
   ],
   "packageVerification": {
@@ -199,5 +200,6 @@
     "scope": "GitHub run/artifact evidence fetcher, evidence refresh command, freshness validator integration, placeholder prevention, self-protection script routing, and docs.",
     "riskSummary": "Main risk is accepting stale run/artifact evidence or mutating evidence when GitHub context is unavailable; product runtime behavior is intentionally unchanged.",
     "verificationOracle": "Fixture-based run/artifact selection tests, fail-closed tests, placeholder checker, freshness validator, package verification, and GitHub checks."
-  }
+  },
+  "testsPassed": 196
 }

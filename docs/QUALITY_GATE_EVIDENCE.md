@@ -10,8 +10,8 @@ Quality-gate relevant checks:
 
 - `corepack pnpm lint`: pass locally before commit.
 - `corepack pnpm typecheck`: pass locally before commit.
-- `corepack pnpm test`: pass locally with 21 files, 192 passed, 6 skipped.
-- `npm test`: pass locally with 21 files, 192 passed, 6 skipped.
+- `corepack pnpm test`: pass locally with 21 files, 196 passed, 6 skipped.
+- `npm test`: pass locally with 21 files, 196 passed, 6 skipped.
 - `node scripts/check-evidence-placeholders.mjs`: pass locally.
 - `node scripts/check-quality-gate-self-protection.mjs`: pass locally.
 - `node scripts/codex-secret-safety-scan.mjs`: pass locally.

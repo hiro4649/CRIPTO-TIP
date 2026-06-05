@@ -40,8 +40,29 @@ export function selectLatestSuccessfulRun(runs, workflowName, headSha) {
   return candidates[0];
 }
 
-export function selectQualityGateArtifact(artifacts) {
-  const artifact = normalizeArtifacts(artifacts).find((item) => item.name === "codex-quality-gate-safe-artifacts");
+function artifactRunIdOf(artifact) {
+  return artifact.workflow_run?.id || artifact.workflowRunId || artifact.runId || artifact.run_id || "";
+}
+
+function artifactHeadShaOf(artifact) {
+  return artifact.workflow_run?.head_sha || artifact.workflowRunHeadSha || artifact.headSha || artifact.head_sha || "";
+}
+
+function isConcreteSha(value) {
+  return /^[0-9a-f]{40}$/i.test(String(value || ""));
+}
+
+export function selectQualityGateArtifact(artifacts, qualityRun) {
+  const qualityRunId = runIdOf(qualityRun);
+  const qualityHeadSha = qualityRun.headSha || qualityRun.head_sha || "";
+  const artifact = normalizeArtifacts(artifacts).find((item) => {
+    if (item.name !== "codex-quality-gate-safe-artifacts") return false;
+    const artifactRunId = artifactRunIdOf(item);
+    const artifactHeadSha = artifactHeadShaOf(item);
+    if (artifactRunId && qualityRunId && String(artifactRunId) !== String(qualityRunId)) return false;
+    if (artifactHeadSha && qualityHeadSha && String(artifactHeadSha) !== String(qualityHeadSha)) return false;
+    return true;
+  });
   if (!artifact?.id) throw new Error("Missing codex-quality-gate-safe-artifacts artifact");
   return artifact;
 }
@@ -73,9 +94,12 @@ export function buildGithubEvidence({ pack, pr, runs, artifacts }) {
   const headSha = pr.headRefOid || pr.head_sha || pr.headSha;
   const baseSha = pr.baseRefOid || pr.base_sha || pr.baseSha || pack.baseSha;
   if (!headSha) throw new Error("PR head SHA missing");
+  if (isConcreteSha(pack.headSha) && pack.headSha !== headSha) {
+    throw new Error("Evidence pack head SHA does not match PR head");
+  }
   const ciRun = selectLatestSuccessfulRun(runs, "ci", headSha);
   const qualityRun = selectLatestSuccessfulRun(runs, "quality-gate", headSha);
-  const artifact = selectQualityGateArtifact(artifacts);
+  const artifact = selectQualityGateArtifact(artifacts, qualityRun);
   return {
     ...pack,
     headSha,
@@ -85,10 +109,10 @@ export function buildGithubEvidence({ pack, pr, runs, artifacts }) {
     ciRunId: runIdOf(ciRun),
     qualityGateRunId: runIdOf(qualityRun),
     qualityGateArtifactId: String(artifact.id),
-    remoteRuns: {
-      ci: { runId: runIdOf(ciRun), result: "success" },
-      qualityGate: { runId: runIdOf(qualityRun), result: "success", artifactId: String(artifact.id) }
-    }
+    remoteRuns: [
+      { name: "ci", runId: runIdOf(ciRun), result: "success" },
+      { name: "quality-gate", runId: runIdOf(qualityRun), result: "success", artifactId: String(artifact.id) }
+    ]
   };
 }
 

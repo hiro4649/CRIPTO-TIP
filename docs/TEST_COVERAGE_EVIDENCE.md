@@ -3,7 +3,7 @@
 ## PR github-run-artifact-auto-injection
 
 Latest local result: `corepack pnpm test` and `npm test` passed with 21 test
-files, 192 passed tests, and 6 skipped tests.
+files, 196 passed tests, and 6 skipped tests.
 
 Coverage added:
 
@@ -12,8 +12,12 @@ Coverage added:
 - Latest successful `quality-gate` run selection for the active pull request
   head.
 - `codex-quality-gate-safe-artifacts` artifact ID extraction.
+- Quality-gate artifact rejection when artifact run/head metadata does not
+  match the selected quality-gate run.
 - Stale-head run rejection.
+- Concrete evidence-pack head mismatch rejection.
 - Missing quality-gate artifact rejection.
+- CI run and quality-gate artifact freshness validation.
 - Offline-readonly evidence mode without mutation.
 - Placeholder scanner coverage across `.codex`, docs, `.github`,
   `README.md`, and `package.json`.

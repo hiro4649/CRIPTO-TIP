@@ -21,21 +21,21 @@ Done criteria: fetch-github-run-evidence parses PR, run, and artifact JSON; fetc
 
 ## Evidence Integrity
 
-Head SHA: 
+Head SHA: 67050747029b28f7b73b6238554ba9b70ec787d7
 
-Base SHA: 
+Base SHA: 72b113d9cc9031397f3ccb5994700a2ec8fb648b
 
-Product CI: awaiting_new_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_new_pr_creation
+Quality-gate: success
 
-CI run: not_yet_created
+CI run: 27023126833
 
-Quality-gate run: not_yet_created
+Quality-gate run: 27023240225
 
-Quality-gate artifact: not_yet_created
+Quality-gate artifact: 7440070616
 
-Tests: 21 test files, 192 passed, 6 skipped
+Tests: 21 test files, 196 passed, 6 skipped
 
 ## Testing and review
 
@@ -58,17 +58,17 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 
 Product verification commands:
 
-- corepack pnpm install: required before merge
-- corepack pnpm lint: required before merge
-- corepack pnpm typecheck: required before merge
-- corepack pnpm test: required before merge
-- npm test: required before merge
-- node scripts/write-test-summary.mjs: required before merge
+- corepack pnpm install: pass
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- node scripts/write-test-summary.mjs: pass
 - node scripts/fetch-github-run-evidence.mjs fixture tests: covered by Vitest
-- node scripts/render-pr-evidence.mjs: required before merge
-- node scripts/check-evidence-placeholders.mjs: required before merge
-- node scripts/validate-evidence-freshness.mjs: required before merge
-- node scripts/check-quality-gate-self-protection.mjs: required before merge
+- node scripts/render-pr-evidence.mjs: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
 - node scripts/refresh-pr-evidence.mjs --pr <number> --repo hiro4649/CRIPTO-TIP --no-edit: required before PR body update
 
 Package verification:
@@ -95,7 +95,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 192 passed, 6 skipped.
+Current recorded test summary: 21 files, 196 passed, 6 skipped.
 
 ## Security Boundaries
 

@@ -2,9 +2,9 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "18",
+  "prNumber": "20",
   "testFiles": 21,
-  "testsPassed": 187,
+  "testsPassed": 196,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm typecheck",
@@ -76,13 +76,14 @@
     "live_youtube_account_operation",
     "real_external_alert_provider_credentials"
   ],
-  "tests": 192,
+  "tests": 196,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "headSha": "current_pr_head",
-  "passed": 192,
+  "headSha": "67050747029b28f7b73b6238554ba9b70ec787d7",
+  "passed": 196,
   "skipped": 6,
-  "ciRun": "27019489153",
-  "qualityGateRun": "current_head_quality_gate_rerun_required",
-  "qualityGateArtifact": "current_head_quality_gate_rerun_required"
+  "ciRun": "27023126833",
+  "qualityGateRun": "27023240225",
+  "qualityGateArtifact": "7440070616",
+  "baseSha": "72b113d9cc9031397f3ccb5994700a2ec8fb648b"
 }
