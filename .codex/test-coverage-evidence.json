@@ -79,7 +79,10 @@
   "tests": 187,
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
+  "headSha": "current_pr_head",
   "passed": 187,
-  "skipped": 6
+  "skipped": 6,
+  "ciRun": "27019489153",
+  "qualityGateRun": "current_head_quality_gate_rerun_required",
+  "qualityGateArtifact": "current_head_quality_gate_rerun_required"
 }

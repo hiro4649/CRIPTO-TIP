@@ -11,7 +11,13 @@
     "docs/codex/",
     "scripts/codex-*",
     ".agents/skills/",
-    ".codex/"
+    ".codex/",
+    "scripts/evidence-lib.mjs",
+    "scripts/render-pr-evidence.mjs",
+    "scripts/validate-evidence-freshness.mjs",
+    "scripts/check-evidence-placeholders.mjs",
+    "scripts/write-test-summary.mjs",
+    "scripts/check-quality-gate-self-protection.mjs"
   ],
   "docsFiles": [
     "README.md",
@@ -30,7 +36,8 @@
     "test/",
     "tests/",
     "__tests__/",
-    "scripts/run-tests.js"
+    "scripts/run-tests.js",
+    "apps/api/src/evidence-rendering.test.ts"
   ],
   "specFiles": [
     "specs/",

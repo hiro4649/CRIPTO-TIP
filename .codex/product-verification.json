@@ -79,7 +79,7 @@
     "docs/pr-external-alert-delivery-integration.md"
   ],
   "runtimeReadinessClaimed": false,
-  "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
+  "headSha": "current_pr_head",
   "manualGateRegistryStatus": "pass",
   "verifiedBehaviors": [
     "manual_gate_requested_and_approved",
@@ -97,5 +97,12 @@
   "pr_body_renderer_required_headings": "pass",
   "placeholder_prevention": "pass",
   "freshness_validator": "pass",
-  "manual_gate_evidence_renderer": "pass"
+  "manual_gate_evidence_renderer": "pass",
+  "ciRun": "27019489153",
+  "qualityGateRun": "current_head_quality_gate_rerun_required",
+  "qualityGateArtifact": "current_head_quality_gate_rerun_required",
+  "packageVerification": "pass",
+  "apiCompatibilitySummary": "pass",
+  "runtimeSmokeRationale": "pass",
+  "reviewScopeAndRiskSummary": "pass"
 }

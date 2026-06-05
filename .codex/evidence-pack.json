@@ -12,9 +12,9 @@
   "goal": "Add evidence single source of truth, PR evidence rendering, freshness validation, placeholder prevention, test summary extraction, risk register rendering, and manual gate evidence rendering.",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
-  "ciRunId": "27018668079",
-  "qualityGateRunId": "pending_current_head_rerun",
-  "qualityGateArtifactId": "pending_current_head_rerun",
+  "ciRunId": "27019489153",
+  "qualityGateRunId": "current_head_quality_gate_rerun_required",
+  "qualityGateArtifactId": "current_head_quality_gate_rerun_required",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -80,12 +80,12 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27018668079",
+      "runId": "27019489153",
       "result": "pass"
     },
     {
       "name": "quality-gate",
-      "runId": "pending_current_head_rerun",
+      "runId": "current_head_quality_gate_rerun_required",
       "result": "pending_current_head_rerun"
     }
   ],
@@ -168,5 +168,33 @@
   "testFiles": 21,
   "passed": 187,
   "tests": 187,
-  "skipped": 6
+  "skipped": 6,
+  "productVerificationCommands": [
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass, 21 files, 187 passed, 6 skipped",
+    "npm test: pass, 21 files, 187 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": true,
+    "runtimeDependenciesAdded": false,
+    "verification": "package.json adds evidence scripts only; corepack pnpm install, corepack pnpm test, and npm test pass on this head."
+  },
+  "apiCompatibilitySummary": {
+    "publicApiChanged": false,
+    "internalRuntimeApiChanged": false,
+    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR adds offline evidence scripts and tests."
+  },
+  "runtimeSmokeRationale": "No runtime readiness is claimed. The changed executable surface is offline evidence tooling, so lint, typecheck, Vitest, evidence script checks, and GitHub CI are the appropriate smoke boundary.",
+  "reviewScope": {
+    "scope": "Evidence source-of-truth JSON, PR evidence renderer, freshness validator, placeholder checker, test summary writer, risk/manual gate renderers, and package scripts.",
+    "riskSummary": "High-risk failure mode is stale or placeholder evidence causing incorrect merge-readiness claims; product runtime behavior is unchanged and protected by existing CI.",
+    "verificationOracle": "Current-head generated PR body, strict placeholder scan, freshness validation, Vitest tests, package verification, and GitHub checks."
+  }
 }

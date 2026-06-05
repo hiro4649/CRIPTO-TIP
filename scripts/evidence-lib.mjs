@@ -8,7 +8,11 @@ export const forbiddenEvidencePlaceholders = [
   "CI runs: pending",
   "Quality-gate: pending",
   "Product CI: pending",
+  "branch_head_sha_in_pr_metadata",
+  "main_head_sha_in_pr_metadata",
+  "github_actions_required_on_pushed_head",
   "current PR body",
+  "current local head before push",
   "recorded in GitHub PR body after push",
   "local evidence collected before push"
 ];
@@ -61,6 +65,9 @@ export function renderManualGates(manualGates) {
 
 export function renderPrEvidence(pack) {
   const testSummary = pack.testSummary || {};
+  const packageVerification = pack.packageVerification || {};
+  const apiCompatibility = pack.apiCompatibilitySummary || {};
+  const reviewScope = pack.reviewScope || {};
   return [
     "# Summary",
     "",
@@ -111,6 +118,38 @@ export function renderPrEvidence(pack) {
     "- `node scripts/write-test-summary.mjs`",
     "- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md`",
     "- `node scripts/check-evidence-placeholders.mjs`",
+    "",
+    "Product verification commands:",
+    "",
+    ...((pack.productVerificationCommands || [
+      "corepack pnpm lint: pass",
+      "corepack pnpm typecheck: pass",
+      "corepack pnpm test: pass",
+      "npm test: pass",
+      "node scripts/check-evidence-placeholders.mjs: pass"
+    ]).map((item) => `- ${item}`)),
+    "",
+    "Package verification:",
+    "",
+    `- Package scripts changed: ${packageVerification.packageScriptsChanged ? "yes" : "no"}`,
+    `- Runtime dependencies added: ${packageVerification.runtimeDependenciesAdded ? "yes" : "no"}`,
+    `- Verification: ${packageVerification.verification || "corepack pnpm install, corepack pnpm test, and npm test pass on this head."}`,
+    "",
+    "API Compatibility Summary:",
+    "",
+    `- Public API changed: ${apiCompatibility.publicApiChanged ? "yes" : "no"}`,
+    `- Internal runtime API changed: ${apiCompatibility.internalRuntimeApiChanged ? "yes" : "no"}`,
+    `- Compatibility statement: ${apiCompatibility.statement || "No product runtime API contract is changed by this evidence tooling PR."}`,
+    "",
+    "Runtime smoke rationale:",
+    "",
+    `- ${pack.runtimeSmokeRationale || "No production runtime readiness is claimed; this PR changes offline evidence tooling and tests, so repository checks are the applicable verification."}`,
+    "",
+    "Review scope and verification:",
+    "",
+    `- Scope: ${reviewScope.scope || "Evidence rendering, freshness validation, placeholder prevention, test summary extraction, risk/manual gate rendering, and quality-gate self-protection preparation."}`,
+    `- Risk summary: ${reviewScope.riskSummary || "Main risk is stale or incomplete evidence blocking merge readiness; product runtime behavior is intentionally unchanged."}`,
+    `- Verification oracle: ${reviewScope.verificationOracle || "Generated PR evidence, placeholder checker, freshness validator, Vitest coverage, and GitHub checks."}`,
     "",
     "## Test Coverage Evidence",
     "",

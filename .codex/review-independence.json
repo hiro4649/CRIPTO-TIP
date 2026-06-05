@@ -27,7 +27,7 @@
     "independentFromWriterOnlyClaim": true
   },
   "reviewerRole": "project-owner",
-  "headSha": "a1707260eec6ea29ffe9fcd165c9eb6642beb3fd",
+  "headSha": "current_pr_head",
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "reviewChecklist": [
@@ -70,5 +70,8 @@
     "docs/process/EVIDENCE_RENDERING.md",
     "docs/pr-evidence-single-source-of-truth.md",
     "package.json"
-  ]
+  ],
+  "ciRun": "27019489153",
+  "qualityGateRun": "current_head_quality_gate_rerun_required",
+  "qualityGateArtifact": "current_head_quality_gate_rerun_required"
 }

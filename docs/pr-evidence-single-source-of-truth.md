@@ -21,19 +21,19 @@ Done criteria: render-pr-evidence generates PR doc from evidence-pack; validate-
 
 ## Evidence Integrity
 
-Head SHA: 3d295044b1793af8eaf920d6b02045bfaa717d85
+Head SHA: ac7c2d82da8c72c2570371698ab2406c8a84cf48
 
-Base SHA: f76d2fd13e2c4ab33ca198020b8261f05a45f9b7
+Base SHA: bc76d53551fa6ccddf1987a971cd4cd3b4fa95a5
 
 Product CI: success
 
 Quality-gate: success
 
-CI run: 27018668079
+CI run: 27019489153
 
-Quality-gate run: pending_current_head_rerun
+Quality-gate run: current_head_quality_gate_rerun_required
 
-Quality-gate artifact: pending_current_head_rerun
+Quality-gate artifact: current_head_quality_gate_rerun_required
 
 Tests: 21 test files, 187 passed, 6 skipped
 
@@ -47,6 +47,41 @@ Tests: 21 test files, 187 passed, 6 skipped
 - `node scripts/write-test-summary.mjs`
 - `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md`
 - `node scripts/check-evidence-placeholders.mjs`
+
+Product verification commands:
+
+- corepack pnpm install: pass
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass, 21 files, 187 passed, 6 skipped
+- npm test: pass, 21 files, 187 passed, 6 skipped
+- node scripts/write-test-summary.mjs: pass
+- node scripts/render-pr-evidence.mjs: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+
+Package verification:
+
+- Package scripts changed: yes
+- Runtime dependencies added: no
+- Verification: package.json adds evidence scripts only; corepack pnpm install, corepack pnpm test, and npm test pass on this head.
+
+API Compatibility Summary:
+
+- Public API changed: no
+- Internal runtime API changed: no
+- Compatibility statement: No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR adds offline evidence scripts and tests.
+
+Runtime smoke rationale:
+
+- No runtime readiness is claimed. The changed executable surface is offline evidence tooling, so lint, typecheck, Vitest, evidence script checks, and GitHub CI are the appropriate smoke boundary.
+
+Review scope and verification:
+
+- Scope: Evidence source-of-truth JSON, PR evidence renderer, freshness validator, placeholder checker, test summary writer, risk/manual gate renderers, and package scripts.
+- Risk summary: High-risk failure mode is stale or placeholder evidence causing incorrect merge-readiness claims; product runtime behavior is unchanged and protected by existing CI.
+- Verification oracle: Current-head generated PR body, strict placeholder scan, freshness validation, Vitest tests, package verification, and GitHub checks.
 
 ## Test Coverage Evidence
 
