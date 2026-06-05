@@ -10,16 +10,9 @@
     "docs/process/",
     "docs/codex/",
     "scripts/codex-*",
+    "scripts/lib/codex-*",
     ".agents/skills/",
-    ".codex/",
-    "scripts/evidence-lib.mjs",
-    "scripts/render-pr-evidence.mjs",
-    "scripts/validate-evidence-freshness.mjs",
-    "scripts/check-evidence-placeholders.mjs",
-    "scripts/write-test-summary.mjs",
-    "scripts/check-quality-gate-self-protection.mjs",
-    "scripts/fetch-github-run-evidence.mjs",
-    "scripts/refresh-pr-evidence.mjs"
+    ".codex/"
   ],
   "docsFiles": [
     "README.md",
@@ -38,8 +31,7 @@
     "test/",
     "tests/",
     "__tests__/",
-    "scripts/run-tests.js",
-    "apps/api/src/evidence-rendering.test.ts"
+    "scripts/run-tests.js"
   ],
   "specFiles": [
     "specs/",

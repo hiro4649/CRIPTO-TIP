@@ -326,6 +326,15 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Evidence rendering and validation tests."
+    },
+    {
+      "pathPattern": "scripts/lib/codex-*",
+      "classification": "harness_managed",
+      "surface": "harness",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Codex harness library scripts."
     }
   ],
   "safeSummaryOnly": true
