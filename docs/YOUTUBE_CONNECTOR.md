@@ -1,5 +1,9 @@
 # YouTube Connector
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms the connector boundary remains official YouTube Live API only. No scraping, browser automation, HTML parsing, token sale, token exchange, cash-out, custody, internal balance, or investment wording is introduced by the audit PR.
+
 The YouTube connector uses official YouTube Live API JSON responses only. It does not scrape YouTube pages, parse YouTube HTML, use browser automation, or replace YouTube Super Chat payment.
 
 Observability export uses provider-neutral metric points derived from the connector metrics snapshot. It does not include YouTube credential values, raw chat messages, wallet addresses, or user display names.

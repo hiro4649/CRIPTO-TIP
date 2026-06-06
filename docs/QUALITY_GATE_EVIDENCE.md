@@ -1,5 +1,9 @@
 # Quality Gate Evidence
 
+## v1.0.8 Full Repository Audit Note
+
+The v1.0.8 full repository audit records safe-summary findings in `docs/AUDIT_REPORT_FULL_REPO_V108.md`. Critical findings: 0. High findings: 0. Medium findings remain operational and deferred-provider risks, not current merge blockers. The audit did not read raw CI logs or change product runtime surfaces.
+
 ## PR github-run-artifact-auto-injection
 
 This PR adds `scripts/fetch-github-run-evidence.mjs` as the evidence injection

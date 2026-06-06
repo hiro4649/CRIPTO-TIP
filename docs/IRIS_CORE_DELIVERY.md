@@ -1,5 +1,9 @@
 # IRIS Core Delivery
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms IRIS Core delivery keeps wallet addresses, raw messages, raw display names, and secrets out of reaction and memory payloads. Production enablement remains separately gated.
+
 PR iris-core-delivery-adapter adds the delivery adapter boundary for confirmed `support.received` events and derived IRIS Core calls.
 
 ## Delivery Boundary

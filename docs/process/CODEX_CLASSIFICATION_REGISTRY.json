@@ -461,6 +461,33 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for v1.0.8 fresh rollout."
+    },
+    {
+      "pathPattern": "docs/AUDIT_REPORT_FULL_REPO_V108.md",
+      "classification": "docs",
+      "surface": "audit",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Safe-summary full repository audit report for harness v1.0.8."
+    },
+    {
+      "pathPattern": "docs/pr-full-repo-pro-audit-v108.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for full repository Pro audit."
+    },
+    {
+      "pathPattern": "package.json",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Package scripts for evidence and quality verification."
     }
   ],
   "safeSummaryOnly": true

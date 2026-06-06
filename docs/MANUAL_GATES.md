@@ -1,5 +1,9 @@
 # Manual Gates
 
+## v1.0.8 Audit Note
+
+The audit confirms that manual gate evidence is an approval trace, not secret storage. Production-like apply requires an approved manual gate record and registry enforcement; `manualApproval: true` alone is not sufficient. Durable production audit storage remains future work.
+
 Manual gates are approval records for production-like operations that must not be authorized by a boolean flag alone. The registry is a boundary for deployment approval evidence; it does not store secret values and does not execute production provider calls by itself.
 
 ## Gate Types

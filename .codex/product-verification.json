@@ -1,28 +1,24 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "harnessVersion": "1.0.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "pending",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "productVerificationStatus": "pass",
   "productCodeChanged": false,
   "runtimeReadinessClaimed": false,
   "behaviors": {
-    "active_harness_v107": "pass",
-    "v108_rollout_policy_added": "pass",
-    "v108_status_schema_added": "pass",
+    "full_repo_audit_report_added": "pass",
+    "evidence_render_default_cleanup": "pass",
     "product_runtime_changed": "no",
-    "package_scripts_changed": "no",
     "runtime_dependencies_added": "no",
     "youtube_scraping": "forbidden",
     "token_sale": "forbidden"
   },
   "evidence": [
-    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-    "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+    "docs/AUDIT_REPORT_FULL_REPO_V108.md",
+    "docs/pr-full-repo-pro-audit-v108.md",
     ".codex/evidence-pack.json",
     ".codex/change-classification.json"
   ]

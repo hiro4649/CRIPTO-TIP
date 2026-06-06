@@ -1,5 +1,9 @@
 # Dashboard Deployment
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms dashboard deployment remains dry-run/provider-boundary focused unless an approved manual gate record authorizes production-like apply. Real provider secrets and ungated apply remain forbidden.
+
 The dashboard deployment boundary creates provider-neutral deployment plans from `docs/youtube-dashboard-contract.json`. It does not apply production dashboard changes without a manual approval gate and does not commit provider secrets or API keys.
 
 ## Provider Boundary

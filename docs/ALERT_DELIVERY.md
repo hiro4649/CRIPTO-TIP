@@ -1,5 +1,9 @@
 # External Alert Delivery Boundary
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms alert payloads remain safe-summary only and provider credentials remain references. External alert delivery with real provider credentials is still forbidden without an approved manual gate.
+
 External alert delivery turns the tested YouTube observability alert contract into provider delivery plans. It does not deliver real provider alerts without manual approval and does not store provider secrets.
 
 ## Credential Boundary

@@ -1,5 +1,9 @@
 # YouTube Credentials
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms credential values remain outside the repository. Only secret references are allowed in evidence, docs, and manual gate records. Real YouTube OAuth tokens, API keys, provider tokens, webhook URLs, and private URLs remain forbidden.
+
 Production YouTube credentials are deployment secrets, not repository configuration.
 
 ## Sources

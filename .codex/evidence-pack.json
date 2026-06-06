@@ -1,22 +1,22 @@
 {
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
   "schemaVersion": "1.0.0",
-  "harnessVersion": "1.0.7",
+  "harnessVersion": "1.0.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "prProfile": "harness_workflow_r3",
-  "taskMode": "harness_change",
-  "changeType": "harness_change",
-  "riskLevel": "R3",
-  "title": "chore: roll out harness v1.0.8 safely",
-  "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
-  "ciRunId": "27052642395",
-  "qualityGateRunId": "27052809246",
-  "qualityGateArtifactId": "7451259139",
-  "productCiStatus": "success",
-  "qualityGateStatus": "failure_analyzed_required_advisory_split_repaired_locally",
+  "prNumber": "pending",
+  "prProfile": "product_minor_r2",
+  "taskMode": "audit_only_r2",
+  "changeType": "audit",
+  "riskLevel": "R2",
+  "title": "chore: audit full repo on harness v1.0.8",
+  "goal": "Perform a full repository Pro audit under harness v1.0.8, record safe-summary findings, refresh evidence, and apply only audit/evidence/docs-level fixes.",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
+  "ciRunId": "to_be_injected_after_pr_checks",
+  "qualityGateRunId": "to_be_injected_after_pr_checks",
+  "qualityGateArtifactId": "to_be_injected_after_pr_checks",
+  "productCiStatus": "local_pass_remote_pending",
+  "qualityGateStatus": "local_pass_remote_pending",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -26,33 +26,26 @@
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
       ".codex/review-independence.json",
+      ".codex/risk-register.json",
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
-      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "docs/AUDIT_REPORT_FULL_REPO_V108.md",
+      "docs/pr-full-repo-pro-audit-v108.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "scripts/codex-workflow-quality-runner.mjs"
+      "package.json"
     ],
     "allowedPaths": [
-      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "docs/**",
       ".codex/**",
-      "scripts/codex-workflow-quality-runner.mjs"
+      "package.json"
     ],
     "forbiddenPaths": [
-      "apps/api/src/youtube/**",
-      "apps/api/src/chain/**",
-      "apps/api/src/iris/**",
-      "apps/api/src/server.ts",
+      "apps/api/src/**",
       "apps/web/**",
       "apps/overlay/**",
+      "packages/**",
       "contracts/**",
-      "migrations/**",
-      "package.json",
-      "pnpm-lock.yaml"
+      "migrations/**"
     ]
   },
   "commands": [
@@ -89,7 +82,7 @@
       "result": "pass"
     },
     {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-full-repo-pro-audit-v108.md",
       "result": "pass"
     },
     {
@@ -109,46 +102,24 @@
       "result": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27052642395",
-      "result": "success",
-      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27052809246",
-      "artifactId": "7451259139",
-      "result": "failure_analyzed",
-      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
-    }
-  ],
+  "remoteRuns": [],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
     "deploymentApplied": false
   },
-  "rollbackOrStopCondition": "Revert this PR if safe CI artifacts contain CI transcript bodies, required checks are weakened, PR #23 evidence is reused, or same-head required checks metadata becomes stale.",
+  "rollbackOrStopCondition": "Revert this PR if audit evidence weakens quality-gate, changes product runtime behavior, introduces prohibited scope, or current-head required checks fail.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "v108_safe_ci_rollout_policy",
-    "v108_status_schema",
+    "full repository audit",
+    "safe-summary audit report",
+    "quality evidence refresh",
     "docs",
-    "quality_evidence"
+    "package evidence script cleanup"
   ],
   "forbiddenScope": [
-    "product runtime code changes",
-    "wallet/RPC/deploy changes",
-    "YouTube connector changes",
-    "Chain Listener changes",
-    "IRIS delivery changes",
-    "runtime readiness claim",
-    "production readiness claim",
-    "PR #23 reuse",
-    "raw CI transcript reading",
     "token sale",
     "token exchange",
     "cash-out",
@@ -156,13 +127,26 @@
     "internal balance",
     "investment wording",
     "speculative reward",
-    "YouTube scraping"
+    "YouTube scraping",
+    "TikTok connector",
+    "multi-platform connector",
+    "multi-chain support",
+    "multi-token support",
+    "wallet custody",
+    "real production secret commit",
+    "production deployment apply without approved manual gate",
+    "external alert delivery with real provider credentials without approved manual gate",
+    "dashboard apply with real provider credentials without approved manual gate",
+    "live YouTube account operation without approved manual gate",
+    "raw CI transcript reading",
+    "product runtime code changes"
   ],
   "doneCriteria": [
-    "requiredStatuses and advisoryStatuses are separated",
-    "legacy self-test advisory does not emit workflow_required_status_failure",
-    "same-head required checks remain required",
-    "required safe artifact uploads remain fail-closed",
+    "full repository audit report exists",
+    "critical and high findings are explicit",
+    "product boundaries are preserved",
+    "quality-gate self-protection remains pass",
+    "evidence placeholder and freshness checks run",
     "no product runtime surface changes",
     "no secret scan passes",
     "no scraping scan passes"
@@ -175,25 +159,25 @@
     "skipped": 6
   },
   "securityBoundaries": [
-    "v1.0.8 rollout does not claim runtime readiness.",
-    "v1.0.8 rollout does not claim production readiness.",
-    "PR #23 remains closed without merge and is not reused.",
-    "Safe CI artifacts remain safe-summary only.",
-    "No raw CI transcript body is read or added.",
-    "Required statuses remain blocking; advisory statuses are reported but non-blocking.",
-    "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is added."
+    "Full repository audit is safe-summary only and does not read or store raw CI logs, raw diffs, raw payloads, endpoint values, private paths, PII, or credential values.",
+    "YouTube LIVE remains the broadcast surface; IRIS Web Companion remains the external Tip intake surface; IRIS Backend normalizes support.received; IRIS Core handles reactions, TTS, motion, affinity, memory, and stream progression.",
+    "YouTube Super Chat payment is not replaced, and IRIS Token Tip is not represented as YouTube Super Chat.",
+    "Official YouTube Live API boundary remains required; scraping, browser automation, and HTML parsing are not introduced.",
+    "Production-like apply remains blocked without approved manual gate records and registry enforcement.",
+    "No real YouTube, Secret Manager, dashboard, alert provider, RPC, wallet, or private credential value is committed."
   ],
   "residualRisks": [
-    "Quality-gate rerun is required after this required/advisory split repair.",
-    "v1.0.8 is not complete until same-head required checks, target gate, safe artifacts, and quality-gate all pass.",
-    "This PR does not prove product runtime, production, legal, or YouTube policy readiness."
+    "Provider-specific deployment/apply remains boundary-only and must stay manual-gated until real provider SDK wiring is separately reviewed.",
+    "Manual gate evidence is not durable production audit storage yet.",
+    "Production RPC/listener operation and live YouTube account operation remain deferred and manual-gated.",
+    "Final PR body run and artifact IDs require GitHub evidence refresh after PR checks complete."
   ],
   "humanConfirmation": [
     "project-owner merge decision required",
-    "current head SHA verified",
-    "CI status verified",
-    "quality-gate blocker review required",
-    "remaining blockers documented"
+    "current head SHA verified after PR checks",
+    "CI status verified after PR checks",
+    "quality-gate status verified after PR checks",
+    "remaining risks documented"
   ],
   "testFiles": 21,
   "passed": 207,
@@ -208,29 +192,28 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-full-repo-pro-audit-v108.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs --ci: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
-    "packageScriptsChanged": false,
+    "packageScriptsChanged": true,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts or dependencies are changed by this v1.0.8 rollout PR."
+    "verification": "package.json evidence:render default output is made generic; no dependency changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
+    "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed by this audit PR."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes harness rollout policy/schema and evidence docs only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes audit evidence, docs, and a package evidence script default only.",
   "reviewScope": {
-    "scope": "v1.0.8 safe CI rollout policy, status schema, classification, and evidence docs.",
-    "riskSummary": "Main risk is over-claiming v1.0.8 readiness; the PR intentionally keeps rollout policy/schema only.",
-    "verificationOracle": "Evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
+    "scope": "Full repository safe-summary audit across product, docs, scripts, workflows, contracts, migrations, and evidence surfaces.",
+    "riskSummary": "Main risk is over-claiming audit completeness or merge readiness before current-head checks finish; product runtime behavior is intentionally unchanged.",
+    "verificationOracle": "Audit report, evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
   },
   "testsPassed": 207,
-  "prBodyPath": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-  "targetRollout": true
+  "prBodyPath": "docs/pr-full-repo-pro-audit-v108.md"
 }

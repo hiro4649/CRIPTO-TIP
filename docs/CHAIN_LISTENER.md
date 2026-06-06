@@ -1,5 +1,9 @@
 # Chain Listener
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms Chain Listener documentation and code preserve confirmation/reorg boundaries and do not store viewer names, raw messages, display names, or YouTube IDs on-chain. Production RPC enablement remains manual-gated.
+
 PR scope: production Chain Listener boundary for TipRouterV1 logs, confirmation windows, reorg status transitions, block cursor persistence, and durable outbox handoff.
 
 ## Boundaries

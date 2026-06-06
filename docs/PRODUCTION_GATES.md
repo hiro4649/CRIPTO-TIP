@@ -1,5 +1,9 @@
 # Production Gates
 
+## v1.0.8 Audit Gate Note
+
+The full repository audit does not grant production readiness. Production-like provider apply, external alert delivery, dashboard apply, live YouTube soak, provider secret rotation, production RPC enablement, IRIS Core delivery enablement, and overlay token rotation still require approved manual gate records and safe evidence.
+
 ## PR production-chain-listener-reorg Gate Assessment
 
 Current state: G3 partial.

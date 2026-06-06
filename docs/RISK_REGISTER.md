@@ -1,5 +1,9 @@
 # Risk Register
 
+## v1.0.8 Audit Update
+
+The full repository audit found no Critical or High findings. Medium risks remain around provider-specific deployment/apply, durable manual gate audit storage, and final PR evidence refresh after GitHub checks. These are tracked as deferred operational hardening work rather than product runtime regressions.
+
 ## PR production-chain-listener-reorg
 
 | Severity | Risk | Owner | Next PR | Mitigation |

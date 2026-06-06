@@ -1,32 +1,41 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "harnessVersion": "1.0.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "pending",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "testFiles": 21,
   "testsPassed": 207,
   "testsSkipped": 6,
   "commands": [
+    "corepack pnpm install",
+    "corepack pnpm lint",
+    "corepack pnpm typecheck",
     "corepack pnpm test",
     "npm test",
     "corepack pnpm evidence:ci",
     "corepack pnpm quality:self-protection",
+    "node scripts/write-test-summary.mjs",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-full-repo-pro-audit-v108.md",
     "node scripts/check-evidence-placeholders.mjs",
     "node scripts/validate-evidence-freshness.mjs --ci",
-    "node scripts/check-quality-gate-self-protection.mjs"
+    "node scripts/check-quality-gate-self-protection.mjs",
+    "node scripts/codex-secret-safety-scan.mjs"
   ],
   "riskCoverage": [
-    "v108_policy_scope",
-    "v108_status_schema",
-    "classification_unknown_count_zero",
+    "full_repo_audit_scope",
     "evidence_placeholders_absent",
     "quality_self_protection_still_passes",
-    "no_product_runtime_change"
+    "no_product_runtime_change",
+    "no_secret_scan",
+    "no_scraping_scan"
   ],
   "uncoveredRisks": [
-    "v108 active enforcement is not claimed by this policy/schema rollout PR"
+    "Provider-specific deployment/apply remains boundary-only and must stay manual-gated until real provider SDK wiring is separately reviewed.",
+    "Manual gate evidence is not durable production audit storage yet.",
+    "Production RPC/listener operation and live YouTube account operation remain deferred and manual-gated.",
+    "Final PR body run and artifact IDs require GitHub evidence refresh after PR checks complete."
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,

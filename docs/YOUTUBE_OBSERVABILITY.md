@@ -1,5 +1,9 @@
 # YouTube Observability
 
+## v1.0.8 Audit Note
+
+The full repository audit confirms observability remains provider-neutral. Dashboard/exporter evidence uses safe metrics and labels only; real provider deployment and live account operation remain manual-gated and out of scope.
+
 This metric contract covers the official YouTube Live API connector boundary. It does not introduce scraping, browser automation, token sale, exchange, custody, internal crypto balances, or investment messaging.
 
 ## Metrics

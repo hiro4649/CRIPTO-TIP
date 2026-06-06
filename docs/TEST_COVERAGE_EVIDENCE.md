@@ -1,5 +1,9 @@
 # Test Coverage Evidence
 
+## v1.0.8 Full Repository Audit Note
+
+The audit PR keeps product runtime code unchanged and uses repository checks, evidence CI, quality self-protection, secret scanning, no-scraping scanning, and the existing unit/integration suite as its verification oracle. Provider-specific real apply, durable manual-gate audit storage, production RPC operation, and live YouTube account operation remain deferred and manual-gated.
+
 ## PR github-run-artifact-auto-injection
 
 Latest local result: `corepack pnpm test` and `npm test` passed with 21 test
