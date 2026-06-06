@@ -231,3 +231,7 @@ failures use `metadata_limited_external_blocked` without reading raw logs.
 - Safe CI artifact uploads for pnpm typecheck, pnpm test, CI failure metadata, and required checks metadata use fail-closed missing-file handling.
 - Quality-gate pass alone is not merge readiness; same-head `quality-gate`, `typescript`, and `contracts` pass is required.
 - PR #23 remains closed without merge and is not reused as evidence. CRIPTO-TIP remains active harness v1.0.7.
+
+## PR #25 v1.0.8 Required/Advisory Separation
+
+PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout passes same-head required checks, target gate, safe artifact availability, and quality-gate. Required statuses remain blocking: typescript, contracts, quality-gate, target-gate, same-head required checks, safe artifact availability, evidence freshness, placeholder check, and self-protection. Legacy self-test and version-lineage findings are advisory safe-summary evidence and do not emit `workflow_required_status_failure` unless they prove wrong source, wrong target, stale current-head evidence, or another required-status failure. Raw logs were not read.

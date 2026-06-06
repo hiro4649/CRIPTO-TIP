@@ -3,112 +3,125 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "24",
-  "prProfile": "product_minor_r2",
-  "taskMode": "feature",
-  "changeType": "feature",
+  "prNumber": "25",
+  "prProfile": "harness_workflow_r3",
+  "taskMode": "harness_change",
+  "changeType": "harness_change",
   "riskLevel": "R3",
-  "title": "feat: add safe ci failure artifacts",
-  "goal": "Add safe CI failure artifacts and same-head required checks metadata for CRIPTO-TIP v1.0.7 active harness.",
-  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
-  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
-  "ciRunId": "27050878474",
-  "qualityGateRunId": "27051249421",
-  "qualityGateArtifactId": "7450776485",
+  "title": "chore: roll out harness v1.0.8 safely",
+  "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
+  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
+  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "ciRunId": "27052642395",
+  "qualityGateRunId": "27052809246",
+  "qualityGateArtifactId": "7451259139",
   "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "qualityGateStatus": "failure_analyzed_required_advisory_split_repaired_locally",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
     "changedFiles": [
-      ".github/workflows/ci.yml",
-      "scripts/ci-safe-lib.mjs",
-      "scripts/write-ci-safe-failure-artifact.mjs",
-      "scripts/classify-ci-safe-failure.mjs",
-      "scripts/export-required-checks-metadata.mjs",
-      "scripts/validate-same-head-required-checks.mjs",
-      "scripts/safe-pnpm-typecheck-summary.mjs",
-      "scripts/safe-pnpm-test-summary.mjs",
-      "fixtures/ci-safe/**",
-      "apps/api/src/evidence-rendering.test.ts",
-      "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
-      "docs/process/CI_SAFE_FAILURE_ARTIFACT.schema.json",
-      "docs/process/REQUIRED_CHECKS_METADATA.md",
-      "docs/pr-safe-ci-failure-artifacts.md",
-      "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/TEST_COVERAGE_EVIDENCE.md",
-      "docs/process/EVIDENCE_RENDERING.md",
-      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-      "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
+      ".codex/change-classification.json",
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/review-independence.json",
+      ".codex/task-contract.json",
+      ".codex/test-coverage-evidence.json",
+      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/RISK_REGISTER.md",
-      ".codex/**",
-      "package.json",
-      "scripts/validate-evidence-freshness.mjs",
-      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
+      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+      "scripts/codex-workflow-quality-runner.mjs"
     ],
     "allowedPaths": [
-      ".github/workflows/ci.yml",
+      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       ".codex/**",
-      "apps/api/src/evidence-rendering.test.ts",
-      "docs/**",
-      "fixtures/ci-safe/**",
-      "package.json",
-      "scripts/ci-safe-lib.mjs",
-      "scripts/write-ci-safe-failure-artifact.mjs",
-      "scripts/classify-ci-safe-failure.mjs",
-      "scripts/export-required-checks-metadata.mjs",
-      "scripts/validate-same-head-required-checks.mjs",
-      "scripts/safe-pnpm-typecheck-summary.mjs",
-      "scripts/safe-pnpm-test-summary.mjs",
-      "scripts/validate-evidence-freshness.mjs",
-      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
+      "scripts/codex-workflow-quality-runner.mjs"
     ],
     "forbiddenPaths": [
-      "contracts/src/**",
+      "apps/api/src/youtube/**",
       "apps/api/src/chain/**",
-      "apps/api/src/youtube/connector.ts",
       "apps/api/src/iris/**",
-      "apps/api/src/server.ts"
+      "apps/api/src/server.ts",
+      "apps/web/**",
+      "apps/overlay/**",
+      "contracts/**",
+      "migrations/**",
+      "package.json",
+      "pnpm-lock.yaml"
     ]
   },
   "commands": [
     {
       "name": "corepack pnpm install",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm lint",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "npm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
-      "name": "safe CI artifact fixture commands",
-      "result": "required_before_merge"
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs --ci",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27050878474",
-      "result": "success"
+      "runId": "27052642395",
+      "result": "success",
+      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
     },
     {
       "name": "quality-gate",
-      "runId": "27051249421",
-      "result": "success",
-      "artifactId": "7450776485"
+      "runId": "27052809246",
+      "artifactId": "7451259139",
+      "result": "failure_analyzed",
+      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
     }
   ],
   "productionClaims": {
@@ -121,29 +134,21 @@
     "status": "pass"
   },
   "allowedScope": [
-    "ci_safe_failure_artifact",
-    "pnpm_typecheck_safe_summary",
-    "pnpm_test_safe_summary",
-    "required_checks_metadata",
-    "same_head_check_validation",
-    "safe_summary_failure_diagnosis",
+    "v108_safe_ci_rollout_policy",
+    "v108_status_schema",
     "docs",
-    "tests",
     "quality_evidence"
   ],
   "forbiddenScope": [
-    "v1.0.8 rollout merge",
-    "PR #23 reopen",
-    "CI transcript reading",
-    "required check weakening",
     "product runtime code changes",
     "wallet/RPC/deploy changes",
     "YouTube connector changes",
     "Chain Listener changes",
+    "IRIS delivery changes",
     "runtime readiness claim",
     "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
+    "PR #23 reuse",
+    "raw CI transcript reading",
     "token sale",
     "token exchange",
     "cash-out",
@@ -154,13 +159,11 @@
     "YouTube scraping"
   ],
   "doneCriteria": [
-    "safe CI failure artifact schema rejects CI transcript bodies",
-    "pnpm typecheck safe summary records exit code without CI transcript bodies",
-    "pnpm test safe summary records counts without CI transcript bodies when available",
-    "required checks metadata requires quality-gate, typescript, and contracts on the same head",
-    "quality-gate pass alone is not merge readiness",
-    "failed CI without safe artifact is classified as safe_artifact_missing_for_failed_ci",
-    "metadata-limited failures are classified without CI transcript bodies",
+    "requiredStatuses and advisoryStatuses are separated",
+    "legacy self-test advisory does not emit workflow_required_status_failure",
+    "same-head required checks remain required",
+    "required safe artifact uploads remain fail-closed",
+    "no product runtime surface changes",
     "no secret scan passes",
     "no scraping scan passes"
   ],
@@ -172,56 +175,62 @@
     "skipped": 6
   },
   "securityBoundaries": [
-    "CRIPTO-TIP active harness remains v1.0.7.",
-    "PR #23 is closed without merge and is not reused as evidence.",
-    "Safe CI artifacts store safe metadata only and never CI transcript bodies.",
-    "raw_log_allowed is always false.",
-    "Required checks are not weakened; failing typecheck/test wrappers preserve failing exit codes.",
-    "No product runtime, wallet/RPC/deploy, YouTube connector, or Chain Listener code is changed.",
-    "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is introduced."
+    "v1.0.8 rollout does not claim runtime readiness.",
+    "v1.0.8 rollout does not claim production readiness.",
+    "PR #23 remains closed without merge and is not reused.",
+    "Safe CI artifacts remain safe-summary only.",
+    "No raw CI transcript body is read or added.",
+    "Required statuses remain blocking; advisory statuses are reported but non-blocking.",
+    "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is added."
   ],
   "residualRisks": [
-    "Future v1.0.8 rollout remains blocked until a fresh clean PR is opened.",
-    "Metadata-limited external runner failures may still require external operator action, but raw logs remain forbidden for diagnosis.",
-    "Required checks metadata collected during an in-progress workflow may be incomplete until GitHub checks finish."
+    "Quality-gate rerun is required after this required/advisory split repair.",
+    "v1.0.8 is not complete until same-head required checks, target gate, safe artifacts, and quality-gate all pass.",
+    "This PR does not prove product runtime, production, legal, or YouTube policy readiness."
   ],
   "humanConfirmation": [
-    "Merge decision",
-    "Current head SHA",
-    "CI status",
-    "Quality-gate status",
-    "Remaining blockers"
+    "project-owner merge decision required",
+    "current head SHA verified",
+    "CI status verified",
+    "quality-gate blocker review required",
+    "remaining blockers documented"
   ],
   "testFiles": 21,
   "passed": 207,
   "tests": 207,
   "skipped": 6,
   "productVerificationCommands": [
-    "corepack pnpm install: required before merge",
-    "corepack pnpm lint: required before merge",
-    "corepack pnpm typecheck: required before merge",
-    "corepack pnpm test: required before merge",
-    "npm test: required before merge",
-    "corepack pnpm evidence:ci: required before merge",
-    "corepack pnpm quality:self-protection: required before merge",
-    "safe CI artifact fixture commands: required before merge"
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs --ci: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
-    "packageScriptsChanged": true,
+    "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "package.json adds CI safe artifact scripts only; no runtime dependency is added."
+    "verification": "No package scripts or dependencies are changed by this v1.0.8 rollout PR."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No API endpoint, contract ABI, YouTube connector behavior, Chain Listener behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR hardens CI safe evidence only."
+    "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed. This PR changes CI safe artifact tooling, workflow artifact upload, tests, and docs only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes harness rollout policy/schema and evidence docs only.",
   "reviewScope": {
-    "scope": "CI safe failure artifact scripts, same-head required checks metadata, workflow safe artifact upload, docs, fixtures, and evidence tests.",
-    "riskSummary": "Main risk is classifying CI failures without raw logs while preserving required check failure semantics; product runtime behavior is intentionally unchanged.",
-    "verificationOracle": "Safe artifact fixture tests, same-head required checks tests, wrapper exit-code tests, evidence CI, self-protection, secret scan, and no-scraping scan."
+    "scope": "v1.0.8 safe CI rollout policy, status schema, classification, and evidence docs.",
+    "riskSummary": "Main risk is over-claiming v1.0.8 readiness; the PR intentionally keeps rollout policy/schema only.",
+    "verificationOracle": "Evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
   },
   "testsPassed": 207,
-  "prBodyPath": "docs/pr-safe-ci-failure-artifacts.md"
+  "prBodyPath": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+  "targetRollout": true
 }

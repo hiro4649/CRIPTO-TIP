@@ -434,6 +434,33 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for safe CI artifact PR."
+    },
+    {
+      "pathPattern": "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+      "classification": "harness_managed",
+      "surface": "harness_policy",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Codex v1.0.8 safe CI rollout policy."
+    },
+    {
+      "pathPattern": "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+      "classification": "harness_managed",
+      "surface": "harness_schema",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Codex v1.0.8 status schema."
+    },
+    {
+      "pathPattern": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for v1.0.8 fresh rollout."
     }
   ],
   "safeSummaryOnly": true

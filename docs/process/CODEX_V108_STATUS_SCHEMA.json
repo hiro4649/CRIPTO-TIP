@@ -1,0 +1,77 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
+  "schemaVersion": "1.0.8",
+  "harnessVersion": "1.0.8",
+  "activeStatusKey": "v108SafeCiRolloutStatus",
+  "requiredStatuses": [
+    "typescript",
+    "contracts",
+    "quality-gate",
+    "target-gate",
+    "same-head-required-checks",
+    "safe-artifact-availability",
+    "evidence-freshness",
+    "placeholder-check",
+    "self-protection-required"
+  ],
+  "advisoryStatuses": [
+    "legacy-self-test",
+    "version-lineage",
+    "v108-rollout-notes",
+    "source-harness-reference",
+    "target-harness-advisory",
+    "metadata-limited-context"
+  ],
+  "statusObject": {
+    "required": [
+      "name",
+      "status",
+      "blocking",
+      "reasonCode",
+      "evidenceRef",
+      "nextSafeAction"
+    ],
+    "properties": {
+      "name": "string",
+      "status": "pass | fail | warning | advisory | not_applicable",
+      "blocking": "boolean",
+      "reasonCode": "string",
+      "evidenceRef": "safe-summary-only reference",
+      "nextSafeAction": "string"
+    }
+  },
+  "validation": {
+    "requiredStatusesBlocking": true,
+    "advisoryStatusesBlocking": false,
+    "mergeReadyUses": "requiredStatuses only",
+    "targetMergeReadyUses": "requiredStatuses only",
+    "workflowRequiredStatusFailureSource": "requiredStatuses only",
+    "advisoryFailureReasonCode": "advisory_status_failure_non_blocking"
+  },
+  "requiredReasonCodes": [
+    "same_head_required_checks_all_pass",
+    "required_status_failure",
+    "required_status_pass",
+    "safe_artifact_missing_for_failed_ci",
+    "not_run_due_to_typecheck_failure",
+    "quality_gate_pass_but_required_check_failed"
+  ],
+  "advisoryReasonCodes": [
+    "advisory_status_failure_non_blocking",
+    "legacy_self_test_advisory_only",
+    "version_lineage_advisory_only"
+  ],
+  "requiredArtifacts": [
+    "pnpm-typecheck-safe-summary",
+    "pnpm-test-safe-summary",
+    "ci-safe-failure-artifact",
+    "ci-required-checks-metadata"
+  ],
+  "forbiddenClaims": [
+    "runtime_readiness",
+    "production_readiness",
+    "pr23_reuse",
+    "raw_ci_transcript"
+  ],
+  "safeSummaryOnly": true
+}

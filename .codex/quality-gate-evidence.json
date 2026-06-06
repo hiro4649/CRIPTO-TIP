@@ -2,30 +2,158 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "24",
-  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
-  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
-  "qualityGateExpectedStatus": "success",
+  "prNumber": "25",
+  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
+  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "qualityGateExpectedStatus": "success_after_required_advisory_split_repair",
+  "latestAnalyzedRunId": "27052809246",
+  "latestAnalyzedArtifactId": "7451259139",
   "reasonCodeMappings": {
-    "safeCiFailureArtifactStatus": "scripts/write-ci-safe-failure-artifact.mjs",
-    "pnpmTypecheckSafeSummaryStatus": "scripts/safe-pnpm-typecheck-summary.mjs",
-    "pnpmTestSafeSummaryStatus": "scripts/safe-pnpm-test-summary.mjs",
-    "requiredChecksMetadataStatus": "scripts/export-required-checks-metadata.mjs",
-    "sameHeadRequiredChecksStatus": "scripts/validate-same-head-required-checks.mjs",
-    "qualityGateSelfProtectionStatus": "scripts/check-quality-gate-self-protection.mjs",
-    "evidenceFreshnessStatus": "scripts/validate-evidence-freshness.mjs"
+    "productVerificationStatus": "docs/.codex product verification evidence for harness-only rollout",
+    "codeReviewMonitorStatus": "review scope and validation commands in PR body",
+    "stalePrAuditStatus": "PR body head SHA matches current PR head",
+    "targetQualityScoreStatus": "aggregate required gate status",
+    "workflow_required_status_failure": "requiredStatuses only; advisoryStatuses are non-blocking evidence",
+    "advisory_status_failure_non_blocking": "legacy self-test and version-lineage advisory evidence remains visible but non-blocking",
+    "legacy_self_test_advisory_only": "legacy self-test advisory does not block v1.0.8 rollout merge readiness",
+    "version_lineage_advisory_only": "version-lineage advisory does not block unless wrong source or target is proven",
+    "same_head_required_checks_all_pass": "same-head typescript/contracts/quality-gate required checks all pass is required before merge"
   },
   "safePlaceholderInventory": [
-    "current_pr_head resolved after PR creation",
-    "not_yet_assigned_for_new_pr resolved after GitHub Actions",
-    "PR #23 closed without merge is historical status only"
+    "Final quality-gate success run and artifact are recorded after GitHub rerun on the repaired head."
   ],
   "blockedClaims": [
-    "v108 completion claim",
-    "PR #23 reopened",
-    "raw logs read",
+    "v108 completion claim before required checks pass",
+    "PR #23 evidence reuse",
+    "raw CI transcript access",
     "runtime readiness claimed",
-    "production readiness claimed"
+    "production readiness claimed",
+    "legal compliance claimed",
+    "YouTube policy compliance claimed"
   ],
-  "qualityGateEvidenceStatus": "pass"
+  "qualityGateEvidenceStatus": "required_advisory_split_repaired_locally_pending_rerun",
+  "requiredStatuses": [
+    {
+      "name": "typescript",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "contracts",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "quality-gate",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "target-gate",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "same-head-required-checks",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "safe-artifact-availability",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "evidence-freshness",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "placeholder-check",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    },
+    {
+      "name": "self-protection-required",
+      "status": "pending_rerun_or_existing_success",
+      "blocking": true,
+      "reasonCode": "required_status_pass",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "verify on current head"
+    }
+  ],
+  "advisoryStatuses": [
+    {
+      "name": "legacy-self-test",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "legacy_self_test_advisory_only",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    },
+    {
+      "name": "version-lineage",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "version_lineage_advisory_only",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    },
+    {
+      "name": "v108-rollout-notes",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "advisory_status_failure_non_blocking",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    },
+    {
+      "name": "source-harness-reference",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "advisory_status_failure_non_blocking",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    },
+    {
+      "name": "target-harness-advisory",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "advisory_status_failure_non_blocking",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    },
+    {
+      "name": "metadata-limited-context",
+      "status": "advisory",
+      "blocking": false,
+      "reasonCode": "advisory_status_failure_non_blocking",
+      "evidenceRef": "safe-summary-only",
+      "nextSafeAction": "report without blocking merge readiness"
+    }
+  ]
 }

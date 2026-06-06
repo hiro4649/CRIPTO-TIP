@@ -2,119 +2,65 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "24",
-  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
-  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
+  "prNumber": "25",
+  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
+  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
   "classificationCoverageStatus": "pass",
   "changeClassificationStatus": "pass",
+  "productRelevantChanged": false,
+  "packageOrLockfileChanged": false,
+  "runtimeReadinessClaimed": false,
   "pathPatterns": [
     {
-      "pathPattern": ".github/workflows/ci.yml",
-      "classification": "ci_workflow",
-      "riskLevel": "high",
-      "verification": "GitHub CI and safe artifact upload",
-      "scope": "ci_safe_failure_artifacts"
+      "pathPattern": "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+      "classification": "harness_managed",
+      "riskLevel": "R2",
+      "verification": "PR body and quality-gate evidence review",
+      "scope": "v108_safe_ci_rollout_policy"
     },
     {
-      "pathPattern": "scripts/*ci-safe*.mjs",
-      "classification": "verification_tooling",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "ci_safe_failure_artifacts"
+      "pathPattern": "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+      "classification": "harness_managed",
+      "riskLevel": "R2",
+      "verification": "schema review and quality-gate evidence review",
+      "scope": "v108_status_schema"
     },
     {
-      "pathPattern": "scripts/*required-checks*.mjs",
-      "classification": "verification_tooling",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "same_head_required_checks"
+      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "classification": "harness_managed",
+      "riskLevel": "R2",
+      "verification": "classification coverage unknown count zero",
+      "scope": "classification_registry"
     },
     {
-      "pathPattern": "scripts/safe-pnpm-*.mjs",
-      "classification": "verification_tooling",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "pnpm_safe_summary"
-    },
-    {
-      "pathPattern": "fixtures/ci-safe/**",
-      "classification": "test_fixture",
-      "riskLevel": "low",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "ci_safe_failure_artifacts"
-    },
-    {
-      "pathPattern": "docs/**",
+      "pathPattern": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       "classification": "docs",
-      "riskLevel": "low",
-      "verification": "PR body and docs review",
-      "scope": "docs"
+      "riskLevel": "R2",
+      "verification": "rendered PR evidence",
+      "scope": "pr_evidence"
     },
     {
       "pathPattern": ".codex/**",
       "classification": "verification_relevant",
-      "riskLevel": "low",
+      "riskLevel": "R2",
       "verification": "machine-readable evidence",
       "scope": "quality_evidence"
-    },
-    {
-      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
-      "classification": "test",
-      "riskLevel": "medium",
-      "verification": "corepack pnpm test",
-      "scope": "ci_safe_failure_artifacts"
-    },
-    {
-      "pathPattern": "scripts/validate-evidence-freshness.mjs",
-      "classification": "verification_tooling",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts and evidence:ci",
-      "scope": "evidence_freshness_validation"
     }
   ],
   "changedFiles": [
-    ".github/workflows/ci.yml",
-    "scripts/ci-safe-lib.mjs",
-    "scripts/write-ci-safe-failure-artifact.mjs",
-    "scripts/classify-ci-safe-failure.mjs",
-    "scripts/export-required-checks-metadata.mjs",
-    "scripts/validate-same-head-required-checks.mjs",
-    "scripts/safe-pnpm-typecheck-summary.mjs",
-    "scripts/safe-pnpm-test-summary.mjs",
-    "fixtures/ci-safe/typecheck-failed.json",
-    "fixtures/ci-safe/test-failed.json",
-    "fixtures/ci-safe/typecheck-pass-test-failed.json",
-    "fixtures/ci-safe/missing-artifact.json",
-    "fixtures/ci-safe/mixed-head-checks.json",
-    "fixtures/ci-safe/quality-gate-pass-typescript-fail.json",
-    "fixtures/ci-safe/wrong-working-directory.json",
-    "fixtures/ci-safe/raw-log-required.json",
-    "fixtures/ci-safe/all-pass-same-head.json",
-    "apps/api/src/evidence-rendering.test.ts",
-    "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
-    "docs/process/CI_SAFE_FAILURE_ARTIFACT.schema.json",
-    "docs/process/REQUIRED_CHECKS_METADATA.md",
-    "docs/pr-safe-ci-failure-artifacts.md",
-    "docs/QUALITY_GATE_EVIDENCE.md",
-    "docs/TEST_COVERAGE_EVIDENCE.md",
-    "docs/process/EVIDENCE_RENDERING.md",
-    "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-    "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/RISK_REGISTER.md",
-    ".codex/evidence-pack.json",
-    ".codex/task-contract.json",
     ".codex/change-classification.json",
+    ".codex/evidence-pack.json",
     ".codex/product-verification.json",
-    ".codex/test-coverage-evidence.json",
     ".codex/quality-gate-evidence.json",
     ".codex/review-independence.json",
-    ".codex/risk-register.json",
-    "package.json",
-    "scripts/validate-evidence-freshness.mjs",
-    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
+    ".codex/task-contract.json",
+    ".codex/test-coverage-evidence.json",
+    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+    "docs/process/CODEX_V108_STATUS_SCHEMA.json"
   ]
 }
