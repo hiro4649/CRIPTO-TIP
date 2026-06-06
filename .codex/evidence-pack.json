@@ -10,11 +10,11 @@
   "riskLevel": "R3",
   "title": "feat: add safe ci failure artifacts",
   "goal": "Add safe CI failure artifacts and same-head required checks metadata for CRIPTO-TIP v1.0.7 active harness.",
-  "headSha": "59eb0125e23627216ade422d4b0aaf425fe59559",
+  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
   "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
-  "ciRunId": "27050149001",
-  "qualityGateRunId": "27050324635",
-  "qualityGateArtifactId": "7450455841",
+  "ciRunId": "27050878474",
+  "qualityGateRunId": "27051249421",
+  "qualityGateArtifactId": "7450776485",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -98,7 +98,19 @@
       "result": "required_before_merge"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27050878474",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27051249421",
+      "result": "success",
+      "artifactId": "7450776485"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,

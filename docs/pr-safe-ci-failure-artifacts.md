@@ -21,7 +21,7 @@ Done criteria: safe CI failure artifact schema rejects CI transcript bodies; pnp
 
 ## Evidence Integrity
 
-Head SHA: 59eb0125e23627216ade422d4b0aaf425fe59559
+Head SHA: 3bf61ebbe5ba13f4fa227e76472fcd7a3571db22
 
 Base SHA: 6da1bba9084a189e24116c7594c72211db4881b8
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27050149001
+CI run: 27050878474
 
-Quality-gate run: 27050324635
+Quality-gate run: 27051249421
 
-Quality-gate artifact: 7450455841
+Quality-gate artifact: 7450776485
 
 Tests: 21 test files, 207 passed, 6 skipped
 
