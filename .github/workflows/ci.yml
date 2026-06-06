@@ -33,15 +33,84 @@ jobs:
           cache: pnpm
       - run: pnpm install
       - run: pnpm lint
-      - run: pnpm typecheck
-      - run: pnpm test
+      - name: Safe pnpm typecheck summary
+        run: node scripts/safe-pnpm-typecheck-summary.mjs --output reports/pnpm-typecheck-safe-summary.json
         env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Safe pnpm test summary
+        run: node scripts/safe-pnpm-test-summary.mjs --output reports/pnpm-test-safe-summary.json --typecheck-result success
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
           RUN_LIVE_POSTGRES_TESTS: "true"
           DATABASE_URL: postgresql://cripto_tip:cripto_tip_dev@localhost:5432/cripto_tip
       - run: pnpm evidence:ci
         env:
           CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Write CI safe failure artifact fallback
+        if: always()
+        run: node scripts/write-ci-safe-failure-artifact.mjs --command-class metadata --phase ci_metadata --check-name typescript --job-name typescript --output reports/ci-safe-failure-artifact.json
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Write missing pnpm typecheck safe summary fallback
+        if: always()
+        run: |
+          if [ ! -f reports/pnpm-typecheck-safe-summary.json ]; then
+            node scripts/safe-pnpm-typecheck-summary.mjs --output reports/pnpm-typecheck-safe-summary.json --simulate-exit 1 --no-exit
+          fi
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Write missing pnpm test safe summary fallback
+        if: always()
+        run: |
+          if [ ! -f reports/pnpm-test-safe-summary.json ]; then
+            node scripts/safe-pnpm-test-summary.mjs --output reports/pnpm-test-safe-summary.json --typecheck-result failure --not-run-due-to-typecheck --no-exit
+          fi
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Export required checks safe metadata
+        if: always()
+        run: |
+          if [ -n "${{ github.event.pull_request.number || '' }}" ]; then
+            node scripts/export-required-checks-metadata.mjs --pr "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --output reports/ci-required-checks-metadata.json
+          else
+            node scripts/export-required-checks-metadata.mjs --fixture fixtures/ci-safe/mixed-head-checks.json --output reports/ci-required-checks-metadata.json
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Upload pnpm typecheck safe summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-typecheck-safe-summary
+          path: reports/pnpm-typecheck-safe-summary.json
+          if-no-files-found: error
+      - name: Upload pnpm test safe summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pnpm-test-safe-summary
+          path: reports/pnpm-test-safe-summary.json
+          if-no-files-found: error
+      - name: Upload CI safe failure artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-safe-failure-artifact
+          path: reports/ci-safe-failure-artifact.json
+          if-no-files-found: error
+      - name: Upload required checks safe metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-required-checks-metadata
+          path: reports/ci-required-checks-metadata.json
+          if-no-files-found: error
 
   contracts:
     runs-on: ubuntu-latest

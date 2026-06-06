@@ -2,7 +2,9 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
+  "prNumber": "24",
+  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
+  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
@@ -10,24 +12,45 @@
   "changeClassificationStatus": "pass",
   "pathPatterns": [
     {
-      "pathPattern": "apps/api/src/youtube/**",
-      "classification": "product_source",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/youtube/alert-delivery.test.ts and existing YouTube operations/observability tests",
-      "scope": "youtube_external_alert_delivery_boundary"
+      "pathPattern": ".github/workflows/ci.yml",
+      "classification": "ci_workflow",
+      "riskLevel": "high",
+      "verification": "GitHub CI and safe artifact upload",
+      "scope": "ci_safe_failure_artifacts"
     },
     {
-      "pathPattern": "apps/api/src/config/**",
-      "classification": "config_validation",
+      "pathPattern": "scripts/*ci-safe*.mjs",
+      "classification": "verification_tooling",
       "riskLevel": "medium",
-      "verification": "apps/api/src/config/env.test.ts",
-      "scope": "youtube_secret_name_boundary"
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "ci_safe_failure_artifacts"
+    },
+    {
+      "pathPattern": "scripts/*required-checks*.mjs",
+      "classification": "verification_tooling",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "same_head_required_checks"
+    },
+    {
+      "pathPattern": "scripts/safe-pnpm-*.mjs",
+      "classification": "verification_tooling",
+      "riskLevel": "medium",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "pnpm_safe_summary"
+    },
+    {
+      "pathPattern": "fixtures/ci-safe/**",
+      "classification": "test_fixture",
+      "riskLevel": "low",
+      "verification": "apps/api/src/evidence-rendering.test.ts",
+      "scope": "ci_safe_failure_artifacts"
     },
     {
       "pathPattern": "docs/**",
       "classification": "docs",
       "riskLevel": "low",
-      "verification": "PR body and evidence docs",
+      "verification": "PR body and docs review",
       "scope": "docs"
     },
     {
@@ -38,268 +61,60 @@
       "scope": "quality_evidence"
     },
     {
-      "pathPattern": ".env.example",
-      "classification": "config_example",
+      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
+      "classification": "test",
       "riskLevel": "medium",
-      "verification": "secret scan and config validation tests",
-      "scope": "config_credential_boundary"
-    },
-    {
-      "pathPattern": "scripts/codex-v080-lib.mjs",
-      "classification": "harness_support",
-      "riskLevel": "medium",
-      "verification": "active self-test registry gate and v106 self-test",
-      "scope": "quality_gate_version_alignment"
-    },
-    {
-      "pathPattern": "scripts/codex-v097-gate-lib.mjs",
-      "classification": "harness_support",
-      "riskLevel": "medium",
-      "verification": "active self-test registry gate and v097 self-test",
-      "scope": "target_manifest_fallback"
-    },
-    {
-      "pathPattern": "docs/process/CODEX_HARNESS_MANIFEST.json",
-      "classification": "harness_manifest",
-      "riskLevel": "medium",
-      "verification": "active self-test registry gate",
-      "scope": "target_harness_manifest"
-    },
-    {
-      "pathPattern": "scripts/codex-local-quality-gate.mjs",
-      "classification": "harness_support",
-      "riskLevel": "medium",
-      "verification": "v106 active self-test and local target advisory routing",
-      "scope": "legacy_self_test_advisory_routing"
-    },
-    {
-      "pathPattern": "scripts/codex-workflow-quality-runner.mjs",
-      "classification": "harness_support",
-      "riskLevel": "medium",
-      "verification": "workflow required status routing for v106 active self-test",
-      "scope": "legacy_self_test_advisory_routing"
-    },
-    {
-      "pathPattern": ".codex/manual-gates/**",
-      "classification": "manual_gate_schema",
-      "riskLevel": "medium",
-      "verification": "manual gate schema and secret scan",
-      "scope": "manual_gate_evidence"
-    },
-    {
-      "pathPattern": "apps/api/src/manual-gates**",
-      "classification": "manual_gate_boundary",
-      "riskLevel": "high",
-      "verification": "apps/api/src/manual-gates.test.ts",
-      "scope": "manual_gate_registry"
-    },
-    {
-      "pathPattern": "scripts/fetch-github-run-evidence.mjs",
-      "classification": "verification_relevant",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "github_run_artifact_evidence_fetcher"
-    },
-    {
-      "pathPattern": "scripts/refresh-pr-evidence.mjs",
-      "classification": "verification_relevant",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "pr_body_evidence_refresh"
+      "verification": "corepack pnpm test",
+      "scope": "ci_safe_failure_artifacts"
     },
     {
       "pathPattern": "scripts/validate-evidence-freshness.mjs",
-      "classification": "verification_relevant",
+      "classification": "verification_tooling",
       "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "evidence_freshness_validator"
-    },
-    {
-      "pathPattern": "scripts/check-quality-gate-self-protection.mjs",
-      "classification": "verification_relevant",
-      "riskLevel": "medium",
-      "verification": "apps/api/src/evidence-rendering.test.ts",
-      "scope": "quality_gate_self_protection"
-    },
-    {
-      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
-      "classification": "tests",
-      "riskLevel": "medium",
-      "verification": "corepack pnpm test",
-      "scope": "evidence_pipeline_tests"
-    },
-    {
-      "pathPattern": ".github/workflows/ci.yml",
-      "classification": "workflow_required_evidence",
-      "riskLevel": "high",
-      "verification": "GitHub ci required checks and apps/api/src/evidence-rendering.test.ts",
-      "scope": "required evidence ci path"
-    },
-    {
-      "pathPattern": ".github/workflows/quality-gate.yml",
-      "classification": "workflow_quality_gate",
-      "riskLevel": "high",
-      "verification": "scripts/check-quality-gate-self-protection.mjs",
-      "scope": "quality gate required path"
+      "verification": "apps/api/src/evidence-rendering.test.ts and evidence:ci",
+      "scope": "evidence_freshness_validation"
     }
   ],
   "changedFiles": [
-    {
-      "path": ".codex/manual-gates/schema.json",
-      "classification": "manual_gate_schema"
-    },
-    {
-      "path": "apps/api/src/manual-gates.ts",
-      "classification": "manual_gate_boundary"
-    },
-    {
-      "path": "apps/api/src/manual-gates.test.ts",
-      "classification": "manual_gate_boundary"
-    },
-    {
-      "path": "apps/api/src/manual-gates.test-support.ts",
-      "classification": "manual_gate_boundary"
-    },
-    {
-      "path": "apps/api/src/youtube/alert-delivery.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/alert-delivery.test.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/dashboard-deployment.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/dashboard-deployment.test.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/operations.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/operations.test.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/credentials.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "apps/api/src/youtube/credentials.test.ts",
-      "classification": "product_source"
-    },
-    {
-      "path": "docs/MANUAL_GATES.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RUNBOOK.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/YOUTUBE_CREDENTIALS.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/YOUTUBE_OBSERVABILITY.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/DASHBOARD_DEPLOYMENT.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/ALERT_DELIVERY.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/PRODUCTION_GATES.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/RISK_REGISTER.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/QUALITY_GATE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/PRODUCT_VERIFICATION.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/TEST_COVERAGE_EVIDENCE.md",
-      "classification": "docs"
-    },
-    {
-      "path": "docs/pr-manual-gate-registry.md",
-      "classification": "docs"
-    },
-    ".codex/evidence-pack.json",
-    ".codex/risk-register.json",
-    ".codex/manual-gates/manual-gates.json",
-    ".codex/test-summary.json",
-    "scripts/evidence-lib.mjs",
-    "scripts/render-pr-evidence.mjs",
-    "scripts/validate-evidence-freshness.mjs",
-    "scripts/check-evidence-placeholders.mjs",
-    "scripts/write-test-summary.mjs",
-    "scripts/check-quality-gate-self-protection.mjs",
-    "apps/api/src/evidence-rendering.test.ts",
-    "docs/process/EVIDENCE_RENDERING.md",
-    "docs/pr-evidence-single-source-of-truth.md",
-    "package.json",
-    "scripts/fetch-github-run-evidence.mjs",
-    "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-    "docs/pr-github-run-artifact-auto-injection.md",
-    "scripts/refresh-pr-evidence.mjs",
     ".github/workflows/ci.yml",
-    ".github/workflows/quality-gate.yml",
+    "scripts/ci-safe-lib.mjs",
+    "scripts/write-ci-safe-failure-artifact.mjs",
+    "scripts/classify-ci-safe-failure.mjs",
+    "scripts/export-required-checks-metadata.mjs",
+    "scripts/validate-same-head-required-checks.mjs",
+    "scripts/safe-pnpm-typecheck-summary.mjs",
+    "scripts/safe-pnpm-test-summary.mjs",
+    "fixtures/ci-safe/typecheck-failed.json",
+    "fixtures/ci-safe/test-failed.json",
+    "fixtures/ci-safe/typecheck-pass-test-failed.json",
+    "fixtures/ci-safe/missing-artifact.json",
+    "fixtures/ci-safe/mixed-head-checks.json",
+    "fixtures/ci-safe/quality-gate-pass-typescript-fail.json",
+    "fixtures/ci-safe/wrong-working-directory.json",
+    "fixtures/ci-safe/raw-log-required.json",
+    "fixtures/ci-safe/all-pass-same-head.json",
+    "apps/api/src/evidence-rendering.test.ts",
+    "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
+    "docs/process/CI_SAFE_FAILURE_ARTIFACT.schema.json",
+    "docs/process/REQUIRED_CHECKS_METADATA.md",
+    "docs/pr-safe-ci-failure-artifacts.md",
+    "docs/QUALITY_GATE_EVIDENCE.md",
+    "docs/TEST_COVERAGE_EVIDENCE.md",
+    "docs/process/EVIDENCE_RENDERING.md",
+    "docs/process/GITHUB_EVIDENCE_INJECTION.md",
     "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-    "docs/pr-quality-gate-self-protection-required.md"
-  ],
-  "classifications": [
-    {
-      "category": "evidence_single_source_of_truth",
-      "files": [
-        ".codex/evidence-pack.json",
-        ".codex/risk-register.json",
-        ".codex/manual-gates/manual-gates.json",
-        ".codex/test-summary.json",
-        "scripts/evidence-lib.mjs",
-        "scripts/render-pr-evidence.mjs",
-        "scripts/validate-evidence-freshness.mjs",
-        "scripts/check-evidence-placeholders.mjs",
-        "scripts/write-test-summary.mjs",
-        "scripts/check-quality-gate-self-protection.mjs",
-        "apps/api/src/evidence-rendering.test.ts",
-        "docs/process/EVIDENCE_RENDERING.md",
-        "docs/pr-evidence-single-source-of-truth.md",
-        "package.json",
-        "scripts/fetch-github-run-evidence.mjs",
-        "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-        "docs/pr-github-run-artifact-auto-injection.md",
-        "scripts/refresh-pr-evidence.mjs"
-      ],
-      "riskLevel": "medium",
-      "verification": [
-        "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-evidence-single-source-of-truth.md",
-        "node scripts/check-evidence-placeholders.mjs",
-        "corepack pnpm test",
-        "node scripts/fetch-github-run-evidence.mjs --offline-readonly"
-      ],
-      "scope": "quality evidence rendering and validation only"
-    }
-  ],
-  "unknownFileTarget": 0,
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
-  "ciRun": "27030286624",
-  "qualityGateRun": "27030892160",
-  "qualityGateArtifact": "7443194743"
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    "docs/RISK_REGISTER.md",
+    ".codex/evidence-pack.json",
+    ".codex/task-contract.json",
+    ".codex/change-classification.json",
+    ".codex/product-verification.json",
+    ".codex/test-coverage-evidence.json",
+    ".codex/quality-gate-evidence.json",
+    ".codex/review-independence.json",
+    ".codex/risk-register.json",
+    "package.json",
+    "scripts/validate-evidence-freshness.mjs",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
+  ]
 }

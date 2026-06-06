@@ -88,3 +88,8 @@ Risk register entries can be rendered from `.codex/risk-register.json`. The JSON
 | High | Evidence placeholders or stale evidence could appear in PR docs after automation changes. | Harness owner | This PR | `evidence:check-placeholders` and `evidence:validate --ci` run in CI without mutating the PR body. |
 | Medium | GitHub run/artifact auto-refresh still depends on GitHub API/gh availability. | Harness owner | Follow-up hardening | Fetch remains fail-closed outside explicit offline-readonly mode; PR body refresh failures remain blockers. |
 | Medium | Provider-safe deployment evidence can drift from manual gate implementation. | Operations | Manual gate persistence PR | Manual-gate tests and docs keep production-like apply bound to approved gate records and secret-reference-only evidence. |
+| Medium | Future v1.0.8 rollout can be blocked by CI failures without safe diagnostics. | Harness owner | safe CI artifact PR | Add raw-log-free CI safe artifacts and same-head required checks metadata before any clean v1.0.8 re-rollout. |
+
+## PR #24 Residual Risk Note
+
+Safe CI failure artifacts reduce raw-log dependency for future rollout attempts, but future v1.0.8 rollout still requires a fresh clean PR and same-head required checks all pass.

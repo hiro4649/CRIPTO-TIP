@@ -21,6 +21,13 @@
       "owner": "contracts-owner",
       "nextPr": "developer environment hardening",
       "mitigation": "GitHub contracts CI remains required before merge."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Future v1.0.8 rollout can be blocked by CI failures without safe diagnostics.",
+      "owner": "harness-owner",
+      "nextPr": "clean v1.0.8 re-rollout after safe artifacts",
+      "mitigation": "Add raw-log-free CI safe artifacts and same-head required checks metadata before any fresh rollout attempt."
     }
   ]
 }

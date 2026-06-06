@@ -1,0 +1,8 @@
+{
+  "safe_artifact_missing": true,
+  "check_name": "typescript",
+  "command_class": "metadata",
+  "phase": "artifact_upload",
+  "exit_code": 1,
+  "raw_log_allowed": false
+}

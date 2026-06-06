@@ -3,105 +3,112 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
+  "prNumber": "24",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
-  "title": "feat: require quality gate self protection",
-  "goal": "Require quality-gate self-protection, evidence placeholder checks, and fail-closed evidence validation in CI while adding negative fixtures for quality-gate weakening and provider-safe deployment evidence.",
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d",
-  "ciRunId": "27030286624",
-  "qualityGateRunId": "27030892160",
-  "qualityGateArtifactId": "7443194743",
+  "title": "feat: add safe ci failure artifacts",
+  "goal": "Add safe CI failure artifacts and same-head required checks metadata for CRIPTO-TIP v1.0.7 active harness.",
+  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
+  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
+  "ciRunId": "27050878474",
+  "qualityGateRunId": "27051249421",
+  "qualityGateArtifactId": "7450776485",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
+  "productCodeChanged": false,
   "scope": {
     "changedFiles": [
       ".github/workflows/ci.yml",
-      ".github/workflows/quality-gate.yml",
-      ".codex/evidence-pack.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/test-summary.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/change-classification.json",
-      ".codex/product-verification.json",
-      ".codex/task-contract.json",
-      ".codex/review-independence.json",
+      "scripts/ci-safe-lib.mjs",
+      "scripts/write-ci-safe-failure-artifact.mjs",
+      "scripts/classify-ci-safe-failure.mjs",
+      "scripts/export-required-checks-metadata.mjs",
+      "scripts/validate-same-head-required-checks.mjs",
+      "scripts/safe-pnpm-typecheck-summary.mjs",
+      "scripts/safe-pnpm-test-summary.mjs",
+      "fixtures/ci-safe/**",
       "apps/api/src/evidence-rendering.test.ts",
-      "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-      "docs/process/EVIDENCE_RENDERING.md",
+      "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
+      "docs/process/CI_SAFE_FAILURE_ARTIFACT.schema.json",
+      "docs/process/REQUIRED_CHECKS_METADATA.md",
+      "docs/pr-safe-ci-failure-artifacts.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
-      "docs/MANUAL_GATES.md",
-      "docs/PRODUCTION_GATES.md",
-      "docs/RISK_REGISTER.md",
-      "docs/pr-quality-gate-self-protection-required.md",
+      "docs/process/EVIDENCE_RENDERING.md",
+      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
+      "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/RISK_REGISTER.md",
+      ".codex/**",
       "package.json",
-      "scripts/check-quality-gate-self-protection.mjs",
       "scripts/validate-evidence-freshness.mjs",
-      "scripts/evidence-lib.mjs"
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "allowedPaths": [
       ".github/workflows/ci.yml",
-      ".github/workflows/quality-gate.yml",
       ".codex/**",
       "apps/api/src/evidence-rendering.test.ts",
       "docs/**",
+      "fixtures/ci-safe/**",
       "package.json",
-      "scripts/check-quality-gate-self-protection.mjs",
+      "scripts/ci-safe-lib.mjs",
+      "scripts/write-ci-safe-failure-artifact.mjs",
+      "scripts/classify-ci-safe-failure.mjs",
+      "scripts/export-required-checks-metadata.mjs",
+      "scripts/validate-same-head-required-checks.mjs",
+      "scripts/safe-pnpm-typecheck-summary.mjs",
+      "scripts/safe-pnpm-test-summary.mjs",
       "scripts/validate-evidence-freshness.mjs",
-      "scripts/evidence-lib.mjs"
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
       "apps/api/src/chain/**",
       "apps/api/src/youtube/connector.ts",
-      "apps/api/src/iris/**"
+      "apps/api/src/iris/**",
+      "apps/api/src/server.ts"
     ]
   },
   "commands": [
     {
+      "name": "corepack pnpm install",
+      "result": "required_before_merge"
+    },
+    {
       "name": "corepack pnpm lint",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
       "name": "npm test",
-      "result": "pass"
+      "result": "required_before_merge"
     },
     {
-      "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass"
-    },
-    {
-      "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pass"
+      "name": "safe CI artifact fixture commands",
+      "result": "required_before_merge"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27030286624",
+      "runId": "27050878474",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27030892160",
+      "runId": "27051249421",
       "result": "success",
-      "artifactId": "7443194743"
+      "artifactId": "7450776485"
     }
   ],
   "productionClaims": {
@@ -109,23 +116,34 @@
     "productionReady": false,
     "deploymentApplied": false
   },
-  "rollbackOrStopCondition": "Revert this PR if required self-protection, evidence placeholder checks, freshness validation, or provider-safe manual gate evidence checks fail on the active pull request head.",
+  "rollbackOrStopCondition": "Revert this PR if safe CI artifacts contain CI transcript bodies, required checks are weakened, PR #23 evidence is reused, or same-head required checks metadata becomes stale.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "quality_gate_self_protection_requiredization",
-    "evidence_ci_fail_closed",
-    "placeholder_checker_required",
-    "freshness_validator_required",
-    "github_run_artifact_freshness_check",
-    "negative_fixtures",
-    "provider_safe_deployment_evidence",
-    "manual_gate_evidence_enforcement",
+    "ci_safe_failure_artifact",
+    "pnpm_typecheck_safe_summary",
+    "pnpm_test_safe_summary",
+    "required_checks_metadata",
+    "same_head_check_validation",
+    "safe_summary_failure_diagnosis",
     "docs",
-    "tests"
+    "tests",
+    "quality_evidence"
   ],
   "forbiddenScope": [
+    "v1.0.8 rollout merge",
+    "PR #23 reopen",
+    "CI transcript reading",
+    "required check weakening",
+    "product runtime code changes",
+    "wallet/RPC/deploy changes",
+    "YouTube connector changes",
+    "Chain Listener changes",
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
     "token sale",
     "token exchange",
     "cash-out",
@@ -133,48 +151,39 @@
     "internal balance",
     "investment wording",
     "speculative reward",
-    "YouTube scraping",
-    "TikTok connector",
-    "multi-platform connector",
-    "multi-chain support",
-    "multi-token support",
-    "wallet custody",
-    "real production secret commit",
-    "production deployment apply without approved manual gate",
-    "external alert delivery with real provider credentials without approved manual gate",
-    "live YouTube account operation without approved manual gate"
+    "YouTube scraping"
   ],
   "doneCriteria": [
-    "quality:self-protection runs in required CI path",
-    "evidence:check-placeholders runs in required CI path",
-    "evidence:validate runs in required CI path without mutating PR body",
-    "quality-gate workflow rejects missing safe artifact upload output",
-    "self-protection detects removed Run Codex quality gate step",
-    "self-protection detects removed Upload safe quality artifacts step",
-    "self-protection detects unsafe artifact upload ignore behavior",
-    "self-protection detects continue-on-error on quality-gate job",
-    "self-protection detects always pass wording in executable scripts",
-    "placeholder fixture fails evidence check",
-    "stale head/run/artifact fixtures fail freshness validation",
-    "manual gate evidence keeps production-like apply manual-gated and secret-free",
+    "safe CI failure artifact schema rejects CI transcript bodies",
+    "pnpm typecheck safe summary records exit code without CI transcript bodies",
+    "pnpm test safe summary records counts without CI transcript bodies when available",
+    "required checks metadata requires quality-gate, typescript, and contracts on the same head",
+    "quality-gate pass alone is not merge readiness",
+    "failed CI without safe artifact is classified as safe_artifact_missing_for_failed_ci",
+    "metadata-limited failures are classified without CI transcript bodies",
     "no secret scan passes",
     "no scraping scan passes"
   ],
   "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
     "testFiles": 21,
-    "passed": 199,
+    "passed": 207,
     "skipped": 6
   },
   "securityBoundaries": [
-    "Evidence files store safe summaries only.",
-    "Manual gate evidence stores secret references only, never secret values.",
-    "PR evidence renderer blocks placeholder text before merge.",
+    "CRIPTO-TIP active harness remains v1.0.7.",
+    "PR #23 is closed without merge and is not reused as evidence.",
+    "Safe CI artifacts store safe metadata only and never CI transcript bodies.",
+    "raw_log_allowed is always false.",
+    "Required checks are not weakened; failing typecheck/test wrappers preserve failing exit codes.",
+    "No product runtime, wallet/RPC/deploy, YouTube connector, or Chain Listener code is changed.",
     "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is introduced."
   ],
   "residualRisks": [
-    "Provider-specific dashboard and alert apply remain manual-gated and out of scope.",
-    "Actual production deployment apply and live YouTube account operation remain out of scope.",
-    "GitHub API availability can block automatic evidence refresh; the script fails closed unless offline-readonly is explicit."
+    "Future v1.0.8 rollout remains blocked until a fresh clean PR is opened.",
+    "Metadata-limited external runner failures may still require external operator action, but raw logs remain forbidden for diagnosis.",
+    "Required checks metadata collected during an in-progress workflow may be incomplete until GitHub checks finish."
   ],
   "humanConfirmation": [
     "Merge decision",
@@ -184,36 +193,35 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 199,
-  "tests": 199,
+  "passed": 207,
+  "tests": 207,
   "skipped": 6,
   "productVerificationCommands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass with 21 test files, 199 passed, 6 skipped",
-    "npm test: pass with 21 test files, 199 passed, 6 skipped",
-    "corepack pnpm quality:self-protection: pass",
-    "corepack pnpm evidence:check-placeholders: pass",
-    "corepack pnpm evidence:validate: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass"
+    "corepack pnpm install: required before merge",
+    "corepack pnpm lint: required before merge",
+    "corepack pnpm typecheck: required before merge",
+    "corepack pnpm test: required before merge",
+    "npm test: required before merge",
+    "corepack pnpm evidence:ci: required before merge",
+    "corepack pnpm quality:self-protection: required before merge",
+    "safe CI artifact fixture commands: required before merge"
   ],
   "packageVerification": {
     "packageScriptsChanged": true,
     "runtimeDependenciesAdded": false,
-    "verification": "package.json adds required evidence/self-protection scripts only; no runtime dependency is added."
+    "verification": "package.json adds CI safe artifact scripts only; no runtime dependency is added."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No API endpoint, contract ABI, YouTube connector behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR hardens CI/evidence tooling only."
+    "statement": "No API endpoint, contract ABI, YouTube connector behavior, Chain Listener behavior, IRIS delivery behavior, or runtime payload contract is changed. This PR hardens CI safe evidence only."
   },
-  "runtimeSmokeRationale": "No production runtime readiness is claimed. This PR changes offline GitHub evidence tooling and tests, so package verification, evidence script checks, and GitHub CI are the applicable smoke boundary.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed. This PR changes CI safe artifact tooling, workflow artifact upload, tests, and docs only.",
   "reviewScope": {
-    "scope": "Quality-gate workflow self-protection required path, evidence CI validation, negative fixtures, provider-safe deployment evidence docs, and package scripts.",
-    "riskSummary": "Main risk is accidentally weakening quality-gate or allowing stale/placeholder evidence to pass CI; product runtime behavior is intentionally unchanged.",
-    "verificationOracle": "Required CI evidence scripts, self-protection fixtures, freshness validator fixtures, placeholder checker, package verification, and GitHub checks."
+    "scope": "CI safe failure artifact scripts, same-head required checks metadata, workflow safe artifact upload, docs, fixtures, and evidence tests.",
+    "riskSummary": "Main risk is classifying CI failures without raw logs while preserving required check failure semantics; product runtime behavior is intentionally unchanged.",
+    "verificationOracle": "Safe artifact fixture tests, same-head required checks tests, wrapper exit-code tests, evidence CI, self-protection, secret scan, and no-scraping scan."
   },
-  "testsPassed": 199,
-  "prBodyPath": "docs/pr-quality-gate-self-protection-required.md"
+  "testsPassed": 207,
+  "prBodyPath": "docs/pr-safe-ci-failure-artifacts.md"
 }

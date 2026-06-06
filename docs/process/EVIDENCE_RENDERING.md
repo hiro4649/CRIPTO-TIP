@@ -32,3 +32,15 @@ GitHub run and artifact evidence is supplied by
 `scripts/fetch-github-run-evidence.mjs`. It selects only successful runs for the
 active pull request head and requires the `codex-quality-gate-safe-artifacts`
 artifact before mutating the evidence pack.
+
+## Safe CI Failure Evidence
+
+Safe CI failure artifacts are evidence inputs only after they are reduced to
+safe summaries. Rendered PR bodies must not include raw CI logs, stdout/stderr
+bodies, stack traces, source file snippets, dependency trees, secret values,
+wallet addresses, OAuth tokens, API keys, private URLs, or full test failure
+output.
+
+## Safe CI Artifact Evidence
+
+PR #24 evidence treats missing safe CI artifacts as blocking and keeps CI transcript bodies out of rendered evidence. Same-head required check success is represented by `same_head_required_checks_all_pass`.

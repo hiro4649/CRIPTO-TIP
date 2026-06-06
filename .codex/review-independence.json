@@ -2,67 +2,36 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "21",
-  "writerEvidencePresent": true,
-  "reviewEvidencePresent": true,
-  "reviewChecklistPresent": true,
-  "writerEvidence": {
-    "present": true,
-    "files": [
-      "docs/pr-github-run-artifact-auto-injection.md",
-      ".codex/evidence-pack.json",
-      ".codex/task-contract.json"
-    ]
-  },
-  "reviewEvidence": {
-    "present": true,
-    "files": [
-      "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-      "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/TEST_COVERAGE_EVIDENCE.md",
-      "apps/api/src/evidence-rendering.test.ts"
-    ],
-    "independentFromWriterOnlyClaim": true
-  },
-  "reviewerRole": "project-owner",
-  "headSha": "28429d4eb3aa5ae6052d332d7c6ecb098b82d627",
-  "productCodeChanged": true,
-  "runtimeReadinessClaimed": false,
-  "reviewChecklist": [
-    "correctness",
-    "regression",
-    "security",
-    "data_integrity",
-    "runtime_safety",
-    "test_evidence",
-    "diff_scope",
-    "known_gaps"
-  ],
-  "humanReviewRequiredFields": [
-    "quality_gate_status",
-    "CI status",
-    "head SHA",
-    "remaining blockers",
-    "merge decision"
-  ],
+  "prNumber": "24",
+  "headSha": "3bf61ebbe5ba13f4fa227e76472fcd7a3571db22",
+  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
   "reviewIndependenceStatus": "pass",
-  "evidenceFiles": [
-    "docs/pr-github-run-artifact-auto-injection.md",
-    "docs/process/GITHUB_EVIDENCE_INJECTION.md",
-    ".codex/evidence-pack.json",
-    ".codex/test-coverage-evidence.json"
+  "writerEvidence": [
+    "scripts/ci-safe-lib.mjs",
+    "scripts/write-ci-safe-failure-artifact.mjs",
+    "scripts/classify-ci-safe-failure.mjs",
+    "scripts/export-required-checks-metadata.mjs",
+    "scripts/validate-same-head-required-checks.mjs",
+    ".github/workflows/ci.yml",
+    "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md"
   ],
-  "codeLevelEvidenceFiles": [
-    "scripts/fetch-github-run-evidence.mjs",
-    "scripts/refresh-pr-evidence.mjs",
-    "scripts/render-pr-evidence.mjs",
-    "scripts/validate-evidence-freshness.mjs",
-    "scripts/check-evidence-placeholders.mjs",
-    "scripts/check-quality-gate-self-protection.mjs",
-    "apps/api/src/evidence-rendering.test.ts"
+  "reviewEvidence": [
+    "apps/api/src/evidence-rendering.test.ts",
+    "docs/pr-safe-ci-failure-artifacts.md",
+    "docs/QUALITY_GATE_EVIDENCE.md"
   ],
-  "ciRun": "27030286624",
-  "qualityGateRun": "27030892160",
-  "qualityGateArtifact": "7443194743",
-  "baseSha": "b289df9215c31caefbece4c9922fefd825e5266d"
+  "reviewChecklist": [
+    "PR #23 not reopened or reused",
+    "raw logs not stored",
+    "required checks not weakened",
+    "product runtime code not changed",
+    "same-head required checks metadata present"
+  ],
+  "humanConfirmationRequired": [
+    "merge decision",
+    "current head SHA",
+    "CI status",
+    "quality-gate status",
+    "same-head required checks status"
+  ]
 }

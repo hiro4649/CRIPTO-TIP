@@ -302,7 +302,7 @@
     },
     {
       "pathPattern": "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-      "classification": "harness_policy",
+      "classification": "harness_managed",
       "surface": "harness_policy",
       "risk": "R3",
       "requiresProductVerification": true,
@@ -326,6 +326,114 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Evidence rendering and validation tests."
+    },
+    {
+      "pathPattern": "scripts/ci-safe-lib.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Shared safe CI artifact helpers."
+    },
+    {
+      "pathPattern": "scripts/write-ci-safe-failure-artifact.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "CI safe artifact writer."
+    },
+    {
+      "pathPattern": "scripts/classify-ci-safe-failure.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "CI safe failure classifier."
+    },
+    {
+      "pathPattern": "scripts/export-required-checks-metadata.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Required checks metadata exporter."
+    },
+    {
+      "pathPattern": "scripts/validate-same-head-required-checks.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Same-head required checks validator."
+    },
+    {
+      "pathPattern": "scripts/safe-pnpm-typecheck-summary.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "pnpm typecheck safe summary wrapper."
+    },
+    {
+      "pathPattern": "scripts/safe-pnpm-test-summary.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "pnpm test safe summary wrapper."
+    },
+    {
+      "pathPattern": "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
+      "classification": "harness_managed",
+      "surface": "harness",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Safe CI failure artifact policy."
+    },
+    {
+      "pathPattern": "docs/process/CI_SAFE_FAILURE_ARTIFACT.schema.json",
+      "classification": "harness_managed",
+      "surface": "harness",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Safe CI failure artifact schema."
+    },
+    {
+      "pathPattern": "docs/process/REQUIRED_CHECKS_METADATA.md",
+      "classification": "harness_managed",
+      "surface": "harness",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Same-head required checks metadata policy."
+    },
+    {
+      "pathPattern": "fixtures/ci-safe/**",
+      "classification": "test",
+      "surface": "verification",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Safe CI failure classifier fixtures."
+    },
+    {
+      "pathPattern": "docs/pr-safe-ci-failure-artifacts.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for safe CI artifact PR."
     }
   ],
   "safeSummaryOnly": true

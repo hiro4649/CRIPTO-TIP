@@ -46,3 +46,14 @@ URLs, OAuth tokens, API keys, webhook URLs, or provider credentials.
 - Evidence placeholders in `.codex`, `docs`, `.github`, `README.md`, or
   `package.json`.
 - Stale or unresolved evidence head values in CI validation mode.
+
+## Safe CI Artifact Allowance
+
+`if: always()` is allowed only for safe artifact generation and upload after
+required commands run. Required typecheck and test wrappers must preserve the
+failing exit code; they must not convert failed product checks into successful
+required checks.
+
+## Safe Artifact Upload Guard
+
+Required safe artifact upload paths must not use `if-no-files-found: warn` or `ignore`. Missing safe artifacts are fail-closed evidence failures.

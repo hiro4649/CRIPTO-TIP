@@ -1,0 +1,8 @@
+{
+  "command_class": "pnpm_typecheck",
+  "phase": "pnpm_typecheck",
+  "exit_code": 1,
+  "wrong_working_directory": true,
+  "working_directory": "wrong-directory",
+  "raw_log_allowed": false
+}
