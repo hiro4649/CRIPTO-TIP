@@ -17,25 +17,79 @@ Runtime readiness claim: no.
 
 Product code changed: no.
 
-Done criteria: v1.0.8 policy documents safe CI artifact semantics; same-head success reason remains same_head_required_checks_all_pass; required safe artifact uploads remain fail-closed; no product runtime surface changes; no secret scan passes; no scraping scan passes.
+Done criteria: requiredStatuses and advisoryStatuses are separated; legacy self-test advisory does not emit workflow_required_status_failure; same-head required checks remain required; required safe artifact uploads remain fail-closed; no product runtime surface changes; no secret scan passes; no scraping scan passes.
 
 ## Evidence Integrity
 
-Head SHA: 9ed6f5c0ae447826977774613f6af4e4ae5a7960
+Head SHA: d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341
 
 Base SHA: e0ab0f553e0addd6fb7441d4866bc0858de10482
 
 Product CI: success
 
-Quality-gate: failure_analyzed_body_evidence_repaired
+Quality-gate: failure_analyzed_required_advisory_split_repaired_locally
 
-CI run: 27051962009
+CI run: 27052642395
 
-Quality-gate run: 27052417424
+Quality-gate run: 27052809246
 
-Quality-gate artifact: 7451130169
+Quality-gate artifact: 7451259139
 
-Tests: 21 test files, 207 passed, 6 skipped
+Tests: 21 test files, 209 passed, 6 skipped
+
+PR #23 status: closed without merge and not reused.
+
+Active harness before this PR: v1.0.7.
+
+Fresh rollout: yes, from clean main after PR #24.
+
+Package or lockfile changed: no.
+
+Apps changed: no.
+
+Tests changed: harness evidence tests only.
+
+Runtime readiness claimed: no.
+
+Production readiness claimed: no.
+
+Legal compliance claimed: no.
+
+YouTube policy compliance claimed: no.
+
+Raw logs read: no.
+
+Quality-gate pass alone is merge readiness: no.
+
+Same-head required checks all pass required: yes.
+
+## Required And Advisory Statuses
+
+Required statuses remain blocking:
+
+- typescript
+- contracts
+- quality-gate
+- target-gate
+- same-head-required-checks
+- safe-artifact-availability
+- evidence-freshness
+- placeholder-check
+- self-protection-required
+
+Advisory statuses are reported in safe summaries but do not emit
+`workflow_required_status_failure` by themselves:
+
+- legacy-self-test
+- version-lineage
+- v108-rollout-notes
+- source-harness-reference
+- target-harness-advisory
+- metadata-limited-context
+
+Legacy self-test and version-lineage findings are advisory only unless they
+prove wrong source, wrong target, stale current-head evidence, or another
+required-status failure. Required-status failures remain merge blockers.
 
 ## Testing and review
 
@@ -71,6 +125,7 @@ Product verification commands:
 - node scripts/validate-evidence-freshness.mjs --ci: pass
 - node scripts/check-quality-gate-self-protection.mjs: pass
 - node scripts/codex-secret-safety-scan.mjs: pass
+- corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass
 
 Package verification:
 
@@ -96,21 +151,23 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 207 passed, 6 skipped.
+Current recorded test summary: 21 files, 209 passed, 6 skipped.
 
 ## Security Boundaries
 
 - v1.0.8 rollout does not claim runtime readiness.
 - v1.0.8 rollout does not claim production readiness.
-- PR #23 remains closed and unmerged.
+- PR #23 remains closed without merge and is not reused.
 - Safe CI artifacts remain safe-summary only.
-- No raw CI transcript body is added.
+- No raw CI transcript body is read or added.
+- Required statuses remain blocking; advisory statuses are reported but non-blocking.
 - No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is added.
 
 ## Residual risks
 
-- GitHub run and artifact IDs are injected after PR creation by the evidence refresh pipeline.
-- v1.0.8 active enforcement remains limited to the policy/schema rollout in this PR.
+- Quality-gate rerun is required after this required/advisory split repair.
+- v1.0.8 is not complete until same-head required checks, target gate, safe artifacts, and quality-gate all pass.
+- This PR does not prove product runtime, production, legal, or YouTube policy readiness.
 
 ## Human Confirmation
 

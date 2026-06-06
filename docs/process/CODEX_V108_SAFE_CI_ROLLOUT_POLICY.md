@@ -45,3 +45,40 @@ v1.0.8 rollout is mergeable only when the active pull request head has:
 - no scraping scan pass
 
 The rollout PR itself is not a production-readiness claim.
+
+Quality-gate pass alone is not merge readiness. The current head must also have
+same-head required checks all pass and safe artifact availability.
+
+## Required And Advisory Status Separation
+
+`requiredStatuses` are blocking and drive `mergeReady` and `targetMergeReady`.
+They are limited to:
+
+- typescript
+- contracts
+- quality-gate
+- target-gate
+- same-head-required-checks
+- safe-artifact-availability
+- evidence-freshness
+- placeholder-check
+- self-protection-required
+
+`advisoryStatuses` are safe-summary evidence that must remain visible but must
+not emit `workflow_required_status_failure` by themselves. They include:
+
+- legacy-self-test
+- version-lineage
+- v108-rollout-notes
+- source-harness-reference
+- target-harness-advisory
+- metadata-limited-context
+
+Legacy self-test and version-lineage advisory findings are not merge blockers
+unless they prove the wrong source, wrong target, stale current-head evidence, or
+another required-status failure. Safe artifact missing remains a terminal
+blocker. Raw logs remain forbidden; if safe artifact metadata is insufficient,
+use `metadata_limited_external_blocked` or `raw_log_required_but_forbidden`.
+
+PR #23 is closed without merge and is historical context only. Its evidence must
+not be reused for this fresh rollout PR.

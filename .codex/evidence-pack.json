@@ -10,13 +10,13 @@
   "riskLevel": "R3",
   "title": "chore: roll out harness v1.0.8 safely",
   "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
-  "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960",
+  "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341",
   "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
-  "ciRunId": "27051962009",
-  "qualityGateRunId": "27052417424",
-  "qualityGateArtifactId": "7451130169",
+  "ciRunId": "27052642395",
+  "qualityGateRunId": "27052809246",
+  "qualityGateArtifactId": "7451259139",
   "productCiStatus": "success",
-  "qualityGateStatus": "failure_analyzed_body_evidence_repaired",
+  "qualityGateStatus": "failure_analyzed_required_advisory_split_repaired_locally",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -28,24 +28,33 @@
       ".codex/review-independence.json",
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
+      "apps/api/src/evidence-rendering.test.ts",
       "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json"
+      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+      "scripts/codex-workflow-quality-runner.mjs"
     ],
     "allowedPaths": [
       "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
       "docs/process/CODEX_V108_STATUS_SCHEMA.json",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-      ".codex/**"
+      ".codex/**",
+      "scripts/codex-workflow-quality-runner.mjs",
+      "apps/api/src/evidence-rendering.test.ts"
     ],
     "forbiddenPaths": [
-      "apps/**",
+      "apps/api/src/youtube/**",
+      "apps/api/src/chain/**",
+      "apps/api/src/iris/**",
+      "apps/api/src/server.ts",
+      "apps/web/**",
+      "apps/overlay/**",
       "contracts/**",
-      "packages/**",
-      ".github/workflows/**",
-      "scripts/**"
+      "migrations/**",
+      "package.json",
+      "pnpm-lock.yaml"
     ]
   },
   "commands": [
@@ -105,16 +114,16 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27051962009",
+      "runId": "27052642395",
       "result": "success",
-      "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960"
+      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
     },
     {
       "name": "quality-gate",
-      "runId": "27052417424",
-      "artifactId": "7451130169",
+      "runId": "27052809246",
+      "artifactId": "7451259139",
       "result": "failure_analyzed",
-      "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960"
+      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
     }
   ],
   "productionClaims": {
@@ -152,8 +161,9 @@
     "YouTube scraping"
   ],
   "doneCriteria": [
-    "v1.0.8 policy documents safe CI artifact semantics",
-    "same-head success reason remains same_head_required_checks_all_pass",
+    "requiredStatuses and advisoryStatuses are separated",
+    "legacy self-test advisory does not emit workflow_required_status_failure",
+    "same-head required checks remain required",
     "required safe artifact uploads remain fail-closed",
     "no product runtime surface changes",
     "no secret scan passes",
@@ -163,20 +173,22 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 21,
-    "passed": 207,
+    "passed": 209,
     "skipped": 6
   },
   "securityBoundaries": [
     "v1.0.8 rollout does not claim runtime readiness.",
     "v1.0.8 rollout does not claim production readiness.",
-    "PR #23 remains closed and unmerged.",
+    "PR #23 remains closed without merge and is not reused.",
     "Safe CI artifacts remain safe-summary only.",
-    "No raw CI transcript body is added.",
+    "No raw CI transcript body is read or added.",
+    "Required statuses remain blocking; advisory statuses are reported but non-blocking.",
     "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is added."
   ],
   "residualRisks": [
-    "GitHub run and artifact IDs are injected after PR creation by the evidence refresh pipeline.",
-    "v1.0.8 active enforcement remains limited to the policy/schema rollout in this PR."
+    "Quality-gate rerun is required after this required/advisory split repair.",
+    "v1.0.8 is not complete until same-head required checks, target gate, safe artifacts, and quality-gate all pass.",
+    "This PR does not prove product runtime, production, legal, or YouTube policy readiness."
   ],
   "humanConfirmation": [
     "project-owner merge decision required",
@@ -186,8 +198,8 @@
     "remaining blockers documented"
   ],
   "testFiles": 21,
-  "passed": 207,
-  "tests": 207,
+  "passed": 209,
+  "tests": 209,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
@@ -202,7 +214,8 @@
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs --ci: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass"
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -220,7 +233,7 @@
     "riskSummary": "Main risk is over-claiming v1.0.8 readiness; the PR intentionally keeps rollout policy/schema only.",
     "verificationOracle": "Evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
   },
-  "testsPassed": 207,
+  "testsPassed": 209,
   "prBodyPath": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
   "targetRollout": true
 }

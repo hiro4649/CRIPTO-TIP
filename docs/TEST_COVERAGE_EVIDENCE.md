@@ -231,3 +231,7 @@ rejection.
 - Added coverage that all-pass same-head metadata does not use `product_code_failure`.
 - Added coverage for typecheck-failed test-not-run safe summary metadata.
 - Added coverage that required CI safe artifact uploads use `if-no-files-found: error`.
+
+## PR #25 v1.0.8 Rollout Tests
+
+Latest local test evidence for the required/advisory split: 21 test files, 209 passed, and 6 skipped. Added coverage verifies that legacy self-test advisory status does not become `workflow_required_status_failure` for target rollout, while required target quality failure remains blocking. Existing same-head required-check tests still reject mixed-head, missing, and failed required checks.

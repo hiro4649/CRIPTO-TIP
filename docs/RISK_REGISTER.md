@@ -93,3 +93,11 @@ Risk register entries can be rendered from `.codex/risk-register.json`. The JSON
 ## PR #24 Residual Risk Note
 
 Safe CI failure artifacts reduce raw-log dependency for future rollout attempts, but future v1.0.8 rollout still requires a fresh clean PR and same-head required checks all pass.
+
+## PR #25 v1.0.8 Rollout Risk Note
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| High | Advisory legacy self-test evidence could be promoted into a required workflow failure. | Harness owner | This PR | Separate requiredStatuses from advisoryStatuses and keep only required statuses as merge blockers. |
+| High | v1.0.8 could be over-claimed before same-head required checks pass. | Harness owner | This PR | PR body and evidence state that quality-gate pass alone is not merge readiness and v1.0.8 is incomplete until all required checks pass on the same head. |
+| Medium | Raw log dependency could return during failure diagnosis. | Harness owner | Safe artifact follow-up | Diagnosis uses safe summary artifacts only; raw logs remain forbidden. |
