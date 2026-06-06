@@ -1,0 +1,24 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
+  "schemaVersion": "1.0.8",
+  "harnessVersion": "1.0.8",
+  "activeStatusKey": "v108SafeCiRolloutStatus",
+  "requiredReasonCodes": [
+    "same_head_required_checks_all_pass",
+    "safe_artifact_missing_for_failed_ci",
+    "not_run_due_to_typecheck_failure"
+  ],
+  "requiredArtifacts": [
+    "pnpm-typecheck-safe-summary",
+    "pnpm-test-safe-summary",
+    "ci-safe-failure-artifact",
+    "ci-required-checks-metadata"
+  ],
+  "forbiddenClaims": [
+    "runtime_readiness",
+    "production_readiness",
+    "pr23_reuse",
+    "raw_ci_transcript"
+  ],
+  "safeSummaryOnly": true
+}
