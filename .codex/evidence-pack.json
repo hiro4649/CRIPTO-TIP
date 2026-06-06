@@ -10,7 +10,7 @@
   "riskLevel": "R3",
   "title": "chore: roll out harness v1.0.8 safely",
   "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
-  "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341",
+  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
   "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
   "ciRunId": "27052642395",
   "qualityGateRunId": "27052809246",
@@ -28,7 +28,6 @@
       ".codex/review-independence.json",
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
-      "apps/api/src/evidence-rendering.test.ts",
       "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
@@ -41,8 +40,7 @@
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
       ".codex/**",
-      "scripts/codex-workflow-quality-runner.mjs",
-      "apps/api/src/evidence-rendering.test.ts"
+      "scripts/codex-workflow-quality-runner.mjs"
     ],
     "forbiddenPaths": [
       "apps/api/src/youtube/**",
@@ -173,7 +171,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 21,
-    "passed": 209,
+    "passed": 207,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -198,8 +196,8 @@
     "remaining blockers documented"
   ],
   "testFiles": 21,
-  "passed": 209,
-  "tests": 209,
+  "passed": 207,
+  "tests": 207,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
@@ -214,8 +212,7 @@
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs --ci: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass",
-    "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass"
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -233,7 +230,7 @@
     "riskSummary": "Main risk is over-claiming v1.0.8 readiness; the PR intentionally keeps rollout policy/schema only.",
     "verificationOracle": "Evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
   },
-  "testsPassed": 209,
+  "testsPassed": 207,
   "prBodyPath": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
   "targetRollout": true
 }

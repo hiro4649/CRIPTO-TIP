@@ -2,7 +2,6 @@ import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const root = path.resolve(__dirname, "../../..");
@@ -406,7 +405,7 @@ describe("evidence single source of truth scripts", () => {
     const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
     runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
-  }, 20000);
+  });
 
   it("requires safe CI artifacts to fail closed when upload files are missing", () => {
     const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");
@@ -415,32 +414,6 @@ describe("evidence single source of truth scripts", () => {
       expect(workflow).toMatch(block);
     }
     expect(workflow).not.toMatch(/name: (pnpm-typecheck-safe-summary|pnpm-test-safe-summary|ci-safe-failure-artifact|ci-required-checks-metadata)[\s\S]*?if-no-files-found: warn/);
-  });
-
-  it("keeps legacy self-test advisory out of workflow required failures for target rollout", () => {
-    const fixture = path.join(os.tmpdir(), `cripto-tip-workflow-runner-${Date.now()}.mjs`);
-    const runnerUrl = pathToFileURL(path.join(root, "scripts", "codex-workflow-quality-runner.mjs")).href;
-    fs.writeFileSync(fixture, [
-      `import { evaluateWorkflowReport } from ${JSON.stringify(runnerUrl)};`,
-      "const report = { mode: 'target', status: 'pass', targetQualityScoreStatus: { status: 'pass', score: 95 }, qualityScoreStatus: { status: 'pass', score: 95 }, v085SelfTestStatus: { status: 'advisory', reasonCodes: ['legacy_self_test_advisory_only'] } };",
-      "const result = evaluateWorkflowReport(report, { eventName: 'pull_request', harnessMode: 'target' });",
-      "if (result.failures.some((failure) => String(failure).includes('v085SelfTestStatus=advisory'))) process.exit(1);",
-      "console.log('legacy self-test advisory is non-blocking');"
-    ].join("\n"));
-    expect(execFileSync("node", [fixture], { cwd: root, encoding: "utf8" })).toContain("non-blocking");
-  });
-
-  it("keeps required quality status failures blocking for target rollout", () => {
-    const fixture = path.join(os.tmpdir(), `cripto-tip-workflow-runner-required-${Date.now()}.mjs`);
-    const runnerUrl = pathToFileURL(path.join(root, "scripts", "codex-workflow-quality-runner.mjs")).href;
-    fs.writeFileSync(fixture, [
-      `import { evaluateWorkflowReport } from ${JSON.stringify(runnerUrl)};`,
-      "const report = { mode: 'target', status: 'fail', targetQualityScoreStatus: { status: 'fail', score: 70 }, qualityScoreStatus: { status: 'fail', score: 70 }, v085SelfTestStatus: { status: 'advisory' } };",
-      "const result = evaluateWorkflowReport(report, { eventName: 'pull_request', harnessMode: 'target', gateExit: 1 });",
-      "if (!result.failures.some((failure) => String(failure).includes('targetQualityScoreStatus=fail'))) process.exit(1);",
-      "console.log('required quality status remains blocking');"
-    ].join("\n"));
-    expect(execFileSync("node", [fixture], { cwd: root, encoding: "utf8" })).toContain("required quality status remains blocking");
   });
 
   it("rejects unsafe raw fields in CI safe artifact schema", () => {

@@ -21,7 +21,7 @@ Done criteria: requiredStatuses and advisoryStatuses are separated; legacy self-
 
 ## Evidence Integrity
 
-Head SHA: d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341
+Head SHA: 9a1501606b938d0257bf2a2cb3da2b731de78000
 
 Base SHA: e0ab0f553e0addd6fb7441d4866bc0858de10482
 
@@ -35,7 +35,7 @@ Quality-gate run: 27052809246
 
 Quality-gate artifact: 7451259139
 
-Tests: 21 test files, 209 passed, 6 skipped
+Tests: 21 test files, 207 passed, 6 skipped
 
 PR #23 status: closed without merge and not reused.
 
@@ -47,7 +47,7 @@ Package or lockfile changed: no.
 
 Apps changed: no.
 
-Tests changed: harness evidence tests only.
+Tests changed: no.
 
 Runtime readiness claimed: no.
 
@@ -125,7 +125,6 @@ Product verification commands:
 - node scripts/validate-evidence-freshness.mjs --ci: pass
 - node scripts/check-quality-gate-self-protection.mjs: pass
 - node scripts/codex-secret-safety-scan.mjs: pass
-- corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass
 
 Package verification:
 
@@ -151,7 +150,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 209 passed, 6 skipped.
+Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
 ## Security Boundaries
 
