@@ -3,35 +3,31 @@
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "25",
-  "headSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960",
   "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
   "reviewIndependenceStatus": "pass",
   "writerEvidence": [
-    "scripts/ci-safe-lib.mjs",
-    "scripts/write-ci-safe-failure-artifact.mjs",
-    "scripts/classify-ci-safe-failure.mjs",
-    "scripts/export-required-checks-metadata.mjs",
-    "scripts/validate-same-head-required-checks.mjs",
-    ".github/workflows/ci.yml",
-    "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md"
+    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+    "docs/process/CODEX_V108_STATUS_SCHEMA.json",
+    ".codex/evidence-pack.json"
   ],
   "reviewEvidence": [
-    "apps/api/src/evidence-rendering.test.ts",
-    "docs/pr-safe-ci-failure-artifacts.md",
-    "docs/QUALITY_GATE_EVIDENCE.md"
+    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    ".codex/change-classification.json"
   ],
   "reviewChecklist": [
     "PR #23 not reopened or reused",
     "raw logs not stored",
     "required checks not weakened",
     "product runtime code not changed",
-    "same-head required checks metadata present"
+    "v1.0.8 rollout remains policy/schema only"
   ],
   "humanConfirmationRequired": [
     "merge decision",
     "current head SHA",
     "CI status",
     "quality-gate status",
-    "same-head required checks status"
+    "remaining blockers"
   ]
 }

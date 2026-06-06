@@ -3,7 +3,7 @@
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "25",
-  "headSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960",
   "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
   "testFiles": 21,
   "testsPassed": 207,
@@ -11,23 +11,22 @@
   "commands": [
     "corepack pnpm test",
     "npm test",
-    "safe CI artifact fixture commands"
+    "corepack pnpm evidence:ci",
+    "corepack pnpm quality:self-protection",
+    "node scripts/check-evidence-placeholders.mjs",
+    "node scripts/validate-evidence-freshness.mjs --ci",
+    "node scripts/check-quality-gate-self-protection.mjs"
   ],
   "riskCoverage": [
-    "safe_ci_failure_artifact_schema",
-    "raw_log_field_rejection",
-    "pnpm_typecheck_safe_summary",
-    "pnpm_test_safe_summary",
-    "typecheck_pass_test_fail_classification",
-    "same_head_required_checks_metadata",
-    "mixed_head_rejection",
-    "missing_required_check_rejection",
-    "quality_gate_pass_but_required_check_failed",
-    "safe_artifact_missing_for_failed_ci"
+    "v108_policy_scope",
+    "v108_status_schema",
+    "classification_unknown_count_zero",
+    "evidence_placeholders_absent",
+    "quality_self_protection_still_passes",
+    "no_product_runtime_change"
   ],
   "uncoveredRisks": [
-    "future_v108_rollout_not_retried",
-    "real_external_runner_metadata_may_be_limited"
+    "v108 active enforcement is not claimed by this policy/schema rollout PR"
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,

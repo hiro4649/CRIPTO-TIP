@@ -2,7 +2,7 @@
 
 Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.
 
-PR profile: harness_only_r2
+PR profile: harness_workflow_r3
 Task mode: harness_change
 
 ## Task Contract
@@ -21,19 +21,19 @@ Done criteria: v1.0.8 policy documents safe CI artifact semantics; same-head suc
 
 ## Evidence Integrity
 
-Head SHA: e0ab0f553e0addd6fb7441d4866bc0858de10482
+Head SHA: 9ed6f5c0ae447826977774613f6af4e4ae5a7960
 
 Base SHA: e0ab0f553e0addd6fb7441d4866bc0858de10482
 
-Product CI: awaiting_github_actions_after_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_github_actions_after_pr_creation
+Quality-gate: failure_analyzed_body_evidence_repaired
 
-CI run: awaiting_github_actions_after_pr_creation
+CI run: 27051962009
 
-Quality-gate run: awaiting_github_actions_after_pr_creation
+Quality-gate run: 27052417424
 
-Quality-gate artifact: awaiting_github_actions_after_pr_creation
+Quality-gate artifact: 7451130169
 
 Tests: 21 test files, 207 passed, 6 skipped
 
@@ -58,13 +58,19 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 
 Product verification commands:
 
-- corepack pnpm install: required before merge
-- corepack pnpm lint: required before merge
-- corepack pnpm typecheck: required before merge
-- corepack pnpm test: required before merge
-- npm test: required before merge
-- corepack pnpm evidence:ci: required before merge
-- corepack pnpm quality:self-protection: required before merge
+- corepack pnpm install: pass
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/write-test-summary.mjs: pass
+- node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs --ci: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
 
 Package verification:
 
@@ -108,8 +114,8 @@ Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
 ## Human Confirmation
 
-- Merge decision
-- Current head SHA
-- CI status
-- Quality-gate status
-- Remaining blockers
+- project-owner merge decision required
+- current head SHA verified
+- CI status verified
+- quality-gate blocker review required
+- remaining blockers documented

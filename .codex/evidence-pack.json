@@ -4,28 +4,34 @@
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "25",
-  "prProfile": "harness_only_r2",
+  "prProfile": "harness_workflow_r3",
   "taskMode": "harness_change",
   "changeType": "harness_change",
-  "riskLevel": "R2",
+  "riskLevel": "R3",
   "title": "chore: roll out harness v1.0.8 safely",
   "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
-  "headSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960",
   "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
-  "ciRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateArtifactId": "awaiting_github_actions_after_pr_creation",
-  "productCiStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
+  "ciRunId": "27051962009",
+  "qualityGateRunId": "27052417424",
+  "qualityGateArtifactId": "7451130169",
+  "productCiStatus": "success",
+  "qualityGateStatus": "failure_analyzed_body_evidence_repaired",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
     "changedFiles": [
-      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      ".codex/change-classification.json",
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/review-independence.json",
+      ".codex/task-contract.json",
+      ".codex/test-coverage-evidence.json",
       "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-      ".codex/**"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
+      "docs/process/CODEX_V108_STATUS_SCHEMA.json"
     ],
     "allowedPaths": [
       "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
@@ -38,37 +44,79 @@
       "apps/**",
       "contracts/**",
       "packages/**",
-      "scripts/**",
-      ".github/workflows/**"
+      ".github/workflows/**",
+      "scripts/**"
     ]
   },
   "commands": [
     {
       "name": "corepack pnpm install",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm lint",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
       "name": "npm test",
-      "result": "required_before_merge"
+      "result": "pass"
     },
     {
-      "name": "safe CI artifact fixture commands",
-      "result": "required_before_merge"
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs --ci",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27051962009",
+      "result": "success",
+      "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27052417424",
+      "artifactId": "7451130169",
+      "result": "failure_analyzed",
+      "headSha": "9ed6f5c0ae447826977774613f6af4e4ae5a7960"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -131,24 +179,30 @@
     "v1.0.8 active enforcement remains limited to the policy/schema rollout in this PR."
   ],
   "humanConfirmation": [
-    "Merge decision",
-    "Current head SHA",
-    "CI status",
-    "Quality-gate status",
-    "Remaining blockers"
+    "project-owner merge decision required",
+    "current head SHA verified",
+    "CI status verified",
+    "quality-gate blocker review required",
+    "remaining blockers documented"
   ],
   "testFiles": 21,
   "passed": 207,
   "tests": 207,
   "skipped": 6,
   "productVerificationCommands": [
-    "corepack pnpm install: required before merge",
-    "corepack pnpm lint: required before merge",
-    "corepack pnpm typecheck: required before merge",
-    "corepack pnpm test: required before merge",
-    "npm test: required before merge",
-    "corepack pnpm evidence:ci: required before merge",
-    "corepack pnpm quality:self-protection: required before merge"
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs --ci: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
