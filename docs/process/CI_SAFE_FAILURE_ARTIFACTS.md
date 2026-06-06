@@ -18,6 +18,10 @@ The artifacts contain check metadata, command class, phase, exit code, package s
 
 `raw_log_allowed` is always `false`. If metadata is insufficient, `raw_log_required` may be `true`, but the safe reason must remain `raw_log_required_but_forbidden` or `metadata_limited_external_blocked`.
 
+`same_head_required_checks_all_pass` is the success safe reason code for all required checks passing on the same head. `product_code_failure` is only for an actual product verification failure and must not be used for same-head success.
+
+Required safe artifact uploads use `if-no-files-found: error`. Missing `pnpm-typecheck-safe-summary`, `pnpm-test-safe-summary`, `ci-safe-failure-artifact`, or `ci-required-checks-metadata` is a terminal blocker because failed CI must remain diagnosable without raw logs.
+
 ## Merge Readiness Boundary
 
 Quality-gate pass alone is not merge readiness. The required checks are:

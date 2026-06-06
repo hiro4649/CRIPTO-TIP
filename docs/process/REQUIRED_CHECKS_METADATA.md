@@ -11,3 +11,5 @@ The exporter separates quality-gate status from merge readiness:
 - missing safe CI artifacts for failed checks are terminal blockers.
 
 Safe reason codes include `same_head_required_checks_not_all_pass`, `quality_gate_pass_but_required_check_failed`, `required_check_name_mismatch`, and `safe_artifact_missing_for_failed_ci`.
+
+When every required check passes on the same head, the safe reason code is `same_head_required_checks_all_pass`. This success state must not use `product_code_failure`.

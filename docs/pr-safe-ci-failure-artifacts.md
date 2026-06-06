@@ -21,21 +21,21 @@ Done criteria: safe CI failure artifact schema rejects CI transcript bodies; pnp
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 59eb0125e23627216ade422d4b0aaf425fe59559
 
-Base SHA: current_pr_base
+Base SHA: 6da1bba9084a189e24116c7594c72211db4881b8
 
-Product CI: not_yet_verified_for_new_pr
+Product CI: success
 
-Quality-gate: not_yet_verified_for_new_pr
+Quality-gate: success
 
-CI run: not_yet_assigned_for_new_pr
+CI run: 27050149001
 
-Quality-gate run: not_yet_assigned_for_new_pr
+Quality-gate run: 27050324635
 
-Quality-gate artifact: not_yet_assigned_for_new_pr
+Quality-gate artifact: 7450455841
 
-Tests: 21 test files, 205 passed, 6 skipped
+Tests: 21 test files, 207 passed, 6 skipped
 
 ## Testing and review
 
@@ -91,7 +91,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 21 files, 205 passed, 6 skipped.
+Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
 ## Security Boundaries
 

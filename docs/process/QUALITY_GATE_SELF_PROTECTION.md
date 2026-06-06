@@ -53,3 +53,7 @@ URLs, OAuth tokens, API keys, webhook URLs, or provider credentials.
 required commands run. Required typecheck and test wrappers must preserve the
 failing exit code; they must not convert failed product checks into successful
 required checks.
+
+## Safe Artifact Upload Guard
+
+Required safe artifact upload paths must not use `if-no-files-found: warn` or `ignore`. Missing safe artifacts are fail-closed evidence failures.

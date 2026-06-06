@@ -40,3 +40,7 @@ safe summaries. Rendered PR bodies must not include raw CI logs, stdout/stderr
 bodies, stack traces, source file snippets, dependency trees, secret values,
 wallet addresses, OAuth tokens, API keys, private URLs, or full test failure
 output.
+
+## Safe CI Artifact Evidence
+
+PR #24 evidence treats missing safe CI artifacts as blocking and keeps CI transcript bodies out of rendered evidence. Same-head required check success is represented by `same_head_required_checks_all_pass`.

@@ -55,6 +55,24 @@ jobs:
         env:
           CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Write missing pnpm typecheck safe summary fallback
+        if: always()
+        run: |
+          if [ ! -f reports/pnpm-typecheck-safe-summary.json ]; then
+            node scripts/safe-pnpm-typecheck-summary.mjs --output reports/pnpm-typecheck-safe-summary.json --simulate-exit 1 --no-exit
+          fi
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+      - name: Write missing pnpm test safe summary fallback
+        if: always()
+        run: |
+          if [ ! -f reports/pnpm-test-safe-summary.json ]; then
+            node scripts/safe-pnpm-test-summary.mjs --output reports/pnpm-test-safe-summary.json --typecheck-result failure --not-run-due-to-typecheck --no-exit
+          fi
+        env:
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
       - name: Export required checks safe metadata
         if: always()
         run: |
@@ -71,28 +89,28 @@ jobs:
         with:
           name: pnpm-typecheck-safe-summary
           path: reports/pnpm-typecheck-safe-summary.json
-          if-no-files-found: warn
+          if-no-files-found: error
       - name: Upload pnpm test safe summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pnpm-test-safe-summary
           path: reports/pnpm-test-safe-summary.json
-          if-no-files-found: warn
+          if-no-files-found: error
       - name: Upload CI safe failure artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ci-safe-failure-artifact
           path: reports/ci-safe-failure-artifact.json
-          if-no-files-found: warn
+          if-no-files-found: error
       - name: Upload required checks safe metadata
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ci-required-checks-metadata
           path: reports/ci-required-checks-metadata.json
-          if-no-files-found: warn
+          if-no-files-found: error
 
   contracts:
     runs-on: ubuntu-latest

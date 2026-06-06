@@ -3,20 +3,20 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.0.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending_new_pr",
+  "prNumber": "24",
   "prProfile": "product_minor_r2",
   "taskMode": "feature",
   "changeType": "feature",
   "riskLevel": "R3",
   "title": "feat: add safe ci failure artifacts",
   "goal": "Add safe CI failure artifacts and same-head required checks metadata for CRIPTO-TIP v1.0.7 active harness.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRunId": "not_yet_assigned_for_new_pr",
-  "qualityGateRunId": "not_yet_assigned_for_new_pr",
-  "qualityGateArtifactId": "not_yet_assigned_for_new_pr",
-  "productCiStatus": "not_yet_verified_for_new_pr",
-  "qualityGateStatus": "not_yet_verified_for_new_pr",
+  "headSha": "59eb0125e23627216ade422d4b0aaf425fe59559",
+  "baseSha": "6da1bba9084a189e24116c7594c72211db4881b8",
+  "ciRunId": "27050149001",
+  "qualityGateRunId": "27050324635",
+  "qualityGateArtifactId": "7450455841",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -156,7 +156,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 21,
-    "passed": 205,
+    "passed": 207,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -181,8 +181,8 @@
     "Remaining blockers"
   ],
   "testFiles": 21,
-  "passed": 205,
-  "tests": 205,
+  "passed": 207,
+  "tests": 207,
   "skipped": 6,
   "productVerificationCommands": [
     "corepack pnpm install: required before merge",
@@ -210,6 +210,6 @@
     "riskSummary": "Main risk is classifying CI failures without raw logs while preserving required check failure semantics; product runtime behavior is intentionally unchanged.",
     "verificationOracle": "Safe artifact fixture tests, same-head required checks tests, wrapper exit-code tests, evidence CI, self-protection, secret scan, and no-scraping scan."
   },
-  "testsPassed": 205,
+  "testsPassed": 207,
   "prBodyPath": "docs/pr-safe-ci-failure-artifacts.md"
 }

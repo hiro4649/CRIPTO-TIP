@@ -48,7 +48,7 @@
     "working_directory": { "type": "string" },
     "phase": { "type": "string" },
     "exit_code": { "type": "number" },
-    "result": { "enum": ["success", "failure"] },
+    "result": { "enum": ["success", "failure", "not_run"] },
     "safe_reason_code": {
       "enum": [
         "typescript_external_runner_failure",
@@ -62,6 +62,7 @@
         "product_code_failure",
         "external_runner_failure",
         "raw_log_required_but_forbidden",
+        "same_head_required_checks_all_pass",
         "same_head_required_checks_not_all_pass",
         "quality_gate_pass_but_required_check_failed",
         "metadata_limited_external_blocked"

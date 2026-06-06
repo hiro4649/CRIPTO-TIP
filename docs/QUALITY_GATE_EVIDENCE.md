@@ -224,3 +224,10 @@ Quality-gate pass alone is not merge readiness. `quality-gate`, `typescript`,
 and `contracts` must all pass on the same head SHA. Failed CI without a safe
 artifact is classified as `safe_artifact_missing_for_failed_ci`. Metadata-limited
 failures use `metadata_limited_external_blocked` without reading raw logs.
+
+## PR #24 Safe CI Artifact Hardening
+
+- `same_head_required_checks_all_pass` is the safe reason code for all required checks passing on the same head; `product_code_failure` is not used for this success state.
+- Safe CI artifact uploads for pnpm typecheck, pnpm test, CI failure metadata, and required checks metadata use fail-closed missing-file handling.
+- Quality-gate pass alone is not merge readiness; same-head `quality-gate`, `typescript`, and `contracts` pass is required.
+- PR #23 remains closed without merge and is not reused as evidence. CRIPTO-TIP remains active harness v1.0.7.

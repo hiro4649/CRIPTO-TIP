@@ -13,6 +13,7 @@ export const safeReasonCodes = new Set([
   "product_code_failure",
   "external_runner_failure",
   "raw_log_required_but_forbidden",
+  "same_head_required_checks_all_pass",
   "same_head_required_checks_not_all_pass",
   "quality_gate_pass_but_required_check_failed",
   "metadata_limited_external_blocked"
@@ -155,7 +156,7 @@ export function buildRequiredChecksMetadata(input) {
   const unexpected = checks.filter((check) => requiredChecks.includes(check.check_name) === false);
   const allRequired = requiredChecks.map((name) => checks.find((check) => check.check_name === name));
   const sameHeadRequiredChecksPassed = missing.length === 0 && headSet.size === 1 && allRequired.every((check) => check?.conclusion === "success");
-  let safeReasonCode = sameHeadRequiredChecksPassed ? "product_code_failure" : "same_head_required_checks_not_all_pass";
+  let safeReasonCode = sameHeadRequiredChecksPassed ? "same_head_required_checks_all_pass" : "same_head_required_checks_not_all_pass";
   if (unexpected.length) safeReasonCode = "required_check_name_mismatch";
   if (checks.some((check) => check.check_name === "quality-gate" && check.conclusion === "success") && allRequired.some((check) => check && check.conclusion !== "success")) {
     safeReasonCode = "quality_gate_pass_but_required_check_failed";

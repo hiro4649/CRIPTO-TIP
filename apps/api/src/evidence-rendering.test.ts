@@ -371,11 +371,23 @@ describe("evidence single source of truth scripts", () => {
     expect(JSON.stringify({ typecheck, test })).not.toMatch(/stdout|stderr|stack_trace/);
   });
 
+  it("records a safe not-run test summary when typecheck already failed", () => {
+    const testOutput = path.join(os.tmpdir(), `cripto-tip-test-not-run-${Date.now()}.json`);
+    runScript("safe-pnpm-test-summary.mjs", ["--typecheck-result", "failure", "--not-run-due-to-typecheck", "--no-exit", "--output", testOutput]);
+    const test = JSON.parse(fs.readFileSync(testOutput, "utf8"));
+    expect(test.pnpm_test_result).toBe("not_run_due_to_typecheck_failure");
+    expect(test.raw_log_allowed).toBe(false);
+    expect(test.safe_reason_code).not.toBe("pnpm_test_failed_safe_summary");
+    expect(JSON.stringify(test)).not.toMatch(/stdout|stderr|stack_trace/);
+  });
+
   it("exports and validates same-head required checks metadata", () => {
     const output = path.join(os.tmpdir(), `cripto-tip-required-checks-${Date.now()}.json`);
     runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/all-pass-same-head.json", "--output", output]);
     const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
     expect(metadata.same_head_required_checks_passed).toBe(true);
+    expect(metadata.safe_reason_code).toBe("same_head_required_checks_all_pass");
+    expect(metadata.safe_reason_code).not.toBe("product_code_failure");
     expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
   });
 
@@ -393,6 +405,15 @@ describe("evidence single source of truth scripts", () => {
     const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
     runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
+  });
+
+  it("requires safe CI artifacts to fail closed when upload files are missing", () => {
+    const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");
+    for (const name of ["pnpm-typecheck-safe-summary", "pnpm-test-safe-summary", "ci-safe-failure-artifact", "ci-required-checks-metadata"]) {
+      const block = new RegExp(`name: ${name}[\\s\\S]*?if-no-files-found: error`);
+      expect(workflow).toMatch(block);
+    }
+    expect(workflow).not.toMatch(/name: (pnpm-typecheck-safe-summary|pnpm-test-safe-summary|ci-safe-failure-artifact|ci-required-checks-metadata)[\s\S]*?if-no-files-found: warn/);
   });
 
   it("rejects unsafe raw fields in CI safe artifact schema", () => {

@@ -224,3 +224,10 @@ test failure summaries, typecheck-pass/test-fail classification, raw field
 rejection, same-head required checks pass/fail metadata,
 quality-gate-pass/typescript-fail classification, and missing required check
 rejection.
+
+## PR #24 Safe CI Artifact Tests
+
+- Added coverage for same-head required checks all-pass safe reason code.
+- Added coverage that all-pass same-head metadata does not use `product_code_failure`.
+- Added coverage for typecheck-failed test-not-run safe summary metadata.
+- Added coverage that required CI safe artifact uploads use `if-no-files-found: error`.

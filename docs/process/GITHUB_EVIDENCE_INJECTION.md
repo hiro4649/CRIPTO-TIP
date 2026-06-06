@@ -51,3 +51,7 @@ Required checks metadata records check names, workflow names, status,
 conclusion, head SHA, and run ID only. It does not read or store raw logs.
 Same-head required check validation is separate from quality-gate success:
 `quality-gate`, `typescript`, and `contracts` must all pass on the same head.
+
+## Same-Head Required Checks
+
+GitHub evidence injection must not treat a passing quality-gate alone as merge readiness. The required checks metadata must show `quality-gate`, `typescript`, and `contracts` passing on the same head.
