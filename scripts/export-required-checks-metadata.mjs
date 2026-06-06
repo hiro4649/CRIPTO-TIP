@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { valueAfter, readJson, writeJson, buildRequiredChecksMetadata } from "./ci-safe-lib.mjs";
 
 const args = process.argv.slice(2);
@@ -12,7 +12,8 @@ if (fixture) {
   const pr = valueAfter(args, "--pr");
   const repo = valueAfter(args, "--repo") || process.env.GITHUB_REPOSITORY;
   if (!pr || !repo) throw new Error("--pr and --repo are required without --fixture");
-  const checksJson = execFileSync("gh", ["pr", "checks", pr, "--repo", repo, "--json", "name,workflow,state,link,bucket"], { encoding: "utf8" });
+  const checksResult = spawnSync("gh", ["pr", "checks", pr, "--repo", repo, "--json", "name,workflow,state,link,bucket"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  const checksJson = checksResult.stdout || "[]";
   const headJson = execFileSync("gh", ["pr", "view", pr, "--repo", repo, "--json", "headRefOid"], { encoding: "utf8" });
   const head = JSON.parse(headJson).headRefOid;
   input = JSON.parse(checksJson).map((check) => ({
