@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.8",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": "26",
+  "headSha": "4757a48b4286975f893d9f19f97da1a1c7a50b34",
+  "baseSha": "b6cbee8d0c44f7683f9d386884ed581fba46e4ed",
   "reviewIndependenceStatus": "pass",
   "writerEvidence": [
     "docs/AUDIT_REPORT_FULL_REPO_V108.md",
@@ -28,5 +28,6 @@
     "CI status",
     "quality-gate status",
     "remaining risks"
-  ]
+  ],
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9"
 }

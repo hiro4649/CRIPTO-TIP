@@ -18,6 +18,14 @@ Safe artifact summary:
 Source local gate:
 Self-test status:
 
+## Testing and review
+
+Task mode:
+Verification surface:
+Risk surface:
+Oracle provided:
+Split required:
+
 ## Risk And Readiness
 
 Risk level:

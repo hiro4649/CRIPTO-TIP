@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.8",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": "26",
+  "headSha": "4757a48b4286975f893d9f19f97da1a1c7a50b34",
+  "baseSha": "b6cbee8d0c44f7683f9d386884ed581fba46e4ed",
   "taskMode": "audit_only_r2",
   "changeType": "audit",
   "riskLevel": "R2",
@@ -53,7 +53,14 @@
     "docs/AUDIT_REPORT_FULL_REPO_V108.md",
     "docs/pr-full-repo-pro-audit-v108.md",
     ".codex/evidence-pack.json",
-    "package.json"
+    ".codex/test-summary.json",
+    "GitHub required checks on the active PR head"
   ],
-  "safeOutputOnly": true
+  "safeOutputOnly": true,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "riskSurface": [
+    "docs/evidence",
+    "package evidence script default",
+    "quality-gate self-protection evidence"
+  ]
 }

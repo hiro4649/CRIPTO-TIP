@@ -1,22 +1,22 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
   "schemaVersion": "1.0.0",
-  "harnessVersion": "1.0.8",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending",
+  "prNumber": "26",
   "prProfile": "product_minor_r2",
   "taskMode": "audit_only_r2",
   "changeType": "audit",
   "riskLevel": "R2",
   "title": "chore: audit full repo on harness v1.0.8",
   "goal": "Perform a full repository Pro audit under harness v1.0.8, record safe-summary findings, refresh evidence, and apply only audit/evidence/docs-level fixes.",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "ciRunId": "to_be_injected_after_pr_checks",
-  "qualityGateRunId": "to_be_injected_after_pr_checks",
-  "qualityGateArtifactId": "to_be_injected_after_pr_checks",
-  "productCiStatus": "local_pass_remote_pending",
-  "qualityGateStatus": "local_pass_remote_pending",
+  "headSha": "4757a48b4286975f893d9f19f97da1a1c7a50b34",
+  "baseSha": "b6cbee8d0c44f7683f9d386884ed581fba46e4ed",
+  "ciRunId": "27055099430",
+  "qualityGateRunId": "27071520158",
+  "qualityGateArtifactId": "",
+  "productCiStatus": "success",
+  "qualityGateStatus": "needs_rerun_after_evidence_commit",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -170,7 +170,7 @@
     "Provider-specific deployment/apply remains boundary-only and must stay manual-gated until real provider SDK wiring is separately reviewed.",
     "Manual gate evidence is not durable production audit storage yet.",
     "Production RPC/listener operation and live YouTube account operation remain deferred and manual-gated.",
-    "Final PR body run and artifact IDs require GitHub evidence refresh after PR checks complete."
+    "Final PR body run and artifact IDs must be refreshed after this evidence commit and before merge."
   ],
   "humanConfirmation": [
     "project-owner merge decision required",
@@ -215,5 +215,23 @@
     "verificationOracle": "Audit report, evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
   },
   "testsPassed": 207,
-  "prBodyPath": "docs/pr-full-repo-pro-audit-v108.md"
+  "prBodyPath": "docs/pr-full-repo-pro-audit-v108.md",
+  "verificationSurface": [
+    "docs/AUDIT_REPORT_FULL_REPO_V108.md",
+    "docs/pr-full-repo-pro-audit-v108.md",
+    ".codex/evidence-pack.json",
+    ".codex/test-summary.json",
+    "package.json",
+    "GitHub required checks on the active PR head"
+  ],
+  "riskSurface": [
+    "docs and evidence only",
+    "package evidence script default only",
+    "no product runtime code",
+    "no production readiness claim"
+  ],
+  "oracle": "Repository checks, evidence placeholder checker, evidence freshness validator, quality self-protection, safe quality artifact summary, secret scan, and no-scraping scan.",
+  "splitRequired": "no - this is a single audit/evidence refresh with no product runtime surface change.",
+  "bestOfNEvidence": "not required for audit_only_r2; review independence evidence and full repository audit report are provided.",
+  "reviewIndependence": "writer evidence and review evidence are separated in .codex/review-independence.json and docs/pr-full-repo-pro-audit-v108.md."
 }

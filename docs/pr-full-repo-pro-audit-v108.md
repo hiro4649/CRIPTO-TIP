@@ -19,21 +19,33 @@ Product code changed: no.
 
 Done criteria: full repository audit report exists; critical and high findings are explicit; product boundaries are preserved; quality-gate self-protection remains pass; evidence placeholder and freshness checks run; no product runtime surface changes; no secret scan passes; no scraping scan passes.
 
+Verification surface: docs/AUDIT_REPORT_FULL_REPO_V108.md, docs/pr-full-repo-pro-audit-v108.md, .codex/evidence-pack.json, .codex/test-summary.json, package.json, GitHub required checks on the active PR head.
+
+Risk surface: docs and evidence only, package evidence script default only, no product runtime code, no production readiness claim.
+
+Oracle provided: Repository checks, evidence placeholder checker, evidence freshness validator, quality self-protection, safe quality artifact summary, secret scan, and no-scraping scan.
+
+Split required: no - this is a single audit/evidence refresh with no product runtime surface change.
+
+Best of N evidence: not required for audit_only_r2; review independence evidence and full repository audit report are provided.
+
+Review independence: writer evidence and review evidence are separated in .codex/review-independence.json and docs/pr-full-repo-pro-audit-v108.md.
+
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 4757a48b4286975f893d9f19f97da1a1c7a50b34
 
-Base SHA: current_pr_base
+Base SHA: b6cbee8d0c44f7683f9d386884ed581fba46e4ed
 
-Product CI: local_pass_remote_pending
+Product CI: success
 
-Quality-gate: local_pass_remote_pending
+Quality-gate: needs_rerun_after_evidence_commit
 
-CI run: to_be_injected_after_pr_checks
+CI run: 27055099430
 
-Quality-gate run: to_be_injected_after_pr_checks
+Quality-gate run: 27071520158
 
-Quality-gate artifact: to_be_injected_after_pr_checks
+Quality-gate artifact: 
 
 Tests: 21 test files, 207 passed, 6 skipped
 
@@ -112,7 +124,7 @@ Current recorded test summary: 21 files, 207 passed, 6 skipped.
 - Provider-specific deployment/apply remains boundary-only and must stay manual-gated until real provider SDK wiring is separately reviewed.
 - Manual gate evidence is not durable production audit storage yet.
 - Production RPC/listener operation and live YouTube account operation remain deferred and manual-gated.
-- Final PR body run and artifact IDs require GitHub evidence refresh after PR checks complete.
+- Final PR body run and artifact IDs must be refreshed after this evidence commit and before merge.
 
 ## Human Confirmation
 
