@@ -31,6 +31,7 @@
     "scripts/safe-pnpm-typecheck-summary.mjs",
     "scripts/safe-pnpm-test-summary.mjs",
     "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
-    "docs/process/REQUIRED_CHECKS_METADATA.md"
+    "docs/process/REQUIRED_CHECKS_METADATA.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ]
 }

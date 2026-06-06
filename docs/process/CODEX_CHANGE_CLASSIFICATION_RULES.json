@@ -19,7 +19,14 @@
     "scripts/write-test-summary.mjs",
     "scripts/check-quality-gate-self-protection.mjs",
     "scripts/fetch-github-run-evidence.mjs",
-    "scripts/refresh-pr-evidence.mjs"
+    "scripts/refresh-pr-evidence.mjs",
+    "scripts/ci-safe-lib.mjs",
+    "scripts/write-ci-safe-failure-artifact.mjs",
+    "scripts/classify-ci-safe-failure.mjs",
+    "scripts/export-required-checks-metadata.mjs",
+    "scripts/validate-same-head-required-checks.mjs",
+    "scripts/safe-pnpm-typecheck-summary.mjs",
+    "scripts/safe-pnpm-test-summary.mjs"
   ],
   "docsFiles": [
     "README.md",
@@ -39,7 +46,8 @@
     "tests/",
     "__tests__/",
     "scripts/run-tests.js",
-    "apps/api/src/evidence-rendering.test.ts"
+    "apps/api/src/evidence-rendering.test.ts",
+    "fixtures/ci-safe/"
   ],
   "specFiles": [
     "specs/",

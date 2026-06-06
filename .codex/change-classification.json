@@ -114,6 +114,7 @@
     ".codex/review-independence.json",
     ".codex/risk-register.json",
     "package.json",
-    "scripts/validate-evidence-freshness.mjs"
+    "scripts/validate-evidence-freshness.mjs",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ]
 }

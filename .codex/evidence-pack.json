@@ -44,7 +44,8 @@
       "docs/RISK_REGISTER.md",
       ".codex/**",
       "package.json",
-      "scripts/validate-evidence-freshness.mjs"
+      "scripts/validate-evidence-freshness.mjs",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "allowedPaths": [
       ".github/workflows/ci.yml",
@@ -60,7 +61,8 @@
       "scripts/validate-same-head-required-checks.mjs",
       "scripts/safe-pnpm-typecheck-summary.mjs",
       "scripts/safe-pnpm-test-summary.mjs",
-      "scripts/validate-evidence-freshness.mjs"
+      "scripts/validate-evidence-freshness.mjs",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "forbiddenPaths": [
       "contracts/src/**",
