@@ -302,7 +302,7 @@
     },
     {
       "pathPattern": "docs/process/QUALITY_GATE_SELF_PROTECTION.md",
-      "classification": "harness_policy",
+      "classification": "harness_managed",
       "surface": "harness_policy",
       "risk": "R3",
       "requiresProductVerification": true,
@@ -328,8 +328,17 @@
       "notes": "Evidence rendering and validation tests."
     },
     {
+      "pathPattern": "scripts/ci-safe-lib.mjs",
+      "classification": "verification_relevant",
+      "surface": "verification",
+      "risk": "R3",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Shared safe CI artifact helpers."
+    },
+    {
       "pathPattern": "scripts/write-ci-safe-failure-artifact.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -338,7 +347,7 @@
     },
     {
       "pathPattern": "scripts/classify-ci-safe-failure.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -347,7 +356,7 @@
     },
     {
       "pathPattern": "scripts/export-required-checks-metadata.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -356,7 +365,7 @@
     },
     {
       "pathPattern": "scripts/validate-same-head-required-checks.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -365,7 +374,7 @@
     },
     {
       "pathPattern": "scripts/safe-pnpm-typecheck-summary.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -374,7 +383,7 @@
     },
     {
       "pathPattern": "scripts/safe-pnpm-test-summary.mjs",
-      "classification": "verification_tooling",
+      "classification": "verification_relevant",
       "surface": "verification",
       "risk": "R3",
       "requiresProductVerification": false,
@@ -410,7 +419,7 @@
     },
     {
       "pathPattern": "fixtures/ci-safe/**",
-      "classification": "test_fixture",
+      "classification": "test",
       "surface": "verification",
       "risk": "R2",
       "requiresProductVerification": false,
@@ -419,7 +428,7 @@
     },
     {
       "pathPattern": "docs/pr-safe-ci-failure-artifacts.md",
-      "classification": "pr_evidence",
+      "classification": "docs",
       "surface": "evidence",
       "risk": "R2",
       "requiresProductVerification": false,
