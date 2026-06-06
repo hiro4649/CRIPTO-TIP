@@ -342,4 +342,69 @@ describe("evidence single source of truth scripts", () => {
     });
     expect(JSON.parse(result).remoteNpmDiagnosticNormalizationStatus.status).toBe("pass");
   });
+
+  it("writes CI safe failure artifact without raw log fields", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-ci-safe-${Date.now()}.json`);
+    runScript("write-ci-safe-failure-artifact.mjs", ["--fixture", "fixtures/ci-safe/typecheck-failed.json", "--output", output]);
+    const artifact = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(artifact.safe_reason_code).toBe("pnpm_typecheck_failed_safe_summary");
+    expect(artifact.raw_log_allowed).toBe(false);
+    expect(JSON.stringify(artifact)).not.toMatch(/stdout|stderr|stack_trace|raw_log":/);
+  });
+
+  it("classifies safe pnpm failure summaries", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-ci-test-safe-${Date.now()}.json`);
+    runScript("write-ci-safe-failure-artifact.mjs", ["--fixture", "fixtures/ci-safe/typecheck-pass-test-failed.json", "--output", output]);
+    expect(runScript("classify-ci-safe-failure.mjs", ["--input", output])).toContain("pnpm_typecheck_passed_but_test_failed");
+  });
+
+  it("safe pnpm wrappers record exit code without raw logs", () => {
+    const typecheckOutput = path.join(os.tmpdir(), `cripto-tip-typecheck-safe-${Date.now()}.json`);
+    const testOutput = path.join(os.tmpdir(), `cripto-tip-test-safe-${Date.now()}.json`);
+    runScript("safe-pnpm-typecheck-summary.mjs", ["--simulate-exit", "2", "--no-exit", "--output", typecheckOutput]);
+    runScript("safe-pnpm-test-summary.mjs", ["--simulate-exit", "1", "--typecheck-result", "success", "--no-exit", "--output", testOutput]);
+    const typecheck = JSON.parse(fs.readFileSync(typecheckOutput, "utf8"));
+    const test = JSON.parse(fs.readFileSync(testOutput, "utf8"));
+    expect(typecheck.exit_code).toBe(2);
+    expect(typecheck.safe_reason_code).toBe("pnpm_typecheck_failed_safe_summary");
+    expect(test.safe_reason_code).toBe("pnpm_typecheck_passed_but_test_failed");
+    expect(JSON.stringify({ typecheck, test })).not.toMatch(/stdout|stderr|stack_trace/);
+  });
+
+  it("exports and validates same-head required checks metadata", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-required-checks-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/all-pass-same-head.json", "--output", output]);
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(metadata.same_head_required_checks_passed).toBe(true);
+    expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
+  });
+
+  it("rejects mixed-head, missing, or failed required checks", () => {
+    const mixed = path.join(os.tmpdir(), `cripto-tip-mixed-checks-${Date.now()}.json`);
+    const qgPassTsFail = path.join(os.tmpdir(), `cripto-tip-qg-pass-ts-fail-${Date.now()}.json`);
+    const missing = writeJsonFixture("checks", { checks: [
+      { check_name: "quality-gate", workflow_name: "quality-gate", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", run_id: "1" },
+      { check_name: "typescript", workflow_name: "ci", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", run_id: "2" }
+    ] });
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/mixed-head-checks.json", "--output", mixed]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/quality-gate-pass-typescript-fail.json", "--output", qgPassTsFail]);
+    expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", mixed]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
+    expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", qgPassTsFail]).stderr).toMatch(/quality_gate_pass_but_required_check_failed/);
+    const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
+    expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
+  });
+
+  it("rejects unsafe raw fields in CI safe artifact schema", () => {
+    const unsafe = writeJsonFixture("unsafe-ci-safe", {
+      schema_version: "1.0.0",
+      command_class: "pnpm_typecheck",
+      phase: "pnpm_typecheck",
+      exit_code: 1,
+      safe_reason_code: "pnpm_typecheck_failed_safe_summary",
+      raw_log_allowed: false,
+      stdout: "raw output must not be stored"
+    });
+    expect(runScriptResult("classify-ci-safe-failure.mjs", ["--input", unsafe]).stderr).toMatch(/raw field/);
+  });
 });

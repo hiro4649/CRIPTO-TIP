@@ -1,0 +1,8 @@
+{
+  "command_class": "pnpm_test",
+  "phase": "pnpm_test",
+  "exit_code": 1,
+  "raw_log_required": true,
+  "raw_log_allowed": false,
+  "metadata_limited": true
+}

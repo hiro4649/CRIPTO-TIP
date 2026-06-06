@@ -216,3 +216,11 @@ Added coverage:
 - Self-protection detects unsafe safe-artifact upload behavior.
 - Self-protection detects always-pass wording in executable scripts.
 - Freshness validation rejects unresolved head placeholders in CI mode.
+
+## Safe CI Failure Artifacts
+
+Safe CI failure artifact coverage adds tests for typecheck failure summaries,
+test failure summaries, typecheck-pass/test-fail classification, raw field
+rejection, same-head required checks pass/fail metadata,
+quality-gate-pass/typescript-fail classification, and missing required check
+rejection.

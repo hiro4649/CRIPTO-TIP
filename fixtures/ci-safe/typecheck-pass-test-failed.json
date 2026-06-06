@@ -1,0 +1,12 @@
+{
+  "command_class": "pnpm_test",
+  "phase": "pnpm_test",
+  "pnpm_typecheck_result": "success",
+  "exit_code": 1,
+  "result": "failure",
+  "package_scope": "workspace",
+  "working_directory": "repository-root",
+  "raw_log_required": true,
+  "raw_log_allowed": false,
+  "product_code_failure": true
+}

@@ -19,7 +19,13 @@
     "evidence:test-summary": "node scripts/write-test-summary.mjs",
     "evidence:check-placeholders": "node scripts/check-evidence-placeholders.mjs",
     "quality:self-protection": "node scripts/check-quality-gate-self-protection.mjs",
-    "quality:self-protection:test": "vitest run apps/api/src/evidence-rendering.test.ts"
+    "quality:self-protection:test": "vitest run apps/api/src/evidence-rendering.test.ts",
+    "ci:safe-artifact": "node scripts/write-ci-safe-failure-artifact.mjs",
+    "ci:classify-safe-failure": "node scripts/classify-ci-safe-failure.mjs",
+    "ci:required-checks-metadata": "node scripts/export-required-checks-metadata.mjs",
+    "ci:validate-same-head": "node scripts/validate-same-head-required-checks.mjs",
+    "ci:safe-typecheck-summary": "node scripts/safe-pnpm-typecheck-summary.mjs",
+    "ci:safe-test-summary": "node scripts/safe-pnpm-test-summary.mjs"
   },
   "devDependencies": {
     "@cripto-tip/shared": "file:packages/shared",

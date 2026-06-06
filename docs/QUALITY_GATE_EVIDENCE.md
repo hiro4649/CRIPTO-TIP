@@ -212,3 +212,15 @@ external alert apply, live YouTube soak, provider secret rotation, and
 provider-specific deployment apply must keep approved manual gate evidence and
 must not store secret values, private URLs, wallet addresses, raw messages, raw
 display names, API keys, OAuth tokens, or webhook URLs.
+
+## Safe CI Failure Artifact Hardening
+
+CRIPTO-TIP remains on active harness v1.0.7. PR #23 is closed without merge and
+is not reused as evidence. This hardening adds raw-log-free CI safe summaries for
+pnpm typecheck, pnpm test, same-head required checks metadata, and safe failure
+classification.
+
+Quality-gate pass alone is not merge readiness. `quality-gate`, `typescript`,
+and `contracts` must all pass on the same head SHA. Failed CI without a safe
+artifact is classified as `safe_artifact_missing_for_failed_ci`. Metadata-limited
+failures use `metadata_limited_external_blocked` without reading raw logs.

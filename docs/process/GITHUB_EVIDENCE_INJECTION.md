@@ -44,3 +44,10 @@ call `gh pr edit`, mutate PR body content, or fetch provider secrets.
 `evidence:refresh-pr` remains an operator command. It may fetch GitHub
 run/artifact evidence, render the PR document, run placeholder checks, and update
 the PR body. If PR body update fails, the command fails.
+
+## Required Checks Metadata
+
+Required checks metadata records check names, workflow names, status,
+conclusion, head SHA, and run ID only. It does not read or store raw logs.
+Same-head required check validation is separate from quality-gate success:
+`quality-gate`, `typescript`, and `contracts` must all pass on the same head.

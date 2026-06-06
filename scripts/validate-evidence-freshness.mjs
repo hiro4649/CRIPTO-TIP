@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readJson, resolvedEvidencePack } from "./evidence-lib.mjs";
+import { execFileSync } from "node:child_process";
 
 const args = process.argv.slice(2);
 function valueAfter(flag) {
@@ -14,12 +15,19 @@ const expectedQualityGateRun = valueAfter("--quality-gate-run");
 const expectedQualityGateArtifact = valueAfter("--quality-gate-artifact");
 const ciMode = process.argv.includes("--ci");
 const requireCurrentHead = process.argv.includes("--require-current-head");
+function localGitHead() {
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
+  } catch {
+    return "";
+  }
+}
+const inferredHead = process.env.CODEX_PR_HEAD_SHA || (ciMode ? localGitHead() : "");
 const pack = resolvedEvidencePack(readJson(valueAfter("--input") || ".codex/evidence-pack.json"), {
-  head: valueAfter("--actual-head") || expectedHead || process.env.CODEX_PR_HEAD_SHA,
+  head: valueAfter("--actual-head") || expectedHead || inferredHead,
   base: valueAfter("--base")
 });
 
-const inferredHead = ciMode ? process.env.CODEX_PR_HEAD_SHA : undefined;
 if (expectedHead && pack.headSha !== expectedHead) throw new Error("evidence head SHA is stale");
 if (ciMode && requireCurrentHead && inferredHead && pack.headSha !== inferredHead) throw new Error("evidence head SHA is stale");
 if (ciMode && /^(current_pr_head|branch_head_sha_in_pr_metadata|HEAD_SHA_PLACEHOLDER)$/i.test(String(pack.headSha || ""))) throw new Error("evidence head SHA is unresolved");

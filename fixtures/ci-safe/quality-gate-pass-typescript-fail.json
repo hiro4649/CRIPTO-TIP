@@ -1,0 +1,7 @@
+{
+  "checks": [
+    { "check_name": "quality-gate", "workflow_name": "quality-gate", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "1" },
+    { "check_name": "typescript", "workflow_name": "ci", "status": "completed", "conclusion": "failure", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "2" },
+    { "check_name": "contracts", "workflow_name": "ci", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "3" }
+  ]
+}
