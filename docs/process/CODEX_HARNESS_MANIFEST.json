@@ -1,31 +1,34 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
-  "schemaVersion": "1.0.9",
-  "sourceHarnessVersion": "1.0.9",
-  "harnessVersion": "1.0.9",
-  "activeHarnessVersion": "1.0.9",
-  "targetHarnessVersion": "1.0.9",
-  "evidenceSchemaVersion": 5,
-  "profileTemplateVersion": "1.0.9",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "schemaVersion": "1.1.3",
+  "sourceHarnessVersion": "1.1.3",
+  "harnessVersion": "1.1.3",
+  "activeHarnessVersion": "1.1.3",
+  "targetHarnessVersion": "1.1.3",
+  "evidenceSchemaVersion": 6,
+  "profileTemplateVersion": "1.1.3",
   "futureHarnessArtifact": false,
-  "upgradePath": "direct_v108_to_v109",
-  "activeSelfTestSuite": "v109",
-  "activeSelfTestStatusKey": "v109SelfTestStatus",
+  "upgradePath": "direct_v112_to_v113",
+  "activeSelfTestSuite": "v113",
+  "activeSelfTestStatusKey": "v113SelfTestStatus",
   "legacySelfTests": {
     "v108": "blocking_compatibility",
     "v107": "blocking_compatibility",
     "v106": "advisory",
     "v105": "advisory",
     "v104": "advisory",
-    "v103": "advisory"
+    "v103": "advisory",
+    "v109": "blocking_compatibility",
+    "v111": "blocking_compatibility",
+    "v112": "blocking_compatibility"
   },
-  "sourceOnlyRelease": false,
-  "targetRollout": "in_progress",
+  "sourceOnlyRelease": true,
+  "targetRollout": "v1.1.3_minimal_surface",
   "representativeRealPrValidation": "not_started",
   "representativeRealPrReplay": "required",
   "representativeLivePrValidation": "required",
   "syntheticRepresentativeValidation": "required",
-  "theme": "Decision Ledger and Evidence Convergence",
+  "theme": "Minimal Surface, Fast Gates, Typed Decisions, and Compatibility Proof",
   "requiredStatuses": [
     "v109SelfTestStatus",
     "decisionLedgerStatus",
@@ -170,7 +173,246 @@
     "safeSuggestedPatchV3Status",
     "longTaskAdvisorV2Status",
     "qualityExplainV2Status",
-    "qualityRepairPlanV2Status"
+    "qualityRepairPlanV2Status",
+    "v110SelfTestStatus",
+    "proSummaryFirstStatus",
+    "detailOnDemandStatus",
+    "deltaOnlyReportingStatus",
+    "tokenBudgetStatus",
+    "sessionBudgetStatus",
+    "mainThreadAuthorityStatus",
+    "oneVerifierDefaultStatus",
+    "eightSessionExceptionGateStatus",
+    "decisionLedgerFileStatus",
+    "gateLedgerFileStatus",
+    "stopResumeContractStatus",
+    "longRunningValidationPlannerStatus",
+    "ciWatcherV2Status",
+    "activeHarnessReconciliationStatus",
+    "codexInstructionCompressionStatus",
+    "standingPolicyReferenceStatus",
+    "repoBoundaryReferenceStatus",
+    "noRepeatContextGuardStatus",
+    "precisionPreservationStatus",
+    "structuredEvidenceFirstStatus",
+    "prBodyAsRenderedOutputStatus",
+    "bodySchemaNormalizerV2Status",
+    "bodyRepairHintStatus",
+    "prInventoryReductionEngineStatus",
+    "mainReflectionPackageBuilderStatus",
+    "reviewEvidenceProtocolV3Status",
+    "runtimeReturnGateV2Status",
+    "forbiddenContentScannerV2Status",
+    "readinessLanguageLinterV2Status",
+    "noDeployProofArtifactStatus",
+    "vgcTokenStageArtifactStatus",
+    "ownerValuesWorkflowStatus",
+    "deployApprovalStateMachineStatus",
+    "runtimeReadinessBlockerDigestStatus",
+    "live2dCriticalInvariantStatus",
+    "live2dResidentEvidencePlanStatus",
+    "motionDatasetNonExecutableStatus",
+    "trustedLoaderDisabledStatus",
+    "performanceBudgetV2Status",
+    "operatorEffortScoreStatus",
+    "outputVolumeScoreStatus",
+    "sessionEfficiencyScoreStatus",
+    "v111SelfTestStatus",
+    "contextCapsuleStatus",
+    "contextCapsuleFreshnessStatus",
+    "compactThreadHandoffStatus",
+    "chatHardCapStatus",
+    "inputTokenBudgetStatus",
+    "artifactPointerOnlyStatus",
+    "detailEscalationGateStatus",
+    "evaluationDigestIngestStatus",
+    "codexInstructionMacroStatus",
+    "noHistoryReplayStatus",
+    "stateDeltaRequiredStatus",
+    "terminalBlockedCacheStatus",
+    "activeSessionCountHardCapStatus",
+    "eightSessionDefaultDeniedStatus",
+    "sessionSpawnBudgetStatus",
+    "orchestrationCostLedgerStatus",
+    "fanInOnceStatus",
+    "duplicateInvestigationBlockStatus",
+    "terminalBlockedPlaybookStatus",
+    "safeFailingTestArtifactStatus",
+    "safeTestSummaryStatus",
+    "rawStackOmittedStatus",
+    "prLifecycleStateMachineStatus",
+    "evidenceRefreshPollingStatus",
+    "safePendingOutputStatus",
+    "longRunningValidationPlannerV2Status",
+    "executableStopResumeStatus",
+    "validationResumePlanStatus",
+    "validationIncompleteTimeoutStatus",
+    "ciWatcherArtifactStatus",
+    "sameHeadCiLedgerStatus",
+    "noNewPrUnlessDeltaStatus",
+    "ledgerAbsorptionFirstStatus",
+    "prInventoryNumericCapStatus",
+    "duplicatePrDetectorStatus",
+    "obsoletePrCloseRecommenderStatus",
+    "mainReflectionPackageV2Status",
+    "mainReflectionExecutionReadinessStatus",
+    "canonicalOwnershipLedgerStatus",
+    "reviewEvidenceProtocolV4Status",
+    "typedReviewApprovalSchemaStatus",
+    "vgcTokenStageArtifactV2Status",
+    "ownerValuesWorkflowV2Status",
+    "deployApprovalStateMachineV2Status",
+    "tokenPreflightGateLedgerStatus",
+    "funkyLaneLedgerStatus",
+    "runtimeReadinessBlockerDigestV3Status",
+    "mergeTopBlockerStatus",
+    "live2dCriticalInvariantTopGateStatus",
+    "live2dRealResidentEvidenceBoundaryStatus",
+    "motionDatasetExecutableBlockStatus",
+    "trustedLoaderEnablementBlockStatus",
+    "avatarUxSafetyBoundaryStatus",
+    "safeEvidenceWordingAllowlistStatus",
+    "remoteProductEvidenceSplitStatus",
+    "remoteNpmRequiredStatus",
+    "remoteNpmExecutedStatus",
+    "remoteNpmArtifactPresentStatus",
+    "remoteNpmNormalizedStatus",
+    "remoteNpmResultStatus",
+    "activeMarkerInternalVersionAlignmentStatus",
+    "fixtureContractRegistryStatus",
+    "targetModeLegacyCompatibilityStatus",
+    "narrowFixtureNoBroadGateStatus",
+    "fullSuiteInterferenceDetectorStatus",
+    "legacyAdvisoryClassifierV2Status",
+    "performanceBudgetV3Status",
+    "qualityGateCostProfileStatus",
+    "tokenEconomyLossAuditStatus",
+    "operationalClosureScoreStatus",
+    "precisionBenchmarkParityStatus",
+    "v112SelfTestStatus",
+    "tokenBudgetGovernorV2Status",
+    "conversationSurfaceBudgetStatus",
+    "toolOutputBudgetStatus",
+    "safeSummaryExtractorVNextStatus",
+    "qualityGateJsonNoStdoutStatus",
+    "largeJsonConsoleSuppressionStatus",
+    "artifactPointerContractStatus",
+    "evidencePointerShaStatus",
+    "noRawExpandedArtifactStatus",
+    "rolloutStateCapsuleV2Status",
+    "repoSummaryCapsuleStatus",
+    "completedTargetLedgerStatus",
+    "knownGoodSourceCapsuleStatus",
+    "finalReportCompressionV2Status",
+    "finalTemplateCompactStatus",
+    "notStartedSectionElisionStatus",
+    "completedRepoElisionStatus",
+    "selectiveArtifactReaderStatus",
+    "jsonPathAllowlistStatus",
+    "lazyEvidenceExpansionStatus",
+    "statusDeltaReporterV2Status",
+    "knownPassBaselineStatus",
+    "passStatusCounterStatus",
+    "passStatusElisionStatus",
+    "commandOutputPolicyRegistryStatus",
+    "consoleSilenceByDefaultStatus",
+    "githubJsonFieldBudgetStatus",
+    "runMetadataSlimModeStatus",
+    "githubJobsStepNoEchoStatus",
+    "ciWatcherThinModeStatus",
+    "searchOutputCapStatus",
+    "rgResultCapStatus",
+    "fileReadMemoizationStatus",
+    "prBodyGateDecouplingStatus",
+    "prBodyMinimalContractStatus",
+    "instructionDeduplicatorStatus",
+    "repoBoundaryMacroStatus",
+    "repoRolloutManifestStatus",
+    "versionedSafetyProfileStatus",
+    "reasonCodeDictionaryStatus",
+    "failureTaxonomyTopNStatus",
+    "topBlockerDigestStatus",
+    "compactMergeReadinessStatus",
+    "safetyOutcomeBitsetStatus",
+    "toolResultSummarizerStatus",
+    "errorOutputSanitizerStatus",
+    "noTeeFullJsonStatus",
+    "outputShapeNegotiationStatus",
+    "adaptiveVerbosityGateStatus",
+    "humanMachineReadableSplitStatus",
+    "narrationThrottleStatus",
+    "precisionBenchmarkParityV2Status",
+    "evidenceFidelityPreservationStatus",
+    "conversationSurfaceReductionStatus",
+    "v113SelfTestStatus",
+    "evidenceSingleSourceStatus",
+    "minimalBlockersArtifactStatus",
+    "artifactReadOrderIndexStatus",
+    "reasonCodeScopeClassificationStatus",
+    "repairabilityClassifierStatus",
+    "prBodyDemotionStatus",
+    "prBodyMarkdownShapeStatus",
+    "prBodyAsRenderedOutputV2Status",
+    "legacySelfTestLaneSeparationStatus",
+    "targetModeCompatibilityBridgeV3Status",
+    "targetModeTrueBlockerSeparationStatus",
+    "singleDecisionObjectStatus",
+    "typedDecisionEnumStatus",
+    "allowedActionMatrixStatus",
+    "decisionContradictionStatus",
+    "targetHarnessScopeFirewallStatus",
+    "externalWorkspaceProcessBlockStatus",
+    "childProcessCwdInsideRepoStatus",
+    "childScriptPathInsideRepoStatus",
+    "orphanProcessCleanupStatus",
+    "progressiveGateRunnerStatus",
+    "fastGateLaneStatus",
+    "gateRuntimeBudgetStatus",
+    "longRunningGateSplitStatus",
+    "boundaryMacroStatus",
+    "profileIdContractStatus",
+    "validationSuiteIdStatus",
+    "finalReportTemplateIdStatus",
+    "repoProfileShortcodeStatus",
+    "targetRolloutSelectorManifestStatus",
+    "noBroadCopyRuleStatus",
+    "harnessFileTieringStatus",
+    "targetInstallProfileStatus",
+    "whyThisFileManifestStatus",
+    "surfaceRegressionStatus",
+    "rolloutDryRunFirstStatus",
+    "targetRolloutNoSurpriseStatus",
+    "plannedActualDiffParityStatus",
+    "targetRepresentativeFixtureSuiteStatus",
+    "voxweaveSyntheticTargetFixtureStatus",
+    "live2dSyntheticTargetFixtureStatus",
+    "funkySyntheticTargetFixtureStatus",
+    "irisSyntheticTargetFixtureStatus",
+    "criptoTipSyntheticTargetFixtureStatus",
+    "realRolloutRegressionFixtureStatus",
+    "qualityRunnerSplitStatus",
+    "qualityStatusNormalizerStatus",
+    "qualityScoreBreakdownStatus",
+    "targetModeCompatibilityModuleStatus",
+    "safeArtifactIndexEntryPointStatus",
+    "oneArtifactPerDecisionStatus",
+    "conversationCostLedgerStatus",
+    "operatorCognitiveLoadStatus",
+    "proSummaryLintStatus",
+    "outputBudgetContractStatus",
+    "deadSpecDetectorStatus",
+    "specToGateTraceabilityStatus",
+    "overEngineeringDetectorStatus",
+    "wrapperScriptValueStatus",
+    "docsCompressionStatus",
+    "negativeCodeBudgetStatus",
+    "sourceTargetCompatibilityDebtStatus",
+    "harnessRegressionLoopLimitStatus",
+    "repairRequiresFixtureStatus",
+    "repairPrBudgetStatus",
+    "remoteEvidenceStateSplitStatus",
+    "remoteProductEvidenceRoutingTableStatus",
+    "nonRuntimeSharedUtilityProfileStatus"
   ],
   "repoSpecificRegistrations": [
     "voxweaveReviewEvidenceClassifierStatus",
@@ -370,6 +612,176 @@
   "walletRpcDeployAccess": false,
   "targetReposTouched": false,
   "safeSummaryOnly": true,
+  "tokenEconomy": "required",
+  "operationalClosure": "required",
+  "v110AbsorptionMap": {
+    "decisionLedgerStatus": [
+      "decisionLedgerFileStatus",
+      "proSummaryFirstStatus"
+    ],
+    "gateLedgerStatus": [
+      "gateLedgerFileStatus"
+    ],
+    "operatorDigestV4Status": [
+      "proSummaryFirstStatus",
+      "detailOnDemandStatus"
+    ],
+    "workflowLedgerStatus": [
+      "stopResumeContractStatus",
+      "decisionLedgerFileStatus"
+    ],
+    "ciWatcherStatus": [
+      "ciWatcherV2Status"
+    ],
+    "prInventoryReductionStatus": [
+      "prInventoryReductionEngineStatus"
+    ],
+    "mainReflectionPackageStatus": [
+      "mainReflectionPackageBuilderStatus"
+    ],
+    "reviewEvidenceProtocolV2Status": [
+      "reviewEvidenceProtocolV3Status"
+    ],
+    "runtimeReturnGateStatus": [
+      "runtimeReturnGateV2Status"
+    ],
+    "safeCiFailureArtifactV2Status": [
+      "ciWatcherV2Status",
+      "failureTriageEngineStatus"
+    ],
+    "repairPlanSafeJsonStatus": [
+      "bodyRepairHintStatus",
+      "repairPlanSafeJsonStatus"
+    ],
+    "missingStatusTaxonomyStatus": [
+      "statusCompressionCompatibilityStatus"
+    ],
+    "externalSourceAbsorptionMapStatus": [
+      "standingPolicyReferenceStatus"
+    ],
+    "orchestrationAbsorptionMapStatus": [
+      "sessionBudgetStatus",
+      "mainThreadAuthorityStatus"
+    ]
+  },
+  "tokenHardCap": "required",
+  "contextCapsule": "required",
+  "failureClosure": "required",
+  "v111AbsorptionMap": {
+    "proSummaryFirstStatus": [
+      "chatHardCapStatus",
+      "artifactPointerOnlyStatus"
+    ],
+    "detailOnDemandStatus": [
+      "detailEscalationGateStatus"
+    ],
+    "deltaOnlyReportingStatus": [
+      "stateDeltaRequiredStatus",
+      "noHistoryReplayStatus"
+    ],
+    "tokenBudgetStatus": [
+      "inputTokenBudgetStatus",
+      "chatHardCapStatus"
+    ],
+    "sessionBudgetStatus": [
+      "activeSessionCountHardCapStatus",
+      "eightSessionDefaultDeniedStatus"
+    ],
+    "codexInstructionCompressionStatus": [
+      "codexInstructionMacroStatus"
+    ],
+    "standingPolicyReferenceStatus": [
+      "codexInstructionMacroStatus",
+      "noHistoryReplayStatus"
+    ],
+    "repoBoundaryReferenceStatus": [
+      "contextCapsuleStatus"
+    ],
+    "noRepeatContextGuardStatus": [
+      "noHistoryReplayStatus",
+      "stateDeltaRequiredStatus"
+    ],
+    "decisionLedgerFileStatus": [
+      "contextCapsuleStatus",
+      "ledgerAbsorptionFirstStatus"
+    ],
+    "gateLedgerFileStatus": [
+      "ledgerAbsorptionFirstStatus"
+    ],
+    "stopResumeContractStatus": [
+      "executableStopResumeStatus",
+      "validationResumePlanStatus"
+    ],
+    "longRunningValidationPlannerStatus": [
+      "longRunningValidationPlannerV2Status"
+    ],
+    "ciWatcherV2Status": [
+      "ciWatcherArtifactStatus",
+      "sameHeadCiLedgerStatus"
+    ],
+    "forbiddenContentScannerV2Status": [
+      "safeEvidenceWordingAllowlistStatus",
+      "forbiddenContentScannerV2Status"
+    ],
+    "readinessLanguageLinterV2Status": [
+      "readinessLanguageLinterV2Status"
+    ],
+    "noDeployProofArtifactStatus": [
+      "tokenPreflightGateLedgerStatus",
+      "deployApprovalStateMachineV2Status"
+    ],
+    "vgcTokenStageArtifactStatus": [
+      "vgcTokenStageArtifactV2Status"
+    ],
+    "ownerValuesWorkflowStatus": [
+      "ownerValuesWorkflowV2Status"
+    ],
+    "deployApprovalStateMachineStatus": [
+      "deployApprovalStateMachineV2Status"
+    ],
+    "runtimeReadinessBlockerDigestStatus": [
+      "runtimeReadinessBlockerDigestV3Status"
+    ],
+    "live2dCriticalInvariantStatus": [
+      "live2dCriticalInvariantTopGateStatus"
+    ],
+    "performanceBudgetV2Status": [
+      "performanceBudgetV3Status"
+    ],
+    "operatorEffortScoreStatus": [
+      "tokenEconomyLossAuditStatus",
+      "operationalClosureScoreStatus"
+    ],
+    "outputVolumeScoreStatus": [
+      "chatHardCapStatus"
+    ],
+    "sessionEfficiencyScoreStatus": [
+      "activeSessionCountHardCapStatus"
+    ]
+  },
+  "absorbedStatusMap": {
+    "tokenBudgetGovernorV2Status": [
+      "tokenBudgetStatus",
+      "inputTokenBudgetStatus"
+    ],
+    "conversationSurfaceBudgetStatus": [
+      "chatHardCapStatus",
+      "proSummaryFirstStatus"
+    ],
+    "ciWatcherThinModeStatus": [
+      "ciWatcherStatus",
+      "ciWatcherV2Status"
+    ],
+    "finalReportCompressionV2Status": [
+      "mainReflectionPackageStatus",
+      "mainReflectionPackageV2Status"
+    ],
+    "precisionBenchmarkParityV2Status": [
+      "precisionBenchmarkParityStatus"
+    ]
+  },
   "targetRepoMode": true,
-  "targetRepo": "hiro4649/VOXWEAVE"
+  "targetProfileId": "CRIPTO_NO_CRYPTO_YOUTUBE_RUNTIME_PROFILE",
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
 }
