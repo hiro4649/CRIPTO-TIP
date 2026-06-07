@@ -106,4 +106,4 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Severity | Risk | Status | Mitigation |
 | --- | --- | --- | --- |
 | Medium | PR #28 terminal blocked state could be confused with v1.1.0 completion. | Open until this PR is reviewed. | PR #28 remains closed without merge; this PR does not reopen, merge, or reuse PR #28 evidence. |
-| Low | Full-suite I/O contention can make the quality self-protection script test exceed Vitest default timeout. | Mitigated in this PR. | Targeted timeout increase for the existing assertion; no skip, no weakened expectation. |
+| Low | Full-suite I/O contention can make the quality self-protection script test exceed Vitest default timeout. | Mitigated in this PR. | Targeted 90 second timeout for the existing assertion; no skip, no weakened expectation. |

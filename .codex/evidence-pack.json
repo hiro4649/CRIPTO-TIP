@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
   "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "awaiting_new_pr_actions",
-  "headSha": "current_pr_head",
+  "prNumber": "29",
+  "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0.0",
   "prProfile": "product_minor_r2",
@@ -12,11 +12,11 @@
   "riskLevel": "R2",
   "title": "fix: repair safe pnpm test failure",
   "goal": "Repair CRIPTO-TIP pnpm test failure identified by safe artifact after blocked v1.1.0 rollout PR #28, using safe summaries only and without reusing PR #28 evidence.",
-  "ciRunId": "awaiting_new_pr_actions",
-  "qualityGateRunId": "awaiting_new_pr_actions",
-  "qualityGateArtifactId": "awaiting_new_pr_actions",
-  "productCiStatus": "awaiting_new_pr_actions",
-  "qualityGateStatus": "awaiting_new_pr_actions",
+  "ciRunId": "27079329550",
+  "qualityGateRunId": "27079329549",
+  "qualityGateArtifactId": "7459649614",
+  "productCiStatus": "success",
+  "qualityGateStatus": "failure before repair",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -79,36 +79,54 @@
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "pending_final_verification"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "pending_final_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pending_final_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pending_final_verification"
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pending_final_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pending_final_verification"
+      "result": "pass"
     }
   ],
   "remoteRuns": [
     {
-      "name": "blocked PR #28 ci safe artifact",
+      "name": "PR #29 CI",
+      "runId": "27079329550",
+      "result": "success",
+      "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350"
+    },
+    {
+      "name": "PR #29 quality-gate before repair",
+      "runId": "27079329549",
+      "artifactId": "7459649614",
+      "result": "failure before repair",
+      "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
+      "reasonCode": "pr_body_evidence_stale_placeholders"
+    },
+    {
+      "name": "blocked PR #28 CI safe artifact classification only",
       "runId": "27078192568",
       "result": "pnpm_typecheck_passed_but_test_failed",
       "headSha": "1a9e314587468e5994f99cd6b3a8a43d3c6a756c",
-      "artifactUse": "safe classification only; no PR #28 evidence reuse for merge readiness"
+      "artifactUse": "safe classification only; not merge-readiness evidence"
     }
   ],
   "productionClaims": {
@@ -118,7 +136,7 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Revert this PR if pnpm test fails again, TypeScript checks weaken, disallowed GitHub runner detail are required, required checks are weakened, or the fix expands beyond the safe-artifact-guided pnpm test failure.",
+  "rollbackOrStopCondition": "Revert this PR if pnpm test fails again, TypeScript checks weaken, raw GitHub log access are required, required checks are weakened, or the fix expands beyond the safe-artifact-guided pnpm test failure.",
   "safeOutput": {
     "status": "pass"
   },
@@ -161,30 +179,29 @@
     "npm test passes locally",
     "TypeScript checks remain pass",
     "targeted timeout fix preserves self-protection expectation",
-    "no disallowed GitHub runner detail read",
+    "no raw GitHub log access read",
     "no PR #28 reopening or merge",
     "no runtime or release readiness claim"
   ],
   "testSummary": {
-    "schemaVersion": "1.0.0",
-    "command": "corepack pnpm test",
     "testFiles": 21,
     "passed": 207,
-    "skipped": 6
+    "skipped": 6,
+    "total": 213
   },
   "securityBoundaries": [
     "PR #28 is closed without merge and is not reopened or merged.",
     "PR #28 evidence is not reused for merge readiness; only the allowed safe artifact classification guided this repair.",
-    "GitHub disallowed runner detail were not read; no gh run view --log command was used.",
+    "GitHub raw logs were not read under the forbidden raw log policy.",
     "The safe reason code was pnpm_typecheck_passed_but_test_failed with product_code_failure true.",
-    "The fix keeps quality-gate self-protection expectations intact and only gives the heavy script test enough time to complete.",
+    "The fix keeps quality-gate self-protection expectations intact and uses a targeted 90 second budget for the heavy self-protection script test.",
     "No runtime readiness, release readiness, legal compliance, or YouTube policy compliance is claimed.",
     "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced."
   ],
   "residualRisks": [
     "The blocked v1.1.0 rollout remains closed without merge.",
     "This PR does not resume v1.1.0 rollout or provider apply work.",
-    "GitHub checks must pass on the new PR head before merge."
+    "Quality-gate must replay on the updated PR head before merge."
   ],
   "humanConfirmation": [
     "project-owner merge decision required",
@@ -203,12 +220,13 @@
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
-    "corepack pnpm evidence:ci: pending_final_verification",
-    "corepack pnpm quality:self-protection: pending_final_verification",
-    "node scripts/write-test-summary.mjs: pending_final_verification",
-    "node scripts/check-evidence-placeholders.mjs: pending_final_verification",
-    "node scripts/check-quality-gate-self-protection.mjs: pending_final_verification",
-    "node scripts/codex-secret-safety-scan.mjs: pending_final_verification"
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -220,9 +238,9 @@
     "internalRuntimeApiChanged": false,
     "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR fixes a local/CI test timeout in evidence self-protection coverage only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR fixes a local/CI targeted 90 second test timeout in evidence self-protection coverage only.",
   "reviewScope": {
-    "scope": "Safe-artifact-guided pnpm test failure repair in evidence-rendering test timeout only.",
+    "scope": "Safe-artifact-guided pnpm test failure repair in evidence-rendering self-protection test timeout only.",
     "riskSummary": "Main risk is over-expanding beyond the failing pnpm test; scope is limited to the reproduced timeout.",
     "verificationOracle": "Safe CI artifacts, local pnpm test reproduction, npm test, lint/typecheck, evidence checks, secret scan, and no-scraping scan."
   },
@@ -243,6 +261,7 @@
   ],
   "oracle": "Allowed safe artifacts, local reproduction output, repository checks, evidence placeholder checker, quality self-protection, secret scan, and no-scraping scan.",
   "splitRequired": "no - single targeted pnpm test failure repair.",
-  "bestOfNEvidence": "Best of N used or skipped: skipped with reason - safe artifact identified a single pnpm test failure class and local reproduction isolated one timeout fix.",
-  "reviewIndependence": "Writer evidence is the safe artifact triage and local test reproduction. Reviewer checklist: present in .codex/review-independence.json and PR body; independent checklist verifies no disallowed runner detail, no PR #28 reuse, no test weakening, and no prohibited scope."
+  "bestOfNEvidence": "Best of N used or skipped: skipped with reason - safe artifact identified a single pnpm test failure class and local reproduction isolated one targeted 90 second timeout fix.",
+  "reviewIndependence": "Writer evidence is the safe artifact triage and local test reproduction. Reviewer checklist: present in .codex/review-independence.json and PR body; independent checklist verifies no raw GitHub log access, no PR #28 reuse, no test weakening, and no prohibited scope.",
+  "testsSkipped": 6
 }

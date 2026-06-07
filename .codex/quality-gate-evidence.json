@@ -2,18 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
   "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "awaiting_new_pr_actions",
-  "headSha": "current_pr_head",
+  "prNumber": "29",
+  "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "awaiting_new_pr_actions",
-  "latestAnalyzedRunId": "27078192568",
-  "latestAnalyzedArtifactId": "pnpm-test-safe-summary",
+  "qualityGateExpectedStatus": "failure before repair",
+  "latestAnalyzedRunId": "27079329549",
+  "latestAnalyzedArtifactId": "7459649614",
   "reasonCodeMappings": {
     "safe_reason_code": "pnpm_typecheck_passed_but_test_failed",
+    "quality_gate_failure_classification": "pr_body_evidence_stale_placeholders",
     "productVerificationStatus": "local pnpm test failure reproduced and repaired",
     "codeReviewMonitorStatus": "targeted test timeout only",
-    "targetQualityScoreStatus": "new PR quality-gate required before merge"
+    "targetQualityScoreStatus": "quality-gate replay required after evidence refresh"
   },
   "safePlaceholderInventory": [
     "PR body run/artifact values are injected after new PR checks complete."
@@ -25,21 +26,25 @@
     "runtime readiness claim",
     "production readiness claim"
   ],
-  "qualityGateEvidenceStatus": "awaiting_new_pr_actions",
+  "qualityGateEvidenceStatus": "failure before repair",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "awaiting_new_pr_actions",
+      "status": "success",
+      "runId": "27079329550",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "awaiting_new_pr_actions",
+      "status": "success",
+      "runId": "27079329550",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "awaiting_new_pr_actions",
+      "status": "failure before repair",
+      "runId": "27079329549",
+      "artifactId": "7459649614",
       "blocking": true
     }
   ]

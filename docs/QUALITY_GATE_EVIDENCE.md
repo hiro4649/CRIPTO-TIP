@@ -244,5 +244,5 @@ PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout 
 - Safe reason code: `pnpm_typecheck_passed_but_test_failed`.
 - Safe classification: `pnpm_typecheck_result=success`, `pnpm_test_result=failure`, `product_code_failure=true`, `raw_log_allowed=false`.
 - Local reproduction found one `pnpm test` timeout in `apps/api/src/evidence-rendering.test.ts`.
-- Repair keeps quality-gate self-protection execution and assertion intact; only timeout budget is adjusted.
+- Repair keeps quality-gate self-protection execution and assertion intact; only the affected test timeout budget is adjusted to 90 seconds for full-suite I/O contention.
 - New PR required checks must pass before merge.

@@ -17,23 +17,23 @@ Runtime readiness claim: no.
 
 Product code changed: no.
 
-Done criteria: pnpm test passes locally; npm test passes locally; TypeScript checks remain pass; targeted timeout fix preserves self-protection expectation; no disallowed GitHub runner detail read; no PR #28 reopening or merge; no runtime or release readiness claim.
+Done criteria: pnpm test passes locally; npm test passes locally; TypeScript checks remain pass; targeted timeout fix preserves self-protection expectation; no raw GitHub log access read; no PR #28 reopening or merge; no runtime or release readiness claim.
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 2fda385991f87cb728daa4c7d8ddf2e29bc9e350
 
 Base SHA: 6291bda0ab7d4ae05b66f066f8138acbc701b687
 
-Product CI: awaiting_new_pr_actions
+Product CI: success
 
-Quality-gate: awaiting_new_pr_actions
+Quality-gate: failure before repair
 
-CI run: awaiting_new_pr_actions
+CI run: 27079329550
 
-Quality-gate run: awaiting_new_pr_actions
+Quality-gate run: 27079329549
 
-Quality-gate artifact: awaiting_new_pr_actions
+Quality-gate artifact: 7459649614
 
 Tests: 21 test files, 207 passed, 6 skipped
 
@@ -63,12 +63,13 @@ Product verification commands:
 - corepack pnpm typecheck: pass
 - corepack pnpm test: pass
 - npm test: pass
-- corepack pnpm evidence:ci: pending_final_verification
-- corepack pnpm quality:self-protection: pending_final_verification
-- node scripts/write-test-summary.mjs: pending_final_verification
-- node scripts/check-evidence-placeholders.mjs: pending_final_verification
-- node scripts/check-quality-gate-self-protection.mjs: pending_final_verification
-- node scripts/codex-secret-safety-scan.mjs: pending_final_verification
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/write-test-summary.mjs: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
 
 Package verification:
 
@@ -84,11 +85,11 @@ API Compatibility Summary:
 
 Runtime smoke rationale:
 
-- No runtime readiness is claimed; this PR fixes a local/CI test timeout in evidence self-protection coverage only.
+- No runtime readiness is claimed; this PR fixes a local/CI targeted 90 second test timeout in evidence self-protection coverage only.
 
 Review scope and verification:
 
-- Scope: Safe-artifact-guided pnpm test failure repair in evidence-rendering test timeout only.
+- Scope: Safe-artifact-guided pnpm test failure repair in evidence-rendering self-protection test timeout only.
 - Risk summary: Main risk is over-expanding beyond the failing pnpm test; scope is limited to the reproduced timeout.
 - Verification oracle: Safe CI artifacts, local pnpm test reproduction, npm test, lint/typecheck, evidence checks, secret scan, and no-scraping scan.
 
@@ -100,9 +101,9 @@ Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
 - PR #28 is closed without merge and is not reopened or merged.
 - PR #28 evidence is not reused for merge readiness; only the allowed safe artifact classification guided this repair.
-- GitHub disallowed runner detail were not read; no gh run view --log command was used.
+- GitHub raw logs were not read under the forbidden raw log policy.
 - The safe reason code was pnpm_typecheck_passed_but_test_failed with product_code_failure true.
-- The fix keeps quality-gate self-protection expectations intact and only gives the heavy script test enough time to complete.
+- The fix keeps quality-gate self-protection expectations intact and uses a targeted 90 second budget for the heavy self-protection script test.
 - No runtime readiness, release readiness, legal compliance, or YouTube policy compliance is claimed.
 - No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.
 
@@ -110,7 +111,7 @@ Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
 - The blocked v1.1.0 rollout remains closed without merge.
 - This PR does not resume v1.1.0 rollout or provider apply work.
-- GitHub checks must pass on the new PR head before merge.
+- Quality-gate must replay on the updated PR head before merge.
 
 ## Human Confirmation
 

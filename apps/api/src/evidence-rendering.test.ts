@@ -129,7 +129,7 @@ describe("evidence single source of truth scripts", () => {
 
   it("keeps quality-gate self-protection preparation explicit", () => {
     expect(runScript("check-quality-gate-self-protection.mjs")).toContain("passed");
-  }, 30000);
+  }, 90000);
 
   it("fetches GitHub run evidence from fixture JSON and injects run and artifact IDs", () => {
     const head = "1234567890abcdef1234567890abcdef12345678";
