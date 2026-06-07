@@ -235,3 +235,12 @@ rejection.
 ## PR #25 v1.0.8 Rollout Tests
 
 Latest local test evidence for the required/advisory split: 21 test files, 209 passed, and 6 skipped. Added coverage verifies that legacy self-test advisory status does not become `workflow_required_status_failure` for target rollout, while required target quality failure remains blocking. Existing same-head required-check tests still reject mixed-head, missing, and failed required checks.
+## Safe pnpm Test Failure Repair PR
+
+- Scope: targeted repair for `apps/api/src/evidence-rendering.test.ts`.
+- Safe source: PR #28 CI safe artifact classification only; GitHub raw logs were not read.
+- Safe reason code: `pnpm_typecheck_passed_but_test_failed`.
+- Reproduction: local `corepack pnpm test` reproduced one timeout in the quality-gate self-protection preparation test.
+- Fix: increased only the affected test timeout so the existing self-protection assertion can complete under full-suite I/O contention.
+- Verification: `corepack pnpm test` passed with 21 test files, 207 passed, and 6 skipped; `npm test` passed with the same counts.
+- Guardrail: no tests were skipped, no expectations were weakened, and no product runtime source was changed.

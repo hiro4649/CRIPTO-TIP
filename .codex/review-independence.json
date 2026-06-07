@@ -1,33 +1,30 @@
 {
-  "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "pending_after_pr_creation",
+  "headSha": "current_pr_head",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "schemaVersion": "1.0",
   "reviewIndependenceStatus": "pass",
   "writerEvidence": [
-    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-    "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-    ".codex/evidence-pack.json"
+    "safe artifact triage for run 27078192568",
+    "local pnpm test reproduction"
   ],
   "reviewEvidence": [
-    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    "apps/api/src/evidence-rendering.test.ts targeted diff",
+    "docs/pr-repair-safe-pnpm-test-failure.md",
     ".codex/change-classification.json"
   ],
   "reviewChecklist": [
-    "PR #23 not reopened or reused",
-    "raw logs not stored",
-    "required checks not weakened",
-    "product runtime code not changed",
-    "v1.0.8 rollout remains policy/schema only"
+    "GitHub raw logs not read",
+    "PR #28 not reopened or merged",
+    "test expectation not weakened",
+    "skip/only not introduced",
+    "scope limited to pnpm test failure"
   ],
-  "humanConfirmationRequired": [
-    "merge decision",
-    "current head SHA",
-    "CI status",
-    "quality-gate status",
-    "remaining blockers"
-  ]
+  "sameSummaryOnly": false,
+  "reviewedItemsAbstract": false,
+  "productCodeChanged": false,
+  "runtimeReadinessClaimed": false
 }

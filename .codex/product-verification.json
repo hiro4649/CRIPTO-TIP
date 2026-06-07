@@ -1,29 +1,25 @@
 {
-  "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "pending_after_pr_creation",
+  "headSha": "current_pr_head",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "schemaVersion": "1.0",
   "productVerificationStatus": "pass",
   "productCodeChanged": false,
   "runtimeReadinessClaimed": false,
   "behaviors": {
-    "active_harness_v107": "pass",
-    "v108_rollout_policy_added": "pass",
-    "v108_status_schema_added": "pass",
+    "pnpm_test_failure_reproduced": "pass",
+    "targeted_timeout_fix": "pass",
     "product_runtime_changed": "no",
-    "package_scripts_changed": "no",
-    "runtime_dependencies_added": "no",
-    "youtube_scraping": "forbidden",
-    "token_sale": "forbidden"
+    "package_or_lockfile_changed": "no",
+    "raw_github_logs_read": "no",
+    "pr28_reopened_or_merged": "no"
   },
   "evidence": [
-    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-    "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-    ".codex/evidence-pack.json",
-    ".codex/change-classification.json"
+    "apps/api/src/evidence-rendering.test.ts",
+    "safe CI artifact summaries from run 27078192568",
+    ".codex/evidence-pack.json"
   ]
 }

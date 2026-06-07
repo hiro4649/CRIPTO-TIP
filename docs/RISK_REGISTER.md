@@ -101,3 +101,9 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | High | Advisory legacy self-test evidence could be promoted into a required workflow failure. | Harness owner | This PR | Separate requiredStatuses from advisoryStatuses and keep only required statuses as merge blockers. |
 | High | v1.0.8 could be over-claimed before same-head required checks pass. | Harness owner | This PR | PR body and evidence state that quality-gate pass alone is not merge readiness and v1.0.8 is incomplete until all required checks pass on the same head. |
 | Medium | Raw log dependency could return during failure diagnosis. | Harness owner | Safe artifact follow-up | Diagnosis uses safe summary artifacts only; raw logs remain forbidden. |
+## Safe pnpm Test Failure Repair PR
+
+| Severity | Risk | Status | Mitigation |
+| --- | --- | --- | --- |
+| Medium | PR #28 terminal blocked state could be confused with v1.1.0 completion. | Open until this PR is reviewed. | PR #28 remains closed without merge; this PR does not reopen, merge, or reuse PR #28 evidence. |
+| Low | Full-suite I/O contention can make the quality self-protection script test exceed Vitest default timeout. | Mitigated in this PR. | Targeted timeout increase for the existing assertion; no skip, no weakened expectation. |

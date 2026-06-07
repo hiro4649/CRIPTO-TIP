@@ -1,58 +1,59 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
-  "schemaVersion": "1.0.0",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "prProfile": "harness_workflow_r3",
-  "taskMode": "harness_change",
-  "changeType": "harness_change",
-  "riskLevel": "R3",
-  "title": "chore: roll out harness v1.0.8 safely",
-  "goal": "Roll out CRIPTO-TIP harness v1.0.8 safe CI evidence policy from a fresh main branch without product runtime changes.",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
-  "ciRunId": "27052642395",
-  "qualityGateRunId": "27052809246",
-  "qualityGateArtifactId": "7451259139",
-  "productCiStatus": "success",
-  "qualityGateStatus": "failure_analyzed_required_advisory_split_repaired_locally",
+  "prNumber": "awaiting_new_pr_actions",
+  "headSha": "current_pr_head",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_minor_r2",
+  "taskMode": "bugfix",
+  "changeType": "bugfix",
+  "riskLevel": "R2",
+  "title": "fix: repair safe pnpm test failure",
+  "goal": "Repair CRIPTO-TIP pnpm test failure identified by safe artifact after blocked v1.1.0 rollout PR #28, using safe summaries only and without reusing PR #28 evidence.",
+  "ciRunId": "awaiting_new_pr_actions",
+  "qualityGateRunId": "awaiting_new_pr_actions",
+  "qualityGateArtifactId": "awaiting_new_pr_actions",
+  "productCiStatus": "awaiting_new_pr_actions",
+  "qualityGateStatus": "awaiting_new_pr_actions",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
     "changedFiles": [
-      ".codex/change-classification.json",
+      "apps/api/src/evidence-rendering.test.ts",
       ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/review-independence.json",
-      ".codex/task-contract.json",
+      ".codex/test-summary.json",
       ".codex/test-coverage-evidence.json",
-      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "scripts/codex-workflow-quality-runner.mjs"
+      ".codex/quality-gate-evidence.json",
+      ".codex/change-classification.json",
+      ".codex/product-verification.json",
+      ".codex/review-independence.json",
+      ".codex/risk-register.json",
+      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/RISK_REGISTER.md",
+      "docs/pr-repair-safe-pnpm-test-failure.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
     ],
     "allowedPaths": [
-      "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
+      "apps/api/src/evidence-rendering.test.ts",
       ".codex/**",
-      "scripts/codex-workflow-quality-runner.mjs"
+      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/RISK_REGISTER.md",
+      "docs/pr-repair-safe-pnpm-test-failure.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
     ],
     "forbiddenPaths": [
-      "apps/api/src/youtube/**",
-      "apps/api/src/chain/**",
-      "apps/api/src/iris/**",
-      "apps/api/src/server.ts",
-      "apps/web/**",
-      "apps/overlay/**",
+      ".github/workflows/**",
+      "package.json",
+      "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
-      "package.json",
-      "pnpm-lock.yaml"
+      "wallet/RPC/deploy config",
+      "apps/api/src/youtube/**",
+      "apps/api/src/chain/**"
     ]
   },
   "commands": [
@@ -78,77 +79,74 @@
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "pass"
+      "result": "pending_final_verification"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "pass"
+      "result": "pending_final_verification"
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass"
-    },
-    {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-      "result": "pass"
+      "result": "pending_final_verification"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass"
-    },
-    {
-      "name": "node scripts/validate-evidence-freshness.mjs --ci",
-      "result": "pass"
+      "result": "pending_final_verification"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pass"
+      "result": "pending_final_verification"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pass"
+      "result": "pending_final_verification"
     }
   ],
   "remoteRuns": [
     {
-      "name": "ci",
-      "runId": "27052642395",
-      "result": "success",
-      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27052809246",
-      "artifactId": "7451259139",
-      "result": "failure_analyzed",
-      "headSha": "d1de75bb0ddfa32c7ea66b3dd8b17173fa8de341"
+      "name": "blocked PR #28 ci safe artifact",
+      "runId": "27078192568",
+      "result": "pnpm_typecheck_passed_but_test_failed",
+      "headSha": "1a9e314587468e5994f99cd6b3a8a43d3c6a756c",
+      "artifactUse": "safe classification only; no PR #28 evidence reuse for merge readiness"
     }
   ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
-    "deploymentApplied": false
+    "deploymentApplied": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Revert this PR if safe CI artifacts contain CI transcript bodies, required checks are weakened, PR #23 evidence is reused, or same-head required checks metadata becomes stale.",
+  "rollbackOrStopCondition": "Revert this PR if pnpm test fails again, TypeScript checks weaken, disallowed GitHub runner detail are required, required checks are weakened, or the fix expands beyond the safe-artifact-guided pnpm test failure.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "v108_safe_ci_rollout_policy",
-    "v108_status_schema",
-    "docs",
-    "quality_evidence"
+    "pnpm_test_failure_repair",
+    "safe_artifact_guided_triage",
+    "targeted_test_timeout_fix",
+    "test_coverage_evidence",
+    "quality_evidence",
+    "risk_register",
+    "docs"
   ],
   "forbiddenScope": [
-    "product runtime code changes",
-    "wallet/RPC/deploy changes",
-    "YouTube connector changes",
-    "Chain Listener changes",
-    "IRIS delivery changes",
+    "v1.1.0 rollout merge",
+    "PR #28 reopen",
+    "PR #28 evidence reuse",
+    "GitHub disallowed runner-detail reading",
+    "required check weakening",
+    "quality-gate weakening",
+    "TypeScript check weakening",
+    "pnpm test weakening",
     "runtime readiness claim",
-    "production readiness claim",
-    "PR #23 reuse",
-    "raw CI transcript reading",
+    "release readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "wallet/RPC/deploy changes",
+    "YouTube connector unrelated changes",
+    "Chain Listener unrelated changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -159,13 +157,13 @@
     "YouTube scraping"
   ],
   "doneCriteria": [
-    "requiredStatuses and advisoryStatuses are separated",
-    "legacy self-test advisory does not emit workflow_required_status_failure",
-    "same-head required checks remain required",
-    "required safe artifact uploads remain fail-closed",
-    "no product runtime surface changes",
-    "no secret scan passes",
-    "no scraping scan passes"
+    "pnpm test passes locally",
+    "npm test passes locally",
+    "TypeScript checks remain pass",
+    "targeted timeout fix preserves self-protection expectation",
+    "no disallowed GitHub runner detail read",
+    "no PR #28 reopening or merge",
+    "no runtime or release readiness claim"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
@@ -175,25 +173,25 @@
     "skipped": 6
   },
   "securityBoundaries": [
-    "v1.0.8 rollout does not claim runtime readiness.",
-    "v1.0.8 rollout does not claim production readiness.",
-    "PR #23 remains closed without merge and is not reused.",
-    "Safe CI artifacts remain safe-summary only.",
-    "No raw CI transcript body is read or added.",
-    "Required statuses remain blocking; advisory statuses are reported but non-blocking.",
-    "No YouTube scraping, HTML parsing, Puppeteer, or Cheerio dependency is added."
+    "PR #28 is closed without merge and is not reopened or merged.",
+    "PR #28 evidence is not reused for merge readiness; only the allowed safe artifact classification guided this repair.",
+    "GitHub disallowed runner detail were not read; no gh run view --log command was used.",
+    "The safe reason code was pnpm_typecheck_passed_but_test_failed with product_code_failure true.",
+    "The fix keeps quality-gate self-protection expectations intact and only gives the heavy script test enough time to complete.",
+    "No runtime readiness, release readiness, legal compliance, or YouTube policy compliance is claimed.",
+    "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced."
   ],
   "residualRisks": [
-    "Quality-gate rerun is required after this required/advisory split repair.",
-    "v1.0.8 is not complete until same-head required checks, target gate, safe artifacts, and quality-gate all pass.",
-    "This PR does not prove product runtime, production, legal, or YouTube policy readiness."
+    "The blocked v1.1.0 rollout remains closed without merge.",
+    "This PR does not resume v1.1.0 rollout or provider apply work.",
+    "GitHub checks must pass on the new PR head before merge."
   ],
   "humanConfirmation": [
     "project-owner merge decision required",
-    "current head SHA verified",
-    "CI status verified",
-    "quality-gate blocker review required",
-    "remaining blockers documented"
+    "current head SHA verified after PR checks",
+    "CI status verified after PR checks",
+    "quality-gate status verified after PR checks",
+    "remaining risks documented"
   ],
   "testFiles": 21,
   "passed": 207,
@@ -205,32 +203,46 @@
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs --ci: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass"
+    "corepack pnpm evidence:ci: pending_final_verification",
+    "corepack pnpm quality:self-protection: pending_final_verification",
+    "node scripts/write-test-summary.mjs: pending_final_verification",
+    "node scripts/check-evidence-placeholders.mjs: pending_final_verification",
+    "node scripts/check-quality-gate-self-protection.mjs: pending_final_verification",
+    "node scripts/codex-secret-safety-scan.mjs: pending_final_verification"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts or dependencies are changed by this v1.0.8 rollout PR."
+    "verification": "No package scripts or dependencies are changed."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
     "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes harness rollout policy/schema and evidence docs only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR fixes a local/CI test timeout in evidence self-protection coverage only.",
   "reviewScope": {
-    "scope": "v1.0.8 safe CI rollout policy, status schema, classification, and evidence docs.",
-    "riskSummary": "Main risk is over-claiming v1.0.8 readiness; the PR intentionally keeps rollout policy/schema only.",
-    "verificationOracle": "Evidence renderer, placeholder check, freshness validation, self-protection, repository checks, secret scan, and no-scraping scan."
+    "scope": "Safe-artifact-guided pnpm test failure repair in evidence-rendering test timeout only.",
+    "riskSummary": "Main risk is over-expanding beyond the failing pnpm test; scope is limited to the reproduced timeout.",
+    "verificationOracle": "Safe CI artifacts, local pnpm test reproduction, npm test, lint/typecheck, evidence checks, secret scan, and no-scraping scan."
   },
   "testsPassed": 207,
-  "prBodyPath": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-  "targetRollout": true
+  "prBodyPath": "docs/pr-repair-safe-pnpm-test-failure.md",
+  "verificationSurface": [
+    "apps/api/src/evidence-rendering.test.ts",
+    "safe CI artifact summaries for PR #28 failing run",
+    "local pnpm test",
+    "npm test",
+    "GitHub required checks on the new PR head"
+  ],
+  "riskSurface": [
+    "test timeout only",
+    "no product runtime code",
+    "no package or workflow change",
+    "no PR #28 branch change"
+  ],
+  "oracle": "Allowed safe artifacts, local reproduction output, repository checks, evidence placeholder checker, quality self-protection, secret scan, and no-scraping scan.",
+  "splitRequired": "no - single targeted pnpm test failure repair.",
+  "bestOfNEvidence": "Best of N used or skipped: skipped with reason - safe artifact identified a single pnpm test failure class and local reproduction isolated one timeout fix.",
+  "reviewIndependence": "Writer evidence is the safe artifact triage and local test reproduction. Reviewer checklist: present in .codex/review-independence.json and PR body; independent checklist verifies no disallowed runner detail, no PR #28 reuse, no test weakening, and no prohibited scope."
 }

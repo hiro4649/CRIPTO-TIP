@@ -1,46 +1,26 @@
 {
-  "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "pending_after_pr_creation",
+  "headSha": "current_pr_head",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "schemaVersion": "1.0",
   "classificationStatus": "complete",
   "unknownFiles": [],
   "unknownCount": 0,
   "classificationCoverageStatus": "pass",
   "changeClassificationStatus": "pass",
-  "productRelevantChanged": false,
+  "productRelevantChanged": true,
   "packageOrLockfileChanged": false,
   "runtimeReadinessClaimed": false,
   "pathPatterns": [
     {
-      "pathPattern": "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-      "classification": "harness_managed",
+      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
+      "classification": "test",
       "riskLevel": "R2",
-      "verification": "PR body and quality-gate evidence review",
-      "scope": "v108_safe_ci_rollout_policy"
-    },
-    {
-      "pathPattern": "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-      "classification": "harness_managed",
-      "riskLevel": "R2",
-      "verification": "schema review and quality-gate evidence review",
-      "scope": "v108_status_schema"
-    },
-    {
-      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "classification": "harness_managed",
-      "riskLevel": "R2",
-      "verification": "classification coverage unknown count zero",
-      "scope": "classification_registry"
-    },
-    {
-      "pathPattern": "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "rendered PR evidence",
-      "scope": "pr_evidence"
+      "verification": "targeted pnpm test timeout repair",
+      "scope": "test"
     },
     {
       "pathPattern": ".codex/**",
@@ -48,19 +28,57 @@
       "riskLevel": "R2",
       "verification": "machine-readable evidence",
       "scope": "quality_evidence"
+    },
+    {
+      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "test evidence update",
+      "scope": "docs"
+    },
+    {
+      "pathPattern": "docs/QUALITY_GATE_EVIDENCE.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "quality evidence update",
+      "scope": "docs"
+    },
+    {
+      "pathPattern": "docs/RISK_REGISTER.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "risk update",
+      "scope": "docs"
+    },
+    {
+      "pathPattern": "docs/pr-repair-safe-pnpm-test-failure.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "rendered PR evidence",
+      "scope": "pr_evidence"
+    },
+    {
+      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "classification": "harness_managed",
+      "riskLevel": "R2",
+      "verification": "classification coverage update",
+      "scope": "classification_registry"
     }
   ],
   "changedFiles": [
-    ".codex/change-classification.json",
+    "apps/api/src/evidence-rendering.test.ts",
     ".codex/evidence-pack.json",
-    ".codex/product-verification.json",
-    ".codex/quality-gate-evidence.json",
-    ".codex/review-independence.json",
-    ".codex/task-contract.json",
+    ".codex/test-summary.json",
     ".codex/test-coverage-evidence.json",
-    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-    "docs/process/CODEX_V108_STATUS_SCHEMA.json"
+    ".codex/quality-gate-evidence.json",
+    ".codex/change-classification.json",
+    ".codex/product-verification.json",
+    ".codex/review-independence.json",
+    ".codex/risk-register.json",
+    "docs/TEST_COVERAGE_EVIDENCE.md",
+    "docs/QUALITY_GATE_EVIDENCE.md",
+    "docs/RISK_REGISTER.md",
+    "docs/pr-repair-safe-pnpm-test-failure.md",
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
   ]
 }
