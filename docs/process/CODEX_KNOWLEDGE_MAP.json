@@ -1,6 +1,6 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
+  "harnessVersion": "1.0.9",
   "schemaVersion": "1.0.3",
   "entrypoints": [
     "AGENTS.md",

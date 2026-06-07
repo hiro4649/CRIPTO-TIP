@@ -3,7 +3,7 @@
   "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "29",
-  "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
+  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0.0",
   "prProfile": "product_minor_r2",
@@ -12,9 +12,9 @@
   "riskLevel": "R2",
   "title": "fix: repair safe pnpm test failure",
   "goal": "Repair CRIPTO-TIP pnpm test failure identified by safe artifact after blocked v1.1.0 rollout PR #28, using safe summaries only and without reusing PR #28 evidence.",
-  "ciRunId": "27079329550",
-  "qualityGateRunId": "27079329549",
-  "qualityGateArtifactId": "7459649614",
+  "ciRunId": "27087127313",
+  "qualityGateRunId": "27087367728",
+  "qualityGateArtifactId": "7462361891",
   "productCiStatus": "success",
   "qualityGateStatus": "failure before repair",
   "runtimeReadinessClaim": "no",
@@ -109,16 +109,16 @@
   "remoteRuns": [
     {
       "name": "PR #29 CI",
-      "runId": "27079329550",
+      "runId": "27087127313",
       "result": "success",
-      "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350"
+      "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20"
     },
     {
       "name": "PR #29 quality-gate before repair",
-      "runId": "27079329549",
-      "artifactId": "7459649614",
+      "runId": "27087367728",
+      "artifactId": "7462361891",
       "result": "failure before repair",
-      "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
+      "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
       "reasonCode": "pr_body_evidence_stale_placeholders"
     },
     {

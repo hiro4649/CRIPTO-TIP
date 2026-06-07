@@ -3,12 +3,12 @@
   "harnessVersion": "1.0.9",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "29",
-  "headSha": "2fda385991f87cb728daa4c7d8ddf2e29bc9e350",
+  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "failure before repair",
-  "latestAnalyzedRunId": "27079329549",
-  "latestAnalyzedArtifactId": "7459649614",
+  "latestAnalyzedRunId": "27087367728",
+  "latestAnalyzedArtifactId": "7462361891",
   "reasonCodeMappings": {
     "safe_reason_code": "pnpm_typecheck_passed_but_test_failed",
     "quality_gate_failure_classification": "pr_body_evidence_stale_placeholders",
@@ -31,20 +31,20 @@
     {
       "name": "typescript",
       "status": "success",
-      "runId": "27079329550",
+      "runId": "27087127313",
       "blocking": true
     },
     {
       "name": "contracts",
       "status": "success",
-      "runId": "27079329550",
+      "runId": "27087127313",
       "blocking": true
     },
     {
       "name": "quality-gate",
       "status": "failure before repair",
-      "runId": "27079329549",
-      "artifactId": "7459649614",
+      "runId": "27087367728",
+      "artifactId": "7462361891",
       "blocking": true
     }
   ]
