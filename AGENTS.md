@@ -1,7 +1,7 @@
 # AGENTS.md
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.0.7
+CODEX_QUALITY_HARNESS_FILE v1.1.2
 
 ## Prime Directive
 
@@ -24,11 +24,32 @@ v2, GitHub hysteresis, tool gap, active self-test, hotfix preservation,
 PR-chain saturation, role/tool, evidence site, annotation, and Dynamic Workflow
 Lite governance, use `docs/process/CODEX_V104_SPEC.md` and the matching
 `docs/process/CODEX_*_POLICY.md` or schema files.
-For v1.0.5 and v1.0.6 integration reliability, lane separation, provenance,
-bounded validation, safe repair mapping, and controlled orchestration, use
+For v1.0.5 through v1.0.8 integration reliability, lane separation,
+provenance, evidence closure, bounded validation, safe repair mapping,
+branch isolation, review intake, manual gate audit, and controlled
+orchestration, use
 `docs/process/CODEX_V105_INTEGRATION_EVIDENCE_RELIABILITY_POLICY.md`,
-`docs/process/CODEX_V106_LANE_PROVENANCE_RECOVERY_POLICY.md`, and their schema
-files.
+`docs/process/CODEX_V106_LANE_PROVENANCE_RECOVERY_POLICY.md`,
+`docs/process/CODEX_V107_GEAR_POLICY.md`,
+`docs/process/CODEX_V108_SPEC.md`, and their schema files.
+For v1.0.9 Decision Ledger and Evidence Convergence, use
+`docs/process/CODEX_HARNESS_V1_0_9_DECISION_LEDGER_POLICY.md`,
+`docs/process/CODEX_DECISION_LEDGER_SCHEMA_V1_0_9.json`,
+`docs/process/CODEX_REPAIR_PLAN_SAFE_SCHEMA_V1_0_9.json`, and
+`docs/process/CODEX_STATUS_TAXONOMY_V1_0_9.json`.
+For v1.1.0 Token Economy and Operational Closure, use
+`docs/process/CODEX_HARNESS_V1_1_0_TOKEN_ECONOMY_POLICY.md`,
+`docs/process/CODEX_V110_SPEC.md`, and
+`docs/process/CODEX_STATUS_TAXONOMY_V1_1_0.json`.
+For v1.1.1 Token Hard Cap, Context Capsule, and Failure Closure, use
+`docs/process/CODEX_HARNESS_V1_1_1_TOKEN_HARD_CAP_CONTEXT_CAPSULE_FAILURE_CLOSURE_POLICY.md`,
+`docs/process/CODEX_V111_SPEC.md`, and
+`docs/process/CODEX_STATUS_TAXONOMY_V1_1_1.json`.
+For v1.1.2 Conversation Surface Minimization and Evidence Fidelity, use
+`docs/process/CODEX_V112_SPEC.md`,
+`docs/process/CODEX_HARNESS_V1_1_2_CONVERSATION_SURFACE_EVIDENCE_FIDELITY_POLICY.md`,
+and the matching v1.1.2 taxonomy, reason dictionary, rollout manifest, and
+command output policy files.
 
 ## Plan-First Rule
 

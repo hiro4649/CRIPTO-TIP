@@ -111,8 +111,6 @@ export function buildRemoteNpmDiagnosticReport(env = process.env) {
   const unknown = diagnostic.safeFailureCategory === 'unknown_npm_failure';
   return simpleStatus('remoteNpmDiagnosticStatus', unknown ? 'manual_confirmation_required' : 'pass', {
     diagnostic,
-    npmExecuted: diagnostic.npmExitCode !== null,
-    npmExitCode: diagnostic.npmExitCode,
     reasonCodes: unknown ? ['remote_npm_diagnostic_unknown'] : [],
   });
 }

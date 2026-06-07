@@ -31,39 +31,6 @@ function write(file, content) {
   fs.writeFileSync(file, content);
 }
 
-function writeGoldenEvidencePack(pack) {
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'codex-golden-evidence-pack-'));
-  const file = path.join(tmp, 'evidence-pack.json');
-  write(file, JSON.stringify(pack, null, 2));
-  return file;
-}
-
-function goldenEvidencePack(overrides = {}) {
-  return {
-    schemaVersion: '1.0.0',
-    harnessVersion: HARNESS_VERSION,
-    repository: 'owner/repo',
-    prNumber: '1',
-    headSha: GOLDEN_HEAD,
-    baseSha: GOLDEN_BASE,
-    changeType: 'source-harness',
-    riskLevel: 'R3',
-    scope: {
-      changedFiles: ['AGENTS.md'],
-      allowedPaths: ['AGENTS.md'],
-      forbiddenPaths: ['profiles/'],
-    },
-    commands: [{ name: 'node scripts/codex-v080-self-test.mjs', result: 'pass' }],
-    remoteRuns: [{ name: 'quality-gate', runId: '1', result: 'pass' }],
-    residualRisks: ['downstream propagation separate'],
-    productionClaims: { runtimeReady: false, productionReady: false },
-    rollbackOrStopCondition: 'Stop if gate fails.',
-    humanConfirmation: { confirmedByRole: 'project-owner', headSha: GOLDEN_HEAD },
-    safeOutput: { status: 'pass' },
-    ...overrides,
-  };
-}
-
 function runScript(scriptName, { cwd = repo, env = {} } = {}) {
   const result = spawnSync(process.execPath, [path.join(repo, 'scripts', scriptName), '--json'], {
     cwd,
@@ -100,15 +67,9 @@ function evaluateCase(caseId) {
     case 'safe-output-allows-policy-vocabulary':
       return buildSafeOutputScanReport({ text: 'Reports must not include raw payload, secret value, endpoint value, private path, production data, or personal data.' }).safeOutputScanStatus.status === 'pass';
     case 'evidence-pack-missing-head':
-      return buildEvidencePackReport({
-        CODEX_PR_HEAD_SHA: GOLDEN_HEAD,
-        CODEX_EVIDENCE_PACK_PATH: writeGoldenEvidencePack(goldenEvidencePack({ headSha: undefined })),
-      }).evidencePackStatus.status === 'fail';
+      return buildEvidencePackReport({ CODEX_PR_HEAD_SHA: GOLDEN_HEAD, CODEX_PR_BODY: buildStructuredEvidencePrBody({ omitEvidenceHead: true }) }).evidencePackStatus.status === 'fail';
     case 'evidence-pack-head-mismatch':
-      return buildEvidencePackReport({
-        CODEX_PR_HEAD_SHA: GOLDEN_HEAD,
-        CODEX_EVIDENCE_PACK_PATH: writeGoldenEvidencePack(goldenEvidencePack({ headSha: GOLDEN_BASE })),
-      }).evidencePackStatus.status === 'fail';
+      return buildEvidencePackReport({ CODEX_PR_HEAD_SHA: GOLDEN_HEAD, CODEX_PR_BODY: buildStructuredEvidencePrBody({ evidenceHeadSha: GOLDEN_BASE }) }).evidencePackStatus.status === 'fail';
     case 'manual-confirmation-missing-role':
       return buildHumanConfirmationObjectReport({ CODEX_PR_HEAD_SHA: GOLDEN_HEAD, CODEX_PR_BODY: buildStructuredEvidencePrBody({ omitManualRole: true }) }).humanConfirmationObjectStatus.status === 'fail';
     case 'manual-confirmation-head-mismatch':
