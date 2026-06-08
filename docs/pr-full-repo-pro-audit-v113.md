@@ -36,6 +36,34 @@ Docs, `.codex` evidence, and `.github/pull_request_template.md` evidence heading
 
 yes - project-owner review is required before merge because this is an R3 harness evidence audit PR.
 
+## Complexity Governance
+
+Solvability constraints: no raw GitHub logs, no PR #28 evidence reuse, no product runtime changes, no provider apply, no readiness claims, no quality-gate weakening.
+
+Acceptance criteria: audit report exists, Critical unresolved count is 0, High unresolved count is 0, Medium/Low findings are documented, local checks pass, GitHub typescript/contracts pass, quality-gate passes on the PR head, and PR body evidence is current-head only.
+
+Verification surface: docs/AUDIT_REPORT_FULL_REPO_V113.md, docs/pr-full-repo-pro-audit-v113.md, .codex evidence files, PR metadata, safe quality-gate artifacts, local pnpm/npm tests, evidence CI, quality self-protection, secret scan, and no-scraping scan.
+
+Risk surface: docs and evidence drift, stale open PRs, PR template evidence contract alignment, and historical archived PR docs that must not be treated as current readiness evidence.
+
+Oracle required: yes.
+
+Oracle provided: safe artifact reason codes, local verification commands, prompt governance eval, PR profile gate, evidence placeholder check, evidence freshness validation, quality self-protection, secret scan, and no-scraping scan.
+
+Split required: no - this is a bounded audit/evidence repair with no product runtime changes and Critical/High unresolved findings at zero.
+
+Rollback or stop condition: stop or revert this audit PR if product runtime code changes, evidence becomes stale, quality-gate weakens, unsafe GitHub logs are read, or prohibited scope appears.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Selected candidate: current-head evidence/profile refresh plus PR template evidence heading alignment.
+
+Reason selected: it is the smallest safe change that addresses the safe-artifact reason codes without touching product runtime code, provider apply behavior, secrets, workflows, or quality-gate enforcement.
+
+Rejected alternatives: product runtime change was rejected as out of scope; broad historical PR docs cleanup was rejected because it risks churn and is not needed for this audit PR; disabling or weakening quality-gate was rejected as prohibited.
+
 ## Task Contract
 
 Goal: Full repository Pro audit under harness v1.1.3 after PR #29 repair, with no product runtime changes unless Critical or High safety fix is required.
@@ -52,19 +80,19 @@ Done criteria: full audit report exists; Critical findings 0 unresolved; High fi
 
 ## Evidence Integrity
 
-Head SHA: 4ebf10f30ad4455ab0234a993756c476a2d66d39
+Head SHA: current_pr_head
 
-Base SHA: f12b53d7766ff97f6c190b63b8948bdb1da35d66
+Base SHA: current_pr_base
 
 Product CI: success
 
-Quality-gate: failed_pending_evidence_refresh
+Quality-gate: awaiting_current_evidence_replay
 
-CI run: 27117735220
+CI run: 27118452724
 
-Quality-gate run: 27117735219
+Quality-gate run: 27118477129
 
-Quality-gate artifact: 7472335968
+Quality-gate artifact: 7472483658
 
 Tests: 21 test files, 207 passed, 6 skipped
 
