@@ -72,3 +72,11 @@ Persistent manual gate audit storage readiness adds repository interfaces,
 in-memory test implementations, migration design, and safe audit summaries.
 Actual production deployment apply and real provider SDK apply remain blocked
 without a future approved manual gate and owner-controlled execution path.
+
+## Provider Apply Job State Machine v1.1.4 Prep
+
+Provider apply job state readiness adds transition validation and compensation
+evidence. A future provider-specific production apply must not record a job as
+`applied` unless manual gate mark-used succeeded. If provider side effects
+started but mark-used failed, the job must remain non-applied and record
+`compensation_required` with safe audit evidence only.

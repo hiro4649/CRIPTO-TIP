@@ -45,3 +45,10 @@ rollout in this PR.
 The persistent transaction boundary remains future work. This PR prepares the
 interface and schema shape so a later DB-backed repository can atomically bind
 manual gate state transition, provider job state, and audit log writes.
+
+The provider deployment job state-machine preparation records whether manual
+gate mark-used was attempted and whether it succeeded. A provider job cannot be
+`applied` unless manual gate mark-used succeeded. If provider apply side effects
+started but mark-used failed, the job records `compensation_required` so a later
+transactional repository can reconcile the local approval evidence and external
+provider state.

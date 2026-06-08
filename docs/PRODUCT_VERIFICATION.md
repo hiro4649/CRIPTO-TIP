@@ -255,3 +255,13 @@ Verification covers repository interfaces, in-memory implementations, migration
 text constraints, and safe audit rejection tests. This PR does not claim runtime
 readiness, production readiness, legal compliance, YouTube policy compliance,
 real provider SDK apply, or actual production deployment apply.
+## Provider Apply Job State Machine
+
+Verified in `apps/api/src/provider-deployment-job-state.test.ts` and
+`apps/api/src/repositories/provider-deployment-job-repository.test.ts`.
+
+Coverage includes allowed and forbidden transitions, cancellation blocked after
+external provider apply starts, applied-state consistency with manual gate
+mark-used success, compensation-required state when mark-used fails after
+provider apply side effects, duplicate job ID rejection, and safe transition
+audit summaries.

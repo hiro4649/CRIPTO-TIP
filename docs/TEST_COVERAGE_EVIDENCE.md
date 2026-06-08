@@ -274,3 +274,12 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 - Added migration coverage for `manual_gates`, `manual_gate_audit_logs`,
   `provider_deployment_jobs`, `provider_deployment_audit_logs`, status check
   constraints, and no secret default values.
+## Provider Apply Job State Machine v1.1.4 Prep
+
+- Added `apps/api/src/provider-deployment-job-state.test.ts` for provider apply
+  job allowed transitions, forbidden transitions, running cancellation before
+  external apply only, applied consistency requiring manual gate mark-used
+  success, compensation-required state, and unsafe summary rejection.
+- Added `apps/api/src/repositories/provider-deployment-job-repository.test.ts`
+  for duplicate job ID rejection, safe transition audit recording,
+  compensation-required audit recording, and duplicate audit ID rejection.
