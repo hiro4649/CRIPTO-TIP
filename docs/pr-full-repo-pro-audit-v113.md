@@ -111,6 +111,8 @@ Product verification:
 
 Repository checks and package verification were run on the current evidence head.
 
+Skip reason: remote quality-gate may skip npm execution for this docs/evidence-only audit PR; local product verification and GitHub product CI were still run, and no product runtime code changed.
+
 Tests or checks run:
 
 The commands below are the merge-relevant checks for this evidence tooling change.
