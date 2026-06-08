@@ -193,7 +193,7 @@ Manual gate registry evidence: `.codex/manual-gates/schema.json`, `apps/api/src/
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
 ## Evidence Single Source Of Truth
 
 This PR adds `.codex/evidence-pack.json` as the safe summary source for generated PR evidence, plus placeholder and freshness validators. It does not weaken quality-gate behavior; it makes stale evidence easier to reject before merge.
@@ -250,9 +250,13 @@ PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout 
 
 - PR #29 was merged and is the current main baseline for this audit.
 - PR #28 remains closed without merge and is not reused for merge readiness.
-- PR #26 and PR #22 remain open and are documented as stale/open follow-up risks.
+- PR #26 and PR #22 were closed without merge after PR #33 audit merge and are not reused as merge-readiness evidence.
 - Critical findings: 0 unresolved.
 - High findings: 0 unresolved.
 - Medium/Low findings are documented in `docs/AUDIT_REPORT_FULL_REPO_V113.md` and `docs/RISK_REGISTER.md`.
 - No product runtime, workflow, script, provider apply, manual gate behavior, wallet/RPC/deploy, YouTube connector, or Chain Listener change is made by this audit PR.
 - New PR required checks must pass before merge.
+
+## Provider-Safe Deployment Apply v1.1.3
+
+Provider-safe deployment evidence adds `apps/api/src/provider-deployment.ts` and `apps/api/src/provider-deployment.test.ts`. Production-like provider apply requires an approved manual gate record and the `ManualGateRegistry` before provider apply starts. `manualApproval: true` alone is not sufficient. Dry-run does not mark a gate `used`; successful production-like apply marks the approved gate `used`; failed provider apply does not. Safe summaries exclude secret values, private URLs, wallet addresses, raw messages, raw display names, OAuth tokens, API keys, and webhook URLs.

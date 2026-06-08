@@ -23,7 +23,7 @@ Allowed statuses are `not_requested`, `requested`, `approved`, `rejected`, `expi
 
 `secret_source_ref` must be a reference name only. It must not contain a raw YouTube OAuth token, API key, webhook URL, private URL, wallet address, bearer token, provider token, or other secret value.
 
-Production-like dashboard apply, external alert apply, manual live YouTube soak, and provider credential rotation require an approved gate for the target commit and environment. Dry-run operations may run without an approved gate.
+Production-like dashboard apply, external alert apply, provider-specific deployment apply, manual live YouTube soak, and provider credential rotation require an approved gate for the target commit and environment. Dry-run operations may run without an approved gate.
 
 An approved gate is single-use for apply paths that receive a registry. After use, the registry marks the gate as `used`, and the same approval cannot authorize another apply.
 
@@ -33,7 +33,7 @@ This boundary does not implement token sale, token exchange, cash-out, custody, 
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
 
 ## CI Evidence Enforcement
 

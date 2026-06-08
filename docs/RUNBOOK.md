@@ -150,7 +150,7 @@ The exporter boundary is provider-neutral. If dashboard export or alert routing 
 3. Confirm dashboard panels reference declared metrics only.
 4. Confirm alert routes include only safe labels: `alert_id`, `operator_action`, and `source_metric`.
 5. Verify the dashboard provider credential secret name exists in the approved secret manager. Do not paste provider tokens or API keys into `.env`, docs, PR bodies, or logs.
-6. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
+6. Non-production apply requires explicit manual approval. Production-like apply requires an approved `dashboard_apply` manual gate record and the registry containing it; `manualApproval: true` alone must fail closed.
 7. If provider apply fails, map the error to an operator action and do not retry with raw credentials in logs.
 8. Rollback by restoring the previous dashboard revision, verifying metric parity, confirming alert routes are disabled or restored, and recording operator review.
 
@@ -160,7 +160,7 @@ The exporter boundary is provider-neutral. If dashboard export or alert routing 
 2. Run dry-run first. Dry-run must not require manual approval and must not send to a provider.
 3. Confirm alert payloads contain only metric name, severity, operator action, and safe labels.
 4. Verify alert provider credential secret names exist in the approved secret manager. Do not paste webhook URLs, provider tokens, API keys, or private URLs into `.env`, docs, PR bodies, or logs.
-5. Apply only with explicit manual approval. Without manual approval, apply must fail closed.
+5. Non-production apply requires explicit manual approval. Production-like apply requires an approved `external_alert_apply` manual gate record and the registry containing it; `manualApproval: true` alone must fail closed.
 6. If provider apply fails, map credential failures to credential rotation, manual gate failures to approval, rate/quota failures to provider-limit review, and unknown failures to operator inspection.
 7. Rollback by disabling the external alert route, verifying dashboard alerts remain visible, rotating credentials if needed, and recording operator review.
 ## Manual Gate Registry
@@ -173,4 +173,13 @@ Apply operations that receive a registry mark the approved gate as `used`. If an
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## Provider-Safe Deployment Apply
+
+1. Start with dry-run. Dry-run may validate the plan without a manual gate and must not mark a gate `used`.
+2. Verify the deployment plan has a rollback plan reference, operator runbook reference, and secret reference only. Do not paste provider tokens, API keys, webhook URLs, private URLs, wallet addresses, raw messages, or raw display names into the plan, PR body, docs, or logs.
+3. For production-like apply, create and approve a manual gate matching the operation type, target commit SHA, and target environment.
+4. Provider apply may start only after the shared provider-safe boundary confirms the gate is approved, unexpired, unused, and present in the `ManualGateRegistry`.
+5. If provider apply succeeds, the boundary marks the gate `used` and returns a safe summary only.
+6. If provider apply fails, the gate remains reusable for operator-controlled retry after the failure is reviewed. Do not retry with raw credential values in logs.

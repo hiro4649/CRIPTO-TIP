@@ -1,5 +1,6 @@
 import { youtubeAlertConfigs, type YouTubeAlertConfig, type YouTubeAlertId } from "./deployment-observability.js";
-import { assertProductionManualGateAndRegistry, markManualGateUsedAfterApply, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
+import { executeProviderDeploymentApply, type ProviderDeploymentApplyResult } from "../provider-deployment.js";
+import { type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
 import type { YouTubeMetricName } from "./operations.js";
 
 export type AlertCredentialSource = "secret_manager" | "provider_specific";
@@ -21,6 +22,7 @@ export type AlertDeliveryPayload = {
 export type AlertDeliveryPlan = {
   provider: string;
   credentialSource: AlertCredentialSource;
+  credentialRef: string;
   dryRun: boolean;
   payloads: AlertDeliveryPayload[];
 };
@@ -77,10 +79,13 @@ export function buildAlertDeliveryPlan(args: {
   productionLike?: boolean;
 }): AlertDeliveryPlan {
   const credentials = assertAlertCredentialBoundary(args.credentials, args.productionLike);
+  const credentialRef = credentials.secretName;
+  if (!credentialRef) throw new Error("alert provider credential secret name is required");
   const alertConfigs = args.alertConfigs ?? youtubeAlertConfigs;
   return {
     provider: credentials.providerName ?? credentials.source,
     credentialSource: credentials.source,
+    credentialRef,
     dryRun: args.dryRun ?? true,
     payloads: alertConfigs.map((alert) => buildSafeAlertPayload(alert, args.labels))
   };
@@ -96,23 +101,44 @@ export async function deliverExternalAlerts(args: {
   targetCommitSha?: string;
   targetEnvironment?: string;
 }) {
-  let productionGate: ManualGateApproval | undefined;
-  if (!args.plan.dryRun && args.productionLike) {
-    productionGate = assertProductionManualGateAndRegistry({
-      registry: args.manualGateRegistry,
-      gate: args.manualGate,
-      gateType: "external_alert_apply",
-      targetCommitSha: args.targetCommitSha ?? "",
-      targetEnvironment: args.targetEnvironment
-    });
-  }
-  const result = await args.provider.deliver(args.plan, {
-    dryRun: args.plan.dryRun,
-    manualApproval: args.manualApproval === true || Boolean(productionGate) || (!args.productionLike && Boolean(args.manualGate))
+  let result: AlertDeliveryResult | undefined;
+  await executeProviderDeploymentApply({
+    provider: {
+      apply: async (_plan, options): Promise<ProviderDeploymentApplyResult> => {
+        result = await args.provider.deliver(args.plan, options);
+        return {
+          status: result.status === "delivered" ? "applied" : "planned",
+          dryRun: result.dryRun,
+          operation: "external_alert_apply",
+          target: args.plan.provider,
+          rollbackPlanRef: "docs/ALERT_DELIVERY.md#rollback",
+          operatorRunbookRef: "docs/RUNBOOK.md#external-alert-delivery",
+          safeSummary: {
+            deliveredCount: result.deliveredCount
+          }
+        };
+      }
+    },
+    plan: {
+      operation: "external_alert_apply",
+      target: args.plan.provider,
+      dryRun: args.plan.dryRun,
+      credentialSource: args.plan.credentialSource,
+      credentialRef: args.plan.credentialRef,
+      rollbackPlanRef: "docs/ALERT_DELIVERY.md#rollback",
+      operatorRunbookRef: "docs/RUNBOOK.md#external-alert-delivery",
+      safeSummary: {
+        payloadCount: args.plan.payloads.length
+      }
+    },
+    productionLike: args.productionLike,
+    manualApproval: args.manualApproval,
+    manualGate: args.manualGate,
+    manualGateRegistry: args.manualGateRegistry,
+    targetCommitSha: args.targetCommitSha,
+    targetEnvironment: args.targetEnvironment
   });
-  if (!args.plan.dryRun && args.productionLike) {
-    markManualGateUsedAfterApply({ registry: args.manualGateRegistry, gate: productionGate });
-  }
+  if (!result) throw new Error("alert provider did not return a result");
   return result;
 }
 

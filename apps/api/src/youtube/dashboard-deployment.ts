@@ -1,5 +1,6 @@
 import { buildYouTubeDashboardContract, youtubeAlertConfigs } from "./deployment-observability.js";
-import { assertProductionManualGateAndRegistry, markManualGateUsedAfterApply, type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
+import { executeProviderDeploymentApply, type ProviderDeploymentApplyResult } from "../provider-deployment.js";
+import { type ManualGateApproval, type ManualGateRegistry } from "../manual-gates.js";
 import type { YouTubeMetricName } from "./operations.js";
 
 export type DashboardCredentialSource = "secret_manager" | "provider_specific";
@@ -15,6 +16,7 @@ export type DashboardDeploymentPlan = {
   panels: { title: string; metrics: YouTubeMetricName[] }[];
   alerts: { id: string; metric: YouTubeMetricName; operatorAction: string }[];
   credentialSource: DashboardCredentialSource;
+  credentialRef: string;
   dryRun: boolean;
 };
 
@@ -67,6 +69,8 @@ export function buildDashboardDeploymentPlan(args: {
   productionLike?: boolean;
 }): DashboardDeploymentPlan {
   const credentials = assertDashboardCredentialBoundary(args.credentials, args.productionLike);
+  const credentialRef = credentials.secretName;
+  if (!credentialRef) throw new Error("dashboard provider credential secret name is required");
   const contract = buildYouTubeDashboardContract();
   return {
     title: contract.title,
@@ -77,6 +81,7 @@ export function buildDashboardDeploymentPlan(args: {
       operatorAction: alert.operatorAction
     })),
     credentialSource: credentials.source,
+    credentialRef,
     dryRun: args.dryRun ?? true
   };
 }
@@ -91,23 +96,46 @@ export async function deployDashboard(args: {
   targetCommitSha?: string;
   targetEnvironment?: string;
 }) {
-  let productionGate: ManualGateApproval | undefined;
-  if (!args.plan.dryRun && args.productionLike) {
-    productionGate = assertProductionManualGateAndRegistry({
-      registry: args.manualGateRegistry,
-      gate: args.manualGate,
-      gateType: "dashboard_apply",
-      targetCommitSha: args.targetCommitSha ?? "",
-      targetEnvironment: args.targetEnvironment
-    });
-  }
-  const result = await args.provider.deploy(args.plan, {
-    dryRun: args.plan.dryRun,
-    manualApproval: args.manualApproval === true || Boolean(productionGate) || (!args.productionLike && Boolean(args.manualGate))
+  let result: DashboardDeploymentResult | undefined;
+  await executeProviderDeploymentApply({
+    provider: {
+      apply: async (_plan, options): Promise<ProviderDeploymentApplyResult> => {
+        result = await args.provider.deploy(args.plan, options);
+        return {
+          status: result.status,
+          dryRun: result.dryRun,
+          operation: "dashboard_apply",
+          target: args.plan.title,
+          rollbackPlanRef: "docs/DASHBOARD_DEPLOYMENT.md#rollback",
+          operatorRunbookRef: "docs/RUNBOOK.md#dashboard-deployment",
+          safeSummary: {
+            panelCount: result.panelCount,
+            alertCount: result.alertCount
+          }
+        };
+      }
+    },
+    plan: {
+      operation: "dashboard_apply",
+      target: args.plan.title,
+      dryRun: args.plan.dryRun,
+      credentialSource: args.plan.credentialSource,
+      credentialRef: args.plan.credentialRef,
+      rollbackPlanRef: "docs/DASHBOARD_DEPLOYMENT.md#rollback",
+      operatorRunbookRef: "docs/RUNBOOK.md#dashboard-deployment",
+      safeSummary: {
+        panelCount: args.plan.panels.length,
+        alertCount: args.plan.alerts.length
+      }
+    },
+    productionLike: args.productionLike,
+    manualApproval: args.manualApproval,
+    manualGate: args.manualGate,
+    manualGateRegistry: args.manualGateRegistry,
+    targetCommitSha: args.targetCommitSha,
+    targetEnvironment: args.targetEnvironment
   });
-  if (!args.plan.dryRun && args.productionLike) {
-    markManualGateUsedAfterApply({ registry: args.manualGateRegistry, gate: productionGate });
-  }
+  if (!result) throw new Error("dashboard provider did not return a result");
   return result;
 }
 

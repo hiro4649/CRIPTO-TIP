@@ -1,14 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "command": "corepack pnpm test",
-  "testFiles": 21,
-  "passed": 207,
-  "skipped": 6,
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
-  "harnessVersion": "1.1.3",
-  "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "33",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
-  "source": "local pnpm test and npm test for full repo audit"
+  "testFiles": 22,
+  "passed": 212,
+  "skipped": 6
 }

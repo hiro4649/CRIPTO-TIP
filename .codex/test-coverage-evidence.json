@@ -2,29 +2,32 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "33",
+  "prNumber": "to_be_assigned_after_pr_creation",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
-  "testFiles": 21,
-  "testsPassed": 207,
+  "testFiles": 22,
+  "testsPassed": 212,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm test: pass",
     "npm test: pass"
   ],
   "riskCoverage": [
-    "changed area: audit docs and machine-readable evidence",
-    "test command: corepack pnpm test and npm test",
-    "what the tests cover: existing product and harness behavior remains passing while audit changes docs/evidence only"
+    "provider-safe deployment dry-run/apply boundary",
+    "manual gate registry requirement",
+    "safe apply summaries",
+    "dashboard apply integration",
+    "external alert apply integration"
   ],
   "uncoveredRisks": [
-    "GitHub checks must pass on new PR head.",
-    "Stale open PRs require owner decision outside this audit PR."
+    "Real provider SDK apply remains future work.",
+    "Persistent manual gate storage remains future work.",
+    "GitHub checks must pass on the created PR head."
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "tests": 207,
-  "passed": 207,
+  "tests": 212,
+  "passed": 212,
   "skipped": 6
 }
