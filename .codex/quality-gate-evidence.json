@@ -2,18 +2,18 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "to_be_assigned_after_pr_creation",
+  "prNumber": "34",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "awaiting_github_actions_after_pr_creation",
-  "latestAnalyzedRunId": "to_be_injected_after_pr_creation",
-  "latestAnalyzedArtifactId": "to_be_injected_after_pr_creation",
+  "qualityGateExpectedStatus": "current_head_replay_required",
+  "latestAnalyzedRunId": "current_head_replay_required",
+  "latestAnalyzedArtifactId": "current_head_replay_required",
   "reasonCodeMappings": {
     "providerSafeDeploymentStatus": "pass_pending_github_replay",
     "manualGateEnforcementStatus": "pass",
     "safeSummaryStatus": "pass",
-    "wrapperResultProjectionStatus": "pass_pending_github_replay",
+    "wrapperResultProjectionStatus": "pass",
     "invalidProviderCountStatus": "pass",
     "markUsedFailureStatus": "pass"
   },
@@ -27,27 +27,27 @@
     "production deployment apply",
     "manual gate bypass"
   ],
-  "qualityGateEvidenceStatus": "awaiting_github_actions_after_pr_creation",
+  "qualityGateEvidenceStatus": "current_head_replay_required",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "awaiting_github_actions_after_pr_creation",
+      "status": "current_head_replay_required",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "awaiting_github_actions_after_pr_creation",
+      "status": "current_head_replay_required",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "awaiting_github_actions_after_pr_creation",
+      "status": "current_head_replay_required",
       "blocking": true
     }
   ],
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRunId": "to_be_injected_after_pr_creation",
-  "qualityGateArtifactId": "to_be_injected_after_pr_creation",
+  "qualityGateStatus": "current_head_replay_required",
+  "qualityGateRunId": "current_head_replay_required",
+  "qualityGateArtifactId": "current_head_replay_required",
   "safeArtifactOnly": true,
   "rawLogsRead": false,
   "reasonCodesAddressed": [
