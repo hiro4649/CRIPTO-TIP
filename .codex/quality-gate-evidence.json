@@ -1,24 +1,24 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
-  "harnessVersion": "1.0.9",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "29",
-  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "failure before repair",
-  "latestAnalyzedRunId": "27087367728",
-  "latestAnalyzedArtifactId": "7462361891",
+  "qualityGateExpectedStatus": "replay required after repair commit",
+  "latestAnalyzedRunId": "27088666217",
+  "latestAnalyzedArtifactId": "7462833751",
   "reasonCodeMappings": {
     "safe_reason_code": "pnpm_typecheck_passed_but_test_failed",
-    "quality_gate_failure_classification": "pr_body_evidence_stale_placeholders",
+    "quality_gate_failure_classification": "prompt_and_evidence_governance_blockers_before_option_a_rescope",
     "productVerificationStatus": "local pnpm test failure reproduced and repaired",
-    "codeReviewMonitorStatus": "targeted test timeout only",
+    "codeReviewMonitorStatus": "pass after PR body newline and review evidence repair",
+    "reviewIndependenceStatus": "pass after independent checklist evidence repair",
+    "promptGovernanceStatus": "blocking before current Option A evidence repair",
     "targetQualityScoreStatus": "quality-gate replay required after evidence refresh"
   },
-  "safePlaceholderInventory": [
-    "PR body run/artifact values are injected after new PR checks complete."
-  ],
+  "safePlaceholderInventory": [],
   "blockedClaims": [
     "v1.1.0 completion claim",
     "PR #28 evidence reuse",
@@ -26,25 +26,25 @@
     "runtime readiness claim",
     "production readiness claim"
   ],
-  "qualityGateEvidenceStatus": "failure before repair",
+  "qualityGateEvidenceStatus": "replay required after repair commit",
   "requiredStatuses": [
     {
       "name": "typescript",
       "status": "success",
-      "runId": "27087127313",
+      "runId": "27088324983",
       "blocking": true
     },
     {
       "name": "contracts",
       "status": "success",
-      "runId": "27087127313",
+      "runId": "27088324983",
       "blocking": true
     },
     {
       "name": "quality-gate",
       "status": "failure before repair",
-      "runId": "27087367728",
-      "artifactId": "7462361891",
+      "runId": "27088666217",
+      "artifactId": "7462833751",
       "blocking": true
     }
   ]

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.9",
+  "harnessVersion": "1.1.3",
   "risks": [
     {
       "severity": "Medium",
@@ -17,5 +17,7 @@
       "mitigation": "Targeted timeout increase without weakening assertions."
     }
   ],
-  "safeSummaryOnly": true
+  "safeSummaryOnly": true,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a"
 }

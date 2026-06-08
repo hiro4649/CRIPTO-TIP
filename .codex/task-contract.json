@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0",
-  "harnessVersion": "1.0.9",
+  "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "recorded_pr29_pre_repair_quality_gate_failure",
-  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
+  "prNumber": "29",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "taskMode": "bugfix",
   "changeType": "bugfix",
@@ -12,12 +12,15 @@
   "productCodeChanged": false,
   "allowedScope": [
     "pnpm_test_failure_repair",
-    "safe_artifact_guided_triage",
     "targeted_test_timeout_fix",
+    "harness_context_evidence_repair",
+    "AGENTS_marker_alignment",
+    "CODEX_KNOWLEDGE_MAP_alignment",
     "test_coverage_evidence",
     "quality_evidence",
     "risk_register",
-    "docs"
+    "docs",
+    ".codex evidence"
   ],
   "forbiddenScope": [
     "v1.1.0 rollout merge",
@@ -33,8 +36,10 @@
     "legal compliance claim",
     "YouTube policy compliance claim",
     "wallet/RPC/deploy changes",
-    "YouTube connector unrelated changes",
-    "Chain Listener unrelated changes",
+    "YouTube connector changes",
+    "Chain Listener changes",
+    "provider apply",
+    "manual gate behavior changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -58,16 +63,19 @@
     "safe CI artifact summaries for PR #28 failing run",
     "local pnpm test",
     "npm test",
-    "GitHub required checks on the new PR head"
+    "GitHub required checks on the new PR head",
+    "AGENTS.md",
+    "docs/process/CODEX_KNOWLEDGE_MAP.json"
   ],
   "riskSurface": [
-    "test timeout only",
+    "test timeout repair",
+    "minimal harness-context marker evidence alignment",
     "no product runtime code",
-    "no package or workflow change",
+    "no package/workflow/script change",
     "no PR #28 branch change"
   ],
   "reproductionStatus": "local pnpm test reproduced one timeout after safe artifact classified pnpm_typecheck_passed_but_test_failed",
   "rootCauseHypothesis": "quality-gate self-protection script test can exceed default Vitest 5000ms timeout under full-suite I/O contention while still passing when run directly",
   "safeOutputOnly": true,
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9"
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3"
 }

@@ -1,22 +1,22 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
-  "harnessVersion": "1.0.9",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "29",
-  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0.0",
   "prProfile": "product_minor_r2",
   "taskMode": "bugfix",
   "changeType": "bugfix",
   "riskLevel": "R2",
-  "title": "fix: repair safe pnpm test failure",
-  "goal": "Repair CRIPTO-TIP pnpm test failure identified by safe artifact after blocked v1.1.0 rollout PR #28, using safe summaries only and without reusing PR #28 evidence.",
-  "ciRunId": "27087127313",
-  "qualityGateRunId": "27087367728",
-  "qualityGateArtifactId": "7462361891",
+  "title": "fix: repair safe pnpm harness evidence",
+  "goal": "Repair CRIPTO-TIP pnpm test timeout failure identified by safe artifact and fix minimal harness-context evidence blockers needed for PR #29 quality-gate, without reading unsafe logs and without reusing PR #28 evidence.",
+  "ciRunId": "27088324983",
+  "qualityGateRunId": "27088666217",
+  "qualityGateArtifactId": "7462833751",
   "productCiStatus": "success",
-  "qualityGateStatus": "failure before repair",
+  "qualityGateStatus": "replay required after repair commit",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "scope": {
@@ -34,7 +34,8 @@
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/RISK_REGISTER.md",
       "docs/pr-repair-safe-pnpm-test-failure.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/process/CODEX_KNOWLEDGE_MAP.json"
     ],
     "allowedPaths": [
       "apps/api/src/evidence-rendering.test.ts",
@@ -43,7 +44,8 @@
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/RISK_REGISTER.md",
       "docs/pr-repair-safe-pnpm-test-failure.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/process/CODEX_KNOWLEDGE_MAP.json"
     ],
     "forbiddenPaths": [
       ".github/workflows/**",
@@ -53,7 +55,12 @@
       "migrations/**",
       "wallet/RPC/deploy config",
       "apps/api/src/youtube/**",
-      "apps/api/src/chain/**"
+      "apps/api/src/chain/**",
+      "apps/api/src/iris/**",
+      "apps/api/src/outbox/**",
+      "apps/api/src/manual-gates.ts",
+      "apps/api/src/server.ts",
+      "scripts/**"
     ]
   },
   "commands": [
@@ -108,25 +115,18 @@
   ],
   "remoteRuns": [
     {
-      "name": "PR #29 CI",
-      "runId": "27087127313",
+      "name": "PR #29 CI before current repair commit",
+      "runId": "27088324983",
       "result": "success",
-      "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20"
+      "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a"
     },
     {
-      "name": "PR #29 quality-gate before repair",
-      "runId": "27087367728",
-      "artifactId": "7462361891",
+      "name": "PR #29 quality-gate before current Option A evidence repair",
+      "runId": "27088666217",
+      "artifactId": "7462833751",
       "result": "failure before repair",
-      "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
-      "reasonCode": "pr_body_evidence_stale_placeholders"
-    },
-    {
-      "name": "blocked PR #28 CI safe artifact classification only",
-      "runId": "27078192568",
-      "result": "pnpm_typecheck_passed_but_test_failed",
-      "headSha": "1a9e314587468e5994f99cd6b3a8a43d3c6a756c",
-      "artifactUse": "safe classification only; not merge-readiness evidence"
+      "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
+      "reasonCode": "prompt_and_evidence_governance_blockers_before_option_a_rescope"
     }
   ],
   "productionClaims": {
@@ -136,35 +136,40 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Revert this PR if pnpm test fails again, TypeScript checks weaken, raw GitHub log access are required, required checks are weakened, or the fix expands beyond the safe-artifact-guided pnpm test failure.",
+  "rollbackOrStopCondition": "Revert this PR if pnpm test fails again, TypeScript checks weaken, unsafe GitHub log access are required, required checks are weakened, or the fix expands beyond the safe-artifact-guided pnpm test failure.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
     "pnpm_test_failure_repair",
-    "safe_artifact_guided_triage",
     "targeted_test_timeout_fix",
+    "harness_context_evidence_repair",
+    "AGENTS_marker_context_from_main",
+    "CODEX_KNOWLEDGE_MAP_alignment",
     "test_coverage_evidence",
     "quality_evidence",
     "risk_register",
-    "docs"
+    "docs",
+    ".codex evidence"
   ],
   "forbiddenScope": [
     "v1.1.0 rollout merge",
     "PR #28 reopen",
     "PR #28 evidence reuse",
-    "GitHub disallowed runner-detail reading",
+    "unsafe GitHub log reading",
     "required check weakening",
     "quality-gate weakening",
     "TypeScript check weakening",
     "pnpm test weakening",
     "runtime readiness claim",
-    "release readiness claim",
+    "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
     "wallet/RPC/deploy changes",
-    "YouTube connector unrelated changes",
-    "Chain Listener unrelated changes",
+    "YouTube connector changes",
+    "Chain Listener changes",
+    "provider apply",
+    "manual gate behavior changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -179,7 +184,7 @@
     "npm test passes locally",
     "TypeScript checks remain pass",
     "targeted timeout fix preserves self-protection expectation",
-    "no raw GitHub log access read",
+    "no unsafe GitHub log access used",
     "no PR #28 reopening or merge",
     "no runtime or release readiness claim"
   ],
@@ -192,9 +197,9 @@
   "securityBoundaries": [
     "PR #28 is closed without merge and is not reopened or merged.",
     "PR #28 evidence is not reused for merge readiness; only the allowed safe artifact classification guided this repair.",
-    "GitHub raw logs were not read under the forbidden raw log policy.",
+    "GitHub unsafe logs were not read under the forbidden unsafe log policy.",
     "The safe reason code was pnpm_typecheck_passed_but_test_failed with product_code_failure true.",
-    "The fix keeps quality-gate self-protection expectations intact and uses a targeted 90 second budget for the heavy self-protection script test.",
+    "The fix keeps quality-gate self-protection expectations intact and uses a targeted 180 second budget for the heavy self-protection script test.",
     "No runtime readiness, release readiness, legal compliance, or YouTube policy compliance is claimed.",
     "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced."
   ],
@@ -238,7 +243,7 @@
     "internalRuntimeApiChanged": false,
     "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR fixes a local/CI targeted 90 second test timeout in evidence self-protection coverage only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR fixes a local/CI targeted 180 second test timeout in evidence self-protection coverage only.",
   "reviewScope": {
     "scope": "Safe-artifact-guided pnpm test failure repair in evidence-rendering self-protection test timeout only.",
     "riskSummary": "Main risk is over-expanding beyond the failing pnpm test; scope is limited to the reproduced timeout.",
@@ -251,17 +256,20 @@
     "safe CI artifact summaries for PR #28 failing run",
     "local pnpm test",
     "npm test",
-    "GitHub required checks on the new PR head"
+    "GitHub required checks on the new PR head",
+    "AGENTS.md",
+    "docs/process/CODEX_KNOWLEDGE_MAP.json"
   ],
   "riskSurface": [
-    "test timeout only",
+    "test timeout repair",
+    "minimal harness-context marker evidence alignment",
     "no product runtime code",
-    "no package or workflow change",
+    "no package/workflow/script change",
     "no PR #28 branch change"
   ],
   "oracle": "Allowed safe artifacts, local reproduction output, repository checks, evidence placeholder checker, quality self-protection, secret scan, and no-scraping scan.",
   "splitRequired": "no - single targeted pnpm test failure repair.",
-  "bestOfNEvidence": "Best of N used or skipped: skipped with reason - safe artifact identified a single pnpm test failure class and local reproduction isolated one targeted 90 second timeout fix.",
-  "reviewIndependence": "Writer evidence is the safe artifact triage and local test reproduction. Reviewer checklist: present in .codex/review-independence.json and PR body; independent checklist verifies no raw GitHub log access, no PR #28 reuse, no test weakening, and no prohibited scope.",
+  "bestOfNEvidence": "Best of N used or skipped: skipped with reason - safe artifact identified a single pnpm test failure class and local reproduction isolated one targeted 180 second timeout fix.",
+  "reviewIndependence": "Writer evidence is the safe artifact triage, local timeout reproduction, targeted timeout fix, and minimal harness-context marker alignment. Reviewer checklist is present in .codex/review-independence.json and PR body; independent checklist verifies no unsafe GitHub log access, no PR #28 reuse, no test weakening, and no prohibited scope.",
   "testsSkipped": 6
 }

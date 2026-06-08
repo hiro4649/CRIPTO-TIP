@@ -1,9 +1,9 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.9",
-  "harnessVersion": "1.0.9",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "pending_after_pr_creation",
-  "headSha": "1788c44890f941bf6c6a7531b7fef9a7243cda20",
+  "prNumber": "29",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
   "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
   "schemaVersion": "1.0",
   "testFiles": 21,
@@ -15,12 +15,14 @@
   ],
   "riskCoverage": [
     "changed area: apps/api/src/evidence-rendering.test.ts timeout for quality self-protection script test",
+    "changed area: docs/process/CODEX_KNOWLEDGE_MAP.json marker alignment only",
     "test command: corepack pnpm test and npm test",
     "what the test covers: quality-gate self-protection script still runs and returns passed",
     "edge cases: no skip/only/expectation weakening; timeout only covers I/O-heavy script execution under full Vitest concurrency"
   ],
   "uncoveredRisks": [
-    "GitHub checks must pass on new PR head."
+    "GitHub checks must pass on new PR head.",
+    "This PR does not complete broader v1.1.x rollout/source-registry/provider-apply work."
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
