@@ -73,3 +73,7 @@ Open this audit as a documentation/evidence PR only. Do not merge stale PR #26 o
 ## Prompt Eval Alignment Fix
 
 The audit PR adds the missing Testing and review heading to .github/pull_request_template.md so the existing prompt eval suite remains aligned with the PR evidence contract. This does not weaken quality-gate behavior.
+
+## Current-Head Evidence Repair
+
+The PR evidence pack and PR body were refreshed from the PR #33 current head after safe-artifact review showed stale pre-PR SHA values and an unsupported audit profile label. The PR body now uses the supported harness_workflow_r3 profile and includes the required Risk level, Files or scope, Validation commands, and Human confirmation needed sections.

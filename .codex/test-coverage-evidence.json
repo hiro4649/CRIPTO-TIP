@@ -2,16 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "to_be_assigned_after_pr_creation",
-  "headSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
+  "prNumber": "33",
+  "headSha": "4ebf10f30ad4455ab0234a993756c476a2d66d39",
   "baseSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
   "schemaVersion": "1.0",
   "testFiles": 21,
   "testsPassed": 207,
   "testsSkipped": 6,
   "commands": [
-    "corepack pnpm test",
-    "npm test"
+    "corepack pnpm test: pass",
+    "npm test: pass"
   ],
   "riskCoverage": [
     "changed area: audit docs and machine-readable evidence",

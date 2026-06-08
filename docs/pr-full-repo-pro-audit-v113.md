@@ -2,14 +2,45 @@
 
 Full repository Pro audit under harness v1.1.3 after PR #29 repair, with no product runtime changes unless Critical or High safety fix is required.
 
-PR profile: audit_r2
-Task mode: release-gate
+PR profile: harness_workflow_r3
+Task mode: release_gate
+
+## Goal
+
+Full repository Pro audit under harness v1.1.3 after PR #29 repair, with no product runtime changes unless Critical or High safety fix is required.
+
+## Risk level
+
+R3 - harness evidence, PR evidence, and prompt-eval template surfaces are touched; product runtime code is intentionally out of scope.
+
+## Files or scope
+
+Docs, `.codex` evidence, and `.github/pull_request_template.md` evidence heading alignment only.
+
+## Validation commands
+
+- `corepack pnpm install`: pass
+- `corepack pnpm lint`: pass
+- `corepack pnpm typecheck`: pass
+- `corepack pnpm test`: pass
+- `npm test`: pass
+- `corepack pnpm evidence:ci`: pass
+- `corepack pnpm quality:self-protection`: pass
+- `node scripts/write-test-summary.mjs`: pass
+- `node scripts/check-evidence-placeholders.mjs`: pass
+- `node scripts/validate-evidence-freshness.mjs`: pass
+- `node scripts/check-quality-gate-self-protection.mjs`: pass
+- `node scripts/codex-secret-safety-scan.mjs`: pass
+
+## Human confirmation needed
+
+yes - project-owner review is required before merge because this is an R3 harness evidence audit PR.
 
 ## Task Contract
 
 Goal: Full repository Pro audit under harness v1.1.3 after PR #29 repair, with no product runtime changes unless Critical or High safety fix is required.
 
-Allowed scope: full_repo_audit, safe_summary_audit_report, harness_context_marker_audit, quality_gate_evidence, test_coverage_evidence, risk_register, docs, .codex evidence, small safety fixes if Critical or High.
+Allowed scope: full_repo_audit, safe_summary_audit_report, harness_context_marker_audit, quality_gate_evidence, test_coverage_evidence, risk_register, docs, .codex evidence, small safety fixes if Critical or High, PR_template_prompt_eval_alignment, current_head_evidence_refresh, harness_workflow_r3_profile_alignment.
 
 Forbidden scope: token sale, token exchange, cash-out, custody, internal balance, investment wording, speculative reward, YouTube scraping, wallet/RPC/deploy change, runtime readiness claim, production readiness claim, legal compliance claim, YouTube policy compliance claim, real production secret commit, manual gate bypass, quality-gate weakening, unsafe GitHub log reading.
 
@@ -21,19 +52,19 @@ Done criteria: full audit report exists; Critical findings 0 unresolved; High fi
 
 ## Evidence Integrity
 
-Head SHA: f12b53d7766ff97f6c190b63b8948bdb1da35d66
+Head SHA: 4ebf10f30ad4455ab0234a993756c476a2d66d39
 
 Base SHA: f12b53d7766ff97f6c190b63b8948bdb1da35d66
 
-Product CI: to_be_verified_after_pr_creation
+Product CI: success
 
-Quality-gate: to_be_verified_after_pr_creation
+Quality-gate: failed_pending_evidence_refresh
 
-CI run: to_be_injected_after_pr_creation
+CI run: 27117735220
 
-Quality-gate run: to_be_injected_after_pr_creation
+Quality-gate run: 27117735219
 
-Quality-gate artifact: to_be_injected_after_pr_creation
+Quality-gate artifact: 7472335968
 
 Tests: 21 test files, 207 passed, 6 skipped
 
@@ -97,24 +128,6 @@ Review scope and verification:
 
 Current recorded test summary: 21 files, 207 passed, 6 skipped.
 
-Changed area: audit report, PR evidence, risk register, quality-gate evidence, test coverage evidence, production gates evidence, classification registry, and `.codex` evidence.
-
-What the test covers: repository-wide existing product and harness tests still pass while this audit changes only docs/evidence.
-
-Edge cases and failure paths: stale PRs are documented but not repaired or merged; historical docs are not treated as current merge-readiness evidence.
-
-## Review Independence
-
-Writer evidence: present - audit scans, PR metadata, local verification commands, and safe-summary report.
-
-Reviewer checklist: present - no raw GitHub logs, no PR #28 reuse, no product runtime changes, no manual gate behavior changes, no provider apply, no check weakening, no test weakening.
-
-Independent checklist: present - Critical/High findings are separated from Medium/Low recommendations and stale PR decisions remain owner-scoped.
-
-## Best of N Evidence
-
-Best of N used or skipped: skipped with reason - this is a bounded full-repo audit after PR #29, and no Critical/High defect requiring competing implementation choices was found.
-
 ## Security Boundaries
 
 - PR #28 remains closed without merge.
@@ -122,6 +135,7 @@ Best of N used or skipped: skipped with reason - this is a bounded full-repo aud
 - No unsafe GitHub logs were read.
 - No runtime, production, legal, or YouTube policy readiness claim is made.
 - No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.
+- PR template change only adds the Testing and review evidence heading required by the prompt eval suite.
 
 ## Residual risks
 

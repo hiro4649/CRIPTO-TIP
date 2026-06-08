@@ -2,7 +2,7 @@
   "schemaVersion": "1.0",
   "harnessVersion": "1.1.3",
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
-  "headSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
+  "headSha": "4ebf10f30ad4455ab0234a993756c476a2d66d39",
   "risks": [
     {
       "severity": "Medium",
@@ -33,5 +33,8 @@
       "mitigation": "Rely on GitHub contracts check unless local Foundry is installed."
     }
   ],
-  "safeSummaryOnly": true
+  "safeSummaryOnly": true,
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": "33",
+  "baseSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66"
 }

@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "to_be_assigned_after_pr_creation",
-  "headSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
+  "prNumber": "33",
+  "headSha": "4ebf10f30ad4455ab0234a993756c476a2d66d39",
   "baseSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "to_be_verified_after_pr_creation",
-  "latestAnalyzedRunId": "to_be_injected_after_pr_creation",
-  "latestAnalyzedArtifactId": "to_be_injected_after_pr_creation",
+  "qualityGateExpectedStatus": "pending_after_current_evidence_repair",
+  "latestAnalyzedRunId": "27117735219",
+  "latestAnalyzedArtifactId": "7472335968",
   "reasonCodeMappings": {
     "fullRepoAuditStatus": "pending_github_replay",
     "criticalFindings": "0_unresolved",
@@ -22,22 +22,35 @@
     "YouTube policy compliance claim",
     "PR #28 evidence reuse"
   ],
-  "qualityGateEvidenceStatus": "pending_github_replay",
+  "qualityGateEvidenceStatus": "current_failure_analyzed_and_repaired",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "to_be_verified_after_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "to_be_verified_after_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "to_be_verified_after_pr_creation",
+      "status": "failed_pending_replay_after_current_evidence_repair",
       "blocking": true
     }
+  ],
+  "qualityGateStatus": "failed_pending_evidence_refresh",
+  "qualityGateRunId": "27117735219",
+  "qualityGateArtifactId": "7472335968",
+  "safeArtifactOnly": true,
+  "rawLogsRead": false,
+  "reasonCodesAddressed": [
+    "product_verification_required",
+    "pr_profile_invalid",
+    "pr_profile_conflict",
+    "missing_required_method_sections",
+    "test_coverage_evidence_missing",
+    "stale_evidence"
   ]
 }
