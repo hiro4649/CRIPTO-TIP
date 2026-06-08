@@ -138,3 +138,28 @@ migration secret default values.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
+
+## Review Independence
+
+Writer evidence is limited to implementation notes, tests, docs, migration
+design, and `.codex` evidence. Reviewer evidence is a separate recommendation
+surface and must not be recorded as human approval. AI reviewer output may give
+a merge recommendation only after current-head checks pass.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Candidate A: implement DB-backed repositories and apply migration execution now.
+
+Candidate B: harden the persistent boundary with in-memory repository parity,
+safe audit record validation, migration constraints, tests, docs, and evidence.
+
+Candidate C: implement real provider SDK apply and production deployment
+execution.
+
+Selected candidate: Candidate B.
+
+Reason selected: Candidate B fixes the PR #35 audit-storage safety gaps while avoiding
+real provider SDK apply, actual production deployment apply, secret manager real
+SDK integration, wallet/RPC/deploy changes, and live YouTube operation.
