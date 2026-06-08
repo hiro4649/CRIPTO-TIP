@@ -34,6 +34,13 @@
       "owner": "engineering",
       "nextPr": "tooling setup if local contract verification is required",
       "mitigation": "Rely on GitHub contracts check unless local Foundry is installed."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Provider apply and manual gate used marking are not yet one persistent transaction",
+      "owner": "Operations",
+      "nextPr": "Provider apply job state machine PR",
+      "mitigation": "The current boundary rejects success if markUsed fails, but durable compensation and audit state are still required for external-provider side effects."
     }
   ],
   "safeSummaryOnly": true

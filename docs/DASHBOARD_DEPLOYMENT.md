@@ -16,6 +16,7 @@ The dashboard deployment boundary creates provider-neutral deployment plans from
 - Production-like apply requires an approved `dashboard_apply` gate and the `ManualGateRegistry` containing that gate. `manualApproval: true` alone is not sufficient.
 - Missing provider credential secret names fail closed.
 - Rollback plans are generated as operator steps and do not call a provider directly.
+- Provider raw results are not returned directly. The wrapper returns only `status`, `dryRun`, `panelCount`, and `alertCount`; extra fields are stripped and invalid counts are rejected.
 
 ## Alert Routing Stub
 

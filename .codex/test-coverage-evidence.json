@@ -7,7 +7,7 @@
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
   "testFiles": 22,
-  "testsPassed": 212,
+  "testsPassed": 225,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm test: pass",
@@ -18,7 +18,10 @@
     "manual gate registry requirement",
     "safe apply summaries",
     "dashboard apply integration",
-    "external alert apply integration"
+    "external alert apply integration",
+    "dashboard and external alert raw provider result projection",
+    "invalid provider count rejection",
+    "markUsed failure after provider apply rejection"
   ],
   "uncoveredRisks": [
     "Real provider SDK apply remains future work.",
@@ -27,7 +30,7 @@
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "tests": 212,
-  "passed": 212,
+  "tests": 225,
+  "passed": 225,
   "skipped": 6
 }

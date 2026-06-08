@@ -105,7 +105,7 @@ export async function deliverExternalAlerts(args: {
   await executeProviderDeploymentApply({
     provider: {
       apply: async (_plan, options): Promise<ProviderDeploymentApplyResult> => {
-        result = await args.provider.deliver(args.plan, options);
+        result = sanitizeAlertDeliveryResult(await args.provider.deliver(args.plan, options));
         return {
           status: result.status === "delivered" ? "applied" : "planned",
           dryRun: result.dryRun,
@@ -140,6 +140,16 @@ export async function deliverExternalAlerts(args: {
   });
   if (!result) throw new Error("alert provider did not return a result");
   return result;
+}
+
+export function sanitizeAlertDeliveryResult(result: AlertDeliveryResult): AlertDeliveryResult {
+  if (result.status !== "planned" && result.status !== "delivered") throw new Error("alert delivery status is invalid");
+  if (typeof result.dryRun !== "boolean") throw new Error("alert delivery dryRun is invalid");
+  return {
+    status: result.status,
+    dryRun: result.dryRun,
+    deliveredCount: assertNonNegativeInteger(result.deliveredCount, "alert deliveredCount")
+  };
 }
 
 export function buildAlertDeliveryRollbackPlan(plan: AlertDeliveryPlan) {
@@ -198,4 +208,11 @@ function sanitizeAlertLabelValue(value: unknown) {
     .replace(/https?:\/\/\S+/gi, "[redacted-url]")
     .replace(/\b(oauth|api_key|secret|token|private)\b/gi, "[redacted]")
     .slice(0, 120);
+}
+
+function assertNonNegativeInteger(value: number, label: string) {
+  if (!Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative integer`);
+  }
+  return value;
 }

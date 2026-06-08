@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { InMemoryManualGateRegistry } from "./manual-gates.js";
+import { InMemoryManualGateRegistry, type ManualGateRegistry } from "./manual-gates.js";
 import { makeManualGate, targetCommitSha } from "./manual-gates.test-support.js";
 import {
   MockProviderDeploymentApply,
@@ -85,6 +85,46 @@ describe("provider-safe deployment apply boundary", () => {
       targetCommitSha,
       targetEnvironment: "production"
     })).rejects.toThrow(/provider unavailable/);
+    expect(registry.getGate("provider_specific_deployment_apply-gate-1")?.status).toBe("approved");
+  });
+
+  it("rejects when markUsed fails after provider apply", async () => {
+    const registry = new InMemoryManualGateRegistry();
+    registry.createRequestedGate(makeManualGate("provider_specific_deployment_apply"));
+    const gate = registry.approveGate("provider_specific_deployment_apply-gate-1", "project-owner", "2026-06-05T01:00:00.000Z");
+    let providerCalled = false;
+    const provider = {
+      apply: async () => {
+        providerCalled = true;
+        return {
+          status: "applied" as const,
+          dryRun: false,
+          operation: "provider_specific_deployment_apply" as const,
+          target: plan.target,
+          rollbackPlanRef: plan.rollbackPlanRef,
+          operatorRunbookRef: plan.operatorRunbookRef,
+          safeSummary: plan.safeSummary
+        };
+      }
+    };
+    const throwingRegistry: ManualGateRegistry = {
+      createRequestedGate: registry.createRequestedGate.bind(registry),
+      approveGate: registry.approveGate.bind(registry),
+      getGate: registry.getGate.bind(registry),
+      markUsed: () => {
+        throw new Error("mark used unavailable");
+      }
+    };
+    await expect(executeProviderDeploymentApply({
+      provider,
+      plan: { ...plan, dryRun: false },
+      productionLike: true,
+      manualGateRegistry: throwingRegistry,
+      manualGate: gate,
+      targetCommitSha,
+      targetEnvironment: "production"
+    })).rejects.toThrow(/mark used unavailable/);
+    expect(providerCalled).toBe(true);
     expect(registry.getGate("provider_specific_deployment_apply-gate-1")?.status).toBe("approved");
   });
 

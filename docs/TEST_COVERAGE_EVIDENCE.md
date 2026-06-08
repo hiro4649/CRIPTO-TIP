@@ -256,4 +256,6 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 
 - Added `apps/api/src/provider-deployment.test.ts` for provider deployment dry-run, approved manual gate enforcement, registry requirement, manualApproval-only rejection, wrong gate type, wrong commit, wrong environment, expired gate, used gate, successful mark-used, failed-provider no mark-used, safe result summaries, rollback evidence, and runbook reference coverage.
 - Existing dashboard deployment and external alert delivery tests continue to cover their provider wrappers while routing apply through the shared provider-safe boundary.
+- Added dashboard/external alert wrapper hardening coverage for extra provider fields being stripped and invalid count values being rejected.
+- Added provider deployment coverage that `markUsed` failure after provider apply rejects the operation and does not return success.
 - Real provider SDK apply, persistent manual gate storage, and actual production deployment remain intentionally out of scope.

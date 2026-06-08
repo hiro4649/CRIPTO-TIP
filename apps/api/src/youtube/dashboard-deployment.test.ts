@@ -152,6 +152,53 @@ describe("dashboard exporter deployment boundary", () => {
     expect(inner.deployments).toHaveLength(1);
   });
 
+  it.each([
+    ["webhookUrl", "https://private.example.test/hook"],
+    ["credentialRef", "projects/example/secrets/dashboard-provider"],
+    ["walletAddress", `0x${"1".repeat(40)}`],
+    ["rawMessage", "viewer raw message"]
+  ])("strips dashboard provider result extra %s", async (field, value) => {
+    const plan = buildDashboardDeploymentPlan({ credentials });
+    const provider = {
+      deploy: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        panelCount: plan.panels.length,
+        alertCount: plan.alerts.length,
+        [field]: value
+      })
+    };
+    const result = await deployDashboard({ provider, plan });
+    expect(Object.keys(result).sort()).toEqual(["alertCount", "dryRun", "panelCount", "status"]);
+    expect(JSON.stringify(result)).not.toContain(String(value));
+  });
+
+  it("rejects dashboard provider result with non-finite panelCount", async () => {
+    const plan = buildDashboardDeploymentPlan({ credentials });
+    const provider = {
+      deploy: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        panelCount: Number.POSITIVE_INFINITY,
+        alertCount: plan.alerts.length
+      })
+    };
+    await expect(deployDashboard({ provider, plan })).rejects.toThrow(/panelCount/);
+  });
+
+  it("rejects dashboard provider result with negative alertCount", async () => {
+    const plan = buildDashboardDeploymentPlan({ credentials });
+    const provider = {
+      deploy: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        panelCount: plan.panels.length,
+        alertCount: -1
+      })
+    };
+    await expect(deployDashboard({ provider, plan })).rejects.toThrow(/alertCount/);
+  });
+
   it("maps provider errors to operator actions", () => {
     expect(mapDashboardProviderErrorToOperatorAction(new Error("credential missing"))).toBe("verify_dashboard_provider_credentials");
     expect(mapDashboardProviderErrorToOperatorAction(new Error("manual approval is required"))).toBe("obtain_manual_deployment_approval");

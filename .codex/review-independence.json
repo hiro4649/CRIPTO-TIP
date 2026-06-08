@@ -29,7 +29,11 @@
     "safe summary excludes secrets/private URLs/wallet/raw user data",
     "no real provider SDK apply",
     "no production deployment apply",
-    "no check or test weakening"
+    "no check or test weakening",
+    "dashboard provider raw result extra fields are stripped",
+    "external alert provider raw result extra fields are stripped",
+    "invalid provider result counts are rejected",
+    "markUsed failure after provider apply rejects the operation"
   ],
   "sameSummaryOnly": false,
   "reviewedItemsAbstract": false,

@@ -15,7 +15,11 @@
     "manual_approval_boolean_alone_rejected": "pass",
     "safe_apply_summary": "pass",
     "real_provider_apply": "not_implemented",
-    "production_deployment_apply": "not_executed"
+    "production_deployment_apply": "not_executed",
+    "dashboard_provider_raw_result_projection": "pass",
+    "external_alert_provider_raw_result_projection": "pass",
+    "invalid_provider_result_counts_rejected": "pass",
+    "mark_used_failure_after_apply_rejected": "pass"
   },
   "evidence": [
     "apps/api/src/provider-deployment.test.ts",

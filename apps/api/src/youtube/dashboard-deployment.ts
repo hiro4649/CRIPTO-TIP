@@ -100,7 +100,7 @@ export async function deployDashboard(args: {
   await executeProviderDeploymentApply({
     provider: {
       apply: async (_plan, options): Promise<ProviderDeploymentApplyResult> => {
-        result = await args.provider.deploy(args.plan, options);
+        result = sanitizeDashboardDeploymentResult(await args.provider.deploy(args.plan, options));
         return {
           status: result.status,
           dryRun: result.dryRun,
@@ -139,6 +139,17 @@ export async function deployDashboard(args: {
   return result;
 }
 
+export function sanitizeDashboardDeploymentResult(result: DashboardDeploymentResult): DashboardDeploymentResult {
+  if (result.status !== "planned" && result.status !== "applied") throw new Error("dashboard deployment status is invalid");
+  if (typeof result.dryRun !== "boolean") throw new Error("dashboard deployment dryRun is invalid");
+  return {
+    status: result.status,
+    dryRun: result.dryRun,
+    panelCount: assertNonNegativeInteger(result.panelCount, "dashboard panelCount"),
+    alertCount: assertNonNegativeInteger(result.alertCount, "dashboard alertCount")
+  };
+}
+
 export function buildDashboardRollbackPlan(plan: DashboardDeploymentPlan) {
   return {
     status: "ready" as const,
@@ -167,4 +178,11 @@ export function mapDashboardProviderErrorToOperatorAction(error: unknown) {
   if (/credential|secret|auth/i.test(message)) return "verify_dashboard_provider_credentials";
   if (/manual approval/i.test(message)) return "obtain_manual_deployment_approval";
   return "inspect_dashboard_provider_error";
+}
+
+function assertNonNegativeInteger(value: number, label: string) {
+  if (!Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+    throw new Error(`${label} must be a non-negative integer`);
+  }
+  return value;
 }

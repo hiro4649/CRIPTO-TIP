@@ -217,6 +217,50 @@ describe("external alert delivery integration boundary", () => {
     await expect(deliverExternalAlerts({ provider, plan })).rejects.toThrow(/manual approval/);
   });
 
+  it.each([
+    ["webhookUrl", "https://private.example.test/hook"],
+    ["credentialRef", "projects/example/secrets/alert-provider"],
+    ["walletAddress", `0x${"1".repeat(40)}`],
+    ["rawMessage", "viewer raw message"]
+  ])("strips external alert provider result extra %s", async (field, value) => {
+    const plan = buildAlertDeliveryPlan({ credentials });
+    const provider = {
+      deliver: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        deliveredCount: plan.payloads.length,
+        [field]: value
+      })
+    };
+    const result = await deliverExternalAlerts({ provider, plan });
+    expect(Object.keys(result).sort()).toEqual(["deliveredCount", "dryRun", "status"]);
+    expect(JSON.stringify(result)).not.toContain(String(value));
+  });
+
+  it("rejects external alert provider result with non-finite deliveredCount", async () => {
+    const plan = buildAlertDeliveryPlan({ credentials });
+    const provider = {
+      deliver: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        deliveredCount: Number.NaN
+      })
+    };
+    await expect(deliverExternalAlerts({ provider, plan })).rejects.toThrow(/deliveredCount/);
+  });
+
+  it("rejects external alert provider result with negative deliveredCount", async () => {
+    const plan = buildAlertDeliveryPlan({ credentials });
+    const provider = {
+      deliver: async () => ({
+        status: "planned" as const,
+        dryRun: true,
+        deliveredCount: -1
+      })
+    };
+    await expect(deliverExternalAlerts({ provider, plan })).rejects.toThrow(/deliveredCount/);
+  });
+
   it("does not expose credential secret names in rollback plans", () => {
     const plan = buildAlertDeliveryPlan({ credentials, dryRun: false });
     const rollbackPlan = buildAlertDeliveryRollbackPlan(plan);

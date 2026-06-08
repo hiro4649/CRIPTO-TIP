@@ -12,6 +12,7 @@ Production-like alert delivery must use `secret_manager` or `provider_specific` 
 - Non-production apply requires `manualApproval: true`.
 - Production-like apply requires an approved `external_alert_apply` gate and the `ManualGateRegistry` containing that gate. `manualApproval: true` alone is not sufficient.
 - Provider-specific delivery uses an injected provider wrapper. Real SDK integration remains a separate deployment task if needed.
+- Provider raw results are not returned directly. The wrapper returns only `status`, `dryRun`, and `deliveredCount`; extra fields are stripped and invalid counts are rejected.
 
 ## Payload Safety
 

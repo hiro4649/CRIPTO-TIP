@@ -3,8 +3,8 @@
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": "to_be_assigned_after_pr_creation",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "headSha": "226acc1932d069d9d236948f05c38ee5de530d24",
+  "baseSha": "ee77272c638517c3ffdb0b789a277400ca806b95",
   "schemaVersion": "1.0.0",
   "prProfile": "harness_workflow_r3",
   "taskMode": "feature",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add provider safe deployment apply",
   "goal": "Add a provider-safe deployment/apply boundary behind approved manual gate records, with dry-run/apply separation, safe summaries, rollback evidence, and dashboard/external alert integration.",
-  "ciRunId": "to_be_injected_after_pr_creation",
-  "qualityGateRunId": "to_be_injected_after_pr_creation",
-  "qualityGateArtifactId": "to_be_injected_after_pr_creation",
-  "productCiStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
+  "ciRunId": "27122501289",
+  "qualityGateRunId": "27122688984",
+  "qualityGateArtifactId": "7473991880",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -110,7 +110,19 @@
       "result": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27122501289",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27122688984",
+      "result": "success",
+      "artifactId": "7473991880"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -174,13 +186,17 @@
     "dashboard and external alert apply route through shared boundary",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head"
+    "required checks pass on PR head",
+    "dashboard provider raw result extra fields are stripped",
+    "external alert provider raw result extra fields are stripped",
+    "invalid provider result counts are rejected",
+    "markUsed failure after provider apply rejects the operation"
   ],
   "testSummary": {
     "testFiles": 22,
-    "passed": 212,
+    "passed": 225,
     "skipped": 6,
-    "total": 218
+    "total": 231
   },
   "securityBoundaries": [
     "No real provider SDK apply is implemented.",
@@ -189,13 +205,17 @@
     "Manual approval boolean alone cannot authorize production-like apply.",
     "Apply results are safe summaries only and exclude secret values, private URLs, wallet addresses, raw messages, raw display names, API keys, OAuth tokens, and webhook URLs.",
     "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.",
-    "No unsafe GitHub logs are read."
+    "No unsafe GitHub logs are read.",
+    "Dashboard and external alert wrappers return exact safe projected results, not raw provider results.",
+    "Provider result extra fields are stripped and invalid counts are rejected.",
+    "Provider apply and manual gate used marking are not yet a persistent transaction."
   ],
   "residualRisks": [
     "Persistent manual gate storage remains future work.",
     "Real provider SDK apply remains future work behind approved manual gate records.",
     "Actual production deployment apply remains out of scope.",
-    "Local forge may be unavailable on this machine."
+    "Local forge may be unavailable on this machine.",
+    "Provider apply and manual gate used marking are not yet backed by one persistent transaction."
   ],
   "humanConfirmation": [
     "project-owner review before merge",
@@ -204,7 +224,7 @@
     "quality-gate status verified after PR checks",
     "remaining risks documented"
   ],
-  "testsPassed": 212,
+  "testsPassed": 225,
   "testsSkipped": 6,
   "testFiles": 22,
   "productVerificationCommands": [

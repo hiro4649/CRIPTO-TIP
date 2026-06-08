@@ -17,25 +17,25 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: provider deployment dry-run succeeds without manual gate; production-like apply requires approved manual gate and registry; manualApproval boolean alone cannot authorize production-like apply; successful production-like apply marks gate used; failed provider apply does not mark gate used; dry-run does not mark gate used; safe apply summary excludes secrets/private URLs/wallet/raw user data; dashboard and external alert apply route through shared boundary; no secret scan passes; no scraping scan passes; required checks pass on PR head.
+Done criteria: provider deployment dry-run succeeds without manual gate; production-like apply requires approved manual gate and registry; manualApproval boolean alone cannot authorize production-like apply; successful production-like apply marks gate used; failed provider apply does not mark gate used; dry-run does not mark gate used; safe apply summary excludes secrets/private URLs/wallet/raw user data; dashboard and external alert apply route through shared boundary; no secret scan passes; no scraping scan passes; required checks pass on PR head; dashboard provider raw result extra fields are stripped; external alert provider raw result extra fields are stripped; invalid provider result counts are rejected; markUsed failure after provider apply rejects the operation.
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 226acc1932d069d9d236948f05c38ee5de530d24
 
-Base SHA: current_pr_base
+Base SHA: ee77272c638517c3ffdb0b789a277400ca806b95
 
-Product CI: awaiting_github_actions_after_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_github_actions_after_pr_creation
+Quality-gate: success
 
-CI run: to_be_injected_after_pr_creation
+CI run: 27122501289
 
-Quality-gate run: to_be_injected_after_pr_creation
+Quality-gate run: 27122688984
 
-Quality-gate artifact: to_be_injected_after_pr_creation
+Quality-gate artifact: 7473991880
 
-Tests: 22 test files, 212 passed, 6 skipped
+Tests: 22 test files, 225 passed, 6 skipped
 
 ## Testing and review
 
@@ -95,7 +95,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 22 files, 212 passed, 6 skipped.
+Current recorded test summary: 22 files, 225 passed, 6 skipped.
 
 ## Security Boundaries
 
@@ -106,6 +106,9 @@ Current recorded test summary: 22 files, 212 passed, 6 skipped.
 - Apply results are safe summaries only and exclude secret values, private URLs, wallet addresses, raw messages, raw display names, API keys, OAuth tokens, and webhook URLs.
 - No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.
 - No unsafe GitHub logs are read.
+- Dashboard and external alert wrappers return exact safe projected results, not raw provider results.
+- Provider result extra fields are stripped and invalid counts are rejected.
+- Provider apply and manual gate used marking are not yet a persistent transaction.
 
 ## Residual risks
 
@@ -113,6 +116,7 @@ Current recorded test summary: 22 files, 212 passed, 6 skipped.
 - Real provider SDK apply remains future work behind approved manual gate records.
 - Actual production deployment apply remains out of scope.
 - Local forge may be unavailable on this machine.
+- Provider apply and manual gate used marking are not yet backed by one persistent transaction.
 
 ## Human Confirmation
 

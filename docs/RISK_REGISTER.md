@@ -84,6 +84,7 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 | Medium | Real provider SDK apply is still not executed by this repository. | Operations | Provider SDK selection PR | Keep the shared boundary provider-neutral and require an approved manual gate record before any production-like apply. |
 | Medium | Manual gate approvals are still in-memory in product tests. | Operations | Persistent manual gate storage PR | Safe summaries and tests enforce single-use behavior; production use still needs durable approval storage. |
 | Medium | Apply evidence could expose provider secrets if future adapters bypass the shared boundary. | Backend/Observability | Provider SDK selection PR | Safe result sanitization and docs require secret references only, plus no secret/private URL/wallet/raw user data in apply summaries. |
+| Medium | Provider apply and manual gate used marking are not yet one persistent transaction. | Operations | Provider apply job state machine PR | The current boundary rejects success if `markUsed` fails, but durable compensation/audit state is still required for external-provider side effects. |
 ## Rendered Risk Register Source
 
 Risk register entries can be rendered from `.codex/risk-register.json`. The JSON source is used to prevent drift between review evidence and documentation.

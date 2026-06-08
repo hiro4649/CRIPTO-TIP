@@ -12,7 +12,10 @@
   "reasonCodeMappings": {
     "providerSafeDeploymentStatus": "pass_pending_github_replay",
     "manualGateEnforcementStatus": "pass",
-    "safeSummaryStatus": "pass"
+    "safeSummaryStatus": "pass",
+    "wrapperResultProjectionStatus": "pass_pending_github_replay",
+    "invalidProviderCountStatus": "pass",
+    "markUsedFailureStatus": "pass"
   },
   "safePlaceholderInventory": [],
   "blockedClaims": [
