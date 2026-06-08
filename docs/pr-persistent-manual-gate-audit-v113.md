@@ -21,21 +21,21 @@ Done criteria: manual gate persistent repository creates requested and approved 
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 4743261f5649dc92d7ced39856b04f8c7ca99fe2
 
-Base SHA: current_pr_base
+Base SHA: 73e54a5df289a9b9bf04e1586a04a8224f5c890d
 
-Product CI: current_head_replay_required
+Product CI: success
 
-Quality-gate: current_head_replay_required
+Quality-gate: success
 
-CI run: current_head_replay_required
+CI run: 27128269803
 
-Quality-gate run: current_head_replay_required
+Quality-gate run: 27128616175
 
-Quality-gate artifact: current_head_replay_required
+Quality-gate artifact: 7476428258
 
-Tests: 24 test files, 243 passed, 6 skipped
+Tests: 24 test files, 254 passed, 6 skipped
 
 ## Testing and review
 
@@ -81,21 +81,21 @@ API Compatibility Summary:
 
 - Public API changed: no
 - Internal runtime API changed: yes
-- Compatibility statement: Adds an internal provider-safe deployment apply boundary and routes dashboard/external alert apply through it without changing external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery payloads.
+- Compatibility statement: Adds internal manual gate persistence and audit storage boundaries, provider deployment audit records, and migration design without changing external API, contract ABI, YouTube connector, Chain Listener, IRIS delivery payloads, or real provider SDK execution.
 
 Runtime smoke rationale:
 
-- No runtime readiness is claimed; this PR adds offline provider-safe apply boundaries and tests, not production deployment execution.
+- No runtime readiness is claimed; this PR adds offline persistent audit storage boundaries and migration design, not production deployment execution.
 
 Review scope and verification:
 
-- Scope: Provider-safe deployment apply boundary, manual gate enforcement, safe summaries, docs, and evidence.
-- Risk summary: Main risk is accidental production-like apply without approved gate evidence or leaking provider secrets in apply summaries.
+- Scope: Persistent manual gate repository, audit log repository, provider deployment audit records, migration design, docs, and evidence.
+- Risk summary: Main risk is accepting unsafe audit target/ref values, invalid manual gate transitions, duplicate audit IDs, or leaking provider secrets in safe summaries.
 - Verification oracle: Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks.
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 24 files, 243 passed, 6 skipped.
+Current recorded test summary: 24 files, 254 passed, 6 skipped.
 
 Changed area: manual gate persistent repository boundary, manual gate audit log
 boundary, provider deployment audit boundary, safe summary persistence, and
@@ -103,15 +103,18 @@ PostgreSQL migration design.
 
 Test command: `corepack pnpm test` and `npm test`.
 
-What the test covers: manual gate create/approve/use-once behavior, unsafe
-secret reference rejection, audit record rejection for wallet/private/token-like
-values, provider deployment planned/executed/failed/rollback audit records,
-safe job summary stripping, rollback/runbook reference persistence, and migration
-table/constraint coverage.
+What the test covers: manual gate create/approve/use-once behavior, invalid
+state transition rejection, duplicate ID rejection, unsafe secret reference
+rejection, audit record rejection for wallet/private/token-like values, provider
+deployment planned/executed/failed/rollback audit records, unsafe target and
+reference rejection, safe job summary stripping, rollback/runbook reference
+persistence, and migration table/constraint coverage.
 
-Edge cases: missing target commit, unsafe secret reference, double used gate,
-raw provider response fields, webhook URL fields, API-key-like fields, wallet
-address fields, and migration secret default values.
+Edge cases and failure paths: missing target commit, unsafe secret reference,
+double used gate, approve after used/rejected, mark used before approval, raw
+provider response fields, webhook URL fields, API-key-like fields, wallet
+address fields, duplicate audit/job IDs, unsafe provider target/ref values, and
+migration secret default values.
 
 ## Security Boundaries
 
@@ -124,30 +127,14 @@ address fields, and migration secret default values.
 
 ## Residual risks
 
-- Persistent transaction boundary remains future work.
-- Real provider SDK apply remains future work.
-- Actual production deployment apply remains out of scope.
-- Secret rotation audit remains future work.
-- Live YouTube operation remains manual-gated.
+- Persistent transaction boundary remains future work; not a merge blocker because this PR only adds repository interfaces, in-memory parity tests, and migration design without claiming DB-backed production execution.
+- Real provider SDK apply remains future work; not a merge blocker because no real provider SDK, credential, webhook, or provider call path is introduced.
+- Actual production deployment apply remains out of scope; not a merge blocker because production-like apply still requires approved manual gate evidence and a separate owner-controlled execution path.
+- Secret rotation audit remains future work; not a merge blocker because current records accept secret references only and do not persist secret values.
+- Live YouTube operation remains manual-gated; not a merge blocker because this PR does not change the YouTube connector or run live account operations.
 
 ## Human Confirmation
 
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
-
-## Review Independence
-
-Writer evidence is limited to implementation notes, tests, docs, migration design, and `.codex` evidence. Reviewer evidence is a separate recommendation surface and must not be recorded as human approval. AI reviewer output may give a merge recommendation only after current-head checks pass.
-
-## Best of N Evidence
-
-Candidate A: implement persistent DB migration and DB-backed repository now.
-
-Candidate B: implement interface, schema, in-memory repository, tests, docs, and safe evidence only.
-
-Candidate C: implement real provider apply and production deployment execution.
-
-Adopted: Candidate B.
-
-Reason: Candidate B advances audit storage readiness while avoiding real provider SDK apply, actual production deployment apply, secret manager real SDK integration, and live YouTube operation.

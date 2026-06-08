@@ -46,7 +46,38 @@ describe("persistent manual gate audit boundary", () => {
     repository.approveGate(requested.gate_id, "project-owner", createdAt);
     const used = repository.markUsed(requested.gate_id, "2026-06-08T00:01:00.000Z");
     expect(used.status).toBe("used");
+    expect(used.used_at).toBe("2026-06-08T00:01:00.000Z");
     expect(() => repository.markUsed(requested.gate_id, "2026-06-08T00:02:00.000Z")).toThrow(/already been used/);
+  });
+
+  it("rejects duplicate manual gate id", () => {
+    const repository = new InMemoryManualGatePersistentRepository();
+    const gate = makeManualGate("provider_specific_deployment_apply");
+    repository.createRequestedGate(gate);
+    expect(() => repository.createRequestedGate(gate)).toThrow(/already exists/);
+  });
+
+  it("rejects invalid manual gate state transitions", () => {
+    const repository = new InMemoryManualGatePersistentRepository();
+    const requested = repository.createRequestedGate(makeManualGate("provider_specific_deployment_apply"));
+    expect(() => repository.markUsed(requested.gate_id, "2026-06-08T00:01:00.000Z")).toThrow(/approved before use/);
+
+    const approved = repository.approveGate(requested.gate_id, "project-owner", createdAt);
+    repository.markUsed(approved.gate_id, "2026-06-08T00:02:00.000Z");
+    expect(() => repository.approveGate(approved.gate_id, "project-owner", createdAt)).toThrow(/cannot be approved/);
+  });
+
+  it("rejects approve after rejected or used and exposes used_at in listGates", () => {
+    const rejectedRepository = new InMemoryManualGatePersistentRepository();
+    const rejected = rejectedRepository.createRequestedGate(makeManualGate("provider_specific_deployment_apply", { status: "rejected" }));
+    (rejectedRepository as unknown as { gates: Map<string, typeof rejected> }).gates.set(rejected.gate_id, { ...rejected, status: "rejected" });
+    expect(() => rejectedRepository.approveGate(rejected.gate_id, "project-owner", createdAt)).toThrow(/cannot be approved/);
+
+    const repository = new InMemoryManualGatePersistentRepository();
+    const requested = repository.createRequestedGate(makeManualGate("provider_specific_deployment_apply"));
+    repository.approveGate(requested.gate_id, "project-owner", createdAt);
+    repository.markUsed(requested.gate_id, "2026-06-08T00:03:00.000Z");
+    expect(repository.listGates()[0]?.used_at).toBe("2026-06-08T00:03:00.000Z");
   });
 
   it("stores manual gate audit records without secret_source_ref values", () => {
@@ -55,6 +86,12 @@ describe("persistent manual gate audit boundary", () => {
     expect(stored.action).toBe("manual_gate.approved");
     expect(JSON.stringify(stored)).not.toContain("projects/example/secrets/provider-ref");
     expect(JSON.stringify(stored)).not.toMatch(/secret_source_ref|Bearer|https?:\/\//i);
+  });
+
+  it("rejects duplicate manual gate audit id", () => {
+    const repository = new InMemoryAuditLogRepository();
+    repository.appendManualGateAudit(auditRecord());
+    expect(() => repository.appendManualGateAudit(auditRecord())).toThrow(/already exists/);
   });
 
   it.each([
@@ -70,6 +107,10 @@ describe("persistent manual gate audit boundary", () => {
     expect(migration).toContain("CREATE TABLE IF NOT EXISTS manual_gates");
     expect(migration).toContain("CREATE TABLE IF NOT EXISTS manual_gate_audit_logs");
     expect(migration).toContain("CHECK (status IN ('not_requested', 'requested', 'approved', 'rejected', 'expired', 'used'))");
+    expect(migration).toContain("approved_by_role = 'project-owner'");
+    expect(migration).toContain("approval_timestamp IS NOT NULL");
+    expect(migration).toContain("jsonb_typeof(safe_summary) = 'object'");
+    expect(migration).toContain("secret_source_ref <> ''");
     expect(migration).not.toMatch(new RegExp("DEFAULT\\\\s+'.*(SECRET|PRIVATE|TOKEN|API_KEY|Bearer|https?://)", "i"));
   });
 });

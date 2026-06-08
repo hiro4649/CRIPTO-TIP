@@ -24,18 +24,27 @@ export class InMemoryAuditLogRepository implements AuditLogRepository {
   private readonly providerDeploymentJobs: ProviderDeploymentJob[] = [];
 
   appendManualGateAudit(record: ManualGateAuditRecord) {
+    if (this.manualGateAudits.some((stored) => stored.id === record.id)) {
+      throw new Error("manual gate audit id already exists");
+    }
     const safeRecord = createManualGateAuditRecord(record);
     this.manualGateAudits.push(safeRecord);
     return safeRecord;
   }
 
   appendProviderDeploymentAudit(record: ProviderDeploymentAuditRecord) {
+    if (this.providerDeploymentAudits.some((stored) => stored.id === record.id)) {
+      throw new Error("provider deployment audit id already exists");
+    }
     const safeRecord = createProviderDeploymentAuditRecord(record);
     this.providerDeploymentAudits.push(safeRecord);
     return safeRecord;
   }
 
   recordProviderDeploymentJob(job: ProviderDeploymentJob) {
+    if (this.providerDeploymentJobs.some((stored) => stored.id === job.id)) {
+      throw new Error("provider deployment job id already exists");
+    }
     const safeJob = createProviderDeploymentJob(job);
     this.providerDeploymentJobs.push(safeJob);
     return safeJob;

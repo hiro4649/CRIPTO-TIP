@@ -23,6 +23,16 @@ OAuth tokens, API keys, private URLs, wallet addresses, raw messages, raw displa
 names, raw YouTube author IDs, raw payloads, raw provider responses, raw logs,
 stdout, stderr, or stack traces.
 
+`target`, `manual_gate_id`, `rollback_plan_ref`, `operator_runbook_ref`,
+`target_environment`, `target_commit_sha`, and `safe_summary` are all part of
+the safe audit boundary. Unsafe target or reference fields are rejected instead
+of silently stored. Safe-summary fields are reduced to primitive safe values and
+unsafe keys or values are not treated as durable evidence.
+
+The in-memory audit repository mirrors the SQL primary-key boundary: duplicate
+manual gate audit IDs, provider deployment audit IDs, and provider deployment
+job IDs fail closed.
+
 ## Apply Semantics
 
 Provider raw results are not persisted. PR #34 introduced projected safe result

@@ -16,22 +16,24 @@ CREATE TABLE IF NOT EXISTS manual_gates (
     'overlay_token_rotation_apply'
   )),
   status text NOT NULL CHECK (status IN ('not_requested', 'requested', 'approved', 'rejected', 'expired', 'used')),
-  required_before text NOT NULL,
-  target_environment text NOT NULL,
+  required_before text NOT NULL CHECK (required_before <> ''),
+  target_environment text NOT NULL CHECK (target_environment <> ''),
   target_commit_sha text NOT NULL CHECK (target_commit_sha ~ '^[0-9a-fA-F]{40}$'),
   requested_by text NOT NULL,
   approved_by_role text,
   approval_timestamp timestamptz,
-  required_evidence jsonb NOT NULL,
-  rollback_plan_ref text NOT NULL,
-  operator_runbook_ref text NOT NULL,
+  required_evidence jsonb NOT NULL CHECK (jsonb_typeof(required_evidence) = 'array'),
+  rollback_plan_ref text NOT NULL CHECK (rollback_plan_ref <> ''),
+  operator_runbook_ref text NOT NULL CHECK (operator_runbook_ref <> ''),
   secret_source_ref text NOT NULL CHECK (
+    secret_source_ref <> '' AND
     secret_source_ref !~ '(Bearer\\s+|https?://|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40})'
   ),
   expires_at timestamptz NOT NULL,
   used_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
+  CHECK ((status = 'approved' AND approved_by_role = 'project-owner' AND approval_timestamp IS NOT NULL) OR status <> 'approved'),
   CHECK ((status = 'used' AND used_at IS NOT NULL) OR (status <> 'used' AND used_at IS NULL))
 );
 
@@ -51,9 +53,9 @@ CREATE TABLE IF NOT EXISTS manual_gate_audit_logs (
   )),
   actor_type text NOT NULL CHECK (actor_type IN ('operator', 'system', 'codex')),
   actor_id text,
-  target_environment text NOT NULL,
+  target_environment text NOT NULL CHECK (target_environment <> ''),
   target_commit_sha text NOT NULL CHECK (target_commit_sha ~ '^[0-9a-fA-F]{40}$'),
-  safe_summary jsonb NOT NULL,
+  safe_summary jsonb NOT NULL CHECK (jsonb_typeof(safe_summary) = 'object'),
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
@@ -71,12 +73,12 @@ CREATE TABLE IF NOT EXISTS provider_deployment_jobs (
   )),
   status text NOT NULL CHECK (status IN ('planned', 'running', 'applied', 'failed', 'rolled_back', 'cancelled')),
   target text NOT NULL,
-  target_environment text NOT NULL,
+  target_environment text NOT NULL CHECK (target_environment <> ''),
   target_commit_sha text NOT NULL CHECK (target_commit_sha ~ '^[0-9a-fA-F]{40}$'),
   manual_gate_id text REFERENCES manual_gates(id),
-  rollback_plan_ref text NOT NULL,
-  operator_runbook_ref text NOT NULL,
-  safe_summary jsonb NOT NULL,
+  rollback_plan_ref text NOT NULL CHECK (rollback_plan_ref <> ''),
+  operator_runbook_ref text NOT NULL CHECK (operator_runbook_ref <> ''),
+  safe_summary jsonb NOT NULL CHECK (jsonb_typeof(safe_summary) = 'object'),
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
@@ -92,7 +94,7 @@ CREATE TABLE IF NOT EXISTS provider_deployment_audit_logs (
     'provider_deployment.rollback.planned',
     'provider_deployment.rollback.executed'
   )),
-  target text NOT NULL,
-  safe_summary jsonb NOT NULL,
+  target text NOT NULL CHECK (target <> ''),
+  safe_summary jsonb NOT NULL CHECK (jsonb_typeof(safe_summary) = 'object'),
   created_at timestamptz NOT NULL DEFAULT now()
 );

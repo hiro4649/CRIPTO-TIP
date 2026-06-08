@@ -80,6 +80,28 @@ describe("provider deployment audit boundary", () => {
     expect(() => createProviderDeploymentAuditRecord(audit({ safe_summary }))).toThrow(/unsafe|safe_summary/);
   });
 
+  it.each([
+    ["private URL target", { target: "https://private.example.test/deploy" }],
+    ["wallet address target", { target: `0x${"4".repeat(40)}` }],
+    ["private URL rollback_plan_ref", { rollback_plan_ref: "https://private.example.test/rollback" }],
+    ["private URL operator_runbook_ref", { operator_runbook_ref: "https://private.example.test/runbook" }],
+    ["token-like manual_gate_id", { manual_gate_id: "sk-provider-gate" }]
+  ])("rejects unsafe provider deployment job %s", (_label, overrides) => {
+    expect(() => createProviderDeploymentJob(job(overrides))).toThrow(/unsafe value/);
+  });
+
+  it("rejects unsafe provider deployment audit target", () => {
+    expect(() => createProviderDeploymentAuditRecord(audit({ target: "https://private.example.test/deploy" }))).toThrow(/target contains unsafe value/);
+  });
+
+  it("rejects duplicate provider deployment audit and job ids", () => {
+    const repository = new InMemoryAuditLogRepository();
+    repository.appendProviderDeploymentAudit(audit());
+    expect(() => repository.appendProviderDeploymentAudit(audit())).toThrow(/already exists/);
+    repository.recordProviderDeploymentJob(job());
+    expect(() => repository.recordProviderDeploymentJob(job())).toThrow(/already exists/);
+  });
+
   it("records rollback and runbook references without credential values", () => {
     const repository = new InMemoryAuditLogRepository();
     const stored = repository.recordProviderDeploymentJob(job());
@@ -105,6 +127,9 @@ describe("provider deployment audit boundary", () => {
     expect(migration).toContain("CREATE TABLE IF NOT EXISTS provider_deployment_jobs");
     expect(migration).toContain("CREATE TABLE IF NOT EXISTS provider_deployment_audit_logs");
     expect(migration).toContain("CHECK (status IN ('planned', 'running', 'applied', 'failed', 'rolled_back', 'cancelled'))");
+    expect(migration).toContain("rollback_plan_ref <> ''");
+    expect(migration).toContain("operator_runbook_ref <> ''");
+    expect(migration).toContain("jsonb_typeof(safe_summary) = 'object'");
     expect(migration).not.toMatch(new RegExp("DEFAULT\\\\s+'.*(SECRET|PRIVATE|TOKEN|API_KEY|Bearer|https?://)", "i"));
   });
 

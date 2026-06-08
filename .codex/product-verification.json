@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "to_be_assigned_after_pr_creation",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 35,
+  "headSha": "4743261f5649dc92d7ced39856b04f8c7ca99fe2",
+  "baseSha": "73e54a5df289a9b9bf04e1586a04a8224f5c890d",
   "productVerificationStatus": "pass",
   "commands": [
     "corepack pnpm install: pass",
@@ -27,5 +27,17 @@
     "youtubePolicyCompliance": false,
     "realProviderApply": false,
     "actualProductionApply": false
+  },
+  "status": "pass",
+  "behavior": {
+    "manual_gate_persistent_repository": "verified",
+    "manual_gate_audit_log_boundary": "verified",
+    "provider_deployment_audit_boundary": "verified",
+    "safe_summary_persistence": "verified",
+    "postgres_migration_design": "verified",
+    "real_provider_apply": "not_implemented",
+    "actual_production_apply": "not_executed",
+    "runtime_readiness": "not_claimed",
+    "production_readiness": "not_claimed"
   }
 }

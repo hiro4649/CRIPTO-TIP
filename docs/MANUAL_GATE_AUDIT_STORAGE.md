@@ -19,6 +19,12 @@ record for the target environment and target commit SHA.
 Used gates are not reusable. The migration design records `used_at` only when
 the status is `used`.
 
+The persistent repository boundary rejects duplicate `gate_id` values and
+closes invalid state transitions. A gate can be approved only from
+`requested` or `not_requested`, and it can be marked `used` only after it is
+approved. `used`, `rejected`, and `expired` gates cannot be re-approved.
+`used_at` is returned with stored and listed persistent records after use.
+
 ## Secret Boundary
 
 `secret_source_ref` may contain a safe reference name only. It must not contain
@@ -27,6 +33,12 @@ URLs, raw messages, raw display names, raw YouTube author IDs, raw payloads, raw
 provider responses, raw logs, stdout, stderr, or stack traces.
 
 Audit records omit `secret_source_ref` and store only safe summaries.
+
+The migration design also requires approved gates to carry
+`approved_by_role = 'project-owner'` and an approval timestamp. It requires
+JSON safe-summary columns to be JSON objects. These checks are design-time
+guards for future DB-backed persistence and do not claim production database
+rollout in this PR.
 
 ## Current Limit
 
