@@ -5,192 +5,8 @@
   "prNumber": "to_be_assigned_after_pr_creation",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
-  "schemaVersion": "1.0",
-  "classificationStatus": "complete",
-  "unknownFiles": 0,
-  "unknownCount": 0,
-  "classificationCoverageStatus": "pass",
-  "changeClassificationStatus": "pass",
-  "productRelevantChanged": true,
-  "packageOrLockfileChanged": false,
-  "runtimeReadinessClaimed": false,
-  "pathPatterns": [
-    {
-      "pathPattern": ".codex/change-classification.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/evidence-pack.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/product-verification.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/quality-gate-evidence.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/review-independence.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/risk-register.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/task-contract.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/test-coverage-evidence.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": ".codex/test-summary.json",
-      "classification": "verification_relevant",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "apps/api/src/provider-deployment.ts",
-      "classification": "product_source",
-      "riskLevel": "R3",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "apps/api/src/provider-deployment.test.ts",
-      "classification": "product_source",
-      "riskLevel": "R3",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "apps/api/src/youtube/dashboard-deployment.ts",
-      "classification": "product_source",
-      "riskLevel": "R3",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "apps/api/src/youtube/alert-delivery.ts",
-      "classification": "product_source",
-      "riskLevel": "R3",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/PROVIDER_SAFE_DEPLOYMENT.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/MANUAL_GATES.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/DASHBOARD_DEPLOYMENT.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/ALERT_DELIVERY.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/RUNBOOK.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/PRODUCTION_GATES.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/RISK_REGISTER.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/PRODUCT_VERIFICATION.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/QUALITY_GATE_EVIDENCE.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/pr-provider-safe-deployment-apply-v113.md",
-      "classification": "docs",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    },
-    {
-      "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "classification": "harness_managed",
-      "riskLevel": "R2",
-      "verification": "provider safe deployment apply evidence",
-      "scope": "provider_safe_deployment_apply"
-    }
-  ],
+  "classification": "product_relevant",
+  "riskLevel": "R3",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/evidence-pack.json",
@@ -201,24 +17,28 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/provider-deployment.ts",
-    "apps/api/src/provider-deployment.test.ts",
-    "apps/api/src/youtube/dashboard-deployment.ts",
-    "apps/api/src/youtube/alert-delivery.ts",
-    "docs/PROVIDER_SAFE_DEPLOYMENT.md",
+    "apps/api/src/manual-gate-audit.ts",
+    "apps/api/src/manual-gate-audit.test.ts",
+    "apps/api/src/provider-deployment-audit.ts",
+    "apps/api/src/provider-deployment-audit.test.ts",
+    "apps/api/src/repositories/manual-gate-repository.ts",
+    "apps/api/src/repositories/audit-log-repository.ts",
+    "migrations/0003_manual_gate_audit.sql",
+    "docs/MANUAL_GATE_AUDIT_STORAGE.md",
+    "docs/PROVIDER_DEPLOYMENT_AUDIT.md",
     "docs/MANUAL_GATES.md",
+    "docs/PROVIDER_SAFE_DEPLOYMENT.md",
     "docs/DASHBOARD_DEPLOYMENT.md",
     "docs/ALERT_DELIVERY.md",
     "docs/RUNBOOK.md",
-    "docs/PRODUCTION_GATES.md",
     "docs/RISK_REGISTER.md",
+    "docs/PRODUCTION_GATES.md",
     "docs/PRODUCT_VERIFICATION.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
-    "docs/pr-provider-safe-deployment-apply-v113.md",
+    "docs/pr-persistent-manual-gate-audit-v113.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
   ],
-  "changeType": "product_relevant",
-  "riskLevel": "R3",
-  "productCodeChanged": true
+  "unknownFiles": [],
+  "classificationCoverageStatus": "pass"
 }

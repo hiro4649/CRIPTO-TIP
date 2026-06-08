@@ -6,31 +6,29 @@
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
-  "testFiles": 22,
-  "testsPassed": 225,
+  "testFiles": 24,
+  "testsPassed": 243,
   "testsSkipped": 6,
   "commands": [
     "corepack pnpm test: pass",
     "npm test: pass"
   ],
   "riskCoverage": [
-    "provider-safe deployment dry-run/apply boundary",
-    "manual gate registry requirement",
-    "safe apply summaries",
-    "dashboard apply integration",
-    "external alert apply integration",
-    "dashboard and external alert raw provider result projection",
-    "invalid provider count rejection",
-    "markUsed failure after provider apply rejection"
+    "manual gate persistent repository boundary",
+    "manual gate audit log safety",
+    "provider deployment audit log safety",
+    "provider deployment job safe summary stripping",
+    "Postgres migration design constraints",
+    "PR #34 provider-safe deployment regression coverage"
   ],
   "uncoveredRisks": [
+    "Persistent transaction boundary remains future work.",
     "Real provider SDK apply remains future work.",
-    "Persistent manual gate storage remains future work.",
-    "GitHub checks must pass on the created PR head."
+    "Actual production deployment apply remains out of scope."
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,
-  "tests": 225,
-  "passed": 225,
+  "tests": 243,
+  "passed": 243,
   "skipped": 6
 }

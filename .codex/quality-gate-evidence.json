@@ -2,7 +2,7 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "34",
+  "prNumber": "to_be_assigned_after_pr_creation",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
@@ -10,12 +10,12 @@
   "latestAnalyzedRunId": "current_head_replay_required",
   "latestAnalyzedArtifactId": "current_head_replay_required",
   "reasonCodeMappings": {
-    "providerSafeDeploymentStatus": "pass_pending_github_replay",
-    "manualGateEnforcementStatus": "pass",
-    "safeSummaryStatus": "pass",
-    "wrapperResultProjectionStatus": "pass",
-    "invalidProviderCountStatus": "pass",
-    "markUsedFailureStatus": "pass"
+    "manualGateAuditStorageStatus": "pass",
+    "providerDeploymentAuditStatus": "pass",
+    "migrationDesignStatus": "pass",
+    "safeSummaryPersistenceStatus": "pass",
+    "noRealProviderApplyStatus": "pass",
+    "noProductionApplyStatus": "pass"
   },
   "safePlaceholderInventory": [],
   "blockedClaims": [
@@ -24,7 +24,7 @@
     "legal compliance claim",
     "YouTube policy compliance claim",
     "real provider SDK apply",
-    "production deployment apply",
+    "actual production deployment apply",
     "manual gate bypass"
   ],
   "qualityGateEvidenceStatus": "current_head_replay_required",
@@ -51,9 +51,9 @@
   "safeArtifactOnly": true,
   "rawLogsRead": false,
   "reasonCodesAddressed": [
-    "provider_safe_deployment_apply_boundary",
-    "manual_gate_registry_required",
-    "safe_summary_only",
+    "manual_gate_audit_storage_boundary",
+    "provider_deployment_audit_boundary",
+    "safe_summary_persistence",
     "no_secret_scan",
     "no_scraping_scan"
   ]

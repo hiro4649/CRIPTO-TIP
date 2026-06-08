@@ -249,3 +249,9 @@ Deferred behavior:
 - Real provider SDK apply.
 - Persistent manual gate storage.
 - Actual production deployment apply without an approved manual gate record.
+## Persistent Manual Gate Audit Boundary
+
+Verification covers repository interfaces, in-memory implementations, migration
+text constraints, and safe audit rejection tests. This PR does not claim runtime
+readiness, production readiness, legal compliance, YouTube policy compliance,
+real provider SDK apply, or actual production deployment apply.

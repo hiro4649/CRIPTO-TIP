@@ -5,38 +5,8 @@
   "prNumber": "to_be_assigned_after_pr_creation",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
-  "schemaVersion": "1.0",
   "reviewIndependenceStatus": "pass",
-  "writerEvidence": [
-    "provider deployment tests",
-    "dashboard deployment tests",
-    "external alert delivery tests",
-    "local verification commands"
-  ],
-  "reviewEvidence": [
-    "apps/api/src/provider-deployment.ts",
-    "apps/api/src/provider-deployment.test.ts",
-    "docs/PROVIDER_SAFE_DEPLOYMENT.md",
-    "docs/pr-provider-safe-deployment-apply-v113.md",
-    ".codex/change-classification.json"
-  ],
-  "reviewChecklist": [
-    "production-like apply requires approved manual gate and registry",
-    "manualApproval boolean alone cannot authorize production-like apply",
-    "successful apply marks gate used",
-    "failed apply does not mark gate used",
-    "dry-run does not mark gate used",
-    "safe summary excludes secrets/private URLs/wallet/raw user data",
-    "no real provider SDK apply",
-    "no production deployment apply",
-    "no check or test weakening",
-    "dashboard provider raw result extra fields are stripped",
-    "external alert provider raw result extra fields are stripped",
-    "invalid provider result counts are rejected",
-    "markUsed failure after provider apply rejects the operation"
-  ],
-  "sameSummaryOnly": false,
-  "reviewedItemsAbstract": false,
-  "productCodeChanged": true,
-  "runtimeReadinessClaimed": false
+  "writerEvidence": "implementation and tests",
+  "reviewerRole": "AI reviewer may recommend only",
+  "humanApprovalImpersonated": false
 }

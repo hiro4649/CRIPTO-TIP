@@ -40,3 +40,9 @@ Dry-run may be planned without an approved gate. Production-like apply requires 
 ## Production-Like Apply Enforcement Update
 
 Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## Audit Storage Boundary
+
+External alert deployment audit records persist only safe summaries derived from
+the projected wrapper result. Real alert provider delivery remains manual-gated
+and out of scope for this storage-boundary PR.

@@ -183,3 +183,14 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 4. Provider apply may start only after the shared provider-safe boundary confirms the gate is approved, unexpired, unused, and present in the `ManualGateRegistry`.
 5. If provider apply succeeds, the boundary marks the gate `used` and returns a safe summary only.
 6. If provider apply fails, the gate remains reusable for operator-controlled retry after the failure is reviewed. Do not retry with raw credential values in logs.
+
+## Manual Gate Audit Storage
+
+Manual gate audit records are safe summaries. They must not include secret
+values, private URLs, wallet addresses, raw user text, raw provider responses,
+stdout, stderr, stack traces, or raw GitHub logs.
+
+If provider apply fails, leave the manual gate approved and record a failed
+provider deployment audit summary. If gate `markUsed` fails after provider
+apply, treat the operation as not successful and investigate the future
+persistent transaction boundary.
