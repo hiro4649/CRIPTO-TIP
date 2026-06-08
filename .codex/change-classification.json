@@ -37,7 +37,8 @@
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/pr-persistent-manual-gate-audit-v113.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "unknownFiles": [],
   "classificationCoverageStatus": "pass"

@@ -97,6 +97,22 @@ Review scope and verification:
 
 Current recorded test summary: 24 files, 243 passed, 6 skipped.
 
+Changed area: manual gate persistent repository boundary, manual gate audit log
+boundary, provider deployment audit boundary, safe summary persistence, and
+PostgreSQL migration design.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: manual gate create/approve/use-once behavior, unsafe
+secret reference rejection, audit record rejection for wallet/private/token-like
+values, provider deployment planned/executed/failed/rollback audit records,
+safe job summary stripping, rollback/runbook reference persistence, and migration
+table/constraint coverage.
+
+Edge cases: missing target commit, unsafe secret reference, double used gate,
+raw provider response fields, webhook URL fields, API-key-like fields, wallet
+address fields, and migration secret default values.
+
 ## Security Boundaries
 
 - No real provider SDK apply is implemented.
