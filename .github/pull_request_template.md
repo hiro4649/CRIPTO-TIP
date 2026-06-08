@@ -18,6 +18,12 @@ Safe artifact summary:
 Source local gate:
 Self-test status:
 
+## Testing and review
+
+Tests or checks run:
+Review independence:
+Quality-gate evidence:
+
 ## Risk And Readiness
 
 Risk level:

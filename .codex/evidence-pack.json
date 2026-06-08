@@ -36,11 +36,13 @@
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/PRODUCTION_GATES.md",
       "docs/pr-full-repo-pro-audit-v113.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      ".github/pull_request_template.md"
     ],
     "allowedPaths": [
       "docs/**",
-      ".codex/**"
+      ".codex/**",
+      ".github/pull_request_template.md"
     ],
     "forbiddenPaths": [
       "apps/**",
@@ -125,7 +127,8 @@
     "risk_register",
     "docs",
     ".codex evidence",
-    "small safety fixes if Critical or High"
+    "small safety fixes if Critical or High",
+    "PR_template_prompt_eval_alignment"
   ],
   "forbiddenScope": [
     "token sale",
@@ -168,7 +171,8 @@
     "PR #28 evidence is not reused for merge readiness.",
     "No unsafe GitHub logs were read.",
     "No runtime, production, legal, or YouTube policy readiness claim is made.",
-    "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced."
+    "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.",
+    "PR template change only adds the Testing and review evidence heading required by the prompt eval suite."
   ],
   "residualRisks": [
     "PR #26 remains open and stale until owner decision.",
@@ -225,13 +229,15 @@
     "local pnpm and npm tests",
     "evidence CI",
     "quality self-protection",
-    "GitHub PR metadata"
+    "GitHub PR metadata",
+    ".github/pull_request_template.md prompt eval case"
   ],
   "riskSurface": [
     "full repository audit",
     "stale open PRs",
     "historical PR docs evidence noise",
-    "no product runtime code"
+    "no product runtime code",
+    "minimal PR template evidence heading alignment"
   ],
   "oracle": "Safe metadata, repository scans, local verification commands, evidence placeholder checker, quality self-protection, secret scan, and no-scraping scan.",
   "splitRequired": "no - Critical and High findings are zero; Medium and Low findings are documented.",

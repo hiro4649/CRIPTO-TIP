@@ -69,3 +69,7 @@ None unresolved.
 ## Review Recommendation
 
 Open this audit as a documentation/evidence PR only. Do not merge stale PR #26 or PR #22 as part of this work. If either stale PR remains valuable, refresh it from current main and rerun current-head CI and quality-gate independently.
+
+## Prompt Eval Alignment Fix
+
+The audit PR adds the missing Testing and review heading to .github/pull_request_template.md so the existing prompt eval suite remains aligned with the PR evidence contract. This does not weaken quality-gate behavior.

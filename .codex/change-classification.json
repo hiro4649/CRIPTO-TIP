@@ -126,6 +126,13 @@
       "riskLevel": "R2",
       "verification": "full repo audit evidence",
       "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".github/pull_request_template.md",
+      "classification": "harness_managed",
+      "riskLevel": "R2",
+      "verification": "prompt eval suite requires Testing and review heading",
+      "scope": "pr_template"
     }
   ],
   "changedFiles": [
@@ -144,6 +151,7 @@
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/PRODUCTION_GATES.md",
     "docs/pr-full-repo-pro-audit-v113.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    ".github/pull_request_template.md"
   ]
 }
