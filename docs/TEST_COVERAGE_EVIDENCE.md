@@ -259,3 +259,18 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 - Added dashboard/external alert wrapper hardening coverage for extra provider fields being stripped and invalid count values being rejected.
 - Added provider deployment coverage that `markUsed` failure after provider apply rejects the operation and does not return success.
 - Real provider SDK apply, persistent manual gate storage, and actual production deployment remain intentionally out of scope.
+
+## Persistent Manual Gate Audit Boundary
+
+- Added manual gate persistent repository coverage for create requested,
+  approve, missing target commit rejection, unsafe `secret_source_ref`
+  rejection, mark used once, and double-use rejection.
+- Added manual gate audit coverage for safe record storage and rejection of
+  wallet addresses, private URLs, and token-like values.
+- Added provider deployment audit coverage for planned, executed, failed, and
+  rollback-planned safe records.
+- Added provider deployment job coverage for rollback/runbook references,
+  credential value exclusion, and unsafe safe-summary field stripping.
+- Added migration coverage for `manual_gates`, `manual_gate_audit_logs`,
+  `provider_deployment_jobs`, `provider_deployment_audit_logs`, status check
+  constraints, and no secret default values.

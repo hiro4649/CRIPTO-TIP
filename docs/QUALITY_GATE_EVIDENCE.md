@@ -262,3 +262,11 @@ PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout 
 Provider-safe deployment evidence adds `apps/api/src/provider-deployment.ts` and `apps/api/src/provider-deployment.test.ts`. Production-like provider apply requires an approved manual gate record and the `ManualGateRegistry` before provider apply starts. `manualApproval: true` alone is not sufficient. Dry-run does not mark a gate `used`; successful production-like apply marks the approved gate `used`; failed provider apply does not. Safe summaries exclude secret values, private URLs, wallet addresses, raw messages, raw display names, OAuth tokens, API keys, and webhook URLs.
 
 Wrapper hardening evidence adds dashboard and external alert result projection tests. Provider raw results are not returned directly; extra fields are stripped and invalid count values are rejected. Provider deployment evidence also verifies that a `markUsed` failure after provider apply rejects the operation instead of returning success.
+
+## Persistent Manual Gate Audit Boundary
+
+Persistent manual gate audit evidence adds repository interfaces, in-memory
+implementations, migration design, manual gate audit tests, provider deployment
+audit tests, and safe-summary rejection checks. The PR does not connect a
+production database, execute real provider SDK apply, or claim runtime or
+production readiness.

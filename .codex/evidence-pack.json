@@ -2,21 +2,21 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "34",
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 35,
+  "headSha": "4743261f5649dc92d7ced39856b04f8c7ca99fe2",
+  "baseSha": "73e54a5df289a9b9bf04e1586a04a8224f5c890d",
   "schemaVersion": "1.0.0",
   "prProfile": "harness_workflow_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add provider safe deployment apply",
-  "goal": "Add a provider-safe deployment/apply boundary behind approved manual gate records, with dry-run/apply separation, safe summaries, rollback evidence, and dashboard/external alert integration.",
-  "ciRunId": "current_head_replay_required",
-  "qualityGateRunId": "current_head_replay_required",
-  "qualityGateArtifactId": "current_head_replay_required",
-  "productCiStatus": "current_head_replay_required",
-  "qualityGateStatus": "current_head_replay_required",
+  "title": "feat: add persistent manual gate audit boundary",
+  "goal": "Add persistent manual gate and provider deployment audit storage boundaries under harness v1.1.3 without real provider SDK apply or production deployment.",
+  "ciRunId": "27128269803",
+  "qualityGateRunId": "27128616175",
+  "qualityGateArtifactId": "7476428258",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -30,34 +30,47 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/provider-deployment.ts",
-      "apps/api/src/provider-deployment.test.ts",
-      "apps/api/src/youtube/dashboard-deployment.ts",
-      "apps/api/src/youtube/alert-delivery.ts",
-      "docs/PROVIDER_SAFE_DEPLOYMENT.md",
+      "apps/api/src/manual-gate-audit.ts",
+      "apps/api/src/manual-gate-audit.test.ts",
+      "apps/api/src/provider-deployment-audit.ts",
+      "apps/api/src/provider-deployment-audit.test.ts",
+      "apps/api/src/repositories/manual-gate-repository.ts",
+      "apps/api/src/repositories/audit-log-repository.ts",
+      "migrations/0003_manual_gate_audit.sql",
+      "docs/MANUAL_GATE_AUDIT_STORAGE.md",
+      "docs/PROVIDER_DEPLOYMENT_AUDIT.md",
       "docs/MANUAL_GATES.md",
+      "docs/PROVIDER_SAFE_DEPLOYMENT.md",
       "docs/DASHBOARD_DEPLOYMENT.md",
       "docs/ALERT_DELIVERY.md",
       "docs/RUNBOOK.md",
-      "docs/PRODUCTION_GATES.md",
       "docs/RISK_REGISTER.md",
+      "docs/PRODUCTION_GATES.md",
       "docs/PRODUCT_VERIFICATION.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/pr-provider-safe-deployment-apply-v113.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
+      "docs/pr-persistent-manual-gate-audit-v113.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "allowedPaths": [
       "apps/api/src/**",
+      "migrations/**",
       "docs/**",
       ".codex/**"
     ],
     "forbiddenPaths": [
+      ".github/workflows/**",
+      "scripts/**",
+      "package.json",
+      "pnpm-lock.yaml",
       "contracts/**",
-      "migrations/**",
-      "wallet/RPC/deploy config",
-      "production secrets",
-      "real provider SDK credentials"
+      "apps/api/src/chain/**",
+      "apps/api/src/iris/**",
+      "apps/api/src/server.ts",
+      "apps/web/**",
+      "apps/overlay/**",
+      ".env.example"
     ]
   },
   "commands": [
@@ -75,13 +88,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass",
-      "summary": "22 test files, 225 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "npm test",
-      "result": "pass",
-      "summary": "22 test files, 225 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -101,7 +112,7 @@
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pass"
+      "result": "local advisory before PR creation"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
@@ -115,20 +126,16 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "current_head_replay_required",
+      "runId": "27128269803",
       "result": "success",
-      "headSha": "current_pr_head",
-      "status": "current_head_replay_required",
-      "conclusion": "current_head_replay_required"
+      "headSha": "4743261f5649dc92d7ced39856b04f8c7ca99fe2"
     },
     {
       "name": "quality-gate",
-      "runId": "current_head_replay_required",
+      "runId": "27128616175",
       "result": "success",
-      "artifactId": "current_head_replay_required",
-      "headSha": "current_pr_head",
-      "status": "current_head_replay_required",
-      "conclusion": "current_head_replay_required"
+      "artifactId": "7476428258",
+      "headSha": "4743261f5649dc92d7ced39856b04f8c7ca99fe2"
     }
   ],
   "productionClaims": {
@@ -138,24 +145,26 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Revert this PR if provider apply can run production-like without an approved manual gate record and registry, if safe summaries expose secrets/private URLs/user data, or if required checks weaken.",
+  "rollbackOrStopCondition": "Revert this PR if audit storage accepts unsafe log sources, provider response content, wallet addresses, private URLs, or if provider apply becomes executable without approved manual gate evidence.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "provider-safe deployment apply boundary",
-    "approved manual gate enforcement",
-    "dry-run/apply separation",
-    "safe apply summary",
-    "rollback evidence",
-    "dashboard apply boundary integration",
-    "external alert apply boundary integration",
-    "manual gate audit evidence",
-    "quality evidence",
+    "manual_gate_persistence_boundary",
+    "manual_gate_audit_log_boundary",
+    "provider_deployment_audit_boundary",
+    "safe_summary_persistence",
+    "postgres_migration_design",
+    "tests",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
+    "real provider SDK apply",
+    "actual production deployment apply",
+    "secret manager real SDK integration",
+    "live YouTube operation",
+    "wallet/RPC/deploy changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -164,78 +173,58 @@
     "investment wording",
     "speculative reward",
     "YouTube scraping",
-    "TikTok connector",
-    "multi-platform connector",
-    "multi-chain support",
-    "multi-token support",
-    "wallet custody",
-    "real production secret commit",
-    "manual gate bypass",
-    "actual production deployment apply without approved manual gate",
-    "external alert delivery with real provider credentials without approved manual gate",
-    "dashboard apply with real provider credentials without approved manual gate",
-    "live YouTube account operation without approved manual gate",
-    "real provider SDK apply",
-    "quality-gate weakening",
-    "unsafe GitHub log reading",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
-    "YouTube policy compliance claim"
+    "YouTube policy compliance claim",
+    "raw GitHub log reading",
+    "quality-gate weakening"
   ],
   "doneCriteria": [
-    "provider deployment dry-run succeeds without manual gate",
-    "production-like apply requires approved manual gate and registry",
-    "manualApproval boolean alone cannot authorize production-like apply",
-    "successful production-like apply marks gate used",
-    "failed provider apply does not mark gate used",
-    "dry-run does not mark gate used",
-    "safe apply summary excludes secrets/private URLs/wallet/raw user data",
-    "dashboard and external alert apply route through shared boundary",
+    "manual gate persistent repository creates requested and approved gates",
+    "manual gate persistent repository rejects unsafe secret references",
+    "manual gate persistent repository marks used once and rejects double use",
+    "manual gate audit logs reject wallet addresses private URLs and token-like values",
+    "provider deployment audit logs store planned executed failed and rollback planned safe summaries",
+    "provider deployment jobs store rollback and runbook references",
+    "provider deployment jobs strip unsafe safe-summary fields",
+    "migration defines manual gate and provider deployment audit tables",
+    "migration includes status check constraints and no secret defaults",
+    "PR #34 provider-safe deployment regression tests still pass",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head",
-    "dashboard provider raw result extra fields are stripped",
-    "external alert provider raw result extra fields are stripped",
-    "invalid provider result counts are rejected",
-    "markUsed failure after provider apply rejects the operation"
+    "required checks pass on PR head"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 22,
-    "passed": 225,
+    "testFiles": 24,
+    "passed": 254,
     "skipped": 6
   },
   "securityBoundaries": [
     "No real provider SDK apply is implemented.",
-    "No production deployment apply is executed.",
-    "Production-like apply requires an approved manual gate record and registry.",
-    "Manual approval boolean alone cannot authorize production-like apply.",
-    "Apply results are safe summaries only and exclude secret values, private URLs, wallet addresses, raw messages, raw display names, API keys, OAuth tokens, and webhook URLs.",
-    "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.",
-    "No unsafe GitHub logs are read.",
-    "Dashboard and external alert wrappers return exact safe projected results, not raw provider results.",
-    "Provider result extra fields are stripped and invalid counts are rejected.",
-    "Provider apply and manual gate used marking are not yet a persistent transaction."
+    "No actual production deployment apply is implemented.",
+    "Audit records store safe summaries only, never secret values or raw provider responses.",
+    "Manual gate records are approval evidence, not secret storage.",
+    "GitHub unsafe log sources were not read.",
+    "YouTube scraping remains forbidden."
   ],
   "residualRisks": [
-    "Persistent manual gate storage remains future work.",
-    "Real provider SDK apply remains future work behind approved manual gate records.",
-    "Actual production deployment apply remains out of scope.",
-    "Local forge may be unavailable on this machine.",
-    "Provider apply and manual gate used marking are not yet backed by one persistent transaction."
+    "Persistent transaction boundary remains future work; not a merge blocker because this PR only adds repository interfaces, in-memory parity tests, and migration design without claiming DB-backed production execution.",
+    "Real provider SDK apply remains future work; not a merge blocker because no real provider SDK, credential, webhook, or provider call path is introduced.",
+    "Actual production deployment apply remains out of scope; not a merge blocker because production-like apply still requires approved manual gate evidence and a separate owner-controlled execution path.",
+    "Secret rotation audit remains future work; not a merge blocker because current records accept secret references only and do not persist secret values.",
+    "Live YouTube operation remains manual-gated; not a merge blocker because this PR does not change the YouTube connector or run live account operations."
   ],
   "humanConfirmation": [
-    "project-owner review before merge",
-    "current head SHA verified after PR checks",
-    "CI status verified after PR checks",
-    "quality-gate status verified after PR checks",
-    "remaining risks documented"
+    "Human owner confirmation is required before production-like apply.",
+    "AI review recommendations are not recorded as human approval.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 225,
+  "testsPassed": 254,
   "testsSkipped": 6,
-  "testFiles": 22,
+  "testFiles": 24,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
@@ -246,7 +235,7 @@
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: local advisory before PR creation",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
@@ -258,33 +247,32 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds an internal provider-safe deployment apply boundary and routes dashboard/external alert apply through it without changing external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery payloads."
+    "statement": "Adds internal manual gate persistence and audit storage boundaries, provider deployment audit records, and migration design without changing external API, contract ABI, YouTube connector, Chain Listener, IRIS delivery payloads, or real provider SDK execution."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline provider-safe apply boundaries and tests, not production deployment execution.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline persistent audit storage boundaries and migration design, not production deployment execution.",
   "reviewScope": {
-    "scope": "Provider-safe deployment apply boundary, manual gate enforcement, safe summaries, docs, and evidence.",
-    "riskSummary": "Main risk is accidental production-like apply without approved gate evidence or leaking provider secrets in apply summaries.",
+    "scope": "Persistent manual gate repository, audit log repository, provider deployment audit records, migration design, docs, and evidence.",
+    "riskSummary": "Main risk is accepting unsafe audit target/ref values, invalid manual gate transitions, duplicate audit IDs, or leaking provider secrets in safe summaries.",
     "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks."
   },
-  "prBodyPath": "docs/pr-provider-safe-deployment-apply-v113.md",
+  "prBodyPath": "docs/pr-persistent-manual-gate-audit-v113.md",
   "verificationSurface": [
-    "apps/api/src/provider-deployment.test.ts",
-    "apps/api/src/youtube/dashboard-deployment.test.ts",
-    "apps/api/src/youtube/alert-delivery.test.ts",
+    "apps/api/src/manual-gate-audit.test.ts",
+    "apps/api/src/provider-deployment-audit.test.ts",
     "local pnpm and npm tests",
     "evidence CI",
     "quality self-protection",
     "GitHub PR metadata"
   ],
   "riskSurface": [
-    "provider-safe deployment apply",
-    "manual gate registry enforcement",
-    "safe result summaries",
-    "dashboard apply integration",
-    "external alert apply integration",
+    "manual gate persistence boundary",
+    "manual gate audit log boundary",
+    "provider deployment audit boundary",
+    "safe summary persistence",
+    "PostgreSQL migration design",
     "no real provider SDK apply"
   ],
-  "oracle": "Manual-gate tests, provider-safe deployment tests, existing dashboard/alert tests, local verification commands, evidence CI, and quality self-protection.",
+  "oracle": "Manual-gate audit tests, provider deployment audit tests, migration constraint tests, local verification commands, evidence CI, and quality self-protection.",
   "splitRequired": "no - bounded provider-safe apply boundary with no real provider SDK and no production apply execution.",
   "bestOfNEvidence": "Candidate count: 3; selected candidate: shared provider-safe deployment boundary instead of duplicated dashboard/alert enforcement; reason selected: smallest safe common boundary with explicit manual gate registry and safe-summary controls.",
   "reviewIndependence": "Writer evidence is implementation tests and safe scans. Reviewer checklist verifies no manual gate bypass, no real provider credentials, no production apply, and no prohibited scope.",
@@ -309,7 +297,7 @@
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "riskLevelSummary": "R3 because product runtime-adjacent deployment apply boundaries and manual gate enforcement are changed.",
-  "filesOrScope": "Provider-safe deployment apply source, dashboard/alert apply integration, docs, and .codex evidence.",
+  "filesOrScope": "Manual gate audit storage source, provider deployment audit source, repositories, migration, docs, and .codex evidence.",
   "solvabilityConstraints": "No raw GitHub logs, no real provider SDK apply, no production secrets, no production deployment execution, no quality gate weakening.",
   "taskContractVerificationSurface": [
     "provider deployment tests",
@@ -321,5 +309,7 @@
     "secret scan",
     "no-scraping scan"
   ],
-  "reasoningEvidence": "Audit of existing dashboard and alert manual gate enforcement identified duplication; shared boundary centralizes production-like gate and safe summary rules."
+  "reasoningEvidence": "Audit of PR #35 found stale evidence placeholders, loose manual gate repository transitions, unsafe provider job target/ref handling, duplicate in-memory audit IDs, and migration constraint gaps; this update closes those boundaries without adding provider apply execution.",
+  "passed": 254,
+  "skipped": 6
 }

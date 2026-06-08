@@ -515,6 +515,42 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for full repository v1.1.3 audit."
+    },
+    {
+      "pathPattern": "migrations/**",
+      "classification": "product_relevant",
+      "surface": "database_schema_design",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Database migration design files; production application remains separately gated."
+    },
+    {
+      "pathPattern": "docs/MANUAL_GATE_AUDIT_STORAGE.md",
+      "classification": "docs",
+      "surface": "audit_storage",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Manual gate audit storage boundary docs."
+    },
+    {
+      "pathPattern": "docs/PROVIDER_DEPLOYMENT_AUDIT.md",
+      "classification": "docs",
+      "surface": "audit_storage",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Provider deployment audit boundary docs."
+    },
+    {
+      "pathPattern": "docs/pr-persistent-manual-gate-audit-v113.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for persistent manual gate audit boundary."
     }
   ],
   "safeSummaryOnly": true

@@ -35,3 +35,11 @@ Provider apply and manual gate `used` marking are not yet backed by one persiste
 ## Rollback Evidence
 
 Every apply plan must include a rollback plan reference and an operator runbook reference. Rollback evidence is a safe reference to operator steps, not a secret storage location.
+
+## Persistent Audit Readiness
+
+Provider deployment audit boundaries record planned, executed, failed, and
+rollback-planned safe summaries. Audit storage does not persist provider raw
+responses, credential values, webhook URLs, private URLs, wallet addresses, raw
+messages, raw display names, raw YouTube IDs, stdout, stderr, stack traces, or
+raw GitHub logs.

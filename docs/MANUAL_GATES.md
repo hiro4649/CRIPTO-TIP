@@ -47,3 +47,11 @@ API keys, webhook URLs, or provider credentials.
 ## Rendered Evidence Source
 
 Manual gate registry documentation can be rendered from `.codex/manual-gates/manual-gates.json`. The rendered source is documentation evidence only; production-like apply still requires runtime validation through `ManualGateRegistry`.
+
+## Persistent Audit Storage Readiness
+
+Persistent audit storage readiness adds `ManualGatePersistentRepository`,
+`ManualGateAuditRecord`, and `manual_gate_audit_logs` schema design. Manual gate
+records remain approval evidence only, and audit logs remain safe operation
+evidence only. Persistent DB connection and transaction-backed gate use are
+future work.

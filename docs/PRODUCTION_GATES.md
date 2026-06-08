@@ -65,3 +65,10 @@ alert, and provider-specific deployment operations. It still does not make the
 system G4 production ready because real provider SDK apply, persistent manual
 gate storage, production deployment execution, and live YouTube account
 operation remain out of scope.
+
+## Persistent Manual Gate Audit Boundary
+
+Persistent manual gate audit storage readiness adds repository interfaces,
+in-memory test implementations, migration design, and safe audit summaries.
+Actual production deployment apply and real provider SDK apply remain blocked
+without a future approved manual gate and owner-controlled execution path.

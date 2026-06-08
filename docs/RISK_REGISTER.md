@@ -125,3 +125,13 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Medium | PR #22 was closed without merge and provider apply is rebuilt from current main in this PR. | project-owner | provider-safe deployment apply v1.1.3 PR | Re-evaluate implementation ideas only through current-head code, tests, and evidence. |
 | Medium | Historical PR docs contain archived evidence examples and older placeholder-like values. | harness owner | docs cleanup if parser scope changes | Treat historical PR docs as archived and not current merge-readiness evidence. |
 | Low | Local forge is unavailable on this machine. | engineering | local tooling setup if required | Rely on GitHub contracts check unless local Foundry is installed. |
+
+## Persistent Manual Gate Audit Boundary
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Persistent transaction boundary remains future work. | Backend | persistent audit repository PR | Current PR adds interfaces, in-memory repositories, migration design, and tests only. |
+| Medium | Real provider SDK apply remains future work. | Backend | future provider SDK PR | Provider-specific apply remains a boundary with no real credentials or provider SDK calls committed. |
+| Medium | Production deployment apply remains out of scope. | Backend | future manual-gated deployment PR | Actual production apply requires approved manual gate evidence and separate owner-controlled execution. |
+| Medium | Secret rotation audit remains future work. | Backend | future credential rotation PR | Current audit records allow safe references only and do not persist secret values. |
+| Medium | Live YouTube operation remains manual-gated. | Backend | future live operations PR | Live YouTube account operation remains disabled without explicit approved manual gate. |
