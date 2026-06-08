@@ -2,17 +2,20 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "33",
+  "prNumber": "34",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "awaiting_current_evidence_replay",
-  "latestAnalyzedRunId": "27117735219",
-  "latestAnalyzedArtifactId": "7472335968",
+  "qualityGateExpectedStatus": "current_head_replay_required",
+  "latestAnalyzedRunId": "current_head_replay_required",
+  "latestAnalyzedArtifactId": "current_head_replay_required",
   "reasonCodeMappings": {
-    "fullRepoAuditStatus": "pending_github_replay",
-    "criticalFindings": "0_unresolved",
-    "highFindings": "0_unresolved"
+    "providerSafeDeploymentStatus": "pass_pending_github_replay",
+    "manualGateEnforcementStatus": "pass",
+    "safeSummaryStatus": "pass",
+    "wrapperResultProjectionStatus": "pass",
+    "invalidProviderCountStatus": "pass",
+    "markUsedFailureStatus": "pass"
   },
   "safePlaceholderInventory": [],
   "blockedClaims": [
@@ -20,37 +23,38 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "PR #28 evidence reuse"
+    "real provider SDK apply",
+    "production deployment apply",
+    "manual gate bypass"
   ],
-  "qualityGateEvidenceStatus": "current_failure_analyzed_and_repaired",
+  "qualityGateEvidenceStatus": "current_head_replay_required",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "pass",
+      "status": "current_head_replay_required",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "pass",
+      "status": "current_head_replay_required",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "awaiting_current_evidence_replay_after_repair",
+      "status": "current_head_replay_required",
       "blocking": true
     }
   ],
-  "qualityGateStatus": "failed_pending_evidence_refresh",
-  "qualityGateRunId": "27117735219",
-  "qualityGateArtifactId": "7472335968",
+  "qualityGateStatus": "current_head_replay_required",
+  "qualityGateRunId": "current_head_replay_required",
+  "qualityGateArtifactId": "current_head_replay_required",
   "safeArtifactOnly": true,
   "rawLogsRead": false,
   "reasonCodesAddressed": [
-    "product_verification_required",
-    "pr_profile_invalid",
-    "pr_profile_conflict",
-    "missing_required_method_sections",
-    "test_coverage_evidence_missing",
-    "stale_evidence"
+    "provider_safe_deployment_apply_boundary",
+    "manual_gate_registry_required",
+    "safe_summary_only",
+    "no_secret_scan",
+    "no_scraping_scan"
   ]
 }

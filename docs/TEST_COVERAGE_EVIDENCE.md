@@ -251,3 +251,11 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 - Required local verification: `corepack pnpm lint`, `corepack pnpm typecheck`, `corepack pnpm test`, `npm test`, `corepack pnpm evidence:ci`, and `corepack pnpm quality:self-protection`.
 - Verification: `corepack pnpm test` passed with 21 test files, 207 passed, and 6 skipped; `npm test` passed with the same counts.
 - Guardrail: no tests were skipped, no expectations were weakened, and no product runtime source was changed.
+
+## Provider-Safe Deployment Apply v1.1.3
+
+- Added `apps/api/src/provider-deployment.test.ts` for provider deployment dry-run, approved manual gate enforcement, registry requirement, manualApproval-only rejection, wrong gate type, wrong commit, wrong environment, expired gate, used gate, successful mark-used, failed-provider no mark-used, safe result summaries, rollback evidence, and runbook reference coverage.
+- Existing dashboard deployment and external alert delivery tests continue to cover their provider wrappers while routing apply through the shared provider-safe boundary.
+- Added dashboard/external alert wrapper hardening coverage for extra provider fields being stripped and invalid count values being rejected.
+- Added provider deployment coverage that `markUsed` failure after provider apply rejects the operation and does not return success.
+- Real provider SDK apply, persistent manual gate storage, and actual production deployment remain intentionally out of scope.

@@ -230,4 +230,22 @@ Verified product behavior:
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## PR provider-safe-deployment-apply-v113
+
+Verified product behavior:
+
+- `ProviderDeploymentApply` defines a provider-neutral apply boundary for dashboard, external alert, and provider-specific deployment operations.
+- Dry-run can validate a deployment plan without a manual gate and does not mark a gate `used`.
+- Production-like apply requires an approved manual gate record and the `ManualGateRegistry`; `manualApproval: true` alone is rejected.
+- Production-like apply rejects wrong gate type, wrong target commit, wrong target environment, expired gates, and used gates.
+- Successful production-like apply marks the gate `used`; failed provider apply does not.
+- Apply results are safe summaries only and exclude secret values, private URLs, wallet addresses, raw messages, and raw display names.
+- Dashboard deployment and external alert delivery now route provider apply through the shared provider-safe deployment boundary.
+
+Deferred behavior:
+
+- Real provider SDK apply.
+- Persistent manual gate storage.
+- Actual production deployment apply without an approved manual gate record.

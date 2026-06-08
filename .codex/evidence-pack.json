@@ -2,23 +2,23 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "33",
+  "prNumber": "34",
   "headSha": "current_pr_head",
   "baseSha": "current_pr_base",
   "schemaVersion": "1.0.0",
   "prProfile": "harness_workflow_r3",
-  "taskMode": "release_gate",
-  "changeType": "harness_change",
+  "taskMode": "feature",
+  "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "chore: audit full repo on harness v1.1.3",
-  "goal": "Full repository Pro audit under harness v1.1.3 after PR #29 repair, with no product runtime changes unless Critical or High safety fix is required.",
-  "ciRunId": "27118452724",
-  "qualityGateRunId": "27118477129",
-  "qualityGateArtifactId": "7472483658",
-  "productCiStatus": "success",
-  "qualityGateStatus": "awaiting_current_evidence_replay",
+  "title": "feat: add provider safe deployment apply",
+  "goal": "Add a provider-safe deployment/apply boundary behind approved manual gate records, with dry-run/apply separation, safe summaries, rollback evidence, and dashboard/external alert integration.",
+  "ciRunId": "current_head_replay_required",
+  "qualityGateRunId": "current_head_replay_required",
+  "qualityGateArtifactId": "current_head_replay_required",
+  "productCiStatus": "current_head_replay_required",
+  "qualityGateStatus": "current_head_replay_required",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
@@ -30,30 +30,34 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "docs/AUDIT_REPORT_FULL_REPO_V113.md",
-      "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/RISK_REGISTER.md",
-      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "apps/api/src/provider-deployment.ts",
+      "apps/api/src/provider-deployment.test.ts",
+      "apps/api/src/youtube/dashboard-deployment.ts",
+      "apps/api/src/youtube/alert-delivery.ts",
+      "docs/PROVIDER_SAFE_DEPLOYMENT.md",
+      "docs/MANUAL_GATES.md",
+      "docs/DASHBOARD_DEPLOYMENT.md",
+      "docs/ALERT_DELIVERY.md",
+      "docs/RUNBOOK.md",
       "docs/PRODUCTION_GATES.md",
-      "docs/pr-full-repo-pro-audit-v113.md",
-      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      ".github/pull_request_template.md"
+      "docs/RISK_REGISTER.md",
+      "docs/PRODUCT_VERIFICATION.md",
+      "docs/TEST_COVERAGE_EVIDENCE.md",
+      "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/pr-provider-safe-deployment-apply-v113.md",
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
     ],
     "allowedPaths": [
+      "apps/api/src/**",
       "docs/**",
-      ".codex/**",
-      ".github/pull_request_template.md"
+      ".codex/**"
     ],
     "forbiddenPaths": [
-      "apps/**",
-      "packages/**",
       "contracts/**",
       "migrations/**",
-      ".github/workflows/**",
-      "scripts/**",
-      "package.json",
-      "pnpm-lock.yaml",
-      "wallet/RPC/deploy config"
+      "wallet/RPC/deploy config",
+      "production secrets",
+      "real provider SDK credentials"
     ]
   },
   "commands": [
@@ -71,11 +75,13 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass"
+      "result": "pass",
+      "summary": "22 test files, 225 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass"
+      "result": "pass",
+      "summary": "22 test files, 225 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -106,7 +112,25 @@
       "result": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "current_head_replay_required",
+      "result": "success",
+      "headSha": "current_pr_head",
+      "status": "current_head_replay_required",
+      "conclusion": "current_head_replay_required"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "current_head_replay_required",
+      "result": "success",
+      "artifactId": "current_head_replay_required",
+      "headSha": "current_pr_head",
+      "status": "current_head_replay_required",
+      "conclusion": "current_head_replay_required"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -114,23 +138,22 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Revert this audit PR if evidence drifts, required checks weaken, or product runtime behavior changes without Critical or High justification.",
+  "rollbackOrStopCondition": "Revert this PR if provider apply can run production-like without an approved manual gate record and registry, if safe summaries expose secrets/private URLs/user data, or if required checks weaken.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "full_repo_audit",
-    "safe_summary_audit_report",
-    "harness_context_marker_audit",
-    "quality_gate_evidence",
-    "test_coverage_evidence",
-    "risk_register",
+    "provider-safe deployment apply boundary",
+    "approved manual gate enforcement",
+    "dry-run/apply separation",
+    "safe apply summary",
+    "rollback evidence",
+    "dashboard apply boundary integration",
+    "external alert apply boundary integration",
+    "manual gate audit evidence",
+    "quality evidence",
     "docs",
-    ".codex evidence",
-    "small safety fixes if Critical or High",
-    "PR_template_prompt_eval_alignment",
-    "current_head_evidence_refresh",
-    "harness_workflow_r3_profile_alignment"
+    ".codex evidence"
   ],
   "forbiddenScope": [
     "token sale",
@@ -141,59 +164,78 @@
     "investment wording",
     "speculative reward",
     "YouTube scraping",
-    "wallet/RPC/deploy change",
+    "TikTok connector",
+    "multi-platform connector",
+    "multi-chain support",
+    "multi-token support",
+    "wallet custody",
+    "real production secret commit",
+    "manual gate bypass",
+    "actual production deployment apply without approved manual gate",
+    "external alert delivery with real provider credentials without approved manual gate",
+    "dashboard apply with real provider credentials without approved manual gate",
+    "live YouTube account operation without approved manual gate",
+    "real provider SDK apply",
+    "quality-gate weakening",
+    "unsafe GitHub log reading",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
-    "YouTube policy compliance claim",
-    "real production secret commit",
-    "manual gate bypass",
-    "quality-gate weakening",
-    "unsafe GitHub log reading"
+    "YouTube policy compliance claim"
   ],
   "doneCriteria": [
-    "full audit report exists",
-    "Critical findings 0 unresolved",
-    "High findings 0 unresolved or explicitly fixed",
-    "Medium and Low findings documented",
-    "no unsafe GitHub logs read",
-    "no product runtime changes",
+    "provider deployment dry-run succeeds without manual gate",
+    "production-like apply requires approved manual gate and registry",
+    "manualApproval boolean alone cannot authorize production-like apply",
+    "successful production-like apply marks gate used",
+    "failed provider apply does not mark gate used",
+    "dry-run does not mark gate used",
+    "safe apply summary excludes secrets/private URLs/wallet/raw user data",
+    "dashboard and external alert apply route through shared boundary",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head"
+    "required checks pass on PR head",
+    "dashboard provider raw result extra fields are stripped",
+    "external alert provider raw result extra fields are stripped",
+    "invalid provider result counts are rejected",
+    "markUsed failure after provider apply rejects the operation"
   ],
   "testSummary": {
-    "testFiles": 21,
-    "passed": 207,
-    "skipped": 6,
-    "total": 213
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 22,
+    "passed": 225,
+    "skipped": 6
   },
   "securityBoundaries": [
-    "PR #28 remains closed without merge.",
-    "PR #28 evidence is not reused for merge readiness.",
-    "No unsafe GitHub logs were read.",
-    "No runtime, production, legal, or YouTube policy readiness claim is made.",
+    "No real provider SDK apply is implemented.",
+    "No production deployment apply is executed.",
+    "Production-like apply requires an approved manual gate record and registry.",
+    "Manual approval boolean alone cannot authorize production-like apply.",
+    "Apply results are safe summaries only and exclude secret values, private URLs, wallet addresses, raw messages, raw display names, API keys, OAuth tokens, and webhook URLs.",
     "No token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.",
-    "PR template change only adds the Testing and review evidence heading required by the prompt eval suite."
+    "No unsafe GitHub logs are read.",
+    "Dashboard and external alert wrappers return exact safe projected results, not raw provider results.",
+    "Provider result extra fields are stripped and invalid counts are rejected.",
+    "Provider apply and manual gate used marking are not yet a persistent transaction."
   ],
   "residualRisks": [
-    "PR #26 remains open and stale until owner decision.",
-    "PR #22 remains open and must be refreshed independently before any merge decision.",
-    "Historical PR docs contain archived evidence examples that may deserve later docs cleanup if parser scope changes.",
-    "Local forge is unavailable on this machine."
+    "Persistent manual gate storage remains future work.",
+    "Real provider SDK apply remains future work behind approved manual gate records.",
+    "Actual production deployment apply remains out of scope.",
+    "Local forge may be unavailable on this machine.",
+    "Provider apply and manual gate used marking are not yet backed by one persistent transaction."
   ],
   "humanConfirmation": [
-    "project-owner merge decision required",
+    "project-owner review before merge",
     "current head SHA verified after PR checks",
     "CI status verified after PR checks",
     "quality-gate status verified after PR checks",
     "remaining risks documented"
   ],
-  "testsPassed": 207,
+  "testsPassed": 225,
   "testsSkipped": 6,
-  "testFiles": 21,
-  "passed": 207,
-  "skipped": 6,
+  "testFiles": 22,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
@@ -211,40 +253,41 @@
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts or dependencies are changed."
+    "verification": "No package scripts or runtime dependencies are changed."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "No product API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or runtime payload contract is changed."
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds an internal provider-safe deployment apply boundary and routes dashboard/external alert apply through it without changing external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery payloads."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR is a safe-summary full repository audit only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline provider-safe apply boundaries and tests, not production deployment execution.",
   "reviewScope": {
-    "scope": "Full repo audit docs and machine-readable evidence under harness v1.1.3.",
-    "riskSummary": "Main risk is stale open PR cleanup and historical evidence noise; product runtime behavior is intentionally unchanged.",
-    "verificationOracle": "Safe-summary scans, local checks, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub PR metadata."
+    "scope": "Provider-safe deployment apply boundary, manual gate enforcement, safe summaries, docs, and evidence.",
+    "riskSummary": "Main risk is accidental production-like apply without approved gate evidence or leaking provider secrets in apply summaries.",
+    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks."
   },
-  "prBodyPath": "docs/pr-full-repo-pro-audit-v113.md",
+  "prBodyPath": "docs/pr-provider-safe-deployment-apply-v113.md",
   "verificationSurface": [
-    "docs/AUDIT_REPORT_FULL_REPO_V113.md",
-    "repository safe-summary scans",
+    "apps/api/src/provider-deployment.test.ts",
+    "apps/api/src/youtube/dashboard-deployment.test.ts",
+    "apps/api/src/youtube/alert-delivery.test.ts",
     "local pnpm and npm tests",
     "evidence CI",
     "quality self-protection",
-    "GitHub PR metadata",
-    ".github/pull_request_template.md prompt eval case"
+    "GitHub PR metadata"
   ],
   "riskSurface": [
-    "full repository audit",
-    "stale open PRs",
-    "historical PR docs evidence noise",
-    "no product runtime code",
-    "minimal PR template evidence heading alignment"
+    "provider-safe deployment apply",
+    "manual gate registry enforcement",
+    "safe result summaries",
+    "dashboard apply integration",
+    "external alert apply integration",
+    "no real provider SDK apply"
   ],
-  "oracle": "Safe artifact reason codes, PR metadata, local verification commands, prompt governance eval, evidence CI, and quality self-protection.",
-  "splitRequired": "no - bounded audit/evidence repair with no product runtime changes and Critical/High unresolved findings at zero.",
-  "bestOfNEvidence": "Candidate count: 3; selected candidate: current-head evidence/profile refresh plus PR template heading alignment; reason selected: smallest safe repair without product runtime changes.",
-  "reviewIndependence": "Writer evidence is audit scans and metadata. Reviewer checklist verifies no unsafe GitHub log access, no PR #28 reuse, no product runtime change, no manual gate behavior change, and no prohibited scope.",
+  "oracle": "Manual-gate tests, provider-safe deployment tests, existing dashboard/alert tests, local verification commands, evidence CI, and quality self-protection.",
+  "splitRequired": "no - bounded provider-safe apply boundary with no real provider SDK and no production apply execution.",
+  "bestOfNEvidence": "Candidate count: 3; selected candidate: shared provider-safe deployment boundary instead of duplicated dashboard/alert enforcement; reason selected: smallest safe common boundary with explicit manual gate registry and safe-summary controls.",
+  "reviewIndependence": "Writer evidence is implementation tests and safe scans. Reviewer checklist verifies no manual gate bypass, no real provider credentials, no production apply, and no prohibited scope.",
   "productVerificationStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "testCoverageEvidenceStatus": "pass",
@@ -265,17 +308,18 @@
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
-  "riskLevelSummary": "R3 because this audit touches harness evidence surfaces and PR template evidence contract while avoiding product runtime code.",
-  "filesOrScope": "Docs, .codex evidence, and .github/pull_request_template.md evidence heading alignment only.",
-  "solvabilityConstraints": "No raw GitHub logs, no PR #28 evidence reuse, no product runtime changes, no provider apply, no readiness claims.",
+  "riskLevelSummary": "R3 because product runtime-adjacent deployment apply boundaries and manual gate enforcement are changed.",
+  "filesOrScope": "Provider-safe deployment apply source, dashboard/alert apply integration, docs, and .codex evidence.",
+  "solvabilityConstraints": "No raw GitHub logs, no real provider SDK apply, no production secrets, no production deployment execution, no quality gate weakening.",
   "taskContractVerificationSurface": [
-    "docs/AUDIT_REPORT_FULL_REPO_V113.md",
-    "repository safe-summary scans",
+    "provider deployment tests",
+    "dashboard deployment tests",
+    "external alert delivery tests",
     "local pnpm and npm tests",
     "evidence CI",
     "quality self-protection",
-    "GitHub PR metadata",
-    ".github/pull_request_template.md prompt eval case"
+    "secret scan",
+    "no-scraping scan"
   ],
-  "reasoningEvidence": "Safe-summary artifact analysis identified PR evidence/profile drift; local checks and prompt governance fixture verify the minimal repair."
+  "reasoningEvidence": "Audit of existing dashboard and alert manual gate enforcement identified duplication; shared boundary centralizes production-like gate and safe summary rules."
 }

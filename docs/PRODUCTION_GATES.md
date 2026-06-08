@@ -43,7 +43,7 @@ Manual gate registry work advances G3 operational control. It does not make the 
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
 ## Evidence Automation Gate
 
 Evidence single source of truth is a review automation boundary. It does not claim production runtime readiness and does not authorize provider apply, live YouTube operation, token sale, exchange, cash-out, custody, or internal balance behavior.
@@ -57,3 +57,11 @@ requiring placeholder checks, freshness structure checks, and workflow
 self-protection in CI. It still does not make the system G4 production ready;
 provider apply, external alert delivery with real credentials, and live YouTube
 operation remain manual-gated.
+
+Provider-safe deployment apply advances G3 operational control by centralizing
+dry-run/apply separation, approved manual gate enforcement, single-use gate
+marking, rollback evidence, and safe apply summaries for dashboard, external
+alert, and provider-specific deployment operations. It still does not make the
+system G4 production ready because real provider SDK apply, persistent manual
+gate storage, production deployment execution, and live YouTube account
+operation remain out of scope.

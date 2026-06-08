@@ -75,7 +75,16 @@
 
 ## Production-Like Apply Enforcement Update
 
-Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply and external alert apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+Production-like apply is not authorized by `manualApproval: true` alone. Dashboard apply, external alert apply, and provider-specific deployment apply require both an approved manual gate record and the `ManualGateRegistry` containing that record before provider apply starts. Successful apply marks the gate `used`; failed provider apply and dry-run do not mark it used. Used, expired, wrong-type, wrong-target-commit, or wrong-target-environment gates cannot authorize apply. Manual gate records store secret references only and are not secret storage.
+
+## Provider-Safe Deployment Apply v1.1.3
+
+| Severity | Risk | Owner | Next PR | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real provider SDK apply is still not executed by this repository. | Operations | Provider SDK selection PR | Keep the shared boundary provider-neutral and require an approved manual gate record before any production-like apply. |
+| Medium | Manual gate approvals are still in-memory in product tests. | Operations | Persistent manual gate storage PR | Safe summaries and tests enforce single-use behavior; production use still needs durable approval storage. |
+| Medium | Apply evidence could expose provider secrets if future adapters bypass the shared boundary. | Backend/Observability | Provider SDK selection PR | Safe result sanitization and docs require secret references only, plus no secret/private URL/wallet/raw user data in apply summaries. |
+| Medium | Provider apply and manual gate used marking are not yet one persistent transaction. | Operations | Provider apply job state machine PR | The current boundary rejects success if `markUsed` fails, but durable compensation/audit state is still required for external-provider side effects. |
 ## Rendered Risk Register Source
 
 Risk register entries can be rendered from `.codex/risk-register.json`. The JSON source is used to prevent drift between review evidence and documentation.
@@ -112,7 +121,7 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 
 | Severity | Risk | Owner | Next step | Mitigation |
 | --- | --- | --- | --- | --- |
-| Medium | PR #26 remains open as older audit/evidence work. | project-owner | owner decision | Close without merge or refresh from current main with v1.1.3 evidence and current-head checks. |
-| Medium | PR #22 remains open and may be stale against current main. | project-owner | provider apply refresh PR if still desired | Refresh independently before any merge decision; do not mix with this audit PR. |
+| Medium | PR #26 was closed without merge after PR #33 audit merge. | project-owner | no merge action | Do not reuse stale PR #26 evidence for merge readiness. |
+| Medium | PR #22 was closed without merge and provider apply is rebuilt from current main in this PR. | project-owner | provider-safe deployment apply v1.1.3 PR | Re-evaluate implementation ideas only through current-head code, tests, and evidence. |
 | Medium | Historical PR docs contain archived evidence examples and older placeholder-like values. | harness owner | docs cleanup if parser scope changes | Treat historical PR docs as archived and not current merge-readiness evidence. |
 | Low | Local forge is unavailable on this machine. | engineering | local tooling setup if required | Rely on GitHub contracts check unless local Foundry is installed. |
