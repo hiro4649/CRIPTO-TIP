@@ -1,33 +1,35 @@
 {
-  "schemaVersion": "1.0",
-  "harnessVersion": "1.0.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "25",
-  "headSha": "9a1501606b938d0257bf2a2cb3da2b731de78000",
-  "baseSha": "e0ab0f553e0addd6fb7441d4866bc0858de10482",
+  "prNumber": "29",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "schemaVersion": "1.0",
   "reviewIndependenceStatus": "pass",
   "writerEvidence": [
-    "docs/process/CODEX_V108_SAFE_CI_ROLLOUT_POLICY.md",
-    "docs/process/CODEX_V108_STATUS_SCHEMA.json",
-    ".codex/evidence-pack.json"
+    "safe artifact triage for PR #29 quality-gate run 27088666217 artifact 7462833751",
+    "local pnpm test reproduction of the evidence-rendering self-protection timeout",
+    "targeted 180 second timeout repair without assertion weakening",
+    "minimal v1.1.3 harness-context evidence alignment after main merge conflict resolution"
   ],
   "reviewEvidence": [
-    "docs/pr-cripto-tip-harness-v1.0.8-fresh-rollout.md",
-    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    ".codex/change-classification.json"
+    "apps/api/src/evidence-rendering.test.ts targeted diff",
+    "docs/pr-repair-safe-pnpm-test-failure.md Option A scope evidence",
+    ".codex/change-classification.json unknownCount 0",
+    "docs/process/CODEX_KNOWLEDGE_MAP.json marker alignment"
   ],
   "reviewChecklist": [
-    "PR #23 not reopened or reused",
-    "raw logs not stored",
-    "required checks not weakened",
-    "product runtime code not changed",
-    "v1.0.8 rollout remains policy/schema only"
+    "GitHub raw logs not read",
+    "PR #28 not reopened or merged",
+    "PR #28 evidence not reused for merge readiness",
+    "test expectation not weakened",
+    "skip/only not introduced",
+    "scope limited to pnpm test timeout repair plus minimal harness-context evidence alignment",
+    "no product runtime, workflow, script, manual gate, or provider apply behavior changed"
   ],
-  "humanConfirmationRequired": [
-    "merge decision",
-    "current head SHA",
-    "CI status",
-    "quality-gate status",
-    "remaining blockers"
-  ]
+  "sameSummaryOnly": false,
+  "reviewedItemsAbstract": false,
+  "productCodeChanged": false,
+  "runtimeReadinessClaimed": false
 }

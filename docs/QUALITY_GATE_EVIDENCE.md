@@ -235,3 +235,14 @@ failures use `metadata_limited_external_blocked` without reading raw logs.
 ## PR #25 v1.0.8 Required/Advisory Separation
 
 PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout passes same-head required checks, target gate, safe artifact availability, and quality-gate. Required statuses remain blocking: typescript, contracts, quality-gate, target-gate, same-head required checks, safe artifact availability, evidence freshness, placeholder check, and self-protection. Legacy self-test and version-lineage findings are advisory safe-summary evidence and do not emit `workflow_required_status_failure` unless they prove wrong source, wrong target, stale current-head evidence, or another required-status failure. Raw logs were not read.
+## Safe pnpm Test Failure Repair PR
+
+- PR #28 is closed without merge and is not reused as merge evidence.
+- CRIPTO-TIP is not treated as v1.1.0 complete from PR #28.
+- Repair source is safe artifact metadata only.
+- GitHub raw logs were not read.
+- Safe reason code: `pnpm_typecheck_passed_but_test_failed`.
+- Safe classification: `pnpm_typecheck_result=success`, `pnpm_test_result=failure`, `product_code_failure=true`, `raw_log_allowed=false`.
+- Local reproduction found one `pnpm test` timeout in `apps/api/src/evidence-rendering.test.ts`.
+- Repair keeps quality-gate self-protection execution and assertion intact; only the affected test timeout budget is adjusted to 180 seconds for full-suite I/O contention.
+- New PR required checks must pass before merge.

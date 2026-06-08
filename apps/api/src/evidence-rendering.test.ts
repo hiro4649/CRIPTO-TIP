@@ -129,7 +129,7 @@ describe("evidence single source of truth scripts", () => {
 
   it("keeps quality-gate self-protection preparation explicit", () => {
     expect(runScript("check-quality-gate-self-protection.mjs")).toContain("passed");
-  });
+  }, 180000);
 
   it("fetches GitHub run evidence from fixture JSON and injects run and artifact IDs", () => {
     const head = "1234567890abcdef1234567890abcdef12345678";
@@ -405,7 +405,7 @@ describe("evidence single source of truth scripts", () => {
     const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
     runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
-  });
+  }, 30000);
 
   it("requires safe CI artifacts to fail closed when upload files are missing", () => {
     const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");

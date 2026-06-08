@@ -461,6 +461,42 @@
       "requiresProductVerification": false,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for v1.0.8 fresh rollout."
+    },
+    {
+      "pathPattern": "docs/pr-repair-safe-pnpm-test-failure.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for safe-artifact-guided pnpm test failure repair."
+    },
+    {
+      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Test coverage evidence."
+    },
+    {
+      "pathPattern": "docs/QUALITY_GATE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Quality-gate evidence."
+    },
+    {
+      "pathPattern": "docs/RISK_REGISTER.md",
+      "classification": "docs",
+      "surface": "risk",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Risk register."
     }
   ],
   "safeSummaryOnly": true

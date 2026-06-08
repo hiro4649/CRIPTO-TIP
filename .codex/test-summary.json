@@ -1,7 +1,14 @@
 {
   "schemaVersion": "1.0.0",
   "command": "corepack pnpm test",
-  "testFiles": 20,
-  "passed": 178,
-  "skipped": 6
+  "testFiles": 21,
+  "passed": 207,
+  "skipped": 6,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": "29",
+  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
+  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "source": "local pnpm test and npm test after targeted 180 second timeout repair"
 }
