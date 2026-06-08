@@ -48,6 +48,10 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 
 Evidence single source of truth is a review automation boundary. It does not claim production runtime readiness and does not authorize provider apply, live YouTube operation, token sale, exchange, cash-out, custody, or internal balance behavior.
 
+## Full Repository Audit v1.1.3
+
+This audit does not authorize production readiness. Production-like provider apply, live YouTube operation, wallet/RPC/deploy changes, and external alert/dashboard apply remain blocked unless an approved manual gate record and current-head checks are present.
+
 Quality-gate self-protection requiredization strengthens the evidence gate by
 requiring placeholder checks, freshness structure checks, and workflow
 self-protection in CI. It still does not make the system G4 production ready;

@@ -2,27 +2,22 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "29",
-  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
-  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "prNumber": "to_be_assigned_after_pr_creation",
+  "headSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
+  "baseSha": "f12b53d7766ff97f6c190b63b8948bdb1da35d66",
   "schemaVersion": "1.0",
   "productVerificationStatus": "pass",
   "productCodeChanged": false,
   "runtimeReadinessClaimed": false,
   "behaviors": {
-    "pnpm_test_failure_reproduced": "pass",
-    "targeted_timeout_fix": "pass",
-    "harness_context_evidence_alignment": "pass",
+    "full_repo_audit": "pass",
     "product_runtime_changed": "no",
-    "package_or_lockfile_changed": "no",
     "raw_github_logs_read": "no",
     "pr28_reopened_or_merged": "no"
   },
   "evidence": [
-    "apps/api/src/evidence-rendering.test.ts targeted timeout repair",
-    "safe quality-gate artifact 7462833751 from run 27088666217 for PR #29 failure classification",
-    "AGENTS.md inherited v1.1.3 context from main with no PR diff after merge resolution",
-    "docs/process/CODEX_KNOWLEDGE_MAP.json harness marker alignment",
-    ".codex/evidence-pack.json"
+    "docs/AUDIT_REPORT_FULL_REPO_V113.md",
+    ".codex/evidence-pack.json",
+    "repository safe-summary scans"
   ]
 }

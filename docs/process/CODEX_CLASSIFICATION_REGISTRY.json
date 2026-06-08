@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.2",
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.0.7",
-  "harnessVersion": "1.0.2",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
   "entries": [
     {
       "pathPattern": "scripts/codex-*",
@@ -497,6 +497,24 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Risk register."
+    },
+    {
+      "pathPattern": "docs/AUDIT_REPORT_FULL_REPO_V113.md",
+      "classification": "docs",
+      "surface": "audit",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Full repository safe-summary audit report."
+    },
+    {
+      "pathPattern": "docs/pr-full-repo-pro-audit-v113.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": false,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for full repository v1.1.3 audit."
     }
   ],
   "safeSummaryOnly": true

@@ -242,5 +242,12 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 - Safe reason code: `pnpm_typecheck_passed_but_test_failed`.
 - Reproduction: local `corepack pnpm test` reproduced one timeout in the quality-gate self-protection preparation test.
 - Fix: increased only the affected test timeout to 180 seconds so the existing self-protection assertion can complete under full-suite I/O contention.
+
+## Full Repository Audit v1.1.3
+
+- Test summary target: 21 files, 207 passed, 6 skipped.
+- Changed area: audit report, PR evidence, risk register, quality-gate evidence, test coverage evidence, production gates evidence, classification registry, and `.codex` evidence.
+- Product runtime code is not changed by this audit PR.
+- Required local verification: `corepack pnpm lint`, `corepack pnpm typecheck`, `corepack pnpm test`, `npm test`, `corepack pnpm evidence:ci`, and `corepack pnpm quality:self-protection`.
 - Verification: `corepack pnpm test` passed with 21 test files, 207 passed, and 6 skipped; `npm test` passed with the same counts.
 - Guardrail: no tests were skipped, no expectations were weakened, and no product runtime source was changed.

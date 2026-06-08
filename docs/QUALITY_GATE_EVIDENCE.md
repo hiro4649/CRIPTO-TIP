@@ -245,4 +245,14 @@ PR #25 keeps CRIPTO-TIP active harness at v1.0.7 until the fresh v1.0.8 rollout 
 - Safe classification: `pnpm_typecheck_result=success`, `pnpm_test_result=failure`, `product_code_failure=true`, `raw_log_allowed=false`.
 - Local reproduction found one `pnpm test` timeout in `apps/api/src/evidence-rendering.test.ts`.
 - Repair keeps quality-gate self-protection execution and assertion intact; only the affected test timeout budget is adjusted to 180 seconds for full-suite I/O contention.
+
+## Full Repository Audit v1.1.3
+
+- PR #29 was merged and is the current main baseline for this audit.
+- PR #28 remains closed without merge and is not reused for merge readiness.
+- PR #26 and PR #22 remain open and are documented as stale/open follow-up risks.
+- Critical findings: 0 unresolved.
+- High findings: 0 unresolved.
+- Medium/Low findings are documented in `docs/AUDIT_REPORT_FULL_REPO_V113.md` and `docs/RISK_REGISTER.md`.
+- No product runtime, workflow, script, provider apply, manual gate behavior, wallet/RPC/deploy, YouTube connector, or Chain Listener change is made by this audit PR.
 - New PR required checks must pass before merge.
