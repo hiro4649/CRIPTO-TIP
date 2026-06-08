@@ -107,3 +107,12 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | --- | --- | --- | --- |
 | Medium | PR #28 terminal blocked state could be confused with v1.1.0 completion. | Open until this PR is reviewed. | PR #28 remains closed without merge; this PR does not reopen, merge, or reuse PR #28 evidence. |
 | Low | Full-suite I/O contention can make the quality self-protection script test exceed Vitest default timeout. | Mitigated in this PR. | Targeted 180 second timeout for the existing assertion; no skip, no weakened expectation. |
+
+## Full Repository Audit v1.1.3
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | PR #26 remains open as older audit/evidence work. | project-owner | owner decision | Close without merge or refresh from current main with v1.1.3 evidence and current-head checks. |
+| Medium | PR #22 remains open and may be stale against current main. | project-owner | provider apply refresh PR if still desired | Refresh independently before any merge decision; do not mix with this audit PR. |
+| Medium | Historical PR docs contain archived evidence examples and older placeholder-like values. | harness owner | docs cleanup if parser scope changes | Treat historical PR docs as archived and not current merge-readiness evidence. |
+| Low | Local forge is unavailable on this machine. | engineering | local tooling setup if required | Rely on GitHub contracts check unless local Foundry is installed. |

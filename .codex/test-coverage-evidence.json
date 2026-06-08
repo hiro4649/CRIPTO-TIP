@@ -2,27 +2,25 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "29",
-  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
-  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "prNumber": "33",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
   "testFiles": 21,
   "testsPassed": 207,
   "testsSkipped": 6,
   "commands": [
-    "corepack pnpm test",
-    "npm test"
+    "corepack pnpm test: pass",
+    "npm test: pass"
   ],
   "riskCoverage": [
-    "changed area: apps/api/src/evidence-rendering.test.ts timeout for quality self-protection script test",
-    "changed area: docs/process/CODEX_KNOWLEDGE_MAP.json marker alignment only",
+    "changed area: audit docs and machine-readable evidence",
     "test command: corepack pnpm test and npm test",
-    "what the test covers: quality-gate self-protection script still runs and returns passed",
-    "edge cases: no skip/only/expectation weakening; timeout only covers I/O-heavy script execution under full Vitest concurrency"
+    "what the tests cover: existing product and harness behavior remains passing while audit changes docs/evidence only"
   ],
   "uncoveredRisks": [
     "GitHub checks must pass on new PR head.",
-    "This PR does not complete broader v1.1.x rollout/source-registry/provider-apply work."
+    "Stale open PRs require owner decision outside this audit PR."
   ],
   "testCoverageEvidenceStatus": "pass",
   "evidencePresent": true,

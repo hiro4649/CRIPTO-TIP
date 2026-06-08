@@ -1,23 +1,40 @@
 {
   "schemaVersion": "1.0",
   "harnessVersion": "1.1.3",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "headSha": "current_pr_head",
   "risks": [
     {
       "severity": "Medium",
-      "risk": "PR #28 remains terminal blocked and must not be reused",
+      "risk": "PR #26 remains open as stale audit/evidence work",
       "owner": "project-owner",
-      "nextPr": "none until owner resumes rollout",
-      "mitigation": "Closed without merge; this PR only repairs safe pnpm test failure."
+      "nextPr": "owner decision",
+      "mitigation": "Close without merge or refresh from current main with v1.1.3 evidence."
+    },
+    {
+      "severity": "Medium",
+      "risk": "PR #22 remains open and may be stale against current main",
+      "owner": "project-owner",
+      "nextPr": "provider apply refresh PR if still desired",
+      "mitigation": "Refresh independently before any merge decision."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Historical PR docs contain archived evidence examples and older placeholders",
+      "owner": "harness owner",
+      "nextPr": "docs cleanup if parser scope changes",
+      "mitigation": "Treat historical PR docs as archived and not current merge-readiness evidence."
     },
     {
       "severity": "Low",
-      "risk": "Script scan test can exceed default Vitest timeout under full-suite I/O contention",
+      "risk": "Local forge unavailable on this machine",
       "owner": "engineering",
-      "nextPr": "this PR",
-      "mitigation": "Targeted timeout increase without weakening assertions."
+      "nextPr": "tooling setup if local contract verification is required",
+      "mitigation": "Rely on GitHub contracts check unless local Foundry is installed."
     }
   ],
   "safeSummaryOnly": true,
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
-  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a"
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": "33",
+  "baseSha": "current_pr_base"
 }

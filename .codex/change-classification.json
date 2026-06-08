@@ -2,91 +2,159 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
   "harnessVersion": "1.1.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": "29",
-  "headSha": "ff376b81f836be4f4d2415d6d9f2297e18e96e9a",
-  "baseSha": "6291bda0ab7d4ae05b66f066f8138acbc701b687",
+  "prNumber": "33",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
   "classificationStatus": "complete",
-  "unknownFiles": [],
+  "unknownFiles": 0,
   "unknownCount": 0,
   "classificationCoverageStatus": "pass",
   "changeClassificationStatus": "pass",
-  "productRelevantChanged": true,
+  "productRelevantChanged": false,
   "packageOrLockfileChanged": false,
   "runtimeReadinessClaimed": false,
   "pathPatterns": [
     {
-      "pathPattern": "apps/api/src/evidence-rendering.test.ts",
-      "classification": "test",
-      "riskLevel": "R2",
-      "verification": "targeted pnpm test timeout repair",
-      "scope": "test"
-    },
-    {
-      "pathPattern": ".codex/**",
+      "pathPattern": ".codex/change-classification.json",
       "classification": "verification_relevant",
       "riskLevel": "R2",
-      "verification": "machine-readable evidence",
-      "scope": "quality_evidence"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
-      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
+      "pathPattern": ".codex/evidence-pack.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/product-verification.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/quality-gate-evidence.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/review-independence.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/risk-register.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/task-contract.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/test-coverage-evidence.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": ".codex/test-summary.json",
+      "classification": "verification_relevant",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": "docs/AUDIT_REPORT_FULL_REPO_V113.md",
       "classification": "docs",
       "riskLevel": "R2",
-      "verification": "test evidence update",
-      "scope": "docs"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
       "pathPattern": "docs/QUALITY_GATE_EVIDENCE.md",
       "classification": "docs",
       "riskLevel": "R2",
-      "verification": "quality evidence update",
-      "scope": "docs"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
       "pathPattern": "docs/RISK_REGISTER.md",
       "classification": "docs",
       "riskLevel": "R2",
-      "verification": "risk update",
-      "scope": "docs"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
-      "pathPattern": "docs/pr-repair-safe-pnpm-test-failure.md",
+      "pathPattern": "docs/TEST_COVERAGE_EVIDENCE.md",
       "classification": "docs",
       "riskLevel": "R2",
-      "verification": "rendered PR evidence",
-      "scope": "pr_evidence"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": "docs/PRODUCTION_GATES.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
+    },
+    {
+      "pathPattern": "docs/pr-full-repo-pro-audit-v113.md",
+      "classification": "docs",
+      "riskLevel": "R2",
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
       "pathPattern": "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
       "classification": "harness_managed",
       "riskLevel": "R2",
-      "verification": "classification coverage update",
-      "scope": "classification_registry"
+      "verification": "full repo audit evidence",
+      "scope": "audit_evidence"
     },
     {
-      "pathPattern": "docs/process/CODEX_KNOWLEDGE_MAP.json",
+      "pathPattern": ".github/pull_request_template.md",
       "classification": "harness_managed",
       "riskLevel": "R2",
-      "verification": "knowledge-map harness marker alignment only",
-      "scope": "harness_context_evidence"
+      "verification": "prompt eval suite requires Testing and review heading",
+      "scope": "pr_template"
     }
   ],
   "changedFiles": [
-    "apps/api/src/evidence-rendering.test.ts",
-    ".codex/evidence-pack.json",
-    ".codex/test-summary.json",
-    ".codex/test-coverage-evidence.json",
-    ".codex/quality-gate-evidence.json",
     ".codex/change-classification.json",
+    ".codex/evidence-pack.json",
     ".codex/product-verification.json",
+    ".codex/quality-gate-evidence.json",
     ".codex/review-independence.json",
     ".codex/risk-register.json",
-    "docs/TEST_COVERAGE_EVIDENCE.md",
+    ".codex/task-contract.json",
+    ".codex/test-coverage-evidence.json",
+    ".codex/test-summary.json",
+    "docs/AUDIT_REPORT_FULL_REPO_V113.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/RISK_REGISTER.md",
-    "docs/pr-repair-safe-pnpm-test-failure.md",
+    "docs/TEST_COVERAGE_EVIDENCE.md",
+    "docs/PRODUCTION_GATES.md",
+    "docs/pr-full-repo-pro-audit-v113.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/process/CODEX_KNOWLEDGE_MAP.json"
-  ]
+    ".github/pull_request_template.md"
+  ],
+  "changeType": "harness_change",
+  "riskLevel": "R3",
+  "productCodeChanged": false
 }
