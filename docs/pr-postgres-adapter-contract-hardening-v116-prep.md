@@ -41,7 +41,7 @@ Done criteria: typed manual gate row parser rejects unknown or unsafe row shape;
 
 ## Evidence Integrity
 
-Head SHA: 6fc1233c4c4120a9d1c021492dbafed71025e94b
+Head SHA: 3f6bbfd7a851fc1187e1b31834c910924df18a42
 
 Base SHA: e059a7525f735a827c095bbc66a5e534bb1153d6
 
@@ -49,7 +49,7 @@ Product CI: success
 
 Quality-gate: current_head_quality_gate_replay_required
 
-CI run: 27218289313
+CI run: 27218741735
 
 Quality-gate run: current_head_quality_gate_replay_required
 
@@ -169,3 +169,34 @@ write failure.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
+
+## Review Independence
+
+- Writer evidence is limited to current-head local verification, tests, docs,
+  and machine-readable .codex evidence.
+- AI review recommendation is not human approval.
+- Human owner confirmation is required before any real DB integration, DB
+  driver dependency, live DB test environment, real provider SDK apply, or
+  production-like deployment.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Selected candidate: B.
+
+Candidate A: Add a real pg dependency and live DB adapter now.
+
+Candidate B: Add typed row parsers, SQL parameter builders, query result
+guards, mapping docs, and no real DB connection.
+
+Candidate C: Only update docs.
+
+Reason selected: Candidate B hardens the v1.1.6 adapter contract while
+preserving the no-driver, no-real-DB, no-provider-SDK, no-production-apply
+boundary.
+
+Rejected alternatives: Candidate A was rejected because it would add real DB
+driver and live DB scope before owner approval; Candidate C was rejected because
+docs-only evidence would not harden parser, SQL parameter, or rowCount failure
+paths.

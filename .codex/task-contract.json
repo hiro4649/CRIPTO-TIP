@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 43,
-  "headSha": "6fc1233c4c4120a9d1c021492dbafed71025e94b",
+  "headSha": "3f6bbfd7a851fc1187e1b31834c910924df18a42",
   "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "goal": "Harden the Postgres transaction adapter contract for v1.1.6 preparation with typed row parsers, SQL parameter builders, query result guards, and migration-to-adapter mapping, without real DB connection, DB driver, package changes, real provider SDK apply, or production deployment.",
   "allowedScope": [
