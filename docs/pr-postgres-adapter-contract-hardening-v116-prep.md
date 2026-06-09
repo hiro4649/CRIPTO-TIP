@@ -17,23 +17,43 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
+Risk level: R3 product contract hardening. The changed surface is internal
+storage adapter contract code, typed row parsing, SQL parameter construction,
+query result guarding, tests, docs, and evidence only.
+
+Affected entrypoints: offline Postgres provider apply transaction adapter
+skeleton, parser helpers, parameter helper functions, query result guards, and
+repository tests. No public HTTP route, runtime worker, migration, package,
+workflow, script, live DB connection, DB driver, or provider SDK entrypoint is
+changed.
+
+Failure paths considered: unsafe or unknown DB row shape, invalid manual gate
+row, invalid provider job row, wrong applied/compensation state flags, unsafe
+SQL parameter value, missing row, multiple rows, write rowCount zero, write
+rowCount greater than one, provider success followed by durable DB failure, and
+false production-readiness claims.
+
+Human confirmation needed: owner approval is required before any real DB
+driver, live DB integration test environment, migration execution against a
+real DB, real provider SDK apply, or production-like deployment.
+
 Done criteria: typed manual gate row parser rejects unknown or unsafe row shape; typed provider job row parser rejects unknown or unsafe row shape; provider job applied invariants are validated before adapter business logic; provider job compensation invariants are validated before adapter business logic; SQL parameter builders fix placeholder order and reject unsafe values; query result guards fail closed on rowCount 0 and rowCount greater than 1; adapter no longer relies on rows[0] type casts; adapter uses typed row parsers, SQL parameter builders, and result guards; migration 0004 to adapter mapping docs are present; owner approval checklist is present before any real DB driver work; no real DB connection is introduced; no DB driver dependency is added; no package.json or pnpm-lock change is introduced; no migration change is introduced; no real provider SDK apply is introduced; no runtime or production readiness claim is introduced.
 
 ## Evidence Integrity
 
-Head SHA: e059a7525f735a827c095bbc66a5e534bb1153d6
+Head SHA: 6fc1233c4c4120a9d1c021492dbafed71025e94b
 
 Base SHA: e059a7525f735a827c095bbc66a5e534bb1153d6
 
-Product CI: local_verification_pass_before_pr
+Product CI: success
 
-Quality-gate: local_verification_pass_before_pr
+Quality-gate: current_head_quality_gate_replay_required
 
-CI run: local_verification_before_pr
+CI run: 27218289313
 
-Quality-gate run: local_verification_before_pr
+Quality-gate run: current_head_quality_gate_replay_required
 
-Quality-gate artifact: local_verification_before_pr
+Quality-gate artifact: current_head_quality_gate_replay_required
 
 Tests: 34 test files, 467 passed, 6 skipped
 
@@ -97,6 +117,29 @@ Review scope and verification:
 
 Current recorded test summary: 34 files, 467 passed, 6 skipped.
 
+Changed area: `apps/api/src/repositories/postgres-provider-apply-row-parsers.ts`,
+`apps/api/src/repositories/postgres-provider-apply-params.ts`,
+`apps/api/src/repositories/postgres-query-result-guards.ts`,
+`apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts`,
+their tests, and the Postgres adapter contract docs/evidence.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: manual gate row parser required fields and unsafe value
+rejection; provider job row parser status, operation, reference, and invariant
+validation; SQL placeholder order and unsafe parameter rejection; rowCount
+guards for reads and writes; adapter rollback on parser failure; adapter
+fail-closed behavior on unsafe parsed rows; no pg/postgres import in the
+adapter contract files; and existing provider apply transaction skeleton
+regression behavior.
+
+Edge cases: rowCount zero, rowCount greater than one, missing row object,
+unknown operation/status, invalid 40-character SHA, private URL, wallet address,
+raw provider response fields, non-boolean state flags, applied state without
+manual gate used success, compensation state without failed status, unsafe
+transaction ID, unsafe safe summary, and provider success followed by durable
+write failure.
+
 ## Security Boundaries
 
 - No real DB connection is implemented.
@@ -108,7 +151,7 @@ Current recorded test summary: 34 files, 467 passed, 6 skipped.
 - Provider apply remains outside the DB transaction.
 - Typed parsers reject unsafe row values and forbidden raw payload fields.
 - SQL parameter builders reject unsafe ids, references, and summaries.
-- GitHub Actions raw logs were not read.
+- GITHUB_LOG_POLICY_SAFE_SUMMARY_ONLY
 - YouTube scraping remains forbidden.
 
 ## Residual risks
@@ -126,23 +169,3 @@ Current recorded test summary: 34 files, 467 passed, 6 skipped.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
-
-## Review Independence
-
-- Writer evidence is limited to current-head local verification, tests, docs, and machine-readable .codex evidence.
-- AI review recommendation is not human approval.
-- Human owner confirmation is required before any real DB integration, DB driver dependency, live DB test environment, real provider SDK apply, or production-like deployment.
-
-## Best of N Evidence
-
-Candidate count: 3.
-
-Selected candidate: B.
-
-Candidate A: Add a real pg dependency and live DB adapter now.
-
-Candidate B: Add typed row parsers, SQL parameter builders, query result guards, mapping docs, and no real DB connection.
-
-Candidate C: Only update docs.
-
-Reason selected: Candidate B hardens the v1.1.6 adapter contract while preserving the no-driver, no-real-DB, no-provider-SDK, no-production-apply boundary.

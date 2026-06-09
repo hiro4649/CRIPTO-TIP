@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 43,
-  "headSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
+  "headSha": "6fc1233c4c4120a9d1c021492dbafed71025e94b",
   "risks": [
     {
       "id": "persistent_db_transaction_future_work",
