@@ -57,3 +57,16 @@ This PR does not emit a rejected record by default.
 Approved schema acceptance is a validator capability, not current approval. A
 future PR may use `approved` only after human project-owner confirmation on the
 target commit.
+
+## DB Driver Owner Approval Record
+
+The DB driver owner approval record is the next boundary after this scope gate.
+It binds future DB driver approval to repository, PR number, branch, target
+commit, base commit, allowed scope, expiry, and fingerprint.
+
+The approval record remains separate from AI review. AI may recommend next
+actions, but AI, assistants, Codex, bots, GitHub Actions, and unknown actors
+cannot create or substitute project-owner approval.
+
+This repository still has no approved DB driver owner record by default. The
+safe evidence state is `not_approved`.

@@ -359,3 +359,7 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 ## DB Integration Scope Gate v1.1.6 Prep
 
 - `apps/api/src/db-integration-scope-gate.test.ts` covers the default not-approved state, requested_scope allowlist validation, rejected owner decision requirements, owner approval field requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration test gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden readiness claims, and recursive unsafe evidence rejection for unsafe keys, connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.
+
+## DB Driver Owner Approval Record v1.1.6 Prep
+
+- `apps/api/src/db-driver-owner-approval-record.test.ts` covers the default not_approved state, package and lockfile denial by default, real DB/live DB/migration/provider/production/readiness denial, project-owner role validation, AI/bot actor rejection, ISO UTC approval and expiry validation, 72 hour approval window, repository/branch/PR/target commit/base commit binding, approval scope allowlist, forbidden scope rejection, driver package and version policy requirements, real DB secret manager requirements, migration scope requirements, stable fingerprint generation, fingerprint mismatch replay rejection, unsafe evidence rejection, and proof that this PR remains not_approved.

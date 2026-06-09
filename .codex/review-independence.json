@@ -2,14 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 44,
-  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
-  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "prNumber": 45,
+  "headSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
   "reviewIndependenceStatus": "pass",
   "writerEvidenceOnly": true,
   "aiReviewIsNotHumanApproval": true,
   "humanConfirmationRequired": true,
   "humanOwnerConfirmationRequired": true,
   "status": "pass",
-  "humanOwnerApprovalRequiredBeforeRealDb": true
+  "humanOwnerApprovalRequiredBeforeRealDb": true,
+  "title": "feat: add db driver owner approval record",
+  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
+  "writerEvidenceSeparateFromReview": true,
+  "aiApprovalIsOwnerApproval": false,
+  "ownerApprovalStatus": "not_approved"
 }

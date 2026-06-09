@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 44,
-  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
-  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "prNumber": 45,
+  "headSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
   "latestAnalyzedRunId": "not_available_before_pr_creation",
@@ -53,13 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "success",
+  "qualityGateStatus": "pre_pr_local_evidence",
   "evidenceNotes": [
-    "Quality-gate passed on the reported PR head before this post-review hardening commit.",
-    "Requested scope allowlist, rejected owner decision requirements, and recursive unsafe evidence rejection are covered by local tests before push.",
-    "Final PR body evidence is refreshed after the pushed head receives same-head CI and quality-gate success.",
+    "DB driver owner approval record remains not_approved.",
+    "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "27230413181",
-  "qualityGateArtifactId": "7518001924"
+  "qualityGateRunId": "pre_pr_local_evidence",
+  "qualityGateArtifactId": "pre_pr_local_evidence",
+  "title": "feat: add db driver owner approval record",
+  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment."
 }

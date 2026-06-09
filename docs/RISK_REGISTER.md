@@ -190,3 +190,14 @@ flag updates, and context-aware lock timeout retry actions.
 | --- | --- | --- | --- | --- |
 | Medium | Real DB driver and live integration scope could expand before owner approval. | Storage owner | DB integration scope gate PR | DB integration scope gate defaults to not approved and blocks driver/package, real DB connection, live DB tests, migration execution, provider SDK apply, and readiness claims. |
 | Medium | DB credential handling could leak through PR evidence or audit records. | Storage owner | Secret boundary PR | DB secret boundary requires Secret Manager references only and forbids raw connection strings, private URLs, tokens, API keys, and production data in evidence. |
+
+## DB Driver Owner Approval Record v1.1.6 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real DB driver approval remains future human-owner work. | Storage owner | Owner-approved DB driver PR | This PR defines validation and replay protection only; the committed state remains not_approved. |
+| Medium | Approval record could be replayed on another branch, PR, commit, or scope. | Storage owner | DB driver approval PR | Target branch, PR number, target commit, base commit, allowed scope, expiry, and fingerprint are validated together. |
+| Medium | Approval record could be mistaken for runtime readiness. | Backend owner | Future DB runtime PR | Approval evidence does not claim runtime, production, legal, or YouTube policy readiness. |
+| Medium | Secret manager setup remains future work. | Security owner | DB secret manager setup PR | Approval evidence stores references and safe summaries only, not secret values or connection strings. |
+| Medium | Migration execution remains future work. | Backend owner | Migration apply PR | Migration apply requires explicit allowed scope and remains out of this PR. |
+| Medium | Provider SDK apply and production deployment remain out of scope. | Operations owner | Separate manual-gated provider/deployment PR | The validator rejects provider SDK apply and actual production deployment flags. |

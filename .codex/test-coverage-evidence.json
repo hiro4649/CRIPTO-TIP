@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 44,
-  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
-  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "prNumber": 45,
+  "headSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 35,
-    "passed": 533,
+    "testFiles": 36,
+    "passed": 598,
     "skipped": 6
   },
   "coverage": [
@@ -31,16 +31,18 @@
     "safe typed parser failure operator action"
   ],
   "status": "pass",
-  "testFiles": 35,
-  "passed": 533,
+  "testFiles": 36,
+  "passed": 598,
   "skipped": 6,
-  "summary": "35 files, 533 passed, 6 skipped",
+  "summary": "36 files, 598 passed, 6 skipped",
   "coverageNotes": [
-    "DB integration scope gate default not-approved state covered.",
-    "Requested scope allowlist validation covered.",
-    "Rejected and approved owner decision schema plus project-owner role validation covered.",
-    "DB driver/package, real DB connection, live DB test, migration rollback, provider/prod apply, readiness claim, and recursive unsafe evidence rejection covered."
+    "DB driver owner approval record default not_approved state covered.",
+    "Target commit, branch, PR, base commit, expiry, fingerprint, and replay protection covered.",
+    "Owner role and AI/bot actor rejection covered.",
+    "Unsafe evidence rejection and forbidden capability denial covered."
   ],
-  "testsPassed": 533,
-  "testsSkipped": 6
+  "testsPassed": 598,
+  "testsSkipped": 6,
+  "title": "feat: add db driver owner approval record",
+  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment."
 }

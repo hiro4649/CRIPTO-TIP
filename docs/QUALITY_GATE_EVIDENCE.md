@@ -364,3 +364,9 @@ quality-gate weakening is introduced.
 - `.codex/db-integration-scope-gate.json` records not-approved safe defaults.
 - `apps/api/src/db-integration-scope-gate.test.ts` verifies requested_scope allowlist enforcement, rejected owner decision requirements, owner approval requirements, DB driver/package gates, real DB connection gates, live DB test gates, migration rollback requirements, forbidden provider/prod apply, and recursive unsafe key/value rejection.
 - The PR does not add a DB driver, package change, pnpm-lock change, migration change, real DB connection, live DB test execution, provider SDK apply, or readiness claim.
+
+## DB Driver Owner Approval Record v1.1.6 Prep
+
+- `.codex/db-driver-owner-approval-record.json` records not_approved safe defaults.
+- `apps/api/src/db-driver-owner-approval-record.test.ts` verifies target commit, branch, PR, base commit, approval scope, expiry, fingerprint, owner actor, replay protection, and unsafe evidence rejection.
+- The PR defines validator support for future approved owner records but does not commit an approved record and does not add a DB driver, package change, pnpm-lock change, migration change, real DB connection, provider SDK apply, production deployment, or readiness claim.

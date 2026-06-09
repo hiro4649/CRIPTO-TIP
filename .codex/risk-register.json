@@ -2,22 +2,64 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 44,
-  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
+  "prNumber": 45,
+  "headSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
   "risks": [
     {
+      "id": "db-driver-owner-approval-1",
       "severity": "Medium",
-      "risk": "Real DB scope expansion before owner approval.",
-      "owner": "Storage owner",
-      "nextPr": "DB integration scope gate PR",
-      "mitigation": "Scope gate defaults to not approved and blocks driver/package, real DB connection, live DB tests, migration execution, provider SDK apply, and readiness claims."
+      "status": "open",
+      "risk": "Real DB driver approval remains future human-owner work.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
     },
     {
+      "id": "db-driver-owner-approval-2",
       "severity": "Medium",
-      "risk": "DB credential leakage in evidence.",
-      "owner": "Storage owner",
-      "nextPr": "Secret boundary PR",
-      "mitigation": "Secret Manager references only; raw connection strings, private URLs, token-like values, and production data are rejected."
+      "status": "open",
+      "risk": "Approval record does not itself grant runtime readiness.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-3",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Fingerprint prevents accidental replay but does not replace code review.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-4",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Real DB integration tests remain future work.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-5",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Secret manager setup remains future work.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-6",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Migration execution remains future work.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-7",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Provider SDK apply remains future work.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "id": "db-driver-owner-approval-8",
+      "severity": "Medium",
+      "status": "open",
+      "risk": "Production deployment remains out of scope.",
+      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
     }
   ],
   "entries": [
@@ -30,6 +72,8 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
-  "status": "pass"
+  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "status": "pass",
+  "title": "feat: add db driver owner approval record",
+  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment."
 }
