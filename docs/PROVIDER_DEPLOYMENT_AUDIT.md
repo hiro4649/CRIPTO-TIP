@@ -20,6 +20,17 @@ not credential storage.
 - `provider_deployment.job.cancelled`
 - `provider_deployment.compensation.required`
 - `provider_deployment.compensation.resolved`
+- `provider_apply_transaction.draft_created`
+- `provider_apply_transaction.provider_apply_started`
+- `provider_apply_transaction.provider_apply_succeeded`
+- `provider_apply_transaction.provider_apply_failed`
+- `provider_apply_transaction.mark_gate_used_attempted`
+- `provider_apply_transaction.mark_gate_used_succeeded`
+- `provider_apply_transaction.mark_gate_used_failed`
+- `provider_apply_transaction.audit_append_succeeded`
+- `provider_apply_transaction.committed`
+- `provider_apply_transaction.rolled_back`
+- `provider_apply_transaction.compensation_required`
 
 ## Safe Persistence Boundary
 
@@ -58,3 +69,8 @@ Real provider SDK apply and actual production deployment apply remain out of
 scope. The provider deployment job state machine prepares transition validation,
 compensation-required evidence, and safe repository boundaries for a later
 persistent transaction implementation.
+
+`provider_apply_transaction.*` actions are logical transaction-boundary audit
+events. They record state and operator handoff facts only. They must not include
+raw provider responses, raw GitHub logs, stdout/stderr bodies, stack traces,
+secret values, or private endpoints.

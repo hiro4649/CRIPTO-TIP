@@ -48,6 +48,14 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 
 Evidence single source of truth is a review automation boundary. It does not claim production runtime readiness and does not authorize provider apply, live YouTube operation, token sale, exchange, cash-out, custody, or internal balance behavior.
 
+## Provider Apply Transaction Boundary
+
+Provider apply transaction boundary preparation is not a production gate pass.
+It proves an in-memory repository contract for recording manual gate used state,
+provider job status, and audit append as one logical unit. Real provider SDK
+apply, actual production deployment apply, and DB-backed transactions remain
+separately gated future work.
+
 ## Full Repository Audit v1.1.3
 
 This audit does not authorize production readiness. Production-like provider apply, live YouTube operation, wallet/RPC/deploy changes, and external alert/dashboard apply remain blocked unless an approved manual gate record and current-head checks are present.

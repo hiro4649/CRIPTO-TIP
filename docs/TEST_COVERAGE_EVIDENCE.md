@@ -287,3 +287,19 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   deterministic transition audit IDs, duplicate transition timestamp audit ID
   rejection, compensation-required audit recording, and duplicate audit ID
   rejection.
+
+## Provider Apply Transaction Boundary v1.1.4
+
+- Added `apps/api/src/provider-apply-transaction.test.ts` for draft field
+  validation, production-like manual gate ID requirement, unsafe target and
+  safe-summary rejection, provider diagnostic payload rejection, planned job
+  projection, and sanitized failure summaries.
+- Added `apps/api/src/repositories/provider-apply-transaction-repository.test.ts`
+  for duplicate transaction ID rejection, successful provider apply commit,
+  manual gate used marking, provider/manual audit append, unapproved gate
+  rejection, target commit/environment mismatch rejection, invalid provider job
+  transition rejection, audit append failure, mark-used failure compensation
+  handoff, rollback handoff, duplicate audit ID rejection, and raw provider
+  response rejection.
+- Existing PR #35 manual gate audit tests and PR #38 provider job state-machine
+  tests remain part of the regression surface.

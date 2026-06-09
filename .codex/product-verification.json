@@ -2,42 +2,67 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 38,
-  "headSha": "20981271285757b7561a11d7a78832c43eace049",
-  "baseSha": "8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c",
-  "productVerificationStatus": "pass",
+  "prNumber": 39,
+  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "productVerificationStatus": "local_verification_pass_before_pr",
   "commands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass"
+    {
+      "name": "corepack pnpm install",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass: 28 files, 308 passed, 6 skipped"
+    },
+    {
+      "name": "npm test",
+      "result": "pass: 28 files, 308 passed, 6 skipped"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass: summary recorded from measured test run"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass: local pre-PR evidence validation"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass"
+    }
   ],
-  "claims": {
-    "runtimeReady": false,
-    "productionReady": false,
-    "legalCompliance": false,
-    "youtubePolicyCompliance": false,
-    "realProviderApply": false,
-    "actualProductionApply": false
-  },
-  "status": "pass",
-  "behavior": {
-    "provider_deployment_job_state_machine": "verified_by_targeted_tests",
-    "provider_deployment_job_repository_boundary": "verified_by_targeted_tests",
-    "provider_apply_compensation_design": "documented",
-    "real_provider_apply": "not_implemented",
-    "actual_production_apply": "not_executed",
-    "runtime_readiness": "not_claimed",
-    "production_readiness": "not_claimed",
-    "applied_requires_external_provider_apply_started": "verified",
-    "compensation_required_failed_state_only": "verified",
-    "deterministic_transition_audit_id": "verified"
-  }
+  "coverage": [
+    "provider apply transaction draft",
+    "transaction repository commit",
+    "compensation handoff",
+    "rollback handoff",
+    "safe summary rejection"
+  ],
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false
 }

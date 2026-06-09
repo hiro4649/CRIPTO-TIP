@@ -23,7 +23,18 @@ export const providerDeploymentAuditActions = [
   "provider_deployment.job.rolled_back",
   "provider_deployment.job.cancelled",
   "provider_deployment.compensation.required",
-  "provider_deployment.compensation.resolved"
+  "provider_deployment.compensation.resolved",
+  "provider_apply_transaction.draft_created",
+  "provider_apply_transaction.provider_apply_started",
+  "provider_apply_transaction.provider_apply_succeeded",
+  "provider_apply_transaction.provider_apply_failed",
+  "provider_apply_transaction.mark_gate_used_attempted",
+  "provider_apply_transaction.mark_gate_used_succeeded",
+  "provider_apply_transaction.mark_gate_used_failed",
+  "provider_apply_transaction.audit_append_succeeded",
+  "provider_apply_transaction.committed",
+  "provider_apply_transaction.rolled_back",
+  "provider_apply_transaction.compensation_required"
 ] as const;
 
 export type ProviderDeploymentAuditAction = typeof providerDeploymentAuditActions[number];

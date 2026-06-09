@@ -266,3 +266,20 @@ apply started plus manual gate mark-used attempt and success,
 compensation-required state restricted to failed jobs when mark-used fails after
 provider apply side effects, duplicate job ID rejection, deterministic
 transition audit IDs, and safe transition audit summaries.
+
+## Provider Apply Transaction Boundary
+
+Verified in `apps/api/src/provider-apply-transaction.test.ts` and
+`apps/api/src/repositories/provider-apply-transaction-repository.test.ts`.
+
+Coverage includes transaction draft validation, production-like manual gate ID
+requirement, unsafe target and safe-summary rejection, provider diagnostic payload
+rejection, duplicate transaction ID rejection, manual gate approval checks,
+target commit and environment matching, provider job state updates, manual gate
+used marking, provider and manual audit append, audit append failure handling,
+mark-used failure compensation handoff, rollback handoff, duplicate audit ID
+rejection, and PR #35/#38 regression surfaces.
+
+This is a transaction boundary preparation only. It does not call a real
+provider SDK, does not execute actual production deployment apply, and does not
+claim runtime, production, legal, or YouTube policy readiness.

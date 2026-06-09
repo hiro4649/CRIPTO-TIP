@@ -2,21 +2,21 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 38,
-  "headSha": "20981271285757b7561a11d7a78832c43eace049",
-  "baseSha": "8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c",
+  "prNumber": 39,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0.0",
-  "prProfile": "harness_workflow_r3",
+  "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add provider apply job state machine",
-  "goal": "Add provider apply job state-machine preparation for harness v1.1.4 with transition validation, compensation design, safe audit evidence, and repository boundaries without real provider SDK apply or production deployment.",
-  "ciRunId": "27174995541",
-  "qualityGateRunId": "27175137193",
-  "qualityGateArtifactId": "7495462097",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add provider apply transaction boundary",
+  "goal": "Prepare persistent transaction boundary for provider apply, manual gate used state, provider job state, and audit logs under harness v1.1.4 without real provider SDK apply or production deployment.",
+  "ciRunId": "27181330789",
+  "qualityGateRunId": "27181458886",
+  "qualityGateArtifactId": "7497670438",
+  "productCiStatus": "local_verification_pass_before_pr",
+  "qualityGateStatus": "local_verification_pass_before_pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -30,25 +30,30 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
+      "apps/api/src/provider-apply-transaction.ts",
+      "apps/api/src/provider-apply-transaction.test.ts",
+      "apps/api/src/repositories/provider-apply-transaction-repository.ts",
+      "apps/api/src/repositories/provider-apply-transaction-repository.test.ts",
       "apps/api/src/provider-deployment-audit.ts",
-      "apps/api/src/provider-deployment-job-state.ts",
-      "apps/api/src/provider-deployment-job-state.test.ts",
-      "apps/api/src/repositories/provider-deployment-job-repository.ts",
-      "apps/api/src/repositories/provider-deployment-job-repository.test.ts",
+      "docs/PROVIDER_APPLY_TRANSACTION_BOUNDARY.md",
+      "docs/PROVIDER_APPLY_COMPENSATION_HANDOFF.md",
       "docs/PROVIDER_DEPLOYMENT_JOB_STATE.md",
       "docs/PROVIDER_DEPLOYMENT_COMPENSATION.md",
       "docs/PROVIDER_DEPLOYMENT_AUDIT.md",
       "docs/MANUAL_GATE_AUDIT_STORAGE.md",
-      "docs/RUNBOOK.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/PRODUCT_VERIFICATION.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/pr-provider-apply-job-state-machine-v114-prep.md",
+      "docs/pr-persistent-transaction-boundary-v114.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json"
     ],
     "allowedPaths": [
+      "apps/api/src/provider-apply-transaction.ts",
+      "apps/api/src/provider-apply-transaction.test.ts",
+      "apps/api/src/repositories/provider-apply-transaction-repository.ts",
+      "apps/api/src/repositories/provider-apply-transaction-repository.test.ts",
       "apps/api/src/provider-deployment-audit.ts",
       "apps/api/src/provider-deployment-audit.test.ts",
       "apps/api/src/provider-deployment-job-state.ts",
@@ -87,11 +92,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -103,7 +108,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass"
+      "result": "pass: summary recorded from measured test run"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -111,7 +116,7 @@
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "local advisory before PR creation"
+      "result": "pass: local pre-PR evidence validation"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
@@ -122,21 +127,7 @@
       "result": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27174995541",
-      "result": "success",
-      "headSha": "20981271285757b7561a11d7a78832c43eace049"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27175137193",
-      "result": "success",
-      "artifactId": "7495462097",
-      "headSha": "20981271285757b7561a11d7a78832c43eace049"
-    }
-  ],
+  "remoteRuns": [],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -144,16 +135,16 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Stop or revert if provider job transitions permit forbidden state movement, applied jobs can exist without external provider apply started and manual gate mark-used success, compensation-required evidence leaks unsafe values, or real provider apply becomes executable.",
+  "rollbackOrStopCondition": "Stop if transaction boundary calls real provider SDK, performs production deployment apply, stores unsafe summaries, bypasses approved manual gate evidence, or weakens quality-gate.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "provider_deployment_job_state_machine",
-    "provider_deployment_job_repository_boundary",
-    "provider_deployment_transition_audit_helper",
-    "provider_apply_compensation_design",
-    "manual_gate_used_consistency_checks",
+    "provider_apply_transaction_boundary",
+    "manual_gate_job_audit_log_consistency",
+    "transaction_like_in_memory_test_harness",
+    "provider_apply_compensation_handoff",
+    "safe_summary_persistence",
     "tests",
     "docs",
     ".codex evidence"
@@ -163,10 +154,10 @@
     "actual production deployment apply",
     "secret manager real SDK integration",
     "live YouTube operation",
+    "wallet/RPC/deploy changes",
     "YouTube connector changes",
     "Chain Listener changes",
     "durable events runtime changes",
-    "wallet/RPC/deploy changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -179,67 +170,68 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "unsafe GitHub log download",
     "quality-gate weakening"
   ],
   "doneCriteria": [
-    "provider deployment job transition validator allows only approved transitions",
-    "running cancellation is rejected after external provider apply starts",
-    "applied jobs require external_provider_apply_started manual_gate_mark_used_attempted and manual_gate_mark_used_succeeded",
-    "compensation_required is recorded when provider apply succeeded but manual gate mark-used failed",
-    "provider deployment job repository rejects duplicate job IDs",
-    "provider deployment job repository records safe transition audits",
-    "audit summary rejects secrets private URLs wallet addresses and raw fields",
-    "docs describe transaction boundary prep and compensation design",
-    "PR #35 audit regression tests still pass",
+    "transaction draft rejects missing and unsafe fields",
+    "transaction repository commits provider job applied only after provider success and manual gate mark-used success",
+    "transaction repository marks manual gate used once",
+    "transaction repository appends provider and manual gate audit records",
+    "manual gate approval target commit and environment mismatch are rejected",
+    "provider job invalid transition is rejected",
+    "audit append failure is fail-closed",
+    "markUsed or audit append failure after provider success returns compensation_required true",
+    "rollback transaction records safe operator handoff only",
+    "provider diagnostic payload, unsafe summaries, and unsafe next actions are rejected",
+    "PR #35 manual gate audit regression tests still pass",
+    "PR #38 provider job state-machine regression tests still pass",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head",
-    "compensation_required is only valid on failed jobs after provider apply started and manual gate mark-used failed",
-    "transition audit IDs are deterministic"
+    "required checks pass on PR head"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 26,
-    "passed": 269,
+    "testFiles": 28,
+    "passed": 308,
     "skipped": 6
   },
   "securityBoundaries": [
     "No real provider SDK apply is implemented.",
     "No actual production deployment apply is implemented.",
-    "Provider job records store safe summaries only, never secret values or raw provider responses.",
-    "Applied provider jobs require external provider apply started, manual gate mark-used attempted, and manual gate mark-used succeeded.",
-    "Compensation-required evidence is safe-summary only and does not store provider credentials.",
-    "GitHub unsafe log sources were not read.",
+    "Provider apply transaction stores safe summaries only.",
+    "Manual gate used marking remains approval evidence, not secret storage.",
+    "Compensation handoff is operator action only, not automatic rollback.",
+    "GitHub Actions log download was not used.",
     "YouTube scraping remains forbidden."
   ],
   "residualRisks": [
-    "Persistent transaction boundary remains future work; this PR prepares state and compensation semantics without claiming DB-backed atomic execution.",
-    "Real provider SDK apply remains future work; no provider SDK, credential, webhook, or provider call path is introduced.",
-    "Actual production deployment apply remains out of scope; production-like apply still requires approved manual gate evidence and a separate owner-controlled execution path.",
-    "Compensation execution remains future work; this PR records when compensation is required and documents operator handling without executing rollback automatically.",
-    "Live YouTube operation remains manual-gated and unchanged."
+    "Persistent DB transaction remains future work; this PR adds an in-memory transaction-like contract only.",
+    "Real provider SDK apply remains future work.",
+    "Operator compensation execution remains future work.",
+    "Secret rotation audit remains future work.",
+    "Actual production deployment remains out of scope."
   ],
   "humanConfirmation": [
     "Human owner confirmation is required before production-like apply.",
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 269,
+  "testsPassed": 308,
   "testsSkipped": 6,
-  "testFiles": 26,
+  "testFiles": 28,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
+    "corepack pnpm test: pass: 28 files, 308 passed, 6 skipped",
+    "npm test: pass: 28 files, 308 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/write-test-summary.mjs: pass: summary recorded from measured test run",
     "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: local advisory before PR creation",
+    "node scripts/validate-evidence-freshness.mjs: pass: local pre-PR evidence validation",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
@@ -251,12 +243,12 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds internal provider deployment job state, repository, audit helper, and compensation design without changing external API, contract ABI, YouTube connector, Chain Listener, IRIS delivery payloads, or real provider SDK execution."
+    "statement": "Adds internal provider apply transaction boundary types and in-memory repository contract without external API, contract ABI, YouTube connector, Chain Listener, IRIS delivery, or real provider SDK execution changes."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline state-machine and repository boundaries, not production deployment execution.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline transaction-boundary preparation only.",
   "reviewScope": {
-    "scope": "Provider deployment job state machine, transition validation, compensation-required state, safe transition audit helper, in-memory repository boundary, docs, and evidence.",
-    "riskSummary": "Main risk is allowing forbidden job transitions, recording applied without provider side effects, mark-used attempt, and manual gate mark-used success, or leaking provider secrets in job/audit summaries.",
+    "scope": "Provider apply transaction boundary, in-memory transaction simulation, compensation handoff docs, tests, and evidence.",
+    "riskSummary": "Main risk is recording provider success without manual gate used and audit append consistency, or leaking unsafe provider data.",
     "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks."
   },
   "reviewIndependence": {
@@ -266,7 +258,7 @@
   "bestOfN": {
     "candidateCount": 3,
     "selected": "B",
-    "summary": "Candidate B implements job state-machine preparation, transition validation, compensation design, tests, docs, and evidence without real provider apply."
+    "summary": "Candidate B implements transaction boundary interface, in-memory transaction simulation, state consistency tests, and compensation handoff docs without real provider apply."
   },
-  "prBodyPath": "docs/pr-provider-apply-job-state-machine-v114-prep.md"
+  "prBodyPath": "docs/pr-persistent-transaction-boundary-v114.md"
 }

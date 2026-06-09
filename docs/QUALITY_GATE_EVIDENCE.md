@@ -283,3 +283,21 @@ external provider side effects started but mark-used failed, the job records
 No real provider SDK apply, actual production deployment apply, YouTube
 connector change, Chain Listener change, wallet/RPC/deploy change, or
 quality-gate weakening is introduced.
+
+## Provider Apply Transaction Boundary v1.1.4
+
+Provider apply transaction evidence adds `ProviderApplyTransactionDraft`,
+transaction result/failure types, `TransactionalProviderDeploymentRepository`,
+and an in-memory transaction-like simulation for provider job state, manual gate
+used state, and audit append consistency.
+
+The evidence covers manual gate approval, target commit/environment mismatch,
+unsafe target and summary rejection, duplicate transaction/audit IDs, provider
+job transition invalidity, audit append failure, mark-used failure after
+provider apply success, compensation handoff, rollback handoff, and raw provider
+response rejection.
+
+No real provider SDK apply, actual production deployment apply, secret manager
+real SDK integration, live YouTube operation, raw GitHub log reading, runtime
+readiness claim, production readiness claim, legal compliance claim, YouTube
+policy compliance claim, or quality-gate weakening is introduced.

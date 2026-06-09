@@ -52,3 +52,8 @@ gate mark-used was attempted and whether it succeeded. A provider job cannot be
 started but mark-used failed, the job records `compensation_required` so a later
 transactional repository can reconcile the local approval evidence and external
 provider state.
+
+`TransactionalProviderDeploymentRepository` is the next preparation step. It
+simulates the logical transaction boundary for manual gate used state, provider
+job status, and audit append without connecting to a production database or
+calling a real provider SDK.
