@@ -96,3 +96,10 @@ Future DB-backed apply must atomically bind provider job transition, manual gate
 mark-used, and audit log write. Until that persistent transaction exists, the
 state machine records `compensation_required` only on failed jobs where external
 provider apply started and manual gate mark-used did not succeed.
+
+`docs/PROVIDER_APPLY_TRANSACTION_BOUNDARY.md` adds the in-memory
+transaction-like harness for this logical unit. The harness prepares the
+repository contract only: it records job state, manual gate used state, and
+audit rows consistently after a manual-gated provider apply fact is supplied.
+It does not call a provider SDK, does not run production deployment apply, and
+does not claim runtime readiness.

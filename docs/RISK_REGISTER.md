@@ -136,3 +136,13 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Medium | Secret rotation audit remains future work. | Backend | future credential rotation PR | Current audit records allow safe references only and do not persist secret values. |
 | Medium | Live YouTube operation remains manual-gated. | Backend | future live operations PR | Live YouTube account operation remains disabled without explicit approved manual gate. |
 | Medium | Compensation execution remains future work after provider apply side effects begin. | Backend | Provider compensation execution PR | Provider job state records `compensation_required` and safe audit summaries so operators can reconcile without storing raw provider data. |
+
+## Provider Apply Transaction Boundary v1.1.4
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Persistent DB transaction remains future work. | Backend | Postgres transaction repository PR | This PR adds interface, in-memory transaction simulation, state consistency tests, and Postgres pseudocode only. |
+| Medium | Real provider SDK apply remains future work. | Backend/Ops | Provider SDK selection PR | The transaction boundary accepts provider apply facts but does not execute provider calls. |
+| Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | `compensation_required` returns a safe operator handoff with rollback/runbook references and no automatic rollback. |
+| Medium | Secret rotation audit remains future work. | Security/Ops | Secret rotation audit PR | Manual gate and audit evidence allow secret references only, not secret values. |
+| Medium | Actual production deployment remains out of scope. | Operations | Manual-gated deployment PR | Production-like apply still requires approved manual gate records and owner-controlled execution. |

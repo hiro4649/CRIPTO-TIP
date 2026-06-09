@@ -2,22 +2,18 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 38,
-  "headSha": "20981271285757b7561a11d7a78832c43eace049",
-  "baseSha": "8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c",
+  "prNumber": 39,
+  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27175137193",
-  "latestAnalyzedArtifactId": "7495462097",
+  "qualityGateExpectedStatus": "local_verification_pass_before_pr",
+  "latestAnalyzedRunId": "not_available_before_pr_creation",
+  "latestAnalyzedArtifactId": "not_available_before_pr_creation",
   "reasonCodeMappings": {
-    "providerDeploymentJobStateStatus": "pass",
-    "providerDeploymentCompensationStatus": "pass",
-    "providerDeploymentAuditStatus": "pass",
+    "providerApplyTransactionBoundaryStatus": "pass",
+    "providerApplyCompensationHandoffStatus": "pass",
     "noRealProviderApplyStatus": "pass",
-    "noProductionApplyStatus": "pass",
-    "providerDeploymentAppliedInvariantStatus": "pass",
-    "providerDeploymentCompensationInvariantStatus": "pass",
-    "providerDeploymentDeterministicAuditIdStatus": "pass"
+    "noProductionApplyStatus": "pass"
   },
   "safePlaceholderInventory": [],
   "blockedClaims": [
@@ -29,33 +25,29 @@
     "actual production deployment apply",
     "manual gate bypass"
   ],
-  "qualityGateEvidenceStatus": "pass",
+  "qualityGateEvidenceStatus": "local_verification_pass_before_pr",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "success",
+      "status": "not_available_before_pr_creation",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "success",
+      "status": "not_available_before_pr_creation",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "success",
+      "status": "not_available_before_pr_creation",
       "blocking": true
     }
   ],
-  "qualityGateStatus": "success",
-  "qualityGateRunId": "27175137193",
-  "qualityGateArtifactId": "7495462097",
   "safeArtifactOnly": true,
   "rawLogsRead": false,
   "reasonCodesAddressed": [
-    "provider_deployment_job_state_machine",
-    "provider_deployment_compensation_boundary",
-    "provider_deployment_transition_audit",
+    "provider_apply_transaction_boundary",
+    "provider_apply_compensation_handoff",
     "no_secret_scan",
     "no_scraping_scan"
   ]

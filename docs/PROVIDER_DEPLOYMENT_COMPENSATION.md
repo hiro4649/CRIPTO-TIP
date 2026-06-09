@@ -35,6 +35,10 @@ The operator must use the referenced rollback plan and runbook to decide whether
 to disable, roll back, or reconcile the external provider state. The evidence
 must include only safe summaries and references.
 
+`docs/PROVIDER_APPLY_COMPENSATION_HANDOFF.md` defines the handoff contract for
+this state. It is an operator action record, not an automatic provider rollback
+or live provider operation.
+
 Do not paste provider tokens, API keys, webhook URLs, OAuth tokens, private
 URLs, wallet addresses, raw messages, raw display names, raw provider payloads,
 or raw logs into compensation evidence.

@@ -1,41 +1,27 @@
 {
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 39,
+  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
   "risks": [
     {
+      "id": "persistent_db_transaction_future_work",
       "severity": "Medium",
-      "risk": "Persistent transaction boundary remains future work.",
-      "owner": "Backend",
-      "nextPr": "provider apply transaction boundary PR",
-      "mitigation": "Provider job state and compensation-required evidence define the state machine before DB-backed atomic execution."
+      "status": "open",
+      "mitigation": "In-memory contract only; future Postgres transaction repository required."
     },
     {
+      "id": "real_provider_sdk_future_work",
       "severity": "Medium",
-      "risk": "Compensation execution remains future work.",
-      "owner": "Backend",
-      "nextPr": "provider compensation execution PR",
-      "mitigation": "This PR records compensation-required state and safe audit evidence without executing rollback automatically."
+      "status": "open",
+      "mitigation": "No provider SDK calls are implemented."
     },
     {
+      "id": "operator_compensation_future_work",
       "severity": "Medium",
-      "risk": "Real provider SDK apply remains future work.",
-      "owner": "Backend",
-      "nextPr": "future provider SDK PR",
-      "mitigation": "No provider SDK credentials or real apply code are committed."
-    },
-    {
-      "severity": "Medium",
-      "risk": "Production deployment apply remains out of scope.",
-      "owner": "Backend",
-      "nextPr": "future manual-gated deployment PR",
-      "mitigation": "Actual production apply requires approved manual gate evidence and remains outside this PR."
-    },
-    {
-      "severity": "Medium",
-      "risk": "Live YouTube operation remains manual-gated.",
-      "owner": "Backend",
-      "nextPr": "future live operations PR",
-      "mitigation": "No live YouTube operation is added."
+      "status": "open",
+      "mitigation": "Safe operator handoff only."
     }
   ]
 }
