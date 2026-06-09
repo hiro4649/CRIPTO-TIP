@@ -5,6 +5,29 @@ Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driv
 PR profile: product_r3
 Task mode: feature
 
+## Risk level
+
+R3. This is product-relevant preflight policy and evidence work that touches an internal validator, tests, docs, and `.codex` evidence. It intentionally does not add a DB driver dependency, package change, lockfile change, real DB connection, migration execution, provider SDK apply, or production deployment.
+
+## Affected entrypoints
+
+- `apps/api/src/db-driver-preflight-policy.ts`
+- `apps/api/src/db-driver-preflight-policy.test.ts`
+- `.codex/db-driver-preflight-policy.json`
+- DB driver preflight docs and quality evidence docs
+
+## Failure paths considered
+
+- A driver is selected without project-owner approval.
+- A package or lockfile change is allowed before the dependency review.
+- Real DB, live DB, migration, provider SDK, or production readiness flags are enabled too early.
+- Unsafe evidence values such as DB URLs, private URLs, wallet addresses, token-like values, raw provider responses, or raw GitHub logs are recorded.
+- AI review recommendation is mistaken for human owner approval.
+
+## Human confirmation needed
+
+Human project-owner approval is still required before selecting a DB driver or introducing a DB driver dependency. This PR records `driver_choice_status: not_selected` and `owner_approval_status: not_approved`.
+
 ## Task Contract
 
 Goal: Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driver, package.json change, pnpm-lock change, real DB connection, live DB integration test, migration execution, provider SDK apply, or production deployment.
@@ -21,19 +44,19 @@ Done criteria: DB driver preflight policy validator exists; default record is no
 
 ## Evidence Integrity
 
-Head SHA: e477897b097496563b385d4f585da17e57573ef2
+Head SHA: 2f45bf9b84770b3adaad6b147477918e2b5b67ce
 
 Base SHA: 9b41e6453172ef9287c9ce41774a50589568a728
 
 Product CI: success
 
-Quality-gate: awaiting_rerun_after_evidence_refresh
+Quality-gate: awaiting_rerun_after_current_head_evidence_refresh
 
-CI run: 27242677682
+CI run: 27242908477
 
-Quality-gate run: 27242677652
+Quality-gate run: 27242908499
 
-Quality-gate artifact: 7522808921
+Quality-gate artifact: 7522902327
 
 Tests: 37 test files, 670 passed, 6 skipped
 
@@ -99,7 +122,11 @@ Current recorded test summary: 37 files, 670 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-preflight-policy.ts`, `apps/api/src/db-driver-preflight-policy.test.ts`, DB driver preflight docs, and `.codex` evidence.
 
-Test command: `corepack pnpm vitest run apps/api/src/db-driver-preflight-policy.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.\n\nWhat the tests cover: safe default `not_selected` state, candidate allowlist, selected driver rejection without approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness denial, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.\n\nEdge cases: unknown candidate driver, selected driver without approved owner record, selected driver not in candidates, package change allowed, pnpm lock change allowed, real DB connection allowed, live DB integration allowed, migration apply allowed, provider SDK apply allowed, production deployment allowed, runtime readiness claim allowed, production readiness claim allowed, missing review requirement, DB connection string, private URL, wallet address, token-like value, raw provider response, raw GitHub logs reference, and stale target commit binding.
+Test command: `corepack pnpm vitest run apps/api/src/db-driver-preflight-policy.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
+
+What the tests cover: safe default `not_selected` state, candidate allowlist, selected driver rejection without approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness denial, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.
+
+Edge cases: unknown candidate driver, selected driver without approved owner record, selected driver not in candidates, package change allowed, pnpm lock change allowed, real DB connection allowed, live DB integration allowed, migration apply allowed, provider SDK apply allowed, production deployment allowed, runtime readiness claim allowed, production readiness claim allowed, missing review requirement, DB connection string, private URL, wallet address, token-like value, raw provider response, raw GitHub logs reference, and stale target commit binding.
 
 ## Review Independence
 
