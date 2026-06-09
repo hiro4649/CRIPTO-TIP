@@ -1,9 +1,0 @@
-{
-  "schemaVersion": "0.9.0",
-  "phase": "quality_gate_failed",
-  "status": "fail",
-  "lastKnownGate": "local_quality_gate",
-  "lastKnownReasonCodes": [],
-  "safeNextAction": "Review safe reason codes and rerun after the smallest correction.",
-  "safeSummaryOnly": true
-}

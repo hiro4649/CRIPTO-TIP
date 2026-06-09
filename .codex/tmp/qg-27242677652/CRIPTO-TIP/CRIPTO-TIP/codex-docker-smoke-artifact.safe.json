@@ -1,9 +1,0 @@
-{
-  "status": "not_applicable",
-  "safeSummaryOnly": true,
-  "reasonCodes": [
-    "docker_smoke_not_required"
-  ],
-  "dockerSmokeRequired": false,
-  "script": "scripts/codex-docker-smoke-artifact-gate.mjs"
-}
