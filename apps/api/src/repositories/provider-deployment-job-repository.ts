@@ -46,7 +46,7 @@ export class InMemoryProviderDeploymentJobRepository implements ProviderDeployme
     const next = transitionProviderDeploymentJob(current, nextStatus, context);
     this.jobs.set(jobId, next);
     this.appendAudit(createProviderDeploymentJobAuditRecord({
-      id: `${jobId}-${nextStatus}-${this.audits.length + 1}`,
+      id: transitionAuditId(jobId, current.status, nextStatus, context.updatedAt),
       job: next,
       createdAt: context.updatedAt,
       safeSummary: {
@@ -57,7 +57,7 @@ export class InMemoryProviderDeploymentJobRepository implements ProviderDeployme
     }));
     if (next.compensation_required) {
       this.appendAudit(createProviderDeploymentJobAuditRecord({
-        id: `${jobId}-compensation-required-${this.audits.length + 1}`,
+        id: compensationAuditId(jobId, context.updatedAt),
         job: next,
         action: "provider_deployment.compensation.required",
         createdAt: context.updatedAt,
@@ -87,4 +87,16 @@ export class InMemoryProviderDeploymentJobRepository implements ProviderDeployme
   listAudits() {
     return [...this.audits];
   }
+}
+
+function transitionAuditId(jobId: string, currentStatus: ProviderDeploymentJobStatus, nextStatus: ProviderDeploymentJobStatus, updatedAt: string) {
+  return sanitizeAuditId(`${jobId}-${currentStatus}-to-${nextStatus}-${updatedAt}`);
+}
+
+function compensationAuditId(jobId: string, updatedAt: string) {
+  return sanitizeAuditId(`${jobId}-compensation-required-${updatedAt}`);
+}
+
+function sanitizeAuditId(value: string) {
+  return value.replace(/[^a-zA-Z0-9_.:-]+/g, "-").slice(0, 160);
 }

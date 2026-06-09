@@ -50,6 +50,37 @@ describe("provider deployment job repository", () => {
     expect(JSON.stringify(audits)).not.toMatch(/Bearer|https?:\/\/|0x[0-9a-fA-F]{40}|raw_message|display_name/i);
   });
 
+  it("uses deterministic transition audit ids", () => {
+    const repository = new InMemoryProviderDeploymentJobRepository();
+    repository.createJob(job());
+    repository.transitionJob("provider-job-1", "running", {
+      updatedAt: "2026-06-09T00:01:00.000Z",
+      externalProviderApplyStarted: true
+    });
+    expect(repository.listAudits().map((audit) => audit.id)).toContain(
+      "provider-job-1-planned-to-running-2026-06-09T00:01:00.000Z"
+    );
+  });
+
+  it("rejects duplicate transition audit id for the same transition timestamp", () => {
+    const firstRepository = new InMemoryProviderDeploymentJobRepository();
+    firstRepository.createJob(job());
+    firstRepository.transitionJob("provider-job-1", "running", {
+      updatedAt: "2026-06-09T00:01:00.000Z",
+      externalProviderApplyStarted: true
+    });
+    const transitionAudit = firstRepository.listAudits().find((audit) => audit.id.includes("planned-to-running"));
+    if (!transitionAudit) throw new Error("expected deterministic transition audit");
+
+    const secondRepository = new InMemoryProviderDeploymentJobRepository();
+    secondRepository.createJob(job());
+    secondRepository.appendAudit(transitionAudit);
+    expect(() => secondRepository.transitionJob("provider-job-1", "running", {
+      updatedAt: "2026-06-09T00:01:00.000Z",
+      externalProviderApplyStarted: true
+    })).toThrow(/already exists/);
+  });
+
   it("records compensation required audit without marking the job applied", () => {
     const repository = new InMemoryProviderDeploymentJobRepository();
     repository.createJob(job({ status: "planned" }));
@@ -67,6 +98,7 @@ describe("provider deployment job repository", () => {
     expect(failed.status).toBe("failed");
     expect(failed.compensation_required).toBe(true);
     expect(repository.listAudits().map((audit) => audit.action)).toContain("provider_deployment.compensation.required");
+    expect(repository.listAudits().map((audit) => audit.id)).toContain("provider-job-1-compensation-required-2026-06-09T00:02:00.000Z");
   });
 
   it("rejects duplicate transition audit ids", () => {

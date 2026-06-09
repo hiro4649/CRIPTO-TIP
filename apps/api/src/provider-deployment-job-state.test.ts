@@ -129,6 +129,97 @@ describe("provider deployment job state machine", () => {
     })).toThrow(/mark-used success/);
   });
 
+  it("rejects applied jobs without external provider apply started", () => {
+    expect(() => transitionProviderDeploymentJob(job({ status: "running" }), "applied", {
+      updatedAt: "2026-06-09T00:12:00.000Z",
+      manualGateMarkUsedAttempted: true,
+      manualGateMarkUsedSucceeded: true
+    })).toThrow(/external provider apply/);
+  });
+
+  it("rejects applied jobs without manual gate mark-used attempt", () => {
+    expect(() => createProviderDeploymentJobStateRecord(job({
+      status: "applied",
+      external_provider_apply_started: true,
+      manual_gate_mark_used_attempted: false,
+      manual_gate_mark_used_succeeded: true
+    }))).toThrow(/attempted mark/);
+  });
+
+  it("rejects applied jobs when compensation is required", () => {
+    expect(() => createProviderDeploymentJobStateRecord(job({
+      status: "applied",
+      external_provider_apply_started: true,
+      manual_gate_mark_used_attempted: true,
+      manual_gate_mark_used_succeeded: true,
+      compensation_required: true
+    }))).toThrow(/compensation/);
+  });
+
+  it("requires running to applied transition to keep external provider apply started true", () => {
+    const running = job({ status: "running", external_provider_apply_started: true });
+    expect(transitionProviderDeploymentJob(running, "applied", {
+      updatedAt: "2026-06-09T00:13:00.000Z",
+      externalProviderApplyStarted: true,
+      manualGateMarkUsedAttempted: true,
+      manualGateMarkUsedSucceeded: true
+    }).status).toBe("applied");
+
+    expect(() => transitionProviderDeploymentJob(job({ status: "running" }), "applied", {
+      updatedAt: "2026-06-09T00:14:00.000Z",
+      manualGateMarkUsedAttempted: true,
+      manualGateMarkUsedSucceeded: true
+    })).toThrow(/external provider apply/);
+  });
+
+  it("rejects invalid compensation-required combinations", () => {
+    expect(() => createProviderDeploymentJobStateRecord(job({
+      status: "running",
+      external_provider_apply_started: true,
+      manual_gate_mark_used_attempted: true,
+      manual_gate_mark_used_succeeded: false,
+      compensation_required: true
+    }))).toThrow(/failed status/);
+
+    expect(() => createProviderDeploymentJobStateRecord(job({
+      status: "failed",
+      external_provider_apply_started: true,
+      manual_gate_mark_used_attempted: false,
+      manual_gate_mark_used_succeeded: false,
+      compensation_required: true
+    }))).toThrow(/mark-used attempt/);
+
+    expect(() => createProviderDeploymentJobStateRecord(job({
+      status: "failed",
+      external_provider_apply_started: true,
+      manual_gate_mark_used_attempted: true,
+      manual_gate_mark_used_succeeded: true,
+      compensation_required: true
+    }))).toThrow(/mark-used failure/);
+  });
+
+  it("records normal failed and compensation failed states distinctly", () => {
+    const normalFailed = transitionProviderDeploymentJob(job({ status: "running" }), "failed", {
+      updatedAt: "2026-06-09T00:15:00.000Z",
+      safeSummary: { failureClass: "normal" }
+    });
+    expect(normalFailed.compensation_required).toBe(false);
+    expect(normalFailed.manual_gate_mark_used_attempted).toBe(false);
+
+    const compensationFailed = transitionProviderDeploymentJob(job({
+      status: "running",
+      external_provider_apply_started: true
+    }), "failed", {
+      updatedAt: "2026-06-09T00:16:00.000Z",
+      manualGateMarkUsedAttempted: true,
+      manualGateMarkUsedSucceeded: false,
+      compensationRequired: true,
+      safeSummary: { failureClass: "compensation" }
+    });
+    expect(compensationFailed.compensation_required).toBe(true);
+    expect(compensationFailed.manual_gate_mark_used_attempted).toBe(true);
+  });
+
   it("rejects unsafe audit summaries and raw target data", () => {
     expect(() => createProviderDeploymentJobAuditRecord({
       id: "provider-job-audit-1",

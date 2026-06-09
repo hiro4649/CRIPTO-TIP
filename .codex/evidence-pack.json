@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 38,
+  "headSha": "20981271285757b7561a11d7a78832c43eace049",
   "baseSha": "8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c",
   "schemaVersion": "1.0.0",
   "prProfile": "harness_workflow_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add provider apply job state machine",
   "goal": "Add provider apply job state-machine preparation for harness v1.1.4 with transition validation, compensation design, safe audit evidence, and repository boundaries without real provider SDK apply or production deployment.",
-  "ciRunId": "awaiting_pr_creation",
-  "qualityGateRunId": "awaiting_pr_creation",
-  "qualityGateArtifactId": "awaiting_pr_creation",
-  "productCiStatus": "awaiting_pr_creation",
-  "qualityGateStatus": "awaiting_pr_creation",
+  "ciRunId": "27174995541",
+  "qualityGateRunId": "27175137193",
+  "qualityGateArtifactId": "7495462097",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -73,20 +73,70 @@
     ]
   },
   "commands": [
-    { "name": "corepack pnpm install", "result": "pass" },
-    { "name": "corepack pnpm lint", "result": "pass" },
-    { "name": "corepack pnpm typecheck", "result": "pass" },
-    { "name": "corepack pnpm test", "result": "pass" },
-    { "name": "npm test", "result": "pass" },
-    { "name": "corepack pnpm evidence:ci", "result": "pass" },
-    { "name": "corepack pnpm quality:self-protection", "result": "pass" },
-    { "name": "node scripts/write-test-summary.mjs", "result": "pass" },
-    { "name": "node scripts/check-evidence-placeholders.mjs", "result": "pass" },
-    { "name": "node scripts/validate-evidence-freshness.mjs", "result": "local advisory before PR creation" },
-    { "name": "node scripts/check-quality-gate-self-protection.mjs", "result": "pass" },
-    { "name": "node scripts/codex-secret-safety-scan.mjs", "result": "pass" }
+    {
+      "name": "corepack pnpm install",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "local advisory before PR creation"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass"
+    }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27174995541",
+      "result": "success",
+      "headSha": "20981271285757b7561a11d7a78832c43eace049"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27175137193",
+      "result": "success",
+      "artifactId": "7495462097",
+      "headSha": "20981271285757b7561a11d7a78832c43eace049"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -94,8 +144,10 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Stop or revert if provider job transitions permit forbidden state movement, applied jobs can exist without manual gate mark-used success, compensation-required evidence leaks unsafe values, or real provider apply becomes executable.",
-  "safeOutput": { "status": "pass" },
+  "rollbackOrStopCondition": "Stop or revert if provider job transitions permit forbidden state movement, applied jobs can exist without external provider apply started and manual gate mark-used success, compensation-required evidence leaks unsafe values, or real provider apply becomes executable.",
+  "safeOutput": {
+    "status": "pass"
+  },
   "allowedScope": [
     "provider_deployment_job_state_machine",
     "provider_deployment_job_repository_boundary",
@@ -133,7 +185,7 @@
   "doneCriteria": [
     "provider deployment job transition validator allows only approved transitions",
     "running cancellation is rejected after external provider apply starts",
-    "applied jobs require manual_gate_mark_used_succeeded",
+    "applied jobs require external_provider_apply_started manual_gate_mark_used_attempted and manual_gate_mark_used_succeeded",
     "compensation_required is recorded when provider apply succeeded but manual gate mark-used failed",
     "provider deployment job repository rejects duplicate job IDs",
     "provider deployment job repository records safe transition audits",
@@ -142,7 +194,9 @@
     "PR #35 audit regression tests still pass",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head"
+    "required checks pass on PR head",
+    "compensation_required is only valid on failed jobs after provider apply started and manual gate mark-used failed",
+    "transition audit IDs are deterministic"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
@@ -155,7 +209,7 @@
     "No real provider SDK apply is implemented.",
     "No actual production deployment apply is implemented.",
     "Provider job records store safe summaries only, never secret values or raw provider responses.",
-    "Applied provider jobs require manual gate mark-used success.",
+    "Applied provider jobs require external provider apply started, manual gate mark-used attempted, and manual gate mark-used succeeded.",
     "Compensation-required evidence is safe-summary only and does not store provider credentials.",
     "GitHub unsafe log sources were not read.",
     "YouTube scraping remains forbidden."
@@ -202,7 +256,7 @@
   "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds offline state-machine and repository boundaries, not production deployment execution.",
   "reviewScope": {
     "scope": "Provider deployment job state machine, transition validation, compensation-required state, safe transition audit helper, in-memory repository boundary, docs, and evidence.",
-    "riskSummary": "Main risk is allowing forbidden job transitions, recording applied without manual gate mark-used success, or leaking provider secrets in job/audit summaries.",
+    "riskSummary": "Main risk is allowing forbidden job transitions, recording applied without provider side effects, mark-used attempt, and manual gate mark-used success, or leaking provider secrets in job/audit summaries.",
     "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks."
   },
   "reviewIndependence": {
@@ -213,5 +267,6 @@
     "candidateCount": 3,
     "selected": "B",
     "summary": "Candidate B implements job state-machine preparation, transition validation, compensation design, tests, docs, and evidence without real provider apply."
-  }
+  },
+  "prBodyPath": "docs/pr-provider-apply-job-state-machine-v114-prep.md"
 }

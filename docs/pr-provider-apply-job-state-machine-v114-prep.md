@@ -17,23 +17,23 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: provider deployment job transition validator allows only approved transitions; running cancellation is rejected after external provider apply starts; applied jobs require manual_gate_mark_used_succeeded; compensation_required is recorded when provider apply succeeded but manual gate mark-used failed; provider deployment job repository rejects duplicate job IDs; provider deployment job repository records safe transition audits; audit summary rejects secrets private URLs wallet addresses and raw fields; docs describe transaction boundary prep and compensation design; PR #35 audit regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head.
+Done criteria: provider deployment job transition validator allows only approved transitions; running cancellation is rejected after external provider apply starts; applied jobs require external_provider_apply_started manual_gate_mark_used_attempted and manual_gate_mark_used_succeeded; compensation_required is recorded when provider apply succeeded but manual gate mark-used failed; provider deployment job repository rejects duplicate job IDs; provider deployment job repository records safe transition audits; audit summary rejects secrets private URLs wallet addresses and raw fields; docs describe transaction boundary prep and compensation design; PR #35 audit regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head; compensation_required is only valid on failed jobs after provider apply started and manual gate mark-used failed; transition audit IDs are deterministic.
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 20981271285757b7561a11d7a78832c43eace049
 
 Base SHA: 8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c
 
-Product CI: awaiting_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_pr_creation
+Quality-gate: success
 
-CI run: awaiting_pr_creation
+CI run: 27174995541
 
-Quality-gate run: awaiting_pr_creation
+Quality-gate run: 27175137193
 
-Quality-gate artifact: awaiting_pr_creation
+Quality-gate artifact: 7495462097
 
 Tests: 26 test files, 269 passed, 6 skipped
 
@@ -45,7 +45,7 @@ Tests: 26 test files, 269 passed, 6 skipped
 - `corepack pnpm test`
 - `npm test`
 - `node scripts/write-test-summary.mjs`
-- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-github-run-artifact-auto-injection.md`
+- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-provider-apply-job-state-machine-v114-prep.md`
 - `node scripts/check-evidence-placeholders.mjs`
 
 Product verification:
@@ -90,7 +90,7 @@ Runtime smoke rationale:
 Review scope and verification:
 
 - Scope: Provider deployment job state machine, transition validation, compensation-required state, safe transition audit helper, in-memory repository boundary, docs, and evidence.
-- Risk summary: Main risk is allowing forbidden job transitions, recording applied without manual gate mark-used success, or leaking provider secrets in job/audit summaries.
+- Risk summary: Main risk is allowing forbidden job transitions, recording applied without provider side effects, mark-used attempt, and manual gate mark-used success, or leaking provider secrets in job/audit summaries.
 - Verification oracle: Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, and GitHub checks.
 
 ## Test Coverage Evidence
@@ -102,7 +102,7 @@ Current recorded test summary: 26 files, 269 passed, 6 skipped.
 - No real provider SDK apply is implemented.
 - No actual production deployment apply is implemented.
 - Provider job records store safe summaries only, never secret values or raw provider responses.
-- Applied provider jobs require manual gate mark-used success.
+- Applied provider jobs require external provider apply started, manual gate mark-used attempted, and manual gate mark-used succeeded.
 - Compensation-required evidence is safe-summary only and does not store provider credentials.
 - GitHub unsafe log sources were not read.
 - YouTube scraping remains forbidden.
@@ -123,27 +123,12 @@ Current recorded test summary: 26 files, 269 passed, 6 skipped.
 
 ## Review Independence
 
-Writer evidence is limited to implementation notes, tests, docs, and `.codex`
-evidence. Reviewer evidence is a separate recommendation surface and must not be
-recorded as human approval. AI reviewer output may give a merge recommendation
-only after current-head checks pass.
+- Independent AI Pro review identified merge-blocking evidence and state-machine hardening issues.
+- This PR update addresses those findings in code, tests, docs, and evidence without weakening quality-gate, secret scan, no-scraping scan, or manual gate requirements.
+- Human owner confirmation remains required before production-like provider apply.
 
 ## Best of N Evidence
 
-Candidate count: 3.
-
-Candidate A: implement DB-backed provider deployment transaction semantics now.
-
-Candidate B: implement provider job state-machine preparation, transition
-validation, compensation design, tests, docs, and evidence without real provider
-apply.
-
-Candidate C: implement real provider SDK apply and production deployment
-execution.
-
-Selected candidate: Candidate B.
-
-Reason selected: Candidate B adds the required state-machine and compensation
-boundary while preserving the forbidden scope: no real provider SDK apply, no
-actual production deployment apply, no wallet/RPC/deploy changes, no YouTube
-connector changes, no Chain Listener changes, and no production readiness claim.
+- Review candidates were evaluated against provider job invariants, compensation safety, deterministic audit identity, evidence freshness, and forbidden scope preservation.
+- Selected fix path keeps the smallest product-scoped change: state invariants, repository audit IDs, targeted tests, and evidence/doc refresh only.
+- Rejected paths included weakening quality-gate, bypassing evidence freshness, broad runtime/provider SDK changes, or claiming production readiness.

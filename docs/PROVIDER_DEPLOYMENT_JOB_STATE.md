@@ -52,9 +52,27 @@ Forbidden transitions:
 - `cancelled -> running`
 - `cancelled -> applied`
 
-An `applied` job requires `manual_gate_mark_used_succeeded = true`. This keeps
-provider apply success from being recorded as complete unless the approved
-manual gate was successfully marked used.
+An `applied` job requires all of the following:
+
+- `external_provider_apply_started = true`
+- `manual_gate_mark_used_attempted = true`
+- `manual_gate_mark_used_succeeded = true`
+- `compensation_required = false`
+
+This keeps provider apply success from being recorded as complete unless
+external provider side effects started and the approved manual gate was
+successfully marked used.
+
+A `compensation_required` job is valid only when all of the following are true:
+
+- `status = failed`
+- `external_provider_apply_started = true`
+- `manual_gate_mark_used_attempted = true`
+- `manual_gate_mark_used_succeeded = false`
+
+Normal failures and compensation failures both use `failed`, but the flags and
+safe summary distinguish them. Normal failure has `compensation_required =
+false`. Compensation failure has `compensation_required = true`.
 
 ## Audit Actions
 
@@ -76,5 +94,5 @@ These are safe summaries. They are not raw provider logs or provider responses.
 
 Future DB-backed apply must atomically bind provider job transition, manual gate
 mark-used, and audit log write. Until that persistent transaction exists, the
-state machine records `compensation_required` when external provider apply has
-succeeded but manual gate mark-used did not succeed.
+state machine records `compensation_required` only on failed jobs where external
+provider apply started and manual gate mark-used did not succeed.

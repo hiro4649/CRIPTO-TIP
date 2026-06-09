@@ -14,9 +14,20 @@ Set `compensation_required = true` when all are true:
 - external provider apply succeeded or side effects may have started
 - manual gate mark-used was attempted
 - manual gate mark-used did not succeed
+- job status is `failed`
 
 The job must not be recorded as `applied` in this case. Record a failed job
 state plus `provider_deployment.compensation.required` audit evidence.
+
+Normal failure and compensation failure share the `failed` status, but the flags
+are distinct:
+
+- normal failure: `manual_gate_mark_used_attempted = false` and
+  `compensation_required = false`
+- compensation failure: `external_provider_apply_started = true`,
+  `manual_gate_mark_used_attempted = true`,
+  `manual_gate_mark_used_succeeded = false`, and
+  `compensation_required = true`
 
 ## Operator Handling
 

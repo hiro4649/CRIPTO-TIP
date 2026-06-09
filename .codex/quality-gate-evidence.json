@@ -2,19 +2,22 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 38,
+  "headSha": "20981271285757b7561a11d7a78832c43eace049",
   "baseSha": "8f0699f6a8f9c84b4ee874d4abab732fa64e9f2c",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "awaiting_pr_creation",
-  "latestAnalyzedArtifactId": "awaiting_pr_creation",
+  "latestAnalyzedRunId": "27175137193",
+  "latestAnalyzedArtifactId": "7495462097",
   "reasonCodeMappings": {
     "providerDeploymentJobStateStatus": "pass",
     "providerDeploymentCompensationStatus": "pass",
     "providerDeploymentAuditStatus": "pass",
     "noRealProviderApplyStatus": "pass",
-    "noProductionApplyStatus": "pass"
+    "noProductionApplyStatus": "pass",
+    "providerDeploymentAppliedInvariantStatus": "pass",
+    "providerDeploymentCompensationInvariantStatus": "pass",
+    "providerDeploymentDeterministicAuditIdStatus": "pass"
   },
   "safePlaceholderInventory": [],
   "blockedClaims": [
@@ -26,15 +29,27 @@
     "actual production deployment apply",
     "manual gate bypass"
   ],
-  "qualityGateEvidenceStatus": "awaiting_pr_creation",
+  "qualityGateEvidenceStatus": "pass",
   "requiredStatuses": [
-    { "name": "typescript", "status": "awaiting_pr_creation", "blocking": true },
-    { "name": "contracts", "status": "awaiting_pr_creation", "blocking": true },
-    { "name": "quality-gate", "status": "awaiting_pr_creation", "blocking": true }
+    {
+      "name": "typescript",
+      "status": "success",
+      "blocking": true
+    },
+    {
+      "name": "contracts",
+      "status": "success",
+      "blocking": true
+    },
+    {
+      "name": "quality-gate",
+      "status": "success",
+      "blocking": true
+    }
   ],
-  "qualityGateStatus": "awaiting_pr_creation",
-  "qualityGateRunId": "awaiting_pr_creation",
-  "qualityGateArtifactId": "awaiting_pr_creation",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27175137193",
+  "qualityGateArtifactId": "7495462097",
   "safeArtifactOnly": true,
   "rawLogsRead": false,
   "reasonCodesAddressed": [

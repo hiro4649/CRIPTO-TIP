@@ -278,8 +278,12 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 
 - Added `apps/api/src/provider-deployment-job-state.test.ts` for provider apply
   job allowed transitions, forbidden transitions, running cancellation before
-  external apply only, applied consistency requiring manual gate mark-used
-  success, compensation-required state, and unsafe summary rejection.
+  external apply only, applied consistency requiring external provider apply
+  started plus manual gate mark-used attempt and success, compensation-required
+  state restricted to failed jobs, normal failed state without compensation, and
+  unsafe summary rejection.
 - Added `apps/api/src/repositories/provider-deployment-job-repository.test.ts`
   for duplicate job ID rejection, safe transition audit recording,
-  compensation-required audit recording, and duplicate audit ID rejection.
+  deterministic transition audit IDs, duplicate transition timestamp audit ID
+  rejection, compensation-required audit recording, and duplicate audit ID
+  rejection.

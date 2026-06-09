@@ -85,8 +85,18 @@ export function transitionProviderDeploymentJob(
 }
 
 export function assertProviderDeploymentJobAppliedConsistency(job: ProviderDeploymentJobStateRecord) {
-  if (job.status === "applied" && !job.manual_gate_mark_used_succeeded) {
+  if (job.status !== "applied") return;
+  if (!job.external_provider_apply_started) {
+    throw new Error("provider deployment applied job requires external provider apply to have started");
+  }
+  if (!job.manual_gate_mark_used_attempted) {
+    throw new Error("provider deployment applied job requires manual gate mark-used attempt");
+  }
+  if (!job.manual_gate_mark_used_succeeded) {
     throw new Error("provider deployment applied job requires manual gate mark-used success");
+  }
+  if (job.compensation_required) {
+    throw new Error("provider deployment applied job cannot require compensation");
   }
 }
 
@@ -122,8 +132,19 @@ export function createProviderDeploymentJobAuditRecord(args: {
 
 function assertProviderDeploymentJobStateRecord(job: ProviderDeploymentJobStateRecord) {
   createProviderDeploymentJob(job);
-  if (job.compensation_required && !job.external_provider_apply_started) {
-    throw new Error("provider deployment compensation requires external provider apply to have started");
+  if (job.compensation_required) {
+    if (job.status !== "failed") {
+      throw new Error("provider deployment compensation requires failed status");
+    }
+    if (!job.external_provider_apply_started) {
+      throw new Error("provider deployment compensation requires external provider apply to have started");
+    }
+    if (!job.manual_gate_mark_used_attempted) {
+      throw new Error("provider deployment compensation requires manual gate mark-used attempt");
+    }
+    if (job.manual_gate_mark_used_succeeded) {
+      throw new Error("provider deployment compensation requires manual gate mark-used failure");
+    }
   }
   if (job.manual_gate_mark_used_succeeded && !job.manual_gate_mark_used_attempted) {
     throw new Error("provider deployment manual gate mark-used success requires an attempted mark");
