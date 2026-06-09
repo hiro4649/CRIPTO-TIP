@@ -125,3 +125,7 @@ stale schema assumptions into accepted state.
 Introducing a real DB driver, live Postgres connection, migration application,
 or production-like deployment remains future work. It requires explicit owner
 approval under `docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md`.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+The v1.1.6 preparation path requires a DB integration scope gate before any real DB driver, live DB integration test, migration execution, package change, real DB connection, provider SDK apply, or runtime readiness claim can be proposed.

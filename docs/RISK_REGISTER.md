@@ -183,3 +183,10 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Migration apply remains future work. | Backend | Migration application PR | Migration 0004 is mapped to adapter fields but not changed or applied here. |
 | Medium | Provider apply executor remains future work. | Backend/Ops | Provider executor PR | Adapter records provider apply facts but does not execute provider SDK calls. |
 | Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | Provider success plus durable failure remains safe-summary handoff only. |
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real DB driver and live integration scope could expand before owner approval. | Storage owner | DB integration scope gate PR | DB integration scope gate defaults to not approved and blocks driver/package, real DB connection, live DB tests, migration execution, provider SDK apply, and readiness claims. |
+| Medium | DB credential handling could leak through PR evidence or audit records. | Storage owner | Secret boundary PR | DB secret boundary requires Secret Manager references only and forbids raw connection strings, private URLs, tokens, API keys, and production data in evidence. |

@@ -632,6 +632,87 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for Postgres adapter contract hardening."
+    },
+    {
+      "pathPattern": "apps/api/src/db-integration-scope-gate.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration owner approval scope gate validator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-integration-scope-gate.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate tests."
+    },
+    {
+      "pathPattern": "docs/DB_INTEGRATION_SCOPE_GATE.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate documentation."
+    },
+    {
+      "pathPattern": "docs/LIVE_DB_INTEGRATION_TEST_PLAN.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate documentation."
+    },
+    {
+      "pathPattern": "docs/DB_SECRET_BOUNDARY.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate documentation."
+    },
+    {
+      "pathPattern": "docs/MIGRATION_APPLY_ROLLBACK_PLAN.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB integration scope gate documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-integration-scope-gate-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB integration scope gate."
+    },
+    {
+      "pathPattern": ".codex/db-integration-scope-gate.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB integration scope gate evidence."
     }
   ],
   "safeSummaryOnly": true

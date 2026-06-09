@@ -98,3 +98,7 @@ stack traces.
 - No real provider SDK apply.
 - No actual production deployment apply.
 - No runtime, production, legal, or YouTube policy readiness claim.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+Real DB integration and provider executor wiring remain blocked by the DB integration scope gate. This document is not runtime readiness evidence and does not authorize provider SDK apply.

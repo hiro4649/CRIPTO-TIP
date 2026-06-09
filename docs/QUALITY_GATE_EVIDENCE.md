@@ -358,3 +358,9 @@ No real DB connection, real provider SDK apply, actual production deployment
 apply, raw GitHub log reading, runtime readiness claim, production readiness
 claim, legal compliance claim, YouTube policy compliance claim, or
 quality-gate weakening is introduced.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+- `.codex/db-integration-scope-gate.json` records not-approved safe defaults.
+- `apps/api/src/db-integration-scope-gate.test.ts` verifies requested_scope allowlist enforcement, rejected owner decision requirements, owner approval requirements, DB driver/package gates, real DB connection gates, live DB test gates, migration rollback requirements, forbidden provider/prod apply, and recursive unsafe key/value rejection.
+- The PR does not add a DB driver, package change, pnpm-lock change, migration change, real DB connection, live DB test execution, provider SDK apply, or readiness claim.

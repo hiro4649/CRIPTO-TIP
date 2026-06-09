@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 43,
-  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
-  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
+  "prNumber": 44,
+  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
+  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: harden postgres adapter contract",
-  "goal": "Harden the Postgres transaction adapter contract for v1.1.6 preparation with typed row parsers, SQL parameter builders, query result guards, and migration-to-adapter mapping, without real DB connection, DB driver, package changes, real provider SDK apply, or production deployment.",
-  "ciRunId": "27219092574",
-  "qualityGateRunId": "27219466844",
-  "qualityGateArtifactId": "7513388618",
+  "title": "feat: add db integration scope gate",
+  "goal": "Prepare the owner-approved DB integration scope gate for v1.1.6 before any real DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
+  "ciRunId": "27230197473",
+  "qualityGateRunId": "27230413181",
+  "qualityGateArtifactId": "7518001924",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,6 +22,7 @@
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
+      ".codex/db-integration-scope-gate.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -30,33 +31,27 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
-      "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
-      "apps/api/src/repositories/postgres-provider-apply-params.ts",
-      "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
-      "apps/api/src/repositories/postgres-query-result-guards.ts",
-      "apps/api/src/repositories/postgres-query-result-guards.test.ts",
-      "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
-      "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
-      "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
+      "apps/api/src/db-integration-scope-gate.ts",
+      "apps/api/src/db-integration-scope-gate.test.ts",
+      "docs/DB_INTEGRATION_SCOPE_GATE.md",
+      "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
+      "docs/LIVE_DB_INTEGRATION_TEST_PLAN.md",
+      "docs/DB_SECRET_BOUNDARY.md",
+      "docs/MIGRATION_APPLY_ROLLBACK_PLAN.md",
       "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
+      "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
       "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
+      "docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md",
+      "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
-      "docs/RISK_REGISTER.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-postgres-adapter-contract-hardening-v116-prep.md"
+      "docs/pr-db-integration-scope-gate-v116-prep.md"
     ],
     "allowedPaths": [
-      "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
-      "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
-      "apps/api/src/repositories/postgres-provider-apply-params.ts",
-      "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
-      "apps/api/src/repositories/postgres-query-result-guards.ts",
-      "apps/api/src/repositories/postgres-query-result-guards.test.ts",
-      "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
-      "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
+      "apps/api/src/db-integration-scope-gate.ts",
+      "apps/api/src/db-integration-scope-gate.test.ts",
       "docs/**",
       ".codex/**"
     ],
@@ -90,11 +85,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 34 files, 489 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 34 files, 489 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -106,7 +101,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 34 files, 489 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -125,21 +120,7 @@
       "result": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "status": "success",
-      "runId": "27219092574",
-      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
-    },
-    {
-      "name": "quality-gate",
-      "status": "success",
-      "runId": "27219466844",
-      "artifactId": "7513388618",
-      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
-    }
-  ],
+  "remoteRuns": [],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -147,17 +128,17 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "rollbackOrStopCondition": "Stop if transaction boundary calls real provider SDK, performs production deployment apply, stores unsafe summaries, bypasses approved manual gate evidence, or weakens quality-gate.",
+  "rollbackOrStopCondition": "Stop if this PR adds a DB driver, real DB connection, package or lockfile change, migration execution, provider SDK apply, production deployment, readiness claim, secret value, or quality-gate weakening.",
   "safeOutput": {
     "status": "pass"
   },
   "allowedScope": [
-    "postgres_adapter_contract_hardening",
-    "typed_row_parsers",
-    "sql_parameter_builders",
-    "query_result_guards",
-    "migration_to_adapter_mapping",
-    "owner_approval_checklist",
+    "db_integration_scope_gate",
+    "owner_approval_record_schema",
+    "db_driver_introduction_checklist",
+    "live_db_integration_test_plan",
+    "db_secret_boundary",
+    "migration_apply_rollback_plan",
     "tests",
     "docs",
     ".codex evidence"
@@ -168,6 +149,8 @@
     "package.json change",
     "pnpm-lock change",
     "migration change",
+    "migration execution",
+    "live DB integration test execution",
     "real provider SDK apply",
     "actual production deployment apply",
     "secret manager real SDK integration",
@@ -192,76 +175,65 @@
     "quality-gate weakening"
   ],
   "doneCriteria": [
-    "typed manual gate row parser rejects unknown or unsafe row shape",
-    "typed provider job row parser rejects unknown or unsafe row shape",
-    "provider job applied invariants are validated before adapter business logic",
-    "provider job compensation invariants are validated before adapter business logic",
-    "SQL parameter builders fix placeholder order and reject unsafe values",
-    "query result guards fail closed on rowCount 0 and rowCount greater than 1",
-    "adapter no longer relies on rows[0] type casts",
-    "adapter uses typed row parsers, SQL parameter builders, and result guards",
-    "migration 0004 to adapter mapping docs are present",
-    "owner approval checklist is present before any real DB driver work",
-    "no real DB connection is introduced",
-    "no DB driver dependency is added",
-    "no package.json or pnpm-lock change is introduced",
-    "no migration change is introduced",
-    "no real provider SDK apply is introduced",
-    "no runtime or production readiness claim is introduced",
-    "manual gate row parser enforces exact selected columns before unsafe data can enter adapter logic",
-    "provider job row parser enforces exact selected columns before unsafe data can enter adapter logic",
-    "manual gate status is limited to the persistent status vocabulary",
-    "manual gate and provider job timestamps must be ISO UTC timestamps with Z suffix",
-    "provider apply audit insert action is limited to provider_apply_transaction.* audit vocabulary",
-    "rowCount greater than one failures preserve metadata-limited phase context",
-    "adapter parser failures return safe operator actions without row contents or raw DB diagnostics"
+    "DB integration scope gate validator exists",
+    "default record is not approved",
+    "owner approval schema rejects missing owner fields",
+    "DB driver/package change requires explicit future driver package",
+    "real DB connection requires secret manager scope",
+    "live DB integration tests require real DB connection approval",
+    "migration apply requires rollback plan",
+    "provider SDK apply remains forbidden",
+    "production deployment remains forbidden",
+    "runtime, production, legal, and YouTube policy readiness claims remain forbidden",
+    "unsafe secrets, private URLs, wallet addresses, raw provider responses, raw DB connection strings, token-like values, and raw GitHub log references are rejected",
+    "docs and .codex evidence record safe defaults"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 34,
-    "passed": 489,
+    "testFiles": 35,
+    "passed": 533,
     "skipped": 6
   },
   "securityBoundaries": [
-    "No real DB connection is implemented.",
     "No DB driver dependency is added.",
+    "No real DB connection is implemented.",
     "No package.json or pnpm-lock change is introduced.",
-    "No migration change is introduced.",
+    "No migration change or execution is introduced.",
+    "No live DB integration test is executed.",
     "No real provider SDK apply is implemented.",
     "No actual production deployment apply is implemented.",
-    "Provider apply remains outside the DB transaction.",
-    "Typed parsers reject unsafe row values and forbidden raw payload fields.",
-    "SQL parameter builders reject unsafe ids, references, and summaries.",
+    "Owner approval evidence is not secret storage.",
+    "DB credential values and raw connection strings remain forbidden.",
     "GITHUB_LOG_POLICY_SAFE_SUMMARY_ONLY",
     "YouTube scraping remains forbidden."
   ],
   "residualRisks": [
-    "Real Postgres adapter implementation remains future work.",
-    "Real DB driver selection remains future work and requires owner approval.",
-    "Live DB integration tests remain future work.",
-    "Migration application remains future work.",
-    "Provider apply executor remains future work.",
-    "Operator compensation execution remains future work.",
+    "Real DB driver selection remains future work.",
+    "Real DB integration remains future work.",
+    "Live DB integration test environment remains future work.",
+    "Migration execution remains future work.",
+    "DB secret rotation remains future work.",
+    "Provider SDK apply remains future work.",
     "Production deployment remains out of scope."
   ],
   "humanConfirmation": [
-    "Human owner confirmation is required before production-like apply.",
+    "Owner approval status is not_approved for this PR.",
     "AI review recommendations are not recorded as human approval.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
+    "Future real DB work requires a new owner-approved PR."
   ],
-  "testsPassed": 489,
+  "testsPassed": 533,
   "testsSkipped": 6,
-  "testFiles": 34,
+  "testFiles": 35,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 34 files, 489 passed, 6 skipped",
-    "npm test: pass: 34 files, 489 passed, 6 skipped",
+    "corepack pnpm test: pass: 35 files, 533 passed, 6 skipped",
+    "npm test: pass: 35 files, 533 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 34 files, 489 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass: 35 files, 533 passed, 6 skipped",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -275,29 +247,37 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds internal parser, parameter-builder, and query-result guard contracts for the Postgres adapter skeleton without DB driver, real DB connection, provider SDK, external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
+    "statement": "Adds an internal DB integration scope gate validator and tests without DB driver, real DB connection, migrations, provider SDK, public API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR hardens offline adapter contracts only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds planning gates, schema, docs, and tests only.",
   "reviewScope": {
-    "scope": "Postgres adapter typed row parsers, SQL parameter builders, query result guards, adapter wiring, migration-to-adapter docs, owner approval checklist, tests, and evidence.",
-    "riskSummary": "Main risk is accidentally implying real DB readiness or trusting unknown DB row shapes before a real adapter exists.",
-    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, no DB driver import scan, and GitHub checks."
+    "scope": "DB integration scope gate validator, tests, docs, owner approval schema, checklist, and machine-readable evidence.",
+    "riskSummary": "Main risk is accidentally expanding into real DB/package/migration/provider execution before owner approval.",
+    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, DB driver import scan, and GitHub checks."
   },
   "reviewIndependence": {
     "writerEvidenceOnly": true,
     "aiReviewIsNotHumanApproval": true
   },
   "bestOfN": {
+    "used": true,
     "candidateCount": 3,
-    "selected": "B",
-    "summary": "Candidate B adds typed row parsers, SQL parameter builders, query result guards, mapping docs, and no real DB connection."
+    "selectedCandidate": "typed DB integration scope gate with owner approval schema and safe defaults",
+    "reasonSelected": "It gives enforceable v1.1.6 preparation without adding DB driver dependencies, package changes, real DB connections, migration execution, provider SDK apply, production deployment, or readiness claims.",
+    "candidates": [
+      "Add DB driver and live integration now - rejected because package and real DB execution are out of scope.",
+      "Docs-only checklist - rejected because future work needs typed validation and tests.",
+      "Typed scope gate and evidence - selected."
+    ],
+    "verificationDelta": "Selected option adds validator tests for approval, unsafe evidence, forbidden runtime/provider/production scope, and safe defaults."
   },
-  "prBodyPath": "docs/pr-postgres-adapter-contract-hardening-v116-prep.md",
-  "passed": 489,
+  "prBodyPath": "docs/pr-db-integration-scope-gate-v116-prep.md",
+  "passed": 533,
   "skipped": 6,
-  "summary": "34 files, 489 passed, 6 skipped",
+  "summary": "35 files, 533 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
+    ".codex/db-integration-scope-gate.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -306,22 +286,28 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
-    "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
-    "apps/api/src/repositories/postgres-provider-apply-params.ts",
-    "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
-    "apps/api/src/repositories/postgres-query-result-guards.ts",
-    "apps/api/src/repositories/postgres-query-result-guards.test.ts",
-    "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
-    "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
-    "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
+    "apps/api/src/db-integration-scope-gate.ts",
+    "apps/api/src/db-integration-scope-gate.test.ts",
+    "docs/DB_INTEGRATION_SCOPE_GATE.md",
+    "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
+    "docs/LIVE_DB_INTEGRATION_TEST_PLAN.md",
+    "docs/DB_SECRET_BOUNDARY.md",
+    "docs/MIGRATION_APPLY_ROLLBACK_PLAN.md",
     "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
+    "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
     "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
+    "docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md",
+    "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
-    "docs/RISK_REGISTER.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-postgres-adapter-contract-hardening-v116-prep.md"
-  ]
+    "docs/pr-db-integration-scope-gate-v116-prep.md"
+  ],
+  "testCoverageEvidence": {
+    "changedArea": "apps/api/src/db-integration-scope-gate.ts and DB integration scope gate evidence docs",
+    "testCommand": "corepack pnpm test; npm test; corepack pnpm vitest run apps/api/src/db-integration-scope-gate.test.ts",
+    "whatTheTestCovers": "Default not-approved state, owner approval field requirements, project-owner role, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider/production/readiness claims, and unsafe evidence rejection.",
+    "edgeCases": "Missing owner approval fields, wrong owner role, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references."
+  }
 }
