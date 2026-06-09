@@ -57,6 +57,26 @@ function machineEvidence() {
   return JSON.parse(readFileSync(".codex/db-driver-owner-approval-record.json", "utf8")) as Record<string, unknown>;
 }
 
+const nonApprovedCapabilityPatches: Array<[string, Partial<DbDriverOwnerApprovalRecord>]> = [
+  ["package_change_allowed", { package_change_allowed: true, driver_package: "pg", driver_version_policy: "pinned" }],
+  ["pnpm_lock_change_allowed", { package_change_allowed: true, pnpm_lock_change_allowed: true, driver_package: "pg", driver_version_policy: "pinned" }],
+  ["real_db_connection_allowed", { real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager" }],
+  ["live_db_integration_tests_allowed", { live_db_integration_tests_allowed: true }],
+  ["migration_apply_allowed", { migration_apply_allowed: true }],
+  ["non-empty approval_scope", { approval_scope: ["db_driver_dependency_introduction"] }],
+  ["driver_package", { driver_package: "pg", driver_version_policy: "pinned" }],
+  ["approval_fingerprint", { approval_fingerprint: "a".repeat(64) }]
+];
+
+const approvedCapabilityScopePatches: Array<[string, Partial<DbDriverOwnerApprovalRecord>, RegExp]> = [
+  ["package_change_allowed", { approval_scope: ["db_driver_dependency_introduction"], package_change_allowed: true, pnpm_lock_change_allowed: false }, /package_change_for_db_driver/],
+  ["pnpm_lock_change_allowed", { approval_scope: ["db_driver_dependency_introduction", "package_change_for_db_driver"], pnpm_lock_change_allowed: true }, /pnpm_lock_change_for_db_driver/],
+  ["driver_package", { approval_scope: ["package_change_for_db_driver"], package_change_allowed: true, pnpm_lock_change_allowed: false }, /db_driver_dependency_introduction/],
+  ["real_db_connection_allowed", { real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager" }, /db_secret_manager_scope/],
+  ["live_db_integration_tests_allowed", { approval_scope: [...allowedDbDriverApprovalScopes].filter((scope) => scope !== "live_db_integration_test_plan"), real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager", live_db_integration_tests_allowed: true }, /live_db_integration_test_plan/],
+  ["migration_apply_allowed", { migration_apply_allowed: true }, /migration_apply_plan|rollback plan/]
+];
+
 describe("DB driver owner approval record", () => {
   it("default record is not_approved and disables DB driver scope", () => {
     const record = validateDbDriverOwnerApprovalRecord(base(), context());
@@ -191,16 +211,7 @@ describe("DB driver owner approval record", () => {
     expect(validateDbDriverOwnerApprovalRecord(record, context()).approval_scope).toEqual([...allowedDbDriverApprovalScopes]);
   });
 
-  it.each([
-    ["package_change_allowed", { package_change_allowed: true, driver_package: "pg", driver_version_policy: "pinned" }],
-    ["pnpm_lock_change_allowed", { package_change_allowed: true, pnpm_lock_change_allowed: true, driver_package: "pg", driver_version_policy: "pinned" }],
-    ["real_db_connection_allowed", { real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager" }],
-    ["live_db_integration_tests_allowed", { live_db_integration_tests_allowed: true }],
-    ["migration_apply_allowed", { migration_apply_allowed: true }],
-    ["non-empty approval_scope", { approval_scope: ["db_driver_dependency_introduction"] }],
-    ["driver_package", { driver_package: "pg", driver_version_policy: "pinned" }],
-    ["approval_fingerprint", { approval_fingerprint: "a".repeat(64) }]
-  ])("not_approved rejects %s", (_label, patch) => {
+  it.each(nonApprovedCapabilityPatches)("not_approved rejects %s", (_label, patch) => {
     expect(() => validateDbDriverOwnerApprovalRecord(withRecord(patch), context())).toThrow(/non-approved/);
   });
 
@@ -230,14 +241,7 @@ describe("DB driver owner approval record", () => {
     }), context())).toThrow(/non-approved/);
   });
 
-  it.each([
-    ["package_change_allowed", { approval_scope: ["db_driver_dependency_introduction"], package_change_allowed: true, pnpm_lock_change_allowed: false }, /package_change_for_db_driver/],
-    ["pnpm_lock_change_allowed", { approval_scope: ["db_driver_dependency_introduction", "package_change_for_db_driver"], pnpm_lock_change_allowed: true }, /pnpm_lock_change_for_db_driver/],
-    ["driver_package", { approval_scope: ["package_change_for_db_driver"], package_change_allowed: true, pnpm_lock_change_allowed: false }, /db_driver_dependency_introduction/],
-    ["real_db_connection_allowed", { real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager" }, /db_secret_manager_scope/],
-    ["live_db_integration_tests_allowed", { approval_scope: [...allowedDbDriverApprovalScopes].filter((scope) => scope !== "live_db_integration_test_plan"), real_db_connection_allowed: true, secret_manager_scope_required: true, db_credentials_storage_required: "secret_manager", live_db_integration_tests_allowed: true }, /live_db_integration_test_plan/],
-    ["migration_apply_allowed", { migration_apply_allowed: true }, /migration_apply_plan|rollback plan/]
-  ])("approved %s requires matching approval scope", (_label, patch, message) => {
+  it.each(approvedCapabilityScopePatches)("approved %s requires matching approval scope", (_label, patch, message) => {
     expect(() => validateDbDriverOwnerApprovalRecord(approvedRecord({
       approval_scope: ["db_driver_dependency_introduction", "package_change_for_db_driver", "pnpm_lock_change_for_db_driver"],
       ...patch
