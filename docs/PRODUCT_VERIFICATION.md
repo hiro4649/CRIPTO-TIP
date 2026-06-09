@@ -283,3 +283,18 @@ rejection, and PR #35/#38 regression surfaces.
 This is a transaction boundary preparation only. It does not call a real
 provider SDK, does not execute actual production deployment apply, and does not
 claim runtime, production, legal, or YouTube policy readiness.
+
+## Postgres Provider Apply Transaction Design
+
+Verified in `apps/api/src/provider-apply-postgres-transaction.test.ts` and
+`apps/api/src/repositories/provider-apply-postgres-transaction-repository.test.ts`.
+
+Coverage includes SQL lock-order design, `SELECT FOR UPDATE` usage, provider job
+update before manual gate used state, provider and manual gate audit insert
+ordering, retry classification, migration indexes, and unsafe idempotency/safe
+summary rejection.
+
+This is a Postgres transaction design contract only. It does not connect to a
+real database, add a DB driver, call a real provider SDK, execute production
+deployment apply, change wallet/RPC/deploy configuration, change the YouTube
+connector, or change Chain Listener behavior.

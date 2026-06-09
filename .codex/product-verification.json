@@ -2,10 +2,10 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 39,
-  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
-  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
-  "productVerificationStatus": "local_verification_pass_before_pr",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
+  "productVerificationStatus": "pass",
   "commands": [
     {
       "name": "corepack pnpm install",
@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 28 files, 308 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 28 files, 308 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -37,7 +37,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: summary recorded from measured test run"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -64,5 +64,11 @@
     "safe summary rejection"
   ],
   "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false
+  "productionReadinessClaimed": false,
+  "status": "pass",
+  "testFiles": 30,
+  "passed": 361,
+  "skipped": 6,
+  "testsPassed": 361,
+  "testsSkipped": 6
 }

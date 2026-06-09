@@ -43,6 +43,12 @@ Rollback mapping:
 - transaction phase: `transaction_rolled_back`
 - audit action: `provider_apply_transaction.rolled_back`
 
+The Postgres transaction design contract is documented in
+`docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md` and
+`docs/POSTGRES_TRANSACTION_RETRY_POLICY.md`. That contract fixes row lock order,
+retry classification, idempotency boundaries, and additive index design without
+opening a real DB connection.
+
 ## Safety Rules
 
 - Applied jobs require `external_provider_apply_started`, `manual_gate_mark_used_attempted`, and `manual_gate_mark_used_succeeded`.

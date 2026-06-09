@@ -2,11 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 39,
-  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
-  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "reviewIndependenceStatus": "pass",
   "writerEvidenceOnly": true,
   "aiReviewIsNotHumanApproval": true,
-  "humanConfirmationRequired": true
+  "humanConfirmationRequired": true,
+  "humanOwnerConfirmationRequired": true
 }
