@@ -135,3 +135,4 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Medium | Production deployment apply remains out of scope. | Backend | future manual-gated deployment PR | Actual production apply requires approved manual gate evidence and separate owner-controlled execution. |
 | Medium | Secret rotation audit remains future work. | Backend | future credential rotation PR | Current audit records allow safe references only and do not persist secret values. |
 | Medium | Live YouTube operation remains manual-gated. | Backend | future live operations PR | Live YouTube account operation remains disabled without explicit approved manual gate. |
+| Medium | Compensation execution remains future work after provider apply side effects begin. | Backend | Provider compensation execution PR | Provider job state records `compensation_required` and safe audit summaries so operators can reconcile without storing raw provider data. |

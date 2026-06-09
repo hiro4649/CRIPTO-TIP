@@ -270,3 +270,16 @@ implementations, migration design, manual gate audit tests, provider deployment
 audit tests, and safe-summary rejection checks. The PR does not connect a
 production database, execute real provider SDK apply, or claim runtime or
 production readiness.
+## Provider Apply Job State Machine v1.1.4 Prep
+
+Provider apply job state evidence adds transition validation, repository
+boundary coverage, compensation-required state, deterministic transition audit
+IDs, and safe transition audit summaries. The job cannot be recorded as
+`applied` unless external provider apply started, manual gate mark-used was
+attempted, manual gate mark-used succeeded, and compensation is not required. If
+external provider side effects started but mark-used failed, the job records
+`compensation_required` only as a failed job and remains non-applied.
+
+No real provider SDK apply, actual production deployment apply, YouTube
+connector change, Chain Listener change, wallet/RPC/deploy change, or
+quality-gate weakening is introduced.

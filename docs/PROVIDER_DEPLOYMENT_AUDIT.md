@@ -11,6 +11,15 @@ not credential storage.
 - `provider_deployment.apply.failed`
 - `provider_deployment.rollback.planned`
 - `provider_deployment.rollback.executed`
+- `provider_deployment.job.planned`
+- `provider_deployment.job.running`
+- `provider_deployment.job.applied`
+- `provider_deployment.job.failed`
+- `provider_deployment.job.rollback_planned`
+- `provider_deployment.job.rolled_back`
+- `provider_deployment.job.cancelled`
+- `provider_deployment.compensation.required`
+- `provider_deployment.compensation.resolved`
 
 ## Safe Persistence Boundary
 
@@ -45,6 +54,7 @@ must not be reported as successful.
 
 ## Current Limit
 
-Real provider SDK apply, actual production deployment apply, and persistent job
-state machine execution remain out of scope. This PR provides interfaces,
-in-memory repositories, migration design, tests, docs, and evidence only.
+Real provider SDK apply and actual production deployment apply remain out of
+scope. The provider deployment job state machine prepares transition validation,
+compensation-required evidence, and safe repository boundaries for a later
+persistent transaction implementation.

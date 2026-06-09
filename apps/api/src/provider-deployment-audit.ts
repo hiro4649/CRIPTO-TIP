@@ -14,12 +14,21 @@ export const providerDeploymentAuditActions = [
   "provider_deployment.apply.executed",
   "provider_deployment.apply.failed",
   "provider_deployment.rollback.planned",
-  "provider_deployment.rollback.executed"
+  "provider_deployment.rollback.executed",
+  "provider_deployment.job.planned",
+  "provider_deployment.job.running",
+  "provider_deployment.job.applied",
+  "provider_deployment.job.failed",
+  "provider_deployment.job.rollback_planned",
+  "provider_deployment.job.rolled_back",
+  "provider_deployment.job.cancelled",
+  "provider_deployment.compensation.required",
+  "provider_deployment.compensation.resolved"
 ] as const;
 
 export type ProviderDeploymentAuditAction = typeof providerDeploymentAuditActions[number];
 
-export const providerDeploymentJobStatuses = ["planned", "running", "applied", "failed", "rolled_back", "cancelled"] as const;
+export const providerDeploymentJobStatuses = ["planned", "running", "applied", "failed", "rollback_planned", "rolled_back", "cancelled"] as const;
 
 export type ProviderDeploymentJobStatus = typeof providerDeploymentJobStatuses[number];
 

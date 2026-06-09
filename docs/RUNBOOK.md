@@ -194,3 +194,19 @@ If provider apply fails, leave the manual gate approved and record a failed
 provider deployment audit summary. If gate `markUsed` fails after provider
 apply, treat the operation as not successful and investigate the future
 persistent transaction boundary.
+
+## Provider Apply Job State Compensation
+
+Provider apply job state is the reconciliation boundary before persistent
+transaction support exists. A job can be recorded as `applied` only after the
+approved manual gate was marked `used`.
+
+If external provider side effects started and manual gate mark-used failed, do
+not record the job as `applied`. Record the job as `failed` with
+`compensation_required = true`, append a safe
+`provider_deployment.compensation.required` audit summary, and follow the
+referenced rollback plan.
+
+Do not paste provider tokens, webhook URLs, private URLs, wallet addresses, raw
+messages, raw display names, raw provider payloads, or raw logs into job state
+or compensation evidence.
