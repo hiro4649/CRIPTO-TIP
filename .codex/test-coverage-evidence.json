@@ -9,8 +9,8 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 28,
-    "passed": 308,
+    "testFiles": 30,
+    "passed": 361,
     "skipped": 6
   },
   "coverage": [
@@ -26,14 +26,19 @@
   ],
   "status": "pending_local_verification",
   "testFiles": 30,
-  "passed": 336,
+  "passed": 361,
   "skipped": 6,
-  "summary": "30 files, 336 passed, 6 skipped",
+  "summary": "30 files, 361 passed, 6 skipped",
   "coverageNotes": [
     "Postgres SQL lock order and SELECT FOR UPDATE design tests added.",
     "Postgres transaction retry classifier tests added.",
     "Postgres repository contract unsafe idempotency and safe summary tests added.",
     "Migration 0004 index and safe_summary object tests added.",
-    "PR #39, PR #38, and PR #35 regression tests remain covered."
-  ]
+    "PR #39, PR #38, and PR #35 regression tests remain covered.",
+    "Post-review hardening covers rollback_planned status and provider_apply_transaction audit actions.",
+    "Post-review hardening covers provider job state-machine flag columns and consistency checks.",
+    "Post-review hardening covers SQL state flag updates, fail-closed manual gate used update, provider job state flag selects, and context-aware lock timeout retry actions."
+  ],
+  "testsPassed": 361,
+  "testsSkipped": 6
 }

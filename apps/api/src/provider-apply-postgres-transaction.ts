@@ -68,7 +68,10 @@ export const postgresProviderApplyTransactionSql = {
     "FOR UPDATE"
   ].join("\n"),
   lockProviderJob: [
-    "SELECT id, status, manual_gate_id, target_environment, target_commit_sha",
+    "SELECT id, operation, status, manual_gate_id, target_environment, target_commit_sha,",
+    "       external_provider_apply_started, manual_gate_mark_used_attempted,",
+    "       manual_gate_mark_used_succeeded, compensation_required,",
+    "       rollback_plan_ref, operator_runbook_ref",
     "FROM provider_deployment_jobs",
     "WHERE id = $2",
     "FOR UPDATE"
@@ -77,6 +80,10 @@ export const postgresProviderApplyTransactionSql = {
     "UPDATE provider_deployment_jobs",
     "SET status = $3,",
     "    safe_summary = $4,",
+    "    external_provider_apply_started = $15,",
+    "    manual_gate_mark_used_attempted = $16,",
+    "    manual_gate_mark_used_succeeded = $17,",
+    "    compensation_required = $18,",
     "    updated_at = $5",
     "WHERE id = $2"
   ].join("\n"),
@@ -85,7 +92,12 @@ export const postgresProviderApplyTransactionSql = {
     "SET status = 'used',",
     "    used_at = $5,",
     "    updated_at = $5",
-    "WHERE id = $1"
+    "WHERE id = $1",
+    "  AND status = 'approved'",
+    "  AND target_environment = $12",
+    "  AND target_commit_sha = $13",
+    "  AND expires_at > $5",
+    "  AND used_at IS NULL"
   ].join("\n"),
   insertProviderAudit: [
     "INSERT INTO provider_deployment_audit_logs",
@@ -143,7 +155,12 @@ export function classifyPostgresProviderApplyTransactionError(args: {
   }
   if (args.sqlState === "40P01") return retryable("postgres_transaction_deadlock_retryable", "Retry durable state recording without re-executing provider apply.");
   if (args.sqlState === "40001") return retryable("postgres_transaction_serialization_retryable", "Retry durable state recording without re-executing provider apply.");
-  if (args.sqlState === "55P03") return retryable("postgres_transaction_lock_timeout_retryable", "Retry only after provider apply result is safely identified.");
+  if (args.sqlState === "55P03" && args.providerApplySucceeded) {
+    return retryable("postgres_transaction_lock_timeout_retryable", "Retry durable state recording only; do not re-execute provider apply.");
+  }
+  if (args.sqlState === "55P03") {
+    return retryable("postgres_transaction_lock_timeout_retryable", "Retry before provider apply or retry metadata-only planning.");
+  }
   if (args.sqlState === "23505") return terminal("postgres_transaction_unique_violation_terminal", "Treat duplicate transaction identity as terminal and inspect idempotency evidence.");
   return terminal("postgres_transaction_metadata_limited_external_blocked", "Inspect safe metadata-limited evidence before retry.");
 }

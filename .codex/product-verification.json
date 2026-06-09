@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -37,7 +37,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -65,5 +65,10 @@
   ],
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
-  "status": "pass"
+  "status": "pass",
+  "testFiles": 30,
+  "passed": 361,
+  "skipped": 6,
+  "testsPassed": 361,
+  "testsSkipped": 6
 }

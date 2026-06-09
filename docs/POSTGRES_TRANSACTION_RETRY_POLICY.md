@@ -14,6 +14,11 @@ It does not authorize re-executing external provider apply.
 Retry means retry durable state recording only. It must not call provider apply
 again.
 
+For `lock_timeout`, operator action text is context-aware. Before provider
+success, retry is limited to pre-apply or metadata-only planning. After provider
+success, retry is durable state recording only and must explicitly say not to
+re-execute provider apply.
+
 ## Terminal
 
 - Duplicate `transaction_id` or equivalent unique violation maps to

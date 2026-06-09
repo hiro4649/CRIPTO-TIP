@@ -37,6 +37,22 @@ describe("postgres provider apply transaction SQL design", () => {
     expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("FOR UPDATE");
   });
 
+  it("locks provider job with operation", () => {
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toMatch(/SELECT[\s\S]*operation/i);
+  });
+
+  it("locks provider job with state flags", () => {
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("external_provider_apply_started");
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("manual_gate_mark_used_attempted");
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("manual_gate_mark_used_succeeded");
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("compensation_required");
+  });
+
+  it("locks provider job with rollback and runbook refs", () => {
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("rollback_plan_ref");
+    expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("operator_runbook_ref");
+  });
+
   it("updates manual gate used after provider job state check", () => {
     const sqlOrder = [
       postgresProviderApplyTransactionSql.lockManualGate,
@@ -57,6 +73,42 @@ describe("postgres provider apply transaction SQL design", () => {
 
     expect(sqlOrder.indexOf("INSERT INTO provider_deployment_audit_logs")).toBeLessThan(sqlOrder.indexOf("INSERT INTO manual_gate_audit_logs"));
     expect(sqlOrder.indexOf("INSERT INTO manual_gate_audit_logs")).toBeLessThan(sqlOrder.indexOf("COMMIT"));
+  });
+
+  it("updates external provider apply started flag", () => {
+    expect(postgresProviderApplyTransactionSql.updateProviderJob).toContain("external_provider_apply_started");
+  });
+
+  it("updates manual gate mark used attempted flag", () => {
+    expect(postgresProviderApplyTransactionSql.updateProviderJob).toContain("manual_gate_mark_used_attempted");
+  });
+
+  it("updates manual gate mark used succeeded flag", () => {
+    expect(postgresProviderApplyTransactionSql.updateProviderJob).toContain("manual_gate_mark_used_succeeded");
+  });
+
+  it("updates compensation required flag", () => {
+    expect(postgresProviderApplyTransactionSql.updateProviderJob).toContain("compensation_required");
+  });
+
+  it("mark manual gate used requires approved status", () => {
+    expect(postgresProviderApplyTransactionSql.markManualGateUsed).toContain("status = 'approved'");
+  });
+
+  it("mark manual gate used checks target commit", () => {
+    expect(postgresProviderApplyTransactionSql.markManualGateUsed).toContain("target_commit_sha = $13");
+  });
+
+  it("mark manual gate used checks target environment", () => {
+    expect(postgresProviderApplyTransactionSql.markManualGateUsed).toContain("target_environment = $12");
+  });
+
+  it("mark manual gate used checks expiry after commit time", () => {
+    expect(postgresProviderApplyTransactionSql.markManualGateUsed).toContain("expires_at > $5");
+  });
+
+  it("mark manual gate used checks used_at is null", () => {
+    expect(postgresProviderApplyTransactionSql.markManualGateUsed).toContain("used_at IS NULL");
   });
 
   it("does not include raw provider response or secret value columns", () => {
@@ -93,6 +145,17 @@ describe("postgres provider apply retry classifier", () => {
       reasonCode: "postgres_transaction_lock_timeout_retryable",
       retryable: true
     });
+  });
+
+  it("lock timeout after provider success says do not re-execute provider apply", () => {
+    expect(classifyPostgresProviderApplyTransactionError({ sqlState: "55P03", providerApplySucceeded: true }).nextOperatorAction).toContain("do not re-execute provider apply");
+  });
+
+  it("lock timeout before provider success does not imply provider apply happened", () => {
+    const action = classifyPostgresProviderApplyTransactionError({ sqlState: "55P03", providerApplySucceeded: false }).nextOperatorAction;
+
+    expect(action).toContain("before provider apply");
+    expect(action).not.toContain("provider apply result is safely identified");
   });
 
   it("marks unique violation terminal", () => {

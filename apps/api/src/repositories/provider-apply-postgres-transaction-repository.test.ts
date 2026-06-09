@@ -109,6 +109,61 @@ describe("provider apply transaction migration indexes", () => {
     expect(migration.match(/jsonb_typeof\(safe_summary\) = 'object'/g)?.length).toBeGreaterThanOrEqual(3);
   });
 
+  it("adds rollback_planned provider deployment job status", () => {
+    expect(migration).toContain("'rollback_planned'");
+  });
+
+  it("provider deployment jobs status check matches TypeScript state machine", () => {
+    for (const status of ["planned", "running", "applied", "failed", "rollback_planned", "rolled_back", "cancelled"]) {
+      expect(migration).toContain(`'${status}'`);
+    }
+  });
+
+  it("action check includes provider apply transaction draft created", () => {
+    expect(migration).toContain("'provider_apply_transaction.draft_created'");
+  });
+
+  it("action check includes provider apply transaction compensation required", () => {
+    expect(migration).toContain("'provider_apply_transaction.compensation_required'");
+  });
+
+  it("action check includes provider deployment job rollback planned", () => {
+    expect(migration).toContain("'provider_deployment.job.rollback_planned'");
+  });
+
+  it("adds external provider apply started column", () => {
+    expect(migration).toMatch(/ADD COLUMN IF NOT EXISTS external_provider_apply_started boolean NOT NULL DEFAULT false/i);
+  });
+
+  it("adds manual gate mark used attempted column", () => {
+    expect(migration).toMatch(/ADD COLUMN IF NOT EXISTS manual_gate_mark_used_attempted boolean NOT NULL DEFAULT false/i);
+  });
+
+  it("adds manual gate mark used succeeded column", () => {
+    expect(migration).toMatch(/ADD COLUMN IF NOT EXISTS manual_gate_mark_used_succeeded boolean NOT NULL DEFAULT false/i);
+  });
+
+  it("adds compensation required column", () => {
+    expect(migration).toMatch(/ADD COLUMN IF NOT EXISTS compensation_required boolean NOT NULL DEFAULT false/i);
+  });
+
+  it("applied consistency check requires provider apply started and manual gate used success", () => {
+    expect(migration).toContain("provider_deployment_jobs_applied_consistency");
+    expect(migration).toContain("status <> 'applied'");
+    expect(migration).toContain("external_provider_apply_started = true");
+    expect(migration).toContain("manual_gate_mark_used_attempted = true");
+    expect(migration).toContain("manual_gate_mark_used_succeeded = true");
+    expect(migration).toContain("compensation_required = false");
+  });
+
+  it("compensation consistency check requires failed job and mark-used failure", () => {
+    expect(migration).toContain("provider_deployment_jobs_compensation_consistency");
+    expect(migration).toContain("status = 'failed'");
+    expect(migration).toContain("external_provider_apply_started = true");
+    expect(migration).toContain("manual_gate_mark_used_attempted = true");
+    expect(migration).toContain("manual_gate_mark_used_succeeded = false");
+  });
+
   it("contains no secret defaults or unsafe URL/token/default values", () => {
     expect(migration).not.toMatch(/DEFAULT\s+'.*(Bearer|https?:\/\/|ghp_|xoxb_|AKIA|webhook|api[_-]?key|oauth|secret|token|private)/i);
     expect(migration).not.toMatch(/raw_provider_response|provider_response|webhook_url|secret_value|oauth_token|api_key/i);

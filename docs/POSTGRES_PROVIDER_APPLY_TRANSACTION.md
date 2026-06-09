@@ -44,6 +44,29 @@ INSERT INTO manual_gate_audit_logs ...;
 COMMIT;
 ```
 
+## Provider Job State Columns
+
+`provider_deployment_jobs` persists the PR #38 state-machine flags:
+
+- `external_provider_apply_started`
+- `manual_gate_mark_used_attempted`
+- `manual_gate_mark_used_succeeded`
+- `compensation_required`
+
+The DB design includes an applied consistency check: `applied` jobs require
+provider apply started, manual gate mark-used attempted, manual gate mark-used
+succeeded, and `compensation_required = false`.
+
+The DB design also includes a compensation consistency check: compensation is
+valid only on failed jobs after provider apply started and manual gate mark-used
+was attempted but did not succeed.
+
+`rollback_planned` is an accepted provider deployment job status. The provider
+deployment audit action check accepts provider job state actions and
+`provider_apply_transaction.*` actions, including
+`provider_apply_transaction.draft_created` and
+`provider_apply_transaction.compensation_required`.
+
 ## Idempotency
 
 Allowed idempotency fields are `transaction_id`, `job_id`, `manual_gate_id`,

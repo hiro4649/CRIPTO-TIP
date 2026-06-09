@@ -17,7 +17,7 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: postgres transaction SQL locks manual gate before provider job; postgres transaction SQL uses SELECT FOR UPDATE for manual gate and provider job; postgres transaction SQL updates manual gate used after provider job state check; postgres transaction SQL inserts provider audit and manual gate audit before commit; postgres transaction SQL excludes raw provider response and secret columns; postgres retry classifier marks deadlock, serialization, and lock timeout retryable; postgres retry classifier marks unique violation, manual gate mismatch, and unsafe summary terminal; postgres retry classifier marks audit append after provider success compensation_required; postgres repository contract rejects unsafe idempotency and safe summary values; migration 0004 contains required indexes and safe_summary object checks; PR #39 transaction boundary regression tests still pass; PR #38 provider job state-machine regression tests still pass; PR #35 manual gate audit regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head.
+Done criteria: postgres transaction SQL locks manual gate before provider job; postgres transaction SQL uses SELECT FOR UPDATE for manual gate and provider job; postgres transaction SQL updates manual gate used after provider job state check; postgres transaction SQL inserts provider audit and manual gate audit before commit; postgres transaction SQL excludes raw provider response and secret columns; postgres retry classifier marks deadlock, serialization, and lock timeout retryable; postgres retry classifier marks unique violation, manual gate mismatch, and unsafe summary terminal; postgres retry classifier marks audit append after provider success compensation_required; postgres repository contract rejects unsafe idempotency and safe summary values; migration 0004 contains required indexes and safe_summary object checks; PR #39 transaction boundary regression tests still pass; PR #38 provider job state-machine regression tests still pass; PR #35 manual gate audit regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head; migration 0004 supports rollback_planned provider job status; migration 0004 supports provider_apply_transaction audit actions; migration 0004 adds provider job state-machine flag columns; migration 0004 adds applied consistency check; migration 0004 adds compensation consistency check; SQL updateProviderJob updates provider apply and manual gate state flags; SQL markManualGateUsed fails closed on approved status, commit, environment, expiry, and unused gate; SQL lockProviderJob selects state flags, operation, rollback plan, and runbook references; lock timeout retry classifier distinguishes before and after provider success contexts.
 
 ## Evidence Integrity
 
@@ -35,7 +35,7 @@ Quality-gate run: local_verification_before_pr
 
 Quality-gate artifact: local_verification_before_pr
 
-Tests: 30 test files, 336 passed, 6 skipped
+Tests: 30 test files, 361 passed, 6 skipped
 
 ## Testing and review
 
@@ -61,11 +61,11 @@ Product verification commands:
 - corepack pnpm install: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
-- corepack pnpm test: pass: 30 files, 336 passed, 6 skipped
-- npm test: pass: 30 files, 336 passed, 6 skipped
+- corepack pnpm test: pass: 30 files, 361 passed, 6 skipped
+- npm test: pass: 30 files, 361 passed, 6 skipped
 - corepack pnpm evidence:ci: pass
 - corepack pnpm quality:self-protection: pass
-- node scripts/write-test-summary.mjs: pass: 30 files, 336 passed, 6 skipped
+- node scripts/write-test-summary.mjs: pass: 30 files, 361 passed, 6 skipped
 - node scripts/check-evidence-placeholders.mjs: pass
 - node scripts/validate-evidence-freshness.mjs: pass: local pre-PR evidence validation
 - node scripts/check-quality-gate-self-protection.mjs: pass
@@ -95,27 +95,15 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 30 files, 336 passed, 6 skipped.
+Current recorded test summary: 30 files, 361 passed, 6 skipped.
 
-Changed area: Postgres provider apply transaction SQL design, repository
-contract stubs, retry classifier, migration index design, safe idempotency
-metadata, and provider transaction regression surface.
+Changed area: Postgres provider apply transaction SQL design, repository contract stubs, retry classifier, migration index and constraint design, safe idempotency metadata, provider job state-machine alignment, and provider transaction regression surface.
 
 Test command: `corepack pnpm test` and `npm test`.
 
-What the test covers: SQL lock order, `SELECT FOR UPDATE` usage for manual gate
-and provider job rows, provider job update before manual gate used state,
-provider/manual audit insert before commit, retryable SQL reason codes,
-terminal SQL reason codes, compensation-required classification after provider
-success plus durable transaction failure, unsafe idempotency rejection,
-safe-summary rejection, migration index coverage, and PR #39/#38/#35 regression
-tests.
+What the test covers: SQL lock order, `SELECT FOR UPDATE` usage for manual gate and provider job rows, provider job update before manual gate used state, state-machine flag updates, fail-closed manual gate used update conditions, provider job state flag selects, provider/manual audit insert before commit, retryable SQL reason codes, terminal SQL reason codes, context-aware lock timeout handling, compensation-required classification after provider success plus durable transaction failure, unsafe idempotency rejection, safe-summary rejection, migration status/action constraints, migration state-machine columns, migration consistency checks, migration index coverage, and PR #39/#38/#35 regression tests.
 
-Edge cases and failure paths: deadlock, serialization failure, lock timeout,
-unique violation, manual gate mismatch, invalid job transition, unsafe summary,
-provider diagnostic payload rejection, wallet/private URL/token-like value
-rejection, audit append after provider success, and duplicate/idempotency
-classification.
+Edge cases and failure paths: deadlock, serialization failure, lock timeout before provider success, lock timeout after provider success, unique violation, manual gate mismatch, invalid job transition, unsafe summary, provider diagnostic payload rejection, wallet/private URL/token-like value rejection, audit append after provider success, duplicate/idempotency classification, rollback_planned persistence, provider_apply_transaction audit action persistence, applied consistency, and compensation consistency.
 
 ## Security Boundaries
 
@@ -153,5 +141,5 @@ Human owner confirmation required before production-like apply: yes.
 
 Candidate count: 3.
 Selected candidate: B.
-Reason selected: Candidate B implements SQL design, repository contract, retry classifier, migration indexes, tests, and docs without real DB connection or production apply.
+Reason selected: Candidate B implements SQL design, repository contract, retry classifier, migration indexes and constraints, tests, and docs without real DB connection or production apply.
 Rejected alternatives: Candidate A implemented a real Postgres repository and DB connection too early; Candidate C only wrote docs without executable SQL and retry classifier coverage.

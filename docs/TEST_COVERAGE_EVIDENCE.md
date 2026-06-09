@@ -318,3 +318,8 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   object checks, and no secret/default unsafe values in migration design.
 - Existing PR #39 transaction boundary tests, PR #38 job state tests, and PR #35
   manual gate audit tests remain part of the regression surface.
+- Post-review hardening adds coverage that migration 0004 supports
+  `rollback_planned`, `provider_apply_transaction.*` audit actions, state-machine
+  flag columns, applied/compensation consistency checks, SQL state flag updates,
+  fail-closed manual gate used `WHERE` conditions, provider job state flag
+  selects, and context-aware lock timeout retry operator actions.

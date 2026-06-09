@@ -87,11 +87,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -103,7 +103,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 30 files, 336 passed, 6 skipped"
+      "result": "pass: 30 files, 361 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -186,13 +186,22 @@
     "PR #35 manual gate audit regression tests still pass",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head"
+    "required checks pass on PR head",
+    "migration 0004 supports rollback_planned provider job status",
+    "migration 0004 supports provider_apply_transaction audit actions",
+    "migration 0004 adds provider job state-machine flag columns",
+    "migration 0004 adds applied consistency check",
+    "migration 0004 adds compensation consistency check",
+    "SQL updateProviderJob updates provider apply and manual gate state flags",
+    "SQL markManualGateUsed fails closed on approved status, commit, environment, expiry, and unused gate",
+    "SQL lockProviderJob selects state flags, operation, rollback plan, and runbook references",
+    "lock timeout retry classifier distinguishes before and after provider success contexts"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 30,
-    "passed": 336,
+    "passed": 361,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -218,18 +227,18 @@
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 336,
+  "testsPassed": 361,
   "testsSkipped": 6,
   "testFiles": 30,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 30 files, 336 passed, 6 skipped",
-    "npm test: pass: 30 files, 336 passed, 6 skipped",
+    "corepack pnpm test: pass: 30 files, 361 passed, 6 skipped",
+    "npm test: pass: 30 files, 361 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 30 files, 336 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass: 30 files, 361 passed, 6 skipped",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass: local pre-PR evidence validation",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -260,5 +269,7 @@
     "selected": "B",
     "summary": "Candidate B implements SQL design, repository contract, retry classifier, migration indexes, tests, and docs without real DB connection or production apply."
   },
-  "prBodyPath": "docs/pr-postgres-transaction-design-v114.md"
+  "prBodyPath": "docs/pr-postgres-transaction-design-v114.md",
+  "passed": 361,
+  "skipped": 6
 }

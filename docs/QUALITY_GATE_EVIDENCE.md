@@ -311,6 +311,14 @@ UPDATE` usage, provider/manual audit insert ordering, safe idempotency metadata,
 retryable SQL reason codes, terminal SQL reason codes, and compensation-required
 classification after provider success plus durable transaction failure.
 
+Post-review hardening aligns the SQL and migration design with PR #38 and PR
+#39: `rollback_planned` job status is accepted, `provider_apply_transaction.*`
+audit actions are accepted, provider job state-machine flags are persisted,
+applied/compensation consistency checks are defined, `updateProviderJob` updates
+state flags, manual gate used update is fail-closed in the SQL `WHERE` clause,
+and lock timeout retry actions distinguish before-provider-success and
+after-provider-success contexts.
+
 No real DB connection, real provider SDK apply, actual production deployment
 apply, raw GitHub log reading, runtime readiness claim, production readiness
 claim, legal compliance claim, YouTube policy compliance claim, or

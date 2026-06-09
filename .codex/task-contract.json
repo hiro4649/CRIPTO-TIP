@@ -58,7 +58,16 @@
     "PR #35 manual gate audit regression tests still pass",
     "no secret scan passes",
     "no scraping scan passes",
-    "required checks pass on PR head"
+    "required checks pass on PR head",
+    "migration 0004 supports rollback_planned provider job status",
+    "migration 0004 supports provider_apply_transaction audit actions",
+    "migration 0004 adds provider job state-machine flag columns",
+    "migration 0004 adds applied consistency check",
+    "migration 0004 adds compensation consistency check",
+    "SQL updateProviderJob updates provider apply and manual gate state flags",
+    "SQL markManualGateUsed fails closed on approved status, commit, environment, expiry, and unused gate",
+    "SQL lockProviderJob selects state flags, operation, rollback plan, and runbook references",
+    "lock timeout retry classifier distinguishes before and after provider success contexts"
   ],
   "riskLevel": "R3",
   "taskMode": "feature",

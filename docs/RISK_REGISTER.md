@@ -157,3 +157,8 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | Audit append after provider success maps to `compensation_required` and safe handoff only. |
 | Medium | Secret rotation audit remains future work. | Security/Ops | Secret rotation audit PR | Migration and idempotency tests reject secret values, private URLs, wallet addresses, and provider diagnostic payloads. |
 | Medium | Production deployment remains out of scope. | Operations | Manual-gated production apply PR | No real DB connection, provider SDK apply, or production deployment apply is introduced. |
+
+Schema alignment risk from PR #40 review is mitigated by adding migration design
+for `rollback_planned`, `provider_apply_transaction.*` audit actions,
+state-machine flag columns, applied/compensation consistency checks, SQL state
+flag updates, and context-aware lock timeout retry actions.
