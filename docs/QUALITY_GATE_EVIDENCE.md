@@ -301,3 +301,17 @@ No real provider SDK apply, actual production deployment apply, secret manager
 real SDK integration, live YouTube operation, raw GitHub log reading, runtime
 readiness claim, production readiness claim, legal compliance claim, YouTube
 policy compliance claim, or quality-gate weakening is introduced.
+
+## Postgres Provider Apply Transaction Design v1.1.4
+
+Postgres transaction evidence adds a SQL design contract, fixed lock order,
+repository contract stub, retry classifier, migration index design, and tests.
+The evidence verifies manual gate lock before provider job lock, `SELECT FOR
+UPDATE` usage, provider/manual audit insert ordering, safe idempotency metadata,
+retryable SQL reason codes, terminal SQL reason codes, and compensation-required
+classification after provider success plus durable transaction failure.
+
+No real DB connection, real provider SDK apply, actual production deployment
+apply, raw GitHub log reading, runtime readiness claim, production readiness
+claim, legal compliance claim, YouTube policy compliance claim, or
+quality-gate weakening is introduced.

@@ -23,5 +23,15 @@
       "status": "open",
       "mitigation": "Safe operator handoff only."
     }
+  ],
+  "entries": [
+    {
+      "id": "postgres_provider_apply_transaction_design_v114",
+      "severity": "Medium",
+      "risk": "Real Postgres transaction execution remains future work.",
+      "owner": "Backend",
+      "nextStep": "Postgres repository implementation PR",
+      "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
+    }
   ]
 }

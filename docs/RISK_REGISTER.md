@@ -146,3 +146,14 @@ Safe CI failure artifacts reduce raw-log dependency for future rollout attempts,
 | Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | `compensation_required` returns a safe operator handoff with rollback/runbook references and no automatic rollback. |
 | Medium | Secret rotation audit remains future work. | Security/Ops | Secret rotation audit PR | Manual gate and audit evidence allow secret references only, not secret values. |
 | Medium | Actual production deployment remains out of scope. | Operations | Manual-gated deployment PR | Production-like apply still requires approved manual gate records and owner-controlled execution. |
+
+## Postgres Provider Apply Transaction Design v1.1.4
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real Postgres repository implementation remains future work. | Backend | Postgres repository implementation PR | Current PR adds SQL design, repository contract stubs, retry classifier, migration indexes, and tests only. |
+| Medium | Real DB transaction execution remains future work. | Backend | Live DB integration PR | Lock order and retry classification are fixed in code and docs before a real DB adapter is introduced. |
+| Medium | Provider apply executor remains future work. | Backend/Ops | Provider executor PR | Provider apply is documented as outside the DB transaction and retries must not re-execute it. |
+| Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | Audit append after provider success maps to `compensation_required` and safe handoff only. |
+| Medium | Secret rotation audit remains future work. | Security/Ops | Secret rotation audit PR | Migration and idempotency tests reject secret values, private URLs, wallet addresses, and provider diagnostic payloads. |
+| Medium | Production deployment remains out of scope. | Operations | Manual-gated production apply PR | No real DB connection, provider SDK apply, or production deployment apply is introduced. |

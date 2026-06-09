@@ -303,3 +303,18 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   response rejection.
 - Existing PR #35 manual gate audit tests and PR #38 provider job state-machine
   tests remain part of the regression surface.
+
+## Postgres Provider Apply Transaction Design v1.1.4
+
+- Added `apps/api/src/provider-apply-postgres-transaction.test.ts` for SQL lock
+  order, `SELECT FOR UPDATE`, provider job update before manual gate used,
+  audit insert before commit, forbidden raw provider/secret columns, retry
+  classification, compensation-required classification, and unsafe idempotency
+  rejection.
+- Added
+  `apps/api/src/repositories/provider-apply-postgres-transaction-repository.test.ts`
+  for repository contract planning without a real DB connection, safe summary
+  rejection, SQL state classification, migration index coverage, safe-summary
+  object checks, and no secret/default unsafe values in migration design.
+- Existing PR #39 transaction boundary tests, PR #38 job state tests, and PR #35
+  manual gate audit tests remain part of the regression surface.

@@ -88,3 +88,11 @@ evidence. A future provider-specific production apply must not record a job as
 `applied` unless manual gate mark-used succeeded. If provider side effects
 started but mark-used failed, the job must remain non-applied and record
 `compensation_required` with safe audit evidence only.
+
+## Postgres Provider Apply Transaction Design v1.1.4
+
+Postgres provider apply transaction design advances G3 operational control by
+fixing manual gate row lock, provider job row lock, audit insert order, retry
+classification, and additive migration indexes. It does not make the system G4
+production ready because no real DB connection, real provider SDK apply, actual
+production deployment apply, or live YouTube operation is implemented.

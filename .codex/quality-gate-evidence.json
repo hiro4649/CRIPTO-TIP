@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 39,
-  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
-  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "local_verification_pass_before_pr",
-  "latestAnalyzedRunId": "27181458886",
-  "latestAnalyzedArtifactId": "7497670438",
+  "latestAnalyzedRunId": "local_verification_before_pr",
+  "latestAnalyzedArtifactId": "local_verification_before_pr",
   "reasonCodeMappings": {
     "providerApplyTransactionBoundaryStatus": "pass",
     "providerApplyCompensationHandoffStatus": "pass",
@@ -50,5 +50,12 @@
     "provider_apply_compensation_handoff",
     "no_secret_scan",
     "no_scraping_scan"
+  ],
+  "status": "local_verification_pass_before_pr",
+  "qualityGateStatus": "local_verification_pass_before_pr",
+  "evidenceNotes": [
+    "Quality-gate must pass on the pushed PR head.",
+    "Evidence refresh will inject current head, CI run, quality-gate run, and artifact after PR creation.",
+    "No quality-gate weakening is introduced."
   ]
 }

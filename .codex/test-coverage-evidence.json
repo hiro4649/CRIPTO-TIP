@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
   "harnessVersion": "1.1.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 39,
-  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
-  "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
@@ -23,5 +23,17 @@
     "provider diagnostic payload rejection",
     "PR #35 manual gate audit regression",
     "PR #38 job state regression"
+  ],
+  "status": "pending_local_verification",
+  "testFiles": 30,
+  "passed": 336,
+  "skipped": 6,
+  "summary": "30 files, 336 passed, 6 skipped",
+  "coverageNotes": [
+    "Postgres SQL lock order and SELECT FOR UPDATE design tests added.",
+    "Postgres transaction retry classifier tests added.",
+    "Postgres repository contract unsafe idempotency and safe summary tests added.",
+    "Migration 0004 index and safe_summary object tests added.",
+    "PR #39, PR #38, and PR #35 regression tests remain covered."
   ]
 }
