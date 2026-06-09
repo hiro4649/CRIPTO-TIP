@@ -301,6 +301,14 @@ referenced the previous head. The repair updates PR evidence to the current head
 and keeps all quality gates, product tests, secret scan, no-scraping scan, and
 raw-log prohibition intact.
 
+## Postgres Adapter Contract Hardening v1.1.6 Prep
+
+This PR adds typed row parsers, SQL parameter builders, and query result guards
+for the Postgres provider apply transaction adapter. The adapter still uses only
+`PostgresTransactionClient`; no DB driver, real DB connection, package change,
+provider SDK apply, production deployment apply, raw GitHub log reading, or
+runtime readiness claim is introduced.
+
 ## Provider Apply Transaction Boundary v1.1.4
 
 Provider apply transaction evidence adds `ProviderApplyTransactionDraft`,

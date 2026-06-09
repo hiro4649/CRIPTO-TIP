@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 42,
-  "headSha": "195efd541dab1d8a7a3c19c792a36c5616b0d4d7",
-  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
+  "prNumber": 43,
+  "headSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
+  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 31,
-    "passed": 422,
+    "testFiles": 34,
+    "passed": 467,
     "skipped": 6
   },
   "coverage": [
@@ -25,10 +25,10 @@
     "PR #38 job state regression"
   ],
   "status": "pass",
-  "testFiles": 31,
-  "passed": 422,
+  "testFiles": 34,
+  "passed": 467,
   "skipped": 6,
-  "summary": "31 files, 422 passed, 6 skipped",
+  "summary": "34 files, 467 passed, 6 skipped",
   "coverageNotes": [
     "Postgres SQL lock order and SELECT FOR UPDATE design tests added.",
     "Postgres transaction retry classifier tests added.",
@@ -40,6 +40,6 @@
     "Post-review hardening covers SQL state flag updates, fail-closed manual gate used update, provider job state flag selects, and context-aware lock timeout retry actions.",
     "Postgres transaction adapter skeleton covers mock-client query order, rowCount fail-closed behavior, compensation-required mapping after provider success, retry classifier exposure, unsafe value rejection, and no real DB connection invariant."
   ],
-  "testsPassed": 422,
+  "testsPassed": 467,
   "testsSkipped": 6
 }

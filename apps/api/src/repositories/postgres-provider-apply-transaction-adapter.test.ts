@@ -151,6 +151,14 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
     expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
   });
 
+  it("rolls back on parser failure", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow({ id: undefined })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("manual_gate_not_approved");
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
   it("rolls back on provider job update rowCount zero", async () => {
     const fake = new FakePostgresTransactionClient([ok(), manualGateRow(), providerJobRow(), empty()]);
     const result = failure(await adapter(fake).commitRecordedProviderApply(input));
@@ -247,6 +255,14 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
     expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
   });
 
+  it("rejects unsafe parsed manual gate row", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow({ id: "0x1234567890abcdef1234567890abcdef12345678" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("manual_gate_not_approved");
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
   it.each([
     ["wrong manual_gate_id", { manual_gate_id: "other-gate" }],
     ["wrong target_commit_sha", { target_commit_sha: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" }],
@@ -259,6 +275,24 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
 
     expect(result.failed_phase).toBe("provider_job_transition_invalid");
     expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("rejects unsafe parsed provider job row", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow(), providerJobRow({ operator_runbook_ref: "Bearer secret" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("provider_job_transition_invalid");
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("rejects invalid SQL params before query", async () => {
+    const fake = new FakePostgresTransactionClient();
+
+    await expect(adapter(fake).commitRecordedProviderApply({
+      ...input,
+      transactionId: "https://private.example.invalid"
+    })).rejects.toThrow(/transaction id contains unsafe value/);
+    expect(fake.queries).toHaveLength(0);
   });
 
   it.each([
@@ -400,6 +434,14 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
 
   it("preserves no real DB connection invariant", () => {
     expect(String(PostgresProviderApplyTransactionAdapter)).not.toMatch(/from ['"]pg['"]|postgres\(/);
+  });
+
+  it("adapter has no pg/postgres import", async () => {
+    const source = await import("node:fs/promises").then((fs) =>
+      fs.readFile(new URL("./postgres-provider-apply-transaction-adapter.ts", import.meta.url), "utf8")
+    );
+
+    expect(source).not.toMatch(/from ['"]pg['"]|from ['"]postgres['"]|require\(['"]pg['"]\)|require\(['"]postgres['"]\)/);
   });
 });
 
