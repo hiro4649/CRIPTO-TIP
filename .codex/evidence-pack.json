@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 42,
-  "headSha": "71544eb9c4d00c343828252bc3c909e3e22cf31d",
+  "headSha": "195efd541dab1d8a7a3c19c792a36c5616b0d4d7",
   "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add postgres transaction adapter skeleton",
   "goal": "Add Postgres transaction adapter skeleton and mock-client tests for provider apply/manual gate/audit consistency under harness v1.1.5 and v1.1.6 readiness, without real DB connection, DB driver, real provider SDK apply, or production deployment.",
-  "ciRunId": "27207843214",
-  "qualityGateRunId": "27208627782",
-  "qualityGateArtifactId": "7508707370",
+  "ciRunId": "27210438777",
+  "qualityGateRunId": "27210437759",
+  "qualityGateArtifactId": "7509524067",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -125,14 +125,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27207843214",
+      "runId": "27210438777",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27208627782",
-      "result": "success",
-      "artifactId": "7508707370"
+      "runId": "27210437759",
+      "result": "failure_stale_pr_audit_before_body_refresh",
+      "artifactId": "7509524067"
     }
   ],
   "productionClaims": {

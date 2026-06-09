@@ -21,7 +21,7 @@ Done criteria: adapter skeleton uses PostgresTransactionClient interface only; a
 
 ## Evidence Integrity
 
-Head SHA: 71544eb9c4d00c343828252bc3c909e3e22cf31d
+Head SHA: 195efd541dab1d8a7a3c19c792a36c5616b0d4d7
 
 Base SHA: 507855ae652061c728ba23bf2282fb0fbdf85ce1
 
@@ -29,13 +29,15 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27207843214
+CI run: 27210438777
 
-Quality-gate run: 27208627782
+Quality-gate run: 27210437759
 
-Quality-gate artifact: 7508707370
+Quality-gate artifact: 7509524067
 
 Tests: 31 test files, 422 passed, 6 skipped
+
+Stale Evidence Check: pass after current-head PR body refresh.
 
 ## Testing and review
 
@@ -92,6 +94,21 @@ Review scope and verification:
 - Scope: Postgres transaction adapter skeleton, mock transaction client tests, rowCount fail-closed behavior, compensation mapping, retry classifier boundary, docs, and evidence.
 - Risk summary: Main risk is accidentally implying real DB or provider SDK readiness, or retrying provider apply after external success.
 - Verification oracle: Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, no DB driver import scan, and GitHub checks.
+
+Affected entrypoints:
+
+- `apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts`
+- `apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts`
+
+Failure paths considered:
+
+- Provider success followed by durable write, audit append, manual gate mark-used, or COMMIT failure records compensation-required safe evidence and must not re-execute provider apply.
+- Provider failure records provider failure audit only and does not claim a manual gate audit row.
+- RowCount zero for provider job, manual gate, and audit writes fails closed and rolls back before any completed apply claim.
+
+Human confirmation needed:
+
+- Human owner confirmation is still required before any production-like apply, real DB integration, real provider SDK apply, runtime readiness claim, or production readiness claim.
 
 ## Test Coverage Evidence
 

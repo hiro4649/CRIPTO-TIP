@@ -292,6 +292,15 @@ manual gate used state, provider audit before manual gate audit, rowCount
 fail-closed handling, compensation-required mapping after provider success,
 retry classifier exposure, and no real DB/driver/provider SDK boundary.
 
+## PR #42 Current-Head Stale Evidence Repair
+
+PR #42 head `195efd541dab1d8a7a3c19c792a36c5616b0d4d7` has product CI run
+`27210438777` passing. The quality-gate run `27210437759` produced safe artifact
+`7509524067` and failed on `stalePrAuditStatus` because the PR body still
+referenced the previous head. The repair updates PR evidence to the current head
+and keeps all quality gates, product tests, secret scan, no-scraping scan, and
+raw-log prohibition intact.
+
 ## Provider Apply Transaction Boundary v1.1.4
 
 Provider apply transaction evidence adds `ProviderApplyTransactionDraft`,
