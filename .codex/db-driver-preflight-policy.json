@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.1.5",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 0,
+  "headSha": "9b41e6453172ef9287c9ce41774a50589568a728",
+  "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
+  "driverChoiceStatus": "not_selected",
+  "selectedDriver": null,
+  "candidateDrivers": [
+    "pg",
+    "postgres"
+  ],
+  "ownerApprovalRecordRequired": true,
+  "ownerApprovalRecordStatus": "not_approved",
+  "packageChangeAllowed": false,
+  "pnpmLockChangeAllowed": false,
+  "realDbConnectionAllowed": false,
+  "liveDbIntegrationTestsAllowed": false,
+  "migrationApplyAllowed": false,
+  "providerSdkApplyAllowed": false,
+  "actualProductionDeploymentAllowed": false,
+  "runtimeReadinessClaimAllowed": false,
+  "productionReadinessClaimAllowed": false,
+  "licenseReviewRequired": true,
+  "supplyChainReviewRequired": true,
+  "securityAdvisoryReviewRequired": true,
+  "versionPinningRequired": true,
+  "lockfileReviewRequired": true,
+  "packageDiffReviewRequired": true,
+  "secretManagerReviewRequired": true,
+  "forbiddenScopeStatus": "pass"
+}

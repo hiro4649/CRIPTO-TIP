@@ -378,3 +378,12 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   fingerprint mismatch replay rejection; unsafe evidence rejection; and proof
   that machine-readable evidence remains not_approved with all real
   DB/package/provider/runtime permissions false.
+
+## DB Driver Preflight Policy v1.1.6 Prep
+
+- Validates default `not_selected` state.
+- Validates candidate drivers are limited to `pg` and `postgres`.
+- Validates selected drivers require approved owner approval status.
+- Validates package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, and production readiness flags remain rejected.
+- Validates license, supply-chain, security advisory, version pinning, lockfile, package diff, and secret manager review requirements remain enabled.
+- Validates unsafe evidence rejection for DB connection strings, private URLs, wallet addresses, token-like values, raw provider response, and raw GitHub log references.

@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 45,
-  "headSha": "271785f769cbed4f27d4e088f19ee101c70ead4b",
+  "prNumber": 0,
+  "headSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -60,6 +60,20 @@
       "status": "open",
       "risk": "Production deployment remains out of scope.",
       "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
+    },
+    {
+      "severity": "Medium",
+      "risk": "DB driver preflight could be mistaken for driver approval.",
+      "owner": "Storage owner",
+      "nextPr": "Owner-approved DB driver selection PR",
+      "mitigation": "Driver choice remains not_selected and selected driver requires approved owner approval status."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Package or lockfile changes could happen before preflight review closes.",
+      "owner": "Storage owner",
+      "nextPr": "Future dependency PR",
+      "mitigation": "Package and lockfile flags remain false and package files are unchanged."
     }
   ],
   "entries": [
@@ -72,7 +86,7 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "status": "pass",
   "title": "feat: add db driver owner approval record",
   "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment."
