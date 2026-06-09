@@ -3,12 +3,12 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 43,
-  "headSha": "3f6bbfd7a851fc1187e1b31834c910924df18a42",
+  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
   "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "local_verification_pass_before_pr",
-  "latestAnalyzedRunId": "local_verification_before_pr",
-  "latestAnalyzedArtifactId": "local_verification_before_pr",
+  "qualityGateExpectedStatus": "success",
+  "latestAnalyzedRunId": "27219466844",
+  "latestAnalyzedArtifactId": "7513388618",
   "reasonCodeMappings": {
     "providerApplyTransactionBoundaryStatus": "pass",
     "providerApplyCompensationHandoffStatus": "pass",
@@ -25,21 +25,21 @@
     "actual production deployment apply",
     "manual gate bypass"
   ],
-  "qualityGateEvidenceStatus": "local_verification_pass_before_pr",
+  "qualityGateEvidenceStatus": "pass",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     }
   ],
@@ -51,13 +51,13 @@
     "no_secret_scan",
     "no_scraping_scan"
   ],
-  "status": "local_verification_pass_before_pr",
-  "qualityGateStatus": "current_head_quality_gate_replay_required",
+  "status": "pass",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
-    "Quality-gate must pass on the pushed PR head.",
-    "Evidence refresh will inject current head, CI run, quality-gate run, and artifact after PR creation.",
+    "Quality-gate passed on the reported PR head before this post-review hardening commit.",
+    "Final PR body evidence is refreshed after the pushed head receives same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "current_head_quality_gate_replay_required",
-  "qualityGateArtifactId": "current_head_quality_gate_replay_required"
+  "qualityGateRunId": "27219466844",
+  "qualityGateArtifactId": "7513388618"
 }

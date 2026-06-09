@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 43,
-  "headSha": "3f6bbfd7a851fc1187e1b31834c910924df18a42",
+  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
   "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: harden postgres adapter contract",
   "goal": "Harden the Postgres transaction adapter contract for v1.1.6 preparation with typed row parsers, SQL parameter builders, query result guards, and migration-to-adapter mapping, without real DB connection, DB driver, package changes, real provider SDK apply, or production deployment.",
-  "ciRunId": "27218741735",
-  "qualityGateRunId": "current_head_quality_gate_replay_required",
-  "qualityGateArtifactId": "current_head_quality_gate_replay_required",
+  "ciRunId": "27219092574",
+  "qualityGateRunId": "27219466844",
+  "qualityGateArtifactId": "7513388618",
   "productCiStatus": "success",
-  "qualityGateStatus": "current_head_quality_gate_replay_required",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -90,11 +90,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 34 files, 467 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 34 files, 467 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -106,7 +106,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 34 files, 467 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -129,8 +129,15 @@
     {
       "name": "ci",
       "status": "success",
-      "runId": "27218741735",
-      "headSha": "3f6bbfd7a851fc1187e1b31834c910924df18a42"
+      "runId": "27219092574",
+      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
+    },
+    {
+      "name": "quality-gate",
+      "status": "success",
+      "runId": "27219466844",
+      "artifactId": "7513388618",
+      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
     }
   ],
   "productionClaims": {
@@ -200,13 +207,20 @@
     "no package.json or pnpm-lock change is introduced",
     "no migration change is introduced",
     "no real provider SDK apply is introduced",
-    "no runtime or production readiness claim is introduced"
+    "no runtime or production readiness claim is introduced",
+    "manual gate row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "provider job row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "manual gate status is limited to the persistent status vocabulary",
+    "manual gate and provider job timestamps must be ISO UTC timestamps with Z suffix",
+    "provider apply audit insert action is limited to provider_apply_transaction.* audit vocabulary",
+    "rowCount greater than one failures preserve metadata-limited phase context",
+    "adapter parser failures return safe operator actions without row contents or raw DB diagnostics"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 34,
-    "passed": 467,
+    "passed": 489,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -236,18 +250,18 @@
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 467,
+  "testsPassed": 489,
   "testsSkipped": 6,
   "testFiles": 34,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 34 files, 467 passed, 6 skipped",
-    "npm test: pass: 34 files, 467 passed, 6 skipped",
+    "corepack pnpm test: pass: 34 files, 489 passed, 6 skipped",
+    "npm test: pass: 34 files, 489 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 34 files, 467 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass: 34 files, 489 passed, 6 skipped",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -279,9 +293,9 @@
     "summary": "Candidate B adds typed row parsers, SQL parameter builders, query result guards, mapping docs, and no real DB connection."
   },
   "prBodyPath": "docs/pr-postgres-adapter-contract-hardening-v116-prep.md",
-  "passed": 467,
+  "passed": 489,
   "skipped": 6,
-  "summary": "34 files, 467 passed, 6 skipped",
+  "summary": "34 files, 489 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/evidence-pack.json",

@@ -156,6 +156,25 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
     const result = failure(await adapter(fake).commitRecordedProviderApply(input));
 
     expect(result.failed_phase).toBe("manual_gate_not_approved");
+    expect(result.next_operator_action).toContain("Typed row parser rejected safe row shape");
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("adapter manual gate parser failure returns safe operator action mentioning typed row parser", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow({ unreviewed_column: "safe-looking" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("manual_gate_not_approved");
+    expect(result.next_operator_action).toContain("Typed row parser rejected safe row shape");
+    expect(result.next_operator_action).not.toMatch(/safe-looking|unreviewed_column|raw_provider_response/i);
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("adapter rolls back when manual gate row has unexpected extra field", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow({ provider_response: "forbidden" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("manual_gate_not_approved");
     expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
   });
 
@@ -283,6 +302,39 @@ describe("PostgresProviderApplyTransactionAdapter", () => {
 
     expect(result.failed_phase).toBe("provider_job_transition_invalid");
     expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("adapter provider job parser failure returns safe operator action mentioning typed row parser", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow(), providerJobRow({ unreviewed_column: "safe-looking" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("provider_job_transition_invalid");
+    expect(result.next_operator_action).toContain("Typed row parser rejected safe row shape");
+    expect(result.next_operator_action).not.toMatch(/safe-looking|unreviewed_column|display_name/i);
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("adapter rolls back when provider job row has unexpected extra field", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), manualGateRow(), providerJobRow({ display_name: "viewer" })]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("provider_job_transition_invalid");
+    expect(sqlAt(fake, fake.queries.length - 1)).toBe("ROLLBACK");
+  });
+
+  it("adapter rowCount 2 failure next_operator_action stays safe and metadata-limited", async () => {
+    const fake = new FakePostgresTransactionClient([ok(), {
+      rowCount: 2,
+      rows: [
+        manualGateRow().rows[0]!,
+        manualGateRow({ id: "gate-postgres-adapter-2" }).rows[0]!
+      ]
+    }]);
+    const result = failure(await adapter(fake).commitRecordedProviderApply(input));
+
+    expect(result.failed_phase).toBe("manual_gate_not_approved");
+    expect(result.next_operator_action).toMatch(/metadata-limited|safe evidence/i);
+    expect(result.next_operator_action).not.toMatch(/gate-postgres-adapter-2|stdout|stderr|stack/i);
   });
 
   it("rejects invalid SQL params before query", async () => {

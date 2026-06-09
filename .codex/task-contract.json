@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 43,
-  "headSha": "3f6bbfd7a851fc1187e1b31834c910924df18a42",
+  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
   "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "goal": "Harden the Postgres transaction adapter contract for v1.1.6 preparation with typed row parsers, SQL parameter builders, query result guards, and migration-to-adapter mapping, without real DB connection, DB driver, package changes, real provider SDK apply, or production deployment.",
   "allowedScope": [
@@ -62,7 +62,14 @@
     "no package.json or pnpm-lock change is introduced",
     "no migration change is introduced",
     "no real provider SDK apply is introduced",
-    "no runtime or production readiness claim is introduced"
+    "no runtime or production readiness claim is introduced",
+    "manual gate row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "provider job row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "manual gate status is limited to the persistent status vocabulary",
+    "manual gate and provider job timestamps must be ISO UTC timestamps with Z suffix",
+    "provider apply audit insert action is limited to provider_apply_transaction.* audit vocabulary",
+    "rowCount greater than one failures preserve metadata-limited phase context",
+    "adapter parser failures return safe operator actions without row contents or raw DB diagnostics"
   ],
   "riskLevel": "R3",
   "taskMode": "feature",

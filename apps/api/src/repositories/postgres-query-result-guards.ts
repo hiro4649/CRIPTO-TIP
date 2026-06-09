@@ -5,7 +5,7 @@ export type PostgresQueryFailurePhase = ProviderApplyTransactionFailure["failed_
 
 export function expectSingleRow(result: PostgresQueryResult, phase: PostgresQueryFailurePhase) {
   if (result.rowCount !== 1) {
-    throw new Error(result.rowCount > 1 ? "metadata_limited_external_blocked" : phase);
+    throw new Error(result.rowCount > 1 ? metadataLimitedPhase(phase) : phase);
   }
   const row = result.rows[0];
   if (!row) throw new Error(phase);
@@ -14,10 +14,14 @@ export function expectSingleRow(result: PostgresQueryResult, phase: PostgresQuer
 
 export function expectOneWrite(result: PostgresQueryResult, phase: ProviderApplyTransactionFailure["failed_phase"], _providerApplySucceeded = false) {
   if (result.rowCount !== 1) {
-    throw new Error(result.rowCount > 1 ? "metadata_limited_external_blocked" : phase);
+    throw new Error(result.rowCount > 1 ? metadataLimitedPhase(phase) : phase);
   }
 }
 
 export function expectNoRowsOrThrow(result: PostgresQueryResult, phase: PostgresQueryFailurePhase) {
   if (result.rowCount !== 0 || result.rows.length > 0) throw new Error(phase);
+}
+
+function metadataLimitedPhase(phase: string) {
+  return `metadata_limited_external_blocked:${phase}`;
 }

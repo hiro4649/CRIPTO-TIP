@@ -193,7 +193,11 @@ export class PostgresProviderApplyTransactionAdapter {
       manual_gate_id: input.idempotency.manual_gate_id,
       failed_phase: failurePhase(phase),
       compensation_required: compensationRequired || classified.compensationRequired,
-      next_operator_action: phase === "commit" && input.providerApplySucceeded
+      next_operator_action: isMetadataLimitedError(error)
+        ? "Review metadata-limited safe evidence for the adapter phase; do not expose row contents or raw DB diagnostics."
+        : isTypedRowParserRejection(error)
+        ? "Typed row parser rejected safe row shape; review adapter column contract without exposing row contents."
+        : phase === "commit" && input.providerApplySucceeded
         ? "Inspect durable safe evidence before retrying; COMMIT outcome is metadata-limited and provider apply must not be re-executed."
         : compensationRequired
         ? "Follow provider apply compensation handoff; do not re-execute provider apply."
@@ -238,6 +242,7 @@ function sqlStateFromError(error: unknown) {
 }
 
 function phaseForClassifier(phase: string) {
+  if (phase.startsWith("metadata_limited_external_blocked:")) return "metadata_limited_external_blocked";
   if (phase === "mark_used_failed_after_provider_apply") return "audit_append_failed";
   if (phase === "update_provider_job_applied_after_gate_used") return "job_transition_invalid";
   if (phase === "update_provider_job") return "job_transition_invalid";
@@ -246,10 +251,19 @@ function phaseForClassifier(phase: string) {
 }
 
 function failurePhase(phase: string): ProviderApplyTransactionFailure["failed_phase"] {
+  if (phase.startsWith("metadata_limited_external_blocked:")) return "provider_job_transition_invalid";
   if (phase === "mark_used_failed_after_provider_apply") return "mark_used_failed_after_provider_apply";
   if (phase === "audit_append_failed") return "audit_append_failed";
   if (phase === "manual_gate_not_approved") return "manual_gate_not_approved";
   if (phase === "manual_gate_mismatch") return "manual_gate_mismatch";
   if (phase === "commit") return "audit_append_failed";
   return "provider_job_transition_invalid";
+}
+
+function isTypedRowParserRejection(error: unknown) {
+  return error instanceof Error && /typed_row_parser_rejected|is required|is invalid|must be an ISO|must be boolean|invariant is invalid/.test(error.message);
+}
+
+function isMetadataLimitedError(error: unknown) {
+  return error instanceof Error && error.message.startsWith("metadata_limited_external_blocked:");
 }

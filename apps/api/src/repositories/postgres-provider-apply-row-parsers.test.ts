@@ -28,6 +28,50 @@ describe("postgres provider apply row parsers", () => {
     expect(parseManualGateRow({ ...manualGateRow(), used_at: null }).used_at).toBeNull();
   });
 
+  it("parseManualGateRow rejects unexpected extra field", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), unreviewed_column: "safe-looking" })).toThrow(/not allowed/);
+  });
+
+  it("parseManualGateRow rejects raw_provider_response field even if not used", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), raw_provider_response: "forbidden" })).toThrow(/not allowed/);
+  });
+
+  it("parseManualGateRow rejects provider_response field", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), provider_response: "forbidden" })).toThrow(/not allowed/);
+  });
+
+  it("parseManualGateRow rejects unknown status", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), status: "unknown" })).toThrow(/status is invalid/);
+  });
+
+  it("parseManualGateRow accepts approved status", () => {
+    expect(parseManualGateRow({ ...manualGateRow(), status: "approved" }).status).toBe("approved");
+  });
+
+  it("parseManualGateRow accepts used status for adapter-level rejection", () => {
+    expect(parseManualGateRow({ ...manualGateRow(), status: "used" }).status).toBe("used");
+  });
+
+  it("parseManualGateRow rejects non ISO date string", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), expires_at: "June 10 2026" })).toThrow(/ISO UTC/);
+  });
+
+  it("parseManualGateRow rejects date without Z", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), expires_at: "2026-06-10T00:00:00" })).toThrow(/ISO UTC/);
+  });
+
+  it("parseManualGateRow accepts ISO date with milliseconds", () => {
+    expect(parseManualGateRow({ ...manualGateRow(), expires_at: "2026-06-10T00:00:00.000Z" }).expires_at).toBe("2026-06-10T00:00:00.000Z");
+  });
+
+  it("parseManualGateRow accepts ISO date without milliseconds", () => {
+    expect(parseManualGateRow({ ...manualGateRow(), expires_at: "2026-06-10T00:00:00Z" }).expires_at).toBe("2026-06-10T00:00:00Z");
+  });
+
+  it("parseManualGateRow rejects used_at non ISO string", () => {
+    expect(() => parseManualGateRow({ ...manualGateRow(), used_at: "June 10 2026" })).toThrow(/ISO UTC/);
+  });
+
   it("parseProviderJobRow rejects missing operation", () => {
     expect(() => parseProviderJobRow({ ...providerJobRow(), operation: undefined })).toThrow(/operation is required/);
   });
@@ -92,6 +136,18 @@ describe("postgres provider apply row parsers", () => {
 
   it("parseProviderJobRow rejects raw provider response fields", () => {
     expect(() => parseProviderJobRow({ ...providerJobRow(), raw_provider_response: "forbidden" })).toThrow(/not allowed/);
+  });
+
+  it("parseProviderJobRow rejects unexpected extra field", () => {
+    expect(() => parseProviderJobRow({ ...providerJobRow(), unreviewed_column: "safe-looking" })).toThrow(/not allowed/);
+  });
+
+  it("parseProviderJobRow rejects display_name field", () => {
+    expect(() => parseProviderJobRow({ ...providerJobRow(), display_name: "viewer" })).toThrow(/not allowed/);
+  });
+
+  it("parseProviderJobRow rejects youtube_author_id field", () => {
+    expect(() => parseProviderJobRow({ ...providerJobRow(), youtube_author_id: "channel-id" })).toThrow(/not allowed/);
   });
 });
 

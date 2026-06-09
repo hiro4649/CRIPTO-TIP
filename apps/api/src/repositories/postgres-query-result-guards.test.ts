@@ -8,7 +8,7 @@ describe("postgres query result guards", () => {
   });
 
   it("expectSingleRow rejects rowCount 2", () => {
-    expect(() => expectSingleRow(result(2, [{ id: "a" }, { id: "b" }]), "provider_job_transition_invalid")).toThrow(/metadata_limited_external_blocked/);
+    expect(() => expectSingleRow(result(2, [{ id: "a" }, { id: "b" }]), "provider_job_transition_invalid")).toThrow(/metadata_limited_external_blocked:provider_job_transition_invalid/);
   });
 
   it("expectSingleRow rejects missing rows[0]", () => {
@@ -20,7 +20,7 @@ describe("postgres query result guards", () => {
   });
 
   it("expectOneWrite rejects rowCount 2", () => {
-    expect(() => expectOneWrite(result(2, []), "provider_job_transition_invalid")).toThrow(/metadata_limited_external_blocked/);
+    expect(() => expectOneWrite(result(2, []), "provider_job_transition_invalid")).toThrow(/metadata_limited_external_blocked:provider_job_transition_invalid/);
   });
 
   it("expectOneWrite classifies audit append after provider success as compensation_required phase", () => {

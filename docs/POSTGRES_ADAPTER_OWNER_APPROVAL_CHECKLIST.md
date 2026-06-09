@@ -17,6 +17,9 @@ adapter execution.
 - DB credential storage approved.
 - Live integration test environment approved.
 - Manual gate production policy approved.
+- Exact row parser contract approved for manual gate and provider job rows.
+- Manual gate status, ISO UTC timestamp, and provider audit action vocabulary
+  tests approved.
 - Provider apply executor remains separate from DB transaction recording.
 - Operator compensation handoff is rehearsed before production use.
 - No production readiness claim until live DB soak tests, required checks, and

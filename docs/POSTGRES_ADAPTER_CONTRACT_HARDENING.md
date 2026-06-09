@@ -16,11 +16,13 @@ The adapter consumes these `manual_gates` columns through
 | --- | --- | --- |
 | `id` | `id` | Required safe string. |
 | `gate_type` | `gate_type` | Valid `ManualGateType`. |
-| `status` | `status` | Must be `approved` before use. |
+| `status` | `status` | Must be one of `not_requested`, `requested`, `approved`, `rejected`, `expired`, or `used`; adapter use still requires `approved`. |
 | `target_environment` | `target_environment` | Required safe string and must match idempotency. |
 | `target_commit_sha` | `target_commit_sha` | Required 40-character hex SHA and must match idempotency. |
-| `expires_at` | `expires_at` | Required ISO datetime and must be after commit time. |
+| `expires_at` | `expires_at` | Required ISO UTC datetime and must be after commit time. |
 | `used_at` | `used_at` | `null` or absent before mark-used. |
+
+The adapter row parser is exact and rejects unexpected manual gate columns.
 
 ## Consumed Provider Job Columns
 
@@ -41,6 +43,8 @@ The adapter consumes these `provider_deployment_jobs` columns through
 | `compensation_required` | state flag | Required boolean. |
 | `rollback_plan_ref` | `rollback_plan_ref` | Required safe reference. |
 | `operator_runbook_ref` | `operator_runbook_ref` | Required safe reference. |
+
+The adapter row parser is exact and rejects unexpected provider job columns.
 
 `applied` rows are valid only when provider apply started, manual gate mark-used
 was attempted and succeeded, and compensation is false. Compensation-required
@@ -71,7 +75,7 @@ stack traces.
 | `$5` | `committedAt` |
 | `$6` | provider audit id |
 | `$7` | operation |
-| `$8` | provider audit action |
+| `$8` | provider audit action from the existing `provider_apply_transaction.*` allowlist |
 | `$9` | target environment |
 | `$10` | provider audit safe summary |
 | `$11` | manual gate audit id |
@@ -86,6 +90,11 @@ stack traces.
 The parameter builders return readonly arrays and reject unsafe IDs, unsafe
 references, unsafe summaries, invalid timestamps, invalid applied-state flags,
 and invalid compensation flags before query execution.
+
+Query result guards preserve a safe metadata-limited phase when `rowCount > 1`,
+for example `metadata_limited_external_blocked:provider_job_transition_invalid`.
+The phase helps operator triage without exposing row contents or raw DB
+diagnostics.
 
 ## Migration 0004 Correspondence
 
@@ -108,7 +117,8 @@ The real DB adapter will receive `unknown` row shapes from a driver. The mock
 client now exercises the same trust boundary by parsing rows through typed
 validators before business validation. This prevents `rows[0] as T` from
 turning missing fields, wrong primitive types, invalid state flags, unsafe raw
-payloads, or stale schema assumptions into accepted state.
+payloads, unexpected extra columns, loose timestamps, unknown audit actions, or
+stale schema assumptions into accepted state.
 
 ## Future Owner Approval
 

@@ -5,6 +5,7 @@ import {
   type PostgresProviderApplyTransactionIdempotency,
   unsafePostgresTransactionPattern
 } from "../provider-apply-postgres-transaction.js";
+import { providerDeploymentAuditActions, type ProviderDeploymentAuditAction } from "../provider-deployment-audit.js";
 
 export type PostgresProviderApplyParamInput = {
   transactionId: string;
@@ -54,7 +55,7 @@ export function createManualGateUsedParams(input: PostgresProviderApplyParamInpu
 }
 
 export function createProviderAuditInsertParams(input: PostgresProviderApplyParamInput, action = "provider_apply_transaction.audit_append_succeeded") {
-  assertSafeText(action, "provider audit action");
+  assertProviderApplyAuditAction(action);
   return baseParams(input, { providerAuditAction: action });
 }
 
@@ -97,4 +98,14 @@ function assertSafeParamInput(input: PostgresProviderApplyParamInput) {
 function assertSafeText(value: string, label: string) {
   if (!value) throw new Error(`${label} is required`);
   if (unsafePostgresTransactionPattern().test(value)) throw new Error(`${label} contains unsafe value`);
+}
+
+function assertProviderApplyAuditAction(action: string): asserts action is ProviderDeploymentAuditAction {
+  assertSafeText(action, "provider audit action");
+  if (!providerDeploymentAuditActions.includes(action as ProviderDeploymentAuditAction)) {
+    throw new Error("provider audit action is invalid");
+  }
+  if (!action.startsWith("provider_apply_transaction.")) {
+    throw new Error("provider audit action is invalid");
+  }
 }

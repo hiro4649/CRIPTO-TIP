@@ -17,45 +17,25 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Risk level: R3 product contract hardening. The changed surface is internal
-storage adapter contract code, typed row parsing, SQL parameter construction,
-query result guarding, tests, docs, and evidence only.
-
-Affected entrypoints: offline Postgres provider apply transaction adapter
-skeleton, parser helpers, parameter helper functions, query result guards, and
-repository tests. No public HTTP route, runtime worker, migration, package,
-workflow, script, live DB connection, DB driver, or provider SDK entrypoint is
-changed.
-
-Failure paths considered: unsafe or unknown DB row shape, invalid manual gate
-row, invalid provider job row, wrong applied/compensation state flags, unsafe
-SQL parameter value, missing row, multiple rows, write rowCount zero, write
-rowCount greater than one, provider success followed by durable DB failure, and
-false production-readiness claims.
-
-Human confirmation needed: owner approval is required before any real DB
-driver, live DB integration test environment, migration execution against a
-real DB, real provider SDK apply, or production-like deployment.
-
-Done criteria: typed manual gate row parser rejects unknown or unsafe row shape; typed provider job row parser rejects unknown or unsafe row shape; provider job applied invariants are validated before adapter business logic; provider job compensation invariants are validated before adapter business logic; SQL parameter builders fix placeholder order and reject unsafe values; query result guards fail closed on rowCount 0 and rowCount greater than 1; adapter no longer relies on rows[0] type casts; adapter uses typed row parsers, SQL parameter builders, and result guards; migration 0004 to adapter mapping docs are present; owner approval checklist is present before any real DB driver work; no real DB connection is introduced; no DB driver dependency is added; no package.json or pnpm-lock change is introduced; no migration change is introduced; no real provider SDK apply is introduced; no runtime or production readiness claim is introduced.
+Done criteria: typed manual gate row parser rejects unknown or unsafe row shape; typed provider job row parser rejects unknown or unsafe row shape; provider job applied invariants are validated before adapter business logic; provider job compensation invariants are validated before adapter business logic; SQL parameter builders fix placeholder order and reject unsafe values; query result guards fail closed on rowCount 0 and rowCount greater than 1; adapter no longer relies on rows[0] type casts; adapter uses typed row parsers, SQL parameter builders, and result guards; migration 0004 to adapter mapping docs are present; owner approval checklist is present before any real DB driver work; no real DB connection is introduced; no DB driver dependency is added; no package.json or pnpm-lock change is introduced; no migration change is introduced; no real provider SDK apply is introduced; no runtime or production readiness claim is introduced; manual gate row parser enforces exact selected columns before unsafe data can enter adapter logic; provider job row parser enforces exact selected columns before unsafe data can enter adapter logic; manual gate status is limited to the persistent status vocabulary; manual gate and provider job timestamps must be ISO UTC timestamps with Z suffix; provider apply audit insert action is limited to provider_apply_transaction.* audit vocabulary; rowCount greater than one failures preserve metadata-limited phase context; adapter parser failures return safe operator actions without row contents or raw DB diagnostics.
 
 ## Evidence Integrity
 
-Head SHA: 3f6bbfd7a851fc1187e1b31834c910924df18a42
+Head SHA: 3def110e0ac0b5d94ed8776c034f09ff236b6776
 
 Base SHA: e059a7525f735a827c095bbc66a5e534bb1153d6
 
 Product CI: success
 
-Quality-gate: current_head_quality_gate_replay_required
+Quality-gate: success
 
-CI run: 27218741735
+CI run: 27219092574
 
-Quality-gate run: current_head_quality_gate_replay_required
+Quality-gate run: 27219466844
 
-Quality-gate artifact: current_head_quality_gate_replay_required
+Quality-gate artifact: 7513388618
 
-Tests: 34 test files, 467 passed, 6 skipped
+Tests: 34 test files, 489 passed, 6 skipped
 
 ## Testing and review
 
@@ -81,11 +61,11 @@ Product verification commands:
 - corepack pnpm install: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
-- corepack pnpm test: pass: 34 files, 467 passed, 6 skipped
-- npm test: pass: 34 files, 467 passed, 6 skipped
+- corepack pnpm test: pass: 34 files, 489 passed, 6 skipped
+- npm test: pass: 34 files, 489 passed, 6 skipped
 - corepack pnpm evidence:ci: pass
 - corepack pnpm quality:self-protection: pass
-- node scripts/write-test-summary.mjs: pass: 34 files, 467 passed, 6 skipped
+- node scripts/write-test-summary.mjs: pass: 34 files, 489 passed, 6 skipped
 - node scripts/check-evidence-placeholders.mjs: pass
 - node scripts/validate-evidence-freshness.mjs: pass
 - node scripts/check-quality-gate-self-protection.mjs: pass
@@ -115,30 +95,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 34 files, 467 passed, 6 skipped.
-
-Changed area: `apps/api/src/repositories/postgres-provider-apply-row-parsers.ts`,
-`apps/api/src/repositories/postgres-provider-apply-params.ts`,
-`apps/api/src/repositories/postgres-query-result-guards.ts`,
-`apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts`,
-their tests, and the Postgres adapter contract docs/evidence.
-
-Test command: `corepack pnpm test` and `npm test`.
-
-What the test covers: manual gate row parser required fields and unsafe value
-rejection; provider job row parser status, operation, reference, and invariant
-validation; SQL placeholder order and unsafe parameter rejection; rowCount
-guards for reads and writes; adapter rollback on parser failure; adapter
-fail-closed behavior on unsafe parsed rows; no pg/postgres import in the
-adapter contract files; and existing provider apply transaction skeleton
-regression behavior.
-
-Edge cases: rowCount zero, rowCount greater than one, missing row object,
-unknown operation/status, invalid 40-character SHA, private URL, wallet address,
-raw provider response fields, non-boolean state flags, applied state without
-manual gate used success, compensation state without failed status, unsafe
-transaction ID, unsafe safe summary, and provider success followed by durable
-write failure.
+Current recorded test summary: 34 files, 489 passed, 6 skipped.
 
 ## Security Boundaries
 
@@ -169,34 +126,3 @@ write failure.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
-
-## Review Independence
-
-- Writer evidence is limited to current-head local verification, tests, docs,
-  and machine-readable .codex evidence.
-- AI review recommendation is not human approval.
-- Human owner confirmation is required before any real DB integration, DB
-  driver dependency, live DB test environment, real provider SDK apply, or
-  production-like deployment.
-
-## Best of N Evidence
-
-Candidate count: 3.
-
-Selected candidate: B.
-
-Candidate A: Add a real pg dependency and live DB adapter now.
-
-Candidate B: Add typed row parsers, SQL parameter builders, query result
-guards, mapping docs, and no real DB connection.
-
-Candidate C: Only update docs.
-
-Reason selected: Candidate B hardens the v1.1.6 adapter contract while
-preserving the no-driver, no-real-DB, no-provider-SDK, no-production-apply
-boundary.
-
-Rejected alternatives: Candidate A was rejected because it would add real DB
-driver and live DB scope before owner approval; Candidate C was rejected because
-docs-only evidence would not harden parser, SQL parameter, or rowCount failure
-paths.

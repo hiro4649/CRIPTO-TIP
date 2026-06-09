@@ -64,6 +64,18 @@ describe("postgres provider apply params", () => {
     expect(JSON.stringify(params)).not.toMatch(/raw_provider_response|stdout|stderr/);
   });
 
+  it("createProviderAuditInsertParams accepts provider apply failed action", () => {
+    expect(createProviderAuditInsertParams(input(), "provider_apply_transaction.provider_apply_failed")[7]).toBe("provider_apply_transaction.provider_apply_failed");
+  });
+
+  it("createProviderAuditInsertParams rejects unknown audit action", () => {
+    expect(() => createProviderAuditInsertParams(input(), "provider_apply_transaction.unknown")).toThrow(/provider audit action is invalid/);
+  });
+
+  it("createProviderAuditInsertParams rejects safe-looking but unknown action", () => {
+    expect(() => createProviderAuditInsertParams(input(), "provider_apply_transaction.safe_summary_recorded")).toThrow(/provider audit action is invalid/);
+  });
+
   it("manual gate audit params include safe summary only", () => {
     const params = createManualGateAuditInsertParams(input());
     expect(params[13]).toEqual({ status: "safe" });
