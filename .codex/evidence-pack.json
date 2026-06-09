@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 44,
-  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
-  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "prNumber": 45,
+  "headSha": "271785f769cbed4f27d4e088f19ee101c70ead4b",
+  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add db integration scope gate",
-  "goal": "Prepare the owner-approved DB integration scope gate for v1.1.6 before any real DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "ciRunId": "27230197473",
-  "qualityGateRunId": "27230413181",
-  "qualityGateArtifactId": "7518001924",
+  "title": "feat: add db driver owner approval record",
+  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
+  "ciRunId": "27237597034",
+  "qualityGateRunId": "27238173789",
+  "qualityGateArtifactId": "7521067332",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,7 +22,7 @@
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
-      ".codex/db-integration-scope-gate.json",
+      ".codex/db-driver-owner-approval-record.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -31,27 +31,23 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/db-integration-scope-gate.ts",
-      "apps/api/src/db-integration-scope-gate.test.ts",
+      "apps/api/src/db-driver-owner-approval-record.ts",
+      "apps/api/src/db-driver-owner-approval-record.test.ts",
+      "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
+      "docs/DB_DRIVER_APPROVAL_REPLAY_PROTECTION.md",
+      "docs/DB_DRIVER_APPROVAL_TARGET_BINDING.md",
       "docs/DB_INTEGRATION_SCOPE_GATE.md",
       "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
-      "docs/LIVE_DB_INTEGRATION_TEST_PLAN.md",
-      "docs/DB_SECRET_BOUNDARY.md",
-      "docs/MIGRATION_APPLY_ROLLBACK_PLAN.md",
-      "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
-      "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
-      "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
-      "docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-db-integration-scope-gate-v116-prep.md"
+      "docs/pr-db-driver-owner-approval-record-v116-prep.md"
     ],
     "allowedPaths": [
-      "apps/api/src/db-integration-scope-gate.ts",
-      "apps/api/src/db-integration-scope-gate.test.ts",
+      "apps/api/src/db-driver-owner-approval-record.ts",
+      "apps/api/src/db-driver-owner-approval-record.test.ts",
       "docs/**",
       ".codex/**"
     ],
@@ -85,11 +81,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 35 files, 533 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "npm test",
-      "result": "pass: 35 files, 533 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -101,7 +97,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 35 files, 533 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -109,7 +105,7 @@
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pass"
+      "result": "local_optional_until_pr_refresh"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
@@ -133,12 +129,13 @@
     "status": "pass"
   },
   "allowedScope": [
-    "db_integration_scope_gate",
-    "owner_approval_record_schema",
-    "db_driver_introduction_checklist",
-    "live_db_integration_test_plan",
-    "db_secret_boundary",
-    "migration_apply_rollback_plan",
+    "db_driver_owner_approval_record",
+    "approval_target_commit_binding",
+    "approval_branch_pr_binding",
+    "approval_replay_protection",
+    "approval_expiry",
+    "approval_fingerprint",
+    "owner_role_validation",
     "tests",
     "docs",
     ".codex evidence"
@@ -175,24 +172,23 @@
     "quality-gate weakening"
   ],
   "doneCriteria": [
-    "DB integration scope gate validator exists",
+    "DB driver owner approval record schema exists",
     "default record is not approved",
-    "owner approval schema rejects missing owner fields",
-    "DB driver/package change requires explicit future driver package",
-    "real DB connection requires secret manager scope",
-    "live DB integration tests require real DB connection approval",
-    "migration apply requires rollback plan",
-    "provider SDK apply remains forbidden",
-    "production deployment remains forbidden",
-    "runtime, production, legal, and YouTube policy readiness claims remain forbidden",
+    "target commit, base commit, branch, and PR bindings are validated",
+    "approval scope is allowlisted",
+    "approval expiry is ISO UTC and within 72 hours",
+    "AI, assistant, Codex, bot, GitHub Actions, and unknown actors cannot approve",
+    "project-owner role is required for approved records",
+    "fingerprint is stable and rejects replay after canonical field changes",
+    "forbidden provider, production, readiness, legal, YouTube policy, token, wallet, connector, and Chain Listener scopes remain rejected",
     "unsafe secrets, private URLs, wallet addresses, raw provider responses, raw DB connection strings, token-like values, and raw GitHub log references are rejected",
-    "docs and .codex evidence record safe defaults"
+    "docs and .codex evidence record safe not_approved defaults"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 35,
-    "passed": 533,
+    "testFiles": 36,
+    "passed": 636,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -200,44 +196,79 @@
     "No real DB connection is implemented.",
     "No package.json or pnpm-lock change is introduced.",
     "No migration change or execution is introduced.",
-    "No live DB integration test is executed.",
-    "No real provider SDK apply is implemented.",
-    "No actual production deployment apply is implemented.",
-    "Owner approval evidence is not secret storage.",
-    "DB credential values and raw connection strings remain forbidden.",
-    "GITHUB_LOG_POLICY_SAFE_SUMMARY_ONLY",
-    "YouTube scraping remains forbidden."
+    "No approved owner record is committed.",
+    "AI review is not owner approval.",
+    "Approval fingerprints do not store secret values.",
+    "GitHub raw logs remain forbidden."
   ],
   "residualRisks": [
-    "Real DB driver selection remains future work.",
-    "Real DB integration remains future work.",
-    "Live DB integration test environment remains future work.",
+    "Real DB driver approval remains future human-owner work.",
+    "Approval record does not itself grant runtime readiness.",
+    "Fingerprint prevents accidental replay but does not replace code review.",
+    "Real DB integration tests remain future work.",
+    "Secret manager setup remains future work.",
     "Migration execution remains future work.",
-    "DB secret rotation remains future work.",
     "Provider SDK apply remains future work.",
     "Production deployment remains out of scope."
   ],
   "humanConfirmation": [
     "Owner approval status is not_approved for this PR.",
+    "No approved owner record is committed.",
     "AI review recommendations are not recorded as human approval.",
-    "Future real DB work requires a new owner-approved PR."
+    "Future real DB work requires a new project-owner-approved PR."
   ],
-  "testsPassed": 533,
+  "testsPassed": 636,
   "testsSkipped": 6,
-  "testFiles": 35,
+  "testFiles": 36,
   "productVerificationCommands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 35 files, 533 passed, 6 skipped",
-    "npm test: pass: 35 files, 533 passed, 6 skipped",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 35 files, 533 passed, 6 skipped",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass"
+    {
+      "command": "corepack pnpm install",
+      "status": "pass"
+    },
+    {
+      "command": "corepack pnpm lint",
+      "status": "pass"
+    },
+    {
+      "command": "corepack pnpm typecheck",
+      "status": "pass"
+    },
+    {
+      "command": "corepack pnpm test",
+      "status": "pass"
+    },
+    {
+      "command": "npm test",
+      "status": "pass"
+    },
+    {
+      "command": "corepack pnpm evidence:ci",
+      "status": "pass"
+    },
+    {
+      "command": "corepack pnpm quality:self-protection",
+      "status": "pass"
+    },
+    {
+      "command": "node scripts/write-test-summary.mjs",
+      "status": "pass"
+    },
+    {
+      "command": "node scripts/check-evidence-placeholders.mjs",
+      "status": "pass"
+    },
+    {
+      "command": "node scripts/validate-evidence-freshness.mjs",
+      "status": "local_optional_until_pr_refresh"
+    },
+    {
+      "command": "node scripts/check-quality-gate-self-protection.mjs",
+      "status": "pass"
+    },
+    {
+      "command": "node scripts/codex-secret-safety-scan.mjs",
+      "status": "pass"
+    }
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -255,29 +286,28 @@
     "riskSummary": "Main risk is accidentally expanding into real DB/package/migration/provider execution before owner approval.",
     "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, DB driver import scan, and GitHub checks."
   },
-  "reviewIndependence": {
-    "writerEvidenceOnly": true,
-    "aiReviewIsNotHumanApproval": true
-  },
+  "reviewIndependence": [
+    "Writer evidence and AI review recommendation remain separate.",
+    "AI review is not human approval.",
+    "Human project-owner confirmation is required before any real DB integration scope.",
+    "This PR keeps owner approval status not_approved."
+  ],
   "bestOfN": {
-    "used": true,
-    "candidateCount": 3,
-    "selectedCandidate": "typed DB integration scope gate with owner approval schema and safe defaults",
-    "reasonSelected": "It gives enforceable v1.1.6 preparation without adding DB driver dependencies, package changes, real DB connections, migration execution, provider SDK apply, production deployment, or readiness claims.",
+    "selected": "Candidate B",
     "candidates": [
-      "Add DB driver and live integration now - rejected because package and real DB execution are out of scope.",
-      "Docs-only checklist - rejected because future work needs typed validation and tests.",
-      "Typed scope gate and evidence - selected."
+      "Candidate A: add real pg driver now using the approval record as implicit permission.",
+      "Candidate B: add approval record schema, validator, fingerprint, replay protection, docs, tests, and not_approved evidence only.",
+      "Candidate C: only update checklist docs."
     ],
-    "verificationDelta": "Selected option adds validator tests for approval, unsafe evidence, forbidden runtime/provider/production scope, and safe defaults."
+    "reason": "Candidate B prevents accidental v1.1.6 DB scope expansion while avoiding DB driver, package, live DB, provider SDK, and production apply changes."
   },
-  "prBodyPath": "docs/pr-db-integration-scope-gate-v116-prep.md",
-  "passed": 533,
+  "prBodyPath": "docs/pr-db-driver-owner-approval-record-v116-prep.md",
+  "passed": 636,
   "skipped": 6,
-  "summary": "35 files, 533 passed, 6 skipped",
+  "summary": "36 files, 636 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-integration-scope-gate.json",
+    ".codex/db-driver-owner-approval-record.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -286,28 +316,24 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-integration-scope-gate.ts",
-    "apps/api/src/db-integration-scope-gate.test.ts",
+    "apps/api/src/db-driver-owner-approval-record.ts",
+    "apps/api/src/db-driver-owner-approval-record.test.ts",
+    "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
+    "docs/DB_DRIVER_APPROVAL_REPLAY_PROTECTION.md",
+    "docs/DB_DRIVER_APPROVAL_TARGET_BINDING.md",
     "docs/DB_INTEGRATION_SCOPE_GATE.md",
     "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
-    "docs/LIVE_DB_INTEGRATION_TEST_PLAN.md",
-    "docs/DB_SECRET_BOUNDARY.md",
-    "docs/MIGRATION_APPLY_ROLLBACK_PLAN.md",
-    "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
-    "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
-    "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
-    "docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-integration-scope-gate-v116-prep.md"
+    "docs/pr-db-driver-owner-approval-record-v116-prep.md"
   ],
-  "testCoverageEvidence": {
-    "changedArea": "apps/api/src/db-integration-scope-gate.ts and DB integration scope gate evidence docs",
-    "testCommand": "corepack pnpm test; npm test; corepack pnpm vitest run apps/api/src/db-integration-scope-gate.test.ts",
-    "whatTheTestCovers": "Default not-approved state, owner approval field requirements, project-owner role, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider/production/readiness claims, and unsafe evidence rejection.",
-    "edgeCases": "Missing owner approval fields, wrong owner role, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references."
-  }
+  "testCoverageEvidence": [
+    "DB driver owner approval record default not_approved state covered.",
+    "Target commit, branch, PR, base commit, expiry, fingerprint, and replay protection covered.",
+    "Owner role and AI/bot actor rejection covered.",
+    "Unsafe evidence rejection and forbidden capability denial covered."
+  ]
 }

@@ -713,6 +713,55 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB integration scope gate evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-owner-approval-record.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-owner-approval-record.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_APPROVAL_REPLAY_PROTECTION.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_APPROVAL_TARGET_BINDING.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-owner-approval-record-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "owner": "backend"
+    },
+    {
+      "pathPattern": ".codex/db-driver-owner-approval-record.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "owner": "backend"
     }
   ],
   "safeSummaryOnly": true

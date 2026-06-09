@@ -359,3 +359,22 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 ## DB Integration Scope Gate v1.1.6 Prep
 
 - `apps/api/src/db-integration-scope-gate.test.ts` covers the default not-approved state, requested_scope allowlist validation, rejected owner decision requirements, owner approval field requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration test gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden readiness claims, and recursive unsafe evidence rejection for unsafe keys, connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.
+
+## DB Driver Owner Approval Record v1.1.6 Prep
+
+- Latest local verification after hardening records 36 files, 636 passed, and 6
+  skipped.
+- `apps/api/src/db-driver-owner-approval-record.test.ts` covers the default
+  not_approved state, non-approved fail-closed behavior for package, lockfile,
+  real DB, live DB, migration, secret-manager, driver package, approval scope,
+  and fingerprint fields; approved scope-to-capability mapping; project-owner
+  role validation; AI/Codex/assistant/GitHub Actions/Dependabot/Renovate/
+  Copilot/ChatGPT/OpenAI/bot/unknown actor rejection; safe approval ID and
+  approver actor formats; ISO UTC approval and expiry validation; 72 hour
+  approval window; repository/branch/PR/target commit/base commit binding;
+  approval scope allowlist; forbidden scope rejection; driver package and
+  version policy requirements; real DB secret manager requirements; migration
+  scope requirements; stable fingerprint generation; fingerprint field coverage;
+  fingerprint mismatch replay rejection; unsafe evidence rejection; and proof
+  that machine-readable evidence remains not_approved with all real
+  DB/package/provider/runtime permissions false.
