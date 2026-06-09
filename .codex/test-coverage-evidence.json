@@ -1,16 +1,16 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
-  "harnessVersion": "1.1.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
+  "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 42,
+  "headSha": "195efd541dab1d8a7a3c19c792a36c5616b0d4d7",
+  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 30,
-    "passed": 361,
+    "testFiles": 31,
+    "passed": 422,
     "skipped": 6
   },
   "coverage": [
@@ -24,11 +24,11 @@
     "PR #35 manual gate audit regression",
     "PR #38 job state regression"
   ],
-  "status": "pending_local_verification",
-  "testFiles": 30,
-  "passed": 361,
+  "status": "pass",
+  "testFiles": 31,
+  "passed": 422,
   "skipped": 6,
-  "summary": "30 files, 361 passed, 6 skipped",
+  "summary": "31 files, 422 passed, 6 skipped",
   "coverageNotes": [
     "Postgres SQL lock order and SELECT FOR UPDATE design tests added.",
     "Postgres transaction retry classifier tests added.",
@@ -37,8 +37,9 @@
     "PR #39, PR #38, and PR #35 regression tests remain covered.",
     "Post-review hardening covers rollback_planned status and provider_apply_transaction audit actions.",
     "Post-review hardening covers provider job state-machine flag columns and consistency checks.",
-    "Post-review hardening covers SQL state flag updates, fail-closed manual gate used update, provider job state flag selects, and context-aware lock timeout retry actions."
+    "Post-review hardening covers SQL state flag updates, fail-closed manual gate used update, provider job state flag selects, and context-aware lock timeout retry actions.",
+    "Postgres transaction adapter skeleton covers mock-client query order, rowCount fail-closed behavior, compensation-required mapping after provider success, retry classifier exposure, unsafe value rejection, and no real DB connection invariant."
   ],
-  "testsPassed": 361,
+  "testsPassed": 422,
   "testsSkipped": 6
 }

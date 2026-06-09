@@ -27,6 +27,10 @@ The manual gate remains an approval record, not secret storage. If mark-used fai
 
 Rollback handoff records transaction phase `transaction_rolled_back` and audit action `provider_apply_transaction.rolled_back`. The rollback record is evidence of operator handoff only; it is not proof of provider rollback execution.
 
+The Postgres transaction adapter skeleton maps mark-used, audit append, and
+commit failures after provider success to `compensation_required`. It does not
+execute rollback against a provider and must not re-execute provider apply.
+
 ## What This PR Does Not Do
 
 - It does not execute provider rollback.

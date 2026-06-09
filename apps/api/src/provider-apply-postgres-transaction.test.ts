@@ -32,6 +32,10 @@ describe("postgres provider apply transaction SQL design", () => {
     expect(postgresProviderApplyTransactionSql.lockManualGate).toContain("FOR UPDATE");
   });
 
+  it("locks manual gate with used_at for fail-closed adapter validation", () => {
+    expect(postgresProviderApplyTransactionSql.lockManualGate).toContain("used_at");
+  });
+
   it("uses SELECT FOR UPDATE for provider job", () => {
     expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("FROM provider_deployment_jobs");
     expect(postgresProviderApplyTransactionSql.lockProviderJob).toContain("FOR UPDATE");

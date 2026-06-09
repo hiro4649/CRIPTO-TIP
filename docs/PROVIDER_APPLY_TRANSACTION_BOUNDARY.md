@@ -36,6 +36,10 @@ Future Postgres implementation should use the following shape:
 
 Provider apply itself is an external side effect and cannot be fully enclosed in the database transaction. If provider apply succeeds but marking the manual gate used fails, record `compensation_required` on a failed job and hand off to the operator runbook. If provider apply succeeds but durable state or audit append fails, return an `audit_append_failed` failure with `compensation_required: true` because the provider side may already have applied while IRIS state rolled back.
 
+The Postgres adapter skeleton validates this boundary with a mock transaction
+client only. It does not open a real DB connection, import a DB driver, or call
+a provider SDK. Retry after provider success is durable-state recording only.
+
 Manual gate approval, target binding, and expiry must be evaluated at commit time. A gate that was valid when a draft was created but expired at `committedAt` cannot authorize production-like apply.
 
 Rollback mapping:

@@ -49,6 +49,27 @@ Unknown or insufficiently classified failures map to
 inspect safe metadata only, then choose retry, terminal closure, or compensation
 handoff.
 
+## Adapter-Level Classification
+
+The adapter skeleton exposes retry classification without executing provider
+apply. Deadlock, serialization failure, and lock timeout are retryable. Unique
+violation, manual gate mismatch, unsafe summaries, and raw provider response
+attempts are terminal.
+
+If `COMMIT` fails after provider success, the adapter returns
+`compensation_required` and instructs the operator not to re-execute provider
+apply. This outcome is metadata-limited because the durable transaction result
+can be unknown at the boundary; the adapter must not claim rollback completed
+after a failed `COMMIT`. Operators must inspect durable safe evidence before
+retrying. If `COMMIT` fails before provider success, no compensation is
+required. Rollback failure is metadata-limited; expanded command diagnostics
+remain forbidden.
+
+Audit append row-count failures classify as `audit_append_failed`. Before
+provider success they do not require compensation. After provider success they
+require compensation handoff and must not be mislabeled as a provider job
+transition error.
+
 ## Safe Artifact Expectations
 
 Safe artifacts may contain reason codes, phase names, booleans, counts, and safe

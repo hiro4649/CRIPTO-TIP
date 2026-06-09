@@ -162,3 +162,12 @@ Schema alignment risk from PR #40 review is mitigated by adding migration design
 for `rollback_planned`, `provider_apply_transaction.*` audit actions,
 state-machine flag columns, applied/compensation consistency checks, SQL state
 flag updates, and context-aware lock timeout retry actions.
+
+## Postgres Transaction Adapter Skeleton v1.1.5
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Real Postgres adapter remains future work after the skeleton. | Backend | v1.1.6 DB integration scope | Mock-client tests lock call order, rowCount fail-closed behavior, and retry classification without a DB driver. |
+| Medium | Live DB integration testing remains future work. | Backend | v1.1.6 live Postgres test PR | Adapter skeleton avoids runtime readiness claims and keeps real DB connection out of scope. |
+| Medium | Provider executor remains future work. | Backend | Provider executor PR | Adapter explicitly does not call provider SDK and documents retry must not re-execute provider apply. |
+| Medium | Operator compensation execution remains future work after provider side effects. | Operations | Compensation execution PR | `compensation_required` results include safe handoff only, no raw provider response or secrets. |

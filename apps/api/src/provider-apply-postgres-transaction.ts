@@ -62,7 +62,7 @@ const lockOrder = [
 export const postgresProviderApplyTransactionSql = {
   begin: "BEGIN",
   lockManualGate: [
-    "SELECT id, gate_type, status, target_environment, target_commit_sha, expires_at",
+    "SELECT id, gate_type, status, target_environment, target_commit_sha, expires_at, used_at",
     "FROM manual_gates",
     "WHERE id = $1",
     "FOR UPDATE"
