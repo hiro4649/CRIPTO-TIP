@@ -21,19 +21,19 @@ Done criteria: DB integration scope gate validator exists; default record is not
 
 ## Evidence Integrity
 
-Head SHA: 6fd5ab1ebd0e147af5385144df10f7354f03c418
+Head SHA: 7575d44a5330c5c1c40e7ead6c80805966a26779
 
 Base SHA: 6fd5ab1ebd0e147af5385144df10f7354f03c418
 
-Product CI: not_available_before_pr_creation
+Product CI: not_available_after_current_head_update
 
-Quality-gate: not_available_before_pr_creation
+Quality-gate: not_available_after_current_head_update
 
-CI run: not_available_before_pr_creation
+CI run: not_available_after_current_head_update
 
-Quality-gate run: not_available_before_pr_creation
+Quality-gate run: not_available_after_current_head_update
 
-Quality-gate artifact: not_available_before_pr_creation
+Quality-gate artifact: not_available_after_current_head_update
 
 Tests: 35 test files, 511 passed, 6 skipped
 
@@ -97,6 +97,14 @@ Review scope and verification:
 
 Current recorded test summary: 35 files, 511 passed, 6 skipped.
 
+Changed area: `apps/api/src/db-integration-scope-gate.ts`, `apps/api/src/db-integration-scope-gate.test.ts`, DB integration scope gate docs, and `.codex` evidence.
+
+Test command: `corepack pnpm vitest run apps/api/src/db-integration-scope-gate.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
+
+What the test covers: default not-approved state, owner approval field requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden runtime/production/legal/YouTube policy readiness claims, and unsafe evidence rejection.
+
+Edge cases: missing owner approval fields, wrong owner role, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.
+
 ## Security Boundaries
 
 - No DB driver dependency is added.
@@ -136,6 +144,12 @@ Current recorded test summary: 35 files, 511 passed, 6 skipped.
 
 ## Best of N Evidence
 
-- Option 1 considered: add DB driver and live DB integration tests now. Rejected because package changes and real DB execution are outside this PR.
-- Option 2 considered: docs-only approval checklist. Rejected because future v1.1.6 work needs a typed gate and tests.
-- Chosen option: typed DB integration scope gate, owner approval schema, safe defaults, docs, and quality evidence without package, lockfile, migration, or runtime DB changes.
+Candidates:
+
+- Candidate 1: add DB driver and live DB integration tests now. Rejected because package changes and real DB execution are outside this PR.
+- Candidate 2: docs-only approval checklist. Rejected because future v1.1.6 work needs typed validation and tests.
+- Candidate 3: typed DB integration scope gate, owner approval schema, safe defaults, docs, and quality evidence without package, lockfile, migration, or runtime DB changes.
+
+Selected candidate: Candidate 3.
+
+Reason selected: it gives enforceable v1.1.6 preparation while keeping DB driver dependency, real DB connection, package or lockfile change, migration execution, provider SDK apply, production deployment, and readiness claims out of scope.

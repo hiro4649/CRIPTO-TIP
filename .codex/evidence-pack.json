@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 44,
-  "headSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "headSha": "7575d44a5330c5c1c40e7ead6c80805966a26779",
   "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db integration scope gate",
   "goal": "Prepare the owner-approved DB integration scope gate for v1.1.6 before any real DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "ciRunId": "not_available_before_pr_creation",
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation",
-  "productCiStatus": "not_available_before_pr_creation",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "ciRunId": "not_available_after_current_head_update",
+  "qualityGateRunId": "not_available_after_current_head_update",
+  "qualityGateArtifactId": "not_available_after_current_head_update",
+  "productCiStatus": "not_available_after_current_head_update",
+  "qualityGateStatus": "not_available_after_current_head_update",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -260,9 +260,16 @@
     "aiReviewIsNotHumanApproval": true
   },
   "bestOfN": {
+    "used": true,
     "candidateCount": 3,
-    "selected": "B",
-    "summary": "Candidate B adds owner approval scope gate, schema, checklist, docs, and tests without DB driver or real DB connection."
+    "selectedCandidate": "typed DB integration scope gate with owner approval schema and safe defaults",
+    "reasonSelected": "It gives enforceable v1.1.6 preparation without adding DB driver dependencies, package changes, real DB connections, migration execution, provider SDK apply, production deployment, or readiness claims.",
+    "candidates": [
+      "Add DB driver and live integration now - rejected because package and real DB execution are out of scope.",
+      "Docs-only checklist - rejected because future work needs typed validation and tests.",
+      "Typed scope gate and evidence - selected."
+    ],
+    "verificationDelta": "Selected option adds validator tests for approval, unsafe evidence, forbidden runtime/provider/production scope, and safe defaults."
   },
   "prBodyPath": "docs/pr-db-integration-scope-gate-v116-prep.md",
   "passed": 511,
@@ -296,5 +303,11 @@
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
     "docs/pr-db-integration-scope-gate-v116-prep.md"
-  ]
+  ],
+  "testCoverageEvidence": {
+    "changedArea": "apps/api/src/db-integration-scope-gate.ts and DB integration scope gate evidence docs",
+    "testCommand": "corepack pnpm test; npm test; corepack pnpm vitest run apps/api/src/db-integration-scope-gate.test.ts",
+    "whatTheTestCovers": "Default not-approved state, owner approval field requirements, project-owner role, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider/production/readiness claims, and unsafe evidence rejection.",
+    "edgeCases": "Missing owner approval fields, wrong owner role, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references."
+  }
 }
