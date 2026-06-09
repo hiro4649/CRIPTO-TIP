@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "requiredHeads": [
+    "localHeadSha",
+    "prHeadSha",
+    "evidencePackHeadSha",
+    "manualConfirmationHeadSha",
+    "remoteRunHeadSha"
+  ],
+  "reasonCodes": [],
+  "sameHeadRequired": true,
+  "script": "scripts/codex-same-head-artifact-evidence-gate.mjs"
+}

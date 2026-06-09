@@ -1,0 +1,9 @@
+{
+  "status": "not_applicable",
+  "safeSummaryOnly": true,
+  "reasonCodes": [
+    "browser_smoke_json_not_applicable"
+  ],
+  "warnings": [],
+  "script": "scripts/codex-browser-smoke-json-artifact-gate.mjs"
+}

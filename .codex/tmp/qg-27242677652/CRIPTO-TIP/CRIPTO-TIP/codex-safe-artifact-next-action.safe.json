@@ -1,0 +1,8 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "classification": "not_applicable",
+  "warnings": [],
+  "script": "scripts/codex-safe-artifact-next-action-classifier.mjs"
+}

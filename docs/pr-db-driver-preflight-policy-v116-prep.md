@@ -21,19 +21,19 @@ Done criteria: DB driver preflight policy validator exists; default record is no
 
 ## Evidence Integrity
 
-Head SHA: 9b41e6453172ef9287c9ce41774a50589568a728
+Head SHA: e477897b097496563b385d4f585da17e57573ef2
 
 Base SHA: 9b41e6453172ef9287c9ce41774a50589568a728
 
-Product CI: not_available_until_pr_created
+Product CI: success
 
-Quality-gate: not_available_until_pr_created
+Quality-gate: awaiting_rerun_after_evidence_refresh
 
-CI run: not_available_until_pr_created
+CI run: 27242677682
 
-Quality-gate run: not_available_until_pr_created
+Quality-gate run: 27242677652
 
-Quality-gate artifact: not_available_until_pr_created
+Quality-gate artifact: 7522808921
 
 Tests: 37 test files, 670 passed, 6 skipped
 
@@ -99,7 +99,7 @@ Current recorded test summary: 37 files, 670 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-preflight-policy.ts`, `apps/api/src/db-driver-preflight-policy.test.ts`, DB driver preflight docs, and `.codex` evidence.
 
-What the tests cover: safe default `not_selected` state, candidate allowlist, selected driver rejection without approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness denial, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.
+Test command: `corepack pnpm vitest run apps/api/src/db-driver-preflight-policy.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.\n\nWhat the tests cover: safe default `not_selected` state, candidate allowlist, selected driver rejection without approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness denial, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.\n\nEdge cases: unknown candidate driver, selected driver without approved owner record, selected driver not in candidates, package change allowed, pnpm lock change allowed, real DB connection allowed, live DB integration allowed, migration apply allowed, provider SDK apply allowed, production deployment allowed, runtime readiness claim allowed, production readiness claim allowed, missing review requirement, DB connection string, private URL, wallet address, token-like value, raw provider response, raw GitHub logs reference, and stale target commit binding.
 
 ## Review Independence
 
@@ -145,3 +145,4 @@ Reason selected: Candidate B creates enforceable preflight gates without adding 
 - Driver choice status is not_selected for this PR.
 - AI review recommendations are not recorded as human approval.
 - Future DB driver dependency introduction requires a new project-owner-approved PR.
+

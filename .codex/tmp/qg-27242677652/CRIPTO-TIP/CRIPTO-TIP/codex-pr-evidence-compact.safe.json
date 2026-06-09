@@ -1,0 +1,8 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "warnings": [],
+  "bodySize": 7185,
+  "script": "scripts/codex-pr-evidence-compact-gate.mjs"
+}

@@ -1,0 +1,9 @@
+{
+  "status": "not_applicable",
+  "safeSummaryOnly": true,
+  "reasonCodes": [
+    "dataset_audit_v2_not_applicable"
+  ],
+  "warnings": [],
+  "script": "scripts/codex-dataset-audit-v2-schema-gate.mjs"
+}

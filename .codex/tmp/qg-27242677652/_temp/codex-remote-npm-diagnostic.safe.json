@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "0.8.3",
+  "harnessVersion": "1.1.3",
+  "npmExitCode": 0,
+  "nodeMajor": 20,
+  "platform": "Linux",
+  "os": "linux",
+  "packageManager": "npm",
+  "commandClass": "npm_test",
+  "safeFailureCategory": "test_assertion_failure",
+  "safeMarkerCount": null,
+  "testCountDetected": null,
+  "durationMs": null,
+  "knownBaselineMatched": false,
+  "rawLogUploaded": false,
+  "rawValuesStored": false,
+  "diagnosticType": "remote_npm_diagnostic",
+  "safeSummaryOnly": true
+}

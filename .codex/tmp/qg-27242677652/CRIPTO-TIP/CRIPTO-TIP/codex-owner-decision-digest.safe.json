@@ -1,0 +1,7 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "warnings": [],
+  "script": "scripts/codex-owner-decision-digest-gate.mjs"
+}

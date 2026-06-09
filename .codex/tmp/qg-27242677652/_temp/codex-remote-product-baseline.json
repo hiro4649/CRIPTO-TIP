@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "0.8.3",
+  "harnessVersion": "1.1.3",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
+  "baselineType": "remote_product_verification",
+  "commands": [
+    "npm test"
+  ],
+  "result": "pass",
+  "date": "2026-06-09T23:33:24.493Z",
+  "source": "remote_workflow",
+  "safeSummary": "remote product baseline generated from safe npm result",
+  "knownFailures": [],
+  "expiresAt": "2026-06-16T23:33:24.493Z",
+  "rawValuesStored": false,
+  "safeSummaryOnly": true
+}

@@ -1,0 +1,7 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "warnings": [],
+  "script": "scripts/codex-skill-evidence-link-gate.mjs"
+}

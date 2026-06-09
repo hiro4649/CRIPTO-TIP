@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "9b41e6453172ef9287c9ce41774a50589568a728",
+  "prNumber": 46,
+  "headSha": "e477897b097496563b385d4f585da17e57573ef2",
   "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,17 +53,17 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "not_available_until_pr_created",
+  "qualityGateStatus": "awaiting_rerun_after_evidence_refresh",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "not_available_until_pr_created",
-  "qualityGateArtifactId": "not_available_until_pr_created",
+  "qualityGateRunId": "27242677652",
+  "qualityGateArtifactId": "7522808921",
   "title": "feat: add db driver owner approval record",
   "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "evidenceStatus": "not_available_until_pr_created",
+  "evidenceStatus": "current_head_refresh_requested",
   "forbiddenScopeStatus": "pass",
   "dbDriverPreflightPolicyStatus": "not_selected"
 }
