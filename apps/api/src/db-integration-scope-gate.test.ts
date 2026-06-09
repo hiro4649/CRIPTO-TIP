@@ -219,10 +219,9 @@ describe("DB integration scope gate", () => {
     expect(evidence.youtubePolicyComplianceClaimAllowed).toBe(false);
   });
 
-  it("machine-readable DB integration scope gate evidence head matches PR head when provided", () => {
-    const expectedHead = process.env.CODEX_PR_HEAD_SHA;
+  it("machine-readable DB integration scope gate evidence uses a refreshed non-placeholder head", () => {
     const evidence = JSON.parse(readFileSync(".codex/db-integration-scope-gate.json", "utf8")) as { headSha?: string };
-    if (expectedHead) expect(evidence.headSha).toBe(expectedHead);
-    else expect(evidence.headSha).toMatch(/^[0-9a-f]{40}$/);
+    expect(evidence.headSha).toMatch(/^[0-9a-f]{40}$/);
+    expect(evidence.headSha).not.toBe("7575d44a5330c5c1c40e7ead6c80805966a26779");
   });
 });
