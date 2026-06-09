@@ -120,3 +120,30 @@ Current recorded test summary: 26 files, 269 passed, 6 skipped.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
+
+## Review Independence
+
+Writer evidence is limited to implementation notes, tests, docs, and `.codex`
+evidence. Reviewer evidence is a separate recommendation surface and must not be
+recorded as human approval. AI reviewer output may give a merge recommendation
+only after current-head checks pass.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Candidate A: implement DB-backed provider deployment transaction semantics now.
+
+Candidate B: implement provider job state-machine preparation, transition
+validation, compensation design, tests, docs, and evidence without real provider
+apply.
+
+Candidate C: implement real provider SDK apply and production deployment
+execution.
+
+Selected candidate: Candidate B.
+
+Reason selected: Candidate B adds the required state-machine and compensation
+boundary while preserving the forbidden scope: no real provider SDK apply, no
+actual production deployment apply, no wallet/RPC/deploy changes, no YouTube
+connector changes, no Chain Listener changes, and no production readiness claim.
