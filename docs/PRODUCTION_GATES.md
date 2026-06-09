@@ -89,6 +89,10 @@ evidence. A future provider-specific production apply must not record a job as
 started but mark-used failed, the job must remain non-applied and record
 `compensation_required` with safe audit evidence only.
 
+Postgres transaction adapter skeleton evidence is not production DB readiness.
+Real DB integration, driver dependency review, live Postgres transaction tests,
+and production migration application require separate owner-approved scope.
+
 ## Postgres Provider Apply Transaction Design v1.1.4
 
 Postgres provider apply transaction design advances G3 operational control by

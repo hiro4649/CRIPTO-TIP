@@ -5,6 +5,10 @@ apply state recording. It is a design and repository contract only. This PR does
 not open a real database connection, call a real provider SDK, or perform
 production deployment apply.
 
+The follow-up adapter skeleton validates call order and row-count fail-closed
+behavior with a mock client only. Real DB implementation and live Postgres
+integration tests remain future work.
+
 ## Boundary
 
 External provider apply is outside the database transaction. The database
@@ -60,6 +64,10 @@ succeeded, and `compensation_required = false`.
 The DB design also includes a compensation consistency check: compensation is
 valid only on failed jobs after provider apply started and manual gate mark-used
 was attempted but did not succeed.
+
+The adapter skeleton updates these state flags in the mocked transaction path
+and verifies that retry after provider success is durable-state recording only,
+not provider apply re-execution.
 
 `rollback_planned` is an accepted provider deployment job status. The provider
 deployment audit action check accepts provider job state actions and

@@ -1,6 +1,6 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
-  "harnessVersion": "1.1.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
+  "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 30 files, 361 passed, 6 skipped"
+      "result": "pass: 31 files, 404 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 30 files, 361 passed, 6 skipped"
+      "result": "pass: 31 files, 404 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -37,7 +37,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 30 files, 361 passed, 6 skipped"
+      "result": "pass: 31 files, 404 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",

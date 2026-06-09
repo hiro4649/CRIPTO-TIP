@@ -323,3 +323,15 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   flag columns, applied/compensation consistency checks, SQL state flag updates,
   fail-closed manual gate used `WHERE` conditions, provider job state flag
   selects, and context-aware lock timeout retry operator actions.
+
+## Postgres Transaction Adapter Skeleton v1.1.5
+
+- Added
+  `apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts`
+  for mock-client query order, `BEGIN`/`COMMIT`/`ROLLBACK`, manual gate then
+  provider job `SELECT FOR UPDATE`, provider job update before mark-used,
+  provider audit before manual gate audit, rowCount zero fail-closed behavior,
+  compensation-required mapping after provider success, commit failure
+  classification, rollback failure metadata-limited handling, unsafe
+  idempotency and safe-summary rejection, retry classifier exposure, and no
+  real DB connection invariant.

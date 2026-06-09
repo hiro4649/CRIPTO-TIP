@@ -284,6 +284,14 @@ No real provider SDK apply, actual production deployment apply, YouTube
 connector change, Chain Listener change, wallet/RPC/deploy change, or
 quality-gate weakening is introduced.
 
+## Postgres Transaction Adapter Skeleton v1.1.5
+
+The adapter skeleton adds mock-client evidence for BEGIN/COMMIT/ROLLBACK order,
+manual gate then provider job `SELECT FOR UPDATE`, provider job update before
+manual gate used state, provider audit before manual gate audit, rowCount
+fail-closed handling, compensation-required mapping after provider success,
+retry classifier exposure, and no real DB/driver/provider SDK boundary.
+
 ## Provider Apply Transaction Boundary v1.1.4
 
 Provider apply transaction evidence adds `ProviderApplyTransactionDraft`,

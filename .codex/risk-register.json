@@ -1,9 +1,9 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.4",
-  "harnessVersion": "1.1.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
+  "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 39,
-  "headSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
   "risks": [
     {
       "id": "persistent_db_transaction_future_work",
@@ -22,6 +22,13 @@
       "severity": "Medium",
       "status": "open",
       "mitigation": "Safe operator handoff only."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Real Postgres adapter remains future work after skeleton.",
+      "owner": "Backend",
+      "nextPr": "v1.1.6 DB integration scope",
+      "mitigation": "Mock-client tests cover order and rowCount behavior without DB driver."
     }
   ],
   "entries": [
@@ -33,5 +40,6 @@
       "nextStep": "Postgres repository implementation PR",
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
-  ]
+  ],
+  "baseSha": "current_pr_base"
 }
