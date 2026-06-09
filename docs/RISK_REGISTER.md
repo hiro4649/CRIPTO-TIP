@@ -171,3 +171,15 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Live DB integration testing remains future work. | Backend | v1.1.6 live Postgres test PR | Adapter skeleton avoids runtime readiness claims and keeps real DB connection out of scope. |
 | Medium | Provider executor remains future work. | Backend | Provider executor PR | Adapter explicitly does not call provider SDK and documents retry must not re-execute provider apply. |
 | Medium | Operator compensation execution remains future work after provider side effects. | Operations | Compensation execution PR | `compensation_required` results include safe handoff only, no raw provider response or secrets. |
+
+## Postgres Adapter Contract Hardening v1.1.6 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Typed row parsers reduce but do not eliminate real DB integration risk. | Backend | Real DB adapter PR with owner approval | Unknown row shapes are rejected before business validation; live DB tests remain required before runtime claims. |
+| Low | DB driver selected columns could drift before live DB integration. | Backend | Real DB adapter PR with owner approval | Parser contracts are exact, reject unexpected columns, validate manual gate status vocabulary, and require ISO UTC timestamps before business validation. |
+| Medium | Real DB driver remains future work. | Backend | Owner-approved dependency PR | No package or lockfile change is introduced in this PR. |
+| Medium | Live DB integration tests remain future work. | Backend | Live Postgres integration PR | Current tests use a mock transaction client and fixed SQL/params contracts only. |
+| Medium | Migration apply remains future work. | Backend | Migration application PR | Migration 0004 is mapped to adapter fields but not changed or applied here. |
+| Medium | Provider apply executor remains future work. | Backend/Ops | Provider executor PR | Adapter records provider apply facts but does not execute provider SDK calls. |
+| Medium | Operator compensation execution remains future work. | Operations | Compensation execution PR | Provider success plus durable failure remains safe-summary handoff only. |

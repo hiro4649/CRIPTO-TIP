@@ -301,6 +301,24 @@ referenced the previous head. The repair updates PR evidence to the current head
 and keeps all quality gates, product tests, secret scan, no-scraping scan, and
 raw-log prohibition intact.
 
+## Postgres Adapter Contract Hardening v1.1.6 Prep
+
+This PR adds typed row parsers, SQL parameter builders, and query result guards
+for the Postgres provider apply transaction adapter. The adapter still uses only
+`PostgresTransactionClient`; no DB driver, real DB connection, package change,
+provider SDK apply, production deployment apply, raw GitHub log reading, or
+runtime readiness claim is introduced.
+
+- Exact row parser evidence: manual gate rows and provider job rows reject
+  unexpected selected columns before business validation.
+- Manual gate status evidence: parser status is restricted to the persistent
+  manual gate status vocabulary.
+- Timestamp evidence: manual gate timestamp fields require ISO UTC strings.
+- Audit action evidence: provider audit action params are restricted to the
+  existing `provider_apply_transaction.*` vocabulary.
+- Metadata-limited guard evidence: `rowCount > 1` errors preserve a safe phase
+  label while avoiding row contents or raw DB diagnostics.
+
 ## Provider Apply Transaction Boundary v1.1.4
 
 Provider apply transaction evidence adds `ProviderApplyTransactionDraft`,

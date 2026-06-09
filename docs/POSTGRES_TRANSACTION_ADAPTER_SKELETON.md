@@ -66,6 +66,18 @@ be re-executed.
 
 - Retry after provider success is durable-state recording only.
 - Provider apply must not be re-executed by the adapter.
+- Manual gate and provider job rows are parsed through typed validators before
+  business validation; `rows[0]` is not trusted by shape alone.
+- Typed row parsers are exact row contracts: unexpected selected columns are
+  rejected before business validation.
+- SQL parameters are built through fixed helper functions whose array positions
+  match the SQL placeholder contract.
+- Provider audit actions are restricted to the existing
+  `provider_apply_transaction.*` vocabulary.
+- Query results must pass rowCount guards before the adapter treats reads or
+  writes as durable evidence.
+- `rowCount > 1` failures keep a metadata-limited phase label without exposing
+  row contents.
 - Safe summaries only; no raw provider response is stored.
 - No secret values, private URLs, wallet addresses, raw messages, display
   names, or expanded command diagnostics are stored.
@@ -78,3 +90,7 @@ require owner-approved DB integration work, live Postgres transaction tests,
 driver dependency review, migration compatibility checks, and operator
 compensation rehearsal. This PR does not claim runtime, production, legal, or
 YouTube policy readiness.
+
+The v1.1.6 preparation contract is captured in
+`docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md` and
+`docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md`.

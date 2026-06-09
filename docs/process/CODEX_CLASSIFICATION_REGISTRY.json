@@ -551,6 +551,87 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Rendered PR evidence for persistent manual gate audit boundary."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
+      "classification": "product_source",
+      "surface": "storage_contract",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Typed row parser for Postgres adapter contract hardening."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Parser safety tests for Postgres adapter contract hardening."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-provider-apply-params.ts",
+      "classification": "product_source",
+      "surface": "storage_contract",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "SQL parameter builder for Postgres adapter contract hardening."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "SQL parameter order and safety tests."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-query-result-guards.ts",
+      "classification": "product_source",
+      "surface": "storage_contract",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Query result rowCount guard for Postgres adapter contract hardening."
+    },
+    {
+      "pathPattern": "apps/api/src/repositories/postgres-query-result-guards.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Query result guard tests."
+    },
+    {
+      "pathPattern": "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
+      "classification": "docs",
+      "surface": "storage_contract",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Migration-to-adapter mapping and typed parser contract docs."
+    },
+    {
+      "pathPattern": "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Owner approval checklist before real DB driver integration."
+    },
+    {
+      "pathPattern": "docs/pr-postgres-adapter-contract-hardening-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for Postgres adapter contract hardening."
     }
   ],
   "safeSummaryOnly": true

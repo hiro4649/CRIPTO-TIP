@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 42,
-  "headSha": "195efd541dab1d8a7a3c19c792a36c5616b0d4d7",
-  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
+  "prNumber": 43,
+  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
+  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "productVerificationStatus": "pass",
   "commands": [
     {
@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -37,7 +37,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: parser reported 31 files, 404 passed, 6 skipped; Vitest source of truth reported 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -61,14 +61,36 @@
     "transaction repository commit",
     "compensation handoff",
     "rollback handoff",
-    "safe summary rejection"
+    "safe summary rejection",
+    "exact typed row selected-column contracts",
+    "manual gate persistent status vocabulary validation",
+    "ISO UTC timestamp validation",
+    "provider_apply_transaction audit action allowlist",
+    "metadata-limited rowCount phase labeling",
+    "safe typed parser failure operator action"
   ],
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "status": "pass",
-  "testFiles": 31,
-  "passed": 422,
+  "testFiles": 34,
+  "passed": 489,
   "skipped": 6,
-  "testsPassed": 422,
-  "testsSkipped": 6
+  "testsPassed": 489,
+  "testsSkipped": 6,
+  "productVerificationCommands": [
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass: 34 files, 489 passed, 6 skipped",
+    "npm test: pass: 34 files, 489 passed, 6 skipped",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass: 34 files, 489 passed, 6 skipped",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
+  ],
+  "productCiStatus": "success",
+  "ciRunId": "27219092574"
 }

@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 42,
-  "headSha": "195efd541dab1d8a7a3c19c792a36c5616b0d4d7",
-  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
+  "prNumber": 43,
+  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
+  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add postgres transaction adapter skeleton",
-  "goal": "Add Postgres transaction adapter skeleton and mock-client tests for provider apply/manual gate/audit consistency under harness v1.1.5 and v1.1.6 readiness, without real DB connection, DB driver, real provider SDK apply, or production deployment.",
-  "ciRunId": "27210438777",
-  "qualityGateRunId": "27210437759",
-  "qualityGateArtifactId": "7509524067",
+  "title": "feat: harden postgres adapter contract",
+  "goal": "Harden the Postgres transaction adapter contract for v1.1.6 preparation with typed row parsers, SQL parameter builders, query result guards, and migration-to-adapter mapping, without real DB connection, DB driver, package changes, real provider SDK apply, or production deployment.",
+  "ciRunId": "27219092574",
+  "qualityGateRunId": "27219466844",
+  "qualityGateArtifactId": "7513388618",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -30,30 +30,33 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/provider-apply-postgres-transaction.ts",
-      "apps/api/src/provider-apply-postgres-transaction.test.ts",
-      "apps/api/src/repositories/postgres-transaction-client.ts",
+      "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
+      "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
+      "apps/api/src/repositories/postgres-provider-apply-params.ts",
+      "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
+      "apps/api/src/repositories/postgres-query-result-guards.ts",
+      "apps/api/src/repositories/postgres-query-result-guards.test.ts",
       "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
       "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
+      "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
+      "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
       "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
-      "docs/POSTGRES_PROVIDER_APPLY_TRANSACTION.md",
-      "docs/POSTGRES_TRANSACTION_RETRY_POLICY.md",
-      "docs/PROVIDER_APPLY_TRANSACTION_BOUNDARY.md",
-      "docs/PROVIDER_APPLY_COMPENSATION_HANDOFF.md",
-      "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
+      "docs/RISK_REGISTER.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
-      "docs/pr-postgres-transaction-adapter-skeleton-v115-prep.md"
+      "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+      "docs/pr-postgres-adapter-contract-hardening-v116-prep.md"
     ],
     "allowedPaths": [
-      "apps/api/src/repositories/postgres-transaction-client.ts",
+      "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
+      "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
+      "apps/api/src/repositories/postgres-provider-apply-params.ts",
+      "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
+      "apps/api/src/repositories/postgres-query-result-guards.ts",
+      "apps/api/src/repositories/postgres-query-result-guards.test.ts",
       "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
       "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
-      "apps/api/src/provider-apply-postgres-transaction.ts",
-      "apps/api/src/provider-apply-postgres-transaction.test.ts",
-      "apps/api/src/repositories/provider-apply-postgres-transaction-repository.ts",
-      "apps/api/src/repositories/provider-apply-postgres-transaction-repository.test.ts",
       "docs/**",
       ".codex/**"
     ],
@@ -87,11 +90,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -103,7 +106,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: parser reported 31 files, 404 passed, 6 skipped; Vitest source of truth reported 31 files, 422 passed, 6 skipped"
+      "result": "pass: 34 files, 489 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -125,14 +128,16 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27210438777",
-      "result": "success"
+      "status": "success",
+      "runId": "27219092574",
+      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
     },
     {
       "name": "quality-gate",
-      "runId": "27210437759",
-      "result": "failure_stale_pr_audit_before_body_refresh",
-      "artifactId": "7509524067"
+      "status": "success",
+      "runId": "27219466844",
+      "artifactId": "7513388618",
+      "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776"
     }
   ],
   "productionClaims": {
@@ -147,12 +152,12 @@
     "status": "pass"
   },
   "allowedScope": [
-    "postgres_transaction_adapter_skeleton",
-    "mock_postgres_transaction_client",
-    "query_order_validation",
-    "rowcount_fail_closed_behavior",
-    "retry_classifier_adapter_boundary",
-    "compensation_required_mapping",
+    "postgres_adapter_contract_hardening",
+    "typed_row_parsers",
+    "sql_parameter_builders",
+    "query_result_guards",
+    "migration_to_adapter_mapping",
+    "owner_approval_checklist",
     "tests",
     "docs",
     ".codex evidence"
@@ -162,6 +167,7 @@
     "DB driver dependency",
     "package.json change",
     "pnpm-lock change",
+    "migration change",
     "real provider SDK apply",
     "actual production deployment apply",
     "secret manager real SDK integration",
@@ -182,59 +188,61 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "GitHub log download reading",
+    "raw GitHub log reading",
     "quality-gate weakening"
   ],
   "doneCriteria": [
-    "adapter skeleton uses PostgresTransactionClient interface only",
-    "adapter skeleton has no real DB connection and no DB driver import",
-    "mock client verifies BEGIN before manual gate lock",
-    "mock client verifies manual gate SELECT FOR UPDATE before provider job SELECT FOR UPDATE",
-    "mock client verifies provider job update before manual gate used update",
-    "mock client verifies provider audit insert before manual gate audit insert",
-    "mock client verifies COMMIT after all writes",
-    "adapter rolls back on manual gate lock failure",
-    "adapter rolls back on provider job lock failure",
-    "adapter rolls back on provider job update rowCount zero",
-    "adapter rolls back on mark manual gate used rowCount zero",
-    "adapter rolls back on provider audit rowCount zero",
-    "adapter rolls back on manual gate audit rowCount zero",
-    "provider success plus durable DB failure maps to compensation_required",
-    "provider failure plus DB failure does not require compensation",
-    "adapter exposes retry classification without provider SDK execution",
-    "adapter rejects unsafe idempotency and safe summaries",
-    "PR #40 regression tests still pass",
-    "PR #39 transaction boundary tests still pass",
-    "PR #38 job state-machine tests still pass",
-    "no secret scan passes",
-    "no scraping scan passes",
-    "required checks pass on PR head"
+    "typed manual gate row parser rejects unknown or unsafe row shape",
+    "typed provider job row parser rejects unknown or unsafe row shape",
+    "provider job applied invariants are validated before adapter business logic",
+    "provider job compensation invariants are validated before adapter business logic",
+    "SQL parameter builders fix placeholder order and reject unsafe values",
+    "query result guards fail closed on rowCount 0 and rowCount greater than 1",
+    "adapter no longer relies on rows[0] type casts",
+    "adapter uses typed row parsers, SQL parameter builders, and result guards",
+    "migration 0004 to adapter mapping docs are present",
+    "owner approval checklist is present before any real DB driver work",
+    "no real DB connection is introduced",
+    "no DB driver dependency is added",
+    "no package.json or pnpm-lock change is introduced",
+    "no migration change is introduced",
+    "no real provider SDK apply is introduced",
+    "no runtime or production readiness claim is introduced",
+    "manual gate row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "provider job row parser enforces exact selected columns before unsafe data can enter adapter logic",
+    "manual gate status is limited to the persistent status vocabulary",
+    "manual gate and provider job timestamps must be ISO UTC timestamps with Z suffix",
+    "provider apply audit insert action is limited to provider_apply_transaction.* audit vocabulary",
+    "rowCount greater than one failures preserve metadata-limited phase context",
+    "adapter parser failures return safe operator actions without row contents or raw DB diagnostics"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 31,
-    "passed": 422,
+    "testFiles": 34,
+    "passed": 489,
     "skipped": 6
   },
   "securityBoundaries": [
     "No real DB connection is implemented.",
     "No DB driver dependency is added.",
     "No package.json or pnpm-lock change is introduced.",
+    "No migration change is introduced.",
     "No real provider SDK apply is implemented.",
     "No actual production deployment apply is implemented.",
     "Provider apply remains outside the DB transaction.",
-    "Retry policy must not re-execute provider apply.",
-    "Manual gate and audit logs store safe summaries only.",
-    "GitHub Actions log downloads were not used.",
+    "Typed parsers reject unsafe row values and forbidden raw payload fields.",
+    "SQL parameter builders reject unsafe ids, references, and summaries.",
+    "GITHUB_LOG_POLICY_SAFE_SUMMARY_ONLY",
     "YouTube scraping remains forbidden."
   ],
   "residualRisks": [
     "Real Postgres adapter implementation remains future work.",
+    "Real DB driver selection remains future work and requires owner approval.",
     "Live DB integration tests remain future work.",
+    "Migration application remains future work.",
     "Provider apply executor remains future work.",
     "Operator compensation execution remains future work.",
-    "v1.1.6 should require owner-approved DB integration scope before real adapter work.",
     "Production deployment remains out of scope."
   ],
   "humanConfirmation": [
@@ -242,18 +250,18 @@
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 422,
+  "testsPassed": 489,
   "testsSkipped": 6,
-  "testFiles": 31,
+  "testFiles": 34,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 31 files, 422 passed, 6 skipped",
-    "npm test: pass: 31 files, 422 passed, 6 skipped",
+    "corepack pnpm test: pass: 34 files, 489 passed, 6 skipped",
+    "npm test: pass: 34 files, 489 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 31 files, 422 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass: 34 files, 489 passed, 6 skipped",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -267,12 +275,12 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds internal Postgres transaction adapter skeleton interfaces and mock-client tests without DB driver, real DB connection, provider SDK, external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
+    "statement": "Adds internal parser, parameter-builder, and query-result guard contracts for the Postgres adapter skeleton without DB driver, real DB connection, provider SDK, external API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds an offline mock-client adapter skeleton only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR hardens offline adapter contracts only.",
   "reviewScope": {
-    "scope": "Postgres transaction adapter skeleton, mock transaction client tests, rowCount fail-closed behavior, compensation mapping, retry classifier boundary, docs, and evidence.",
-    "riskSummary": "Main risk is accidentally implying real DB or provider SDK readiness, or retrying provider apply after external success.",
+    "scope": "Postgres adapter typed row parsers, SQL parameter builders, query result guards, adapter wiring, migration-to-adapter docs, owner approval checklist, tests, and evidence.",
+    "riskSummary": "Main risk is accidentally implying real DB readiness or trusting unknown DB row shapes before a real adapter exists.",
     "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, no DB driver import scan, and GitHub checks."
   },
   "reviewIndependence": {
@@ -282,10 +290,38 @@
   "bestOfN": {
     "candidateCount": 3,
     "selected": "B",
-    "summary": "Candidate B implements an adapter skeleton with mock transaction client, query order checks, rowCount fail-closed tests, retry classification, and no real DB connection."
+    "summary": "Candidate B adds typed row parsers, SQL parameter builders, query result guards, mapping docs, and no real DB connection."
   },
-  "prBodyPath": "docs/pr-postgres-transaction-adapter-skeleton-v115-prep.md",
-  "passed": 422,
+  "prBodyPath": "docs/pr-postgres-adapter-contract-hardening-v116-prep.md",
+  "passed": 489,
   "skipped": 6,
-  "summary": "31 files, 422 passed, 6 skipped"
+  "summary": "34 files, 489 passed, 6 skipped",
+  "changedFiles": [
+    ".codex/change-classification.json",
+    ".codex/evidence-pack.json",
+    ".codex/product-verification.json",
+    ".codex/quality-gate-evidence.json",
+    ".codex/review-independence.json",
+    ".codex/risk-register.json",
+    ".codex/task-contract.json",
+    ".codex/test-coverage-evidence.json",
+    ".codex/test-summary.json",
+    "apps/api/src/repositories/postgres-provider-apply-row-parsers.ts",
+    "apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts",
+    "apps/api/src/repositories/postgres-provider-apply-params.ts",
+    "apps/api/src/repositories/postgres-provider-apply-params.test.ts",
+    "apps/api/src/repositories/postgres-query-result-guards.ts",
+    "apps/api/src/repositories/postgres-query-result-guards.test.ts",
+    "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts",
+    "apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts",
+    "docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md",
+    "docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md",
+    "docs/POSTGRES_TRANSACTION_ADAPTER_SKELETON.md",
+    "docs/PRODUCTION_GATES.md",
+    "docs/QUALITY_GATE_EVIDENCE.md",
+    "docs/RISK_REGISTER.md",
+    "docs/TEST_COVERAGE_EVIDENCE.md",
+    "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    "docs/pr-postgres-adapter-contract-hardening-v116-prep.md"
+  ]
 }

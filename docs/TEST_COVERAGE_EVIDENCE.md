@@ -335,3 +335,23 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   classification, rollback failure metadata-limited handling, unsafe
   idempotency and safe-summary rejection, retry classifier exposure, and no
   real DB connection invariant.
+
+## Postgres Adapter Contract Hardening v1.1.6 Prep
+
+- `apps/api/src/repositories/postgres-provider-apply-row-parsers.test.ts`
+  covers manual gate row parsing, provider job row parsing, invalid enum values,
+  invalid commit SHAs, unsafe row fields, boolean state flags, applied
+  invariants, compensation invariants, exact row key rejection, manual gate
+  persistent status validation, and ISO UTC datetime validation.
+- `apps/api/src/repositories/postgres-provider-apply-params.test.ts` covers SQL
+  placeholder-to-parameter order, safe parameter construction, safe summary use,
+  applied-state flags, compensation flags, audit action allowlist enforcement,
+  and unsafe parameter rejection.
+- `apps/api/src/repositories/postgres-query-result-guards.test.ts` covers
+  single-row reads, one-row writes, rowCount 0, rowCount greater than 1, and
+  fail-closed phase classification with metadata-limited phase labels.
+- `apps/api/src/repositories/postgres-provider-apply-transaction-adapter.test.ts`
+  covers adapter use of parsers, parameter helpers, query guards, rollback on
+  parser failure, rollback on unexpected row fields, safe parser-failure
+  operator action, rollback on rowCount failure, compensation-required mapping,
+  and no DB driver import.

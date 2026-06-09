@@ -100,3 +100,16 @@ fixing manual gate row lock, provider job row lock, audit insert order, retry
 classification, and additive migration indexes. It does not make the system G4
 production ready because no real DB connection, real provider SDK apply, actual
 production deployment apply, or live YouTube operation is implemented.
+
+## Postgres Adapter Contract Hardening v1.1.6 Prep
+
+Typed row parsers, SQL parameter builders, query result guards, and
+migration-to-adapter mapping harden the future DB adapter contract. This is not
+runtime readiness. Real DB driver introduction, live DB credentials, migration
+application, and production-like adapter execution require explicit owner
+approval and the checklist in `docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md`.
+
+The row parser contract is exact: unexpected manual gate or provider job
+columns are rejected before business validation. Manual gate status, ISO UTC
+timestamps, provider audit action vocabulary, and metadata-limited rowCount
+failures must remain covered before owner-approved live DB integration begins.
