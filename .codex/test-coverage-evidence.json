@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 43,
-  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
-  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
+  "prNumber": 44,
+  "headSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 34,
-    "passed": 489,
+    "testFiles": 35,
+    "passed": 511,
     "skipped": 6
   },
   "coverage": [
@@ -31,27 +31,15 @@
     "safe typed parser failure operator action"
   ],
   "status": "pass",
-  "testFiles": 34,
-  "passed": 489,
+  "testFiles": 35,
+  "passed": 511,
   "skipped": 6,
-  "summary": "34 files, 489 passed, 6 skipped",
+  "summary": "35 files, 511 passed, 6 skipped",
   "coverageNotes": [
-    "Postgres SQL lock order and SELECT FOR UPDATE design tests added.",
-    "Postgres transaction retry classifier tests added.",
-    "Postgres repository contract unsafe idempotency and safe summary tests added.",
-    "Migration 0004 index and safe_summary object tests added.",
-    "PR #39, PR #38, and PR #35 regression tests remain covered.",
-    "Post-review hardening covers rollback_planned status and provider_apply_transaction audit actions.",
-    "Post-review hardening covers provider job state-machine flag columns and consistency checks.",
-    "Post-review hardening covers SQL state flag updates, fail-closed manual gate used update, provider job state flag selects, and context-aware lock timeout retry actions.",
-    "Postgres transaction adapter skeleton covers mock-client query order, rowCount fail-closed behavior, compensation-required mapping after provider success, retry classifier exposure, unsafe value rejection, and no real DB connection invariant.",
-    "Post-review hardening covers exact manual gate and provider job row key contracts.",
-    "Post-review hardening covers manual gate persistent status vocabulary validation.",
-    "Post-review hardening covers ISO UTC timestamp validation for manual gate rows.",
-    "Post-review hardening covers provider_apply_transaction audit action allowlist enforcement.",
-    "Post-review hardening covers metadata-limited rowCount greater than one phase labeling.",
-    "Post-review hardening covers safe adapter operator actions for typed row parser failures without row contents."
+    "DB integration scope gate default not-approved state covered.",
+    "Owner approval schema and project-owner role validation covered.",
+    "DB driver/package, real DB connection, live DB test, migration rollback, provider/prod apply, readiness claim, and unsafe evidence rejection covered."
   ],
-  "testsPassed": 489,
+  "testsPassed": 511,
   "testsSkipped": 6
 }

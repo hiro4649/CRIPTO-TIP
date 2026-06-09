@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 43,
-  "headSha": "3def110e0ac0b5d94ed8776c034f09ff236b6776",
-  "baseSha": "e059a7525f735a827c095bbc66a5e534bb1153d6",
+  "prNumber": 44,
+  "headSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
+  "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "schemaVersion": "1.0",
-  "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27219466844",
-  "latestAnalyzedArtifactId": "7513388618",
+  "qualityGateExpectedStatus": "not_available_before_pr_creation",
+  "latestAnalyzedRunId": "not_available_before_pr_creation",
+  "latestAnalyzedArtifactId": "not_available_before_pr_creation",
   "reasonCodeMappings": {
     "providerApplyTransactionBoundaryStatus": "pass",
     "providerApplyCompensationHandoffStatus": "pass",
@@ -21,9 +21,10 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "real provider SDK apply",
-    "actual production deployment apply",
-    "manual gate bypass"
+    "real DB connection",
+    "DB driver dependency",
+    "provider SDK apply",
+    "actual production deployment apply"
   ],
   "qualityGateEvidenceStatus": "pass",
   "requiredStatuses": [
@@ -52,12 +53,12 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "success",
+  "qualityGateStatus": "not_available_before_pr_creation",
   "evidenceNotes": [
     "Quality-gate passed on the reported PR head before this post-review hardening commit.",
     "Final PR body evidence is refreshed after the pushed head receives same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "27219466844",
-  "qualityGateArtifactId": "7513388618"
+  "qualityGateRunId": "not_available_before_pr_creation",
+  "qualityGateArtifactId": "not_available_before_pr_creation"
 }

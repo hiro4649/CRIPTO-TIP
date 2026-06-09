@@ -40,3 +40,9 @@ Manual gate records and audit logs store references and safe summaries only.
 They must never store secret values, private URLs, wallet addresses, raw user
 messages, raw display names, OAuth tokens, API keys, webhook URLs, stdout,
 stderr, or stack traces.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+- DB integration scope gate record must be present and defaulted to not approved.
+- Real DB driver, package.json change, pnpm-lock change, live DB integration tests, migration execution, and real DB connection require a future owner-approved PR.
+- The gate is approval evidence only; it is not secret storage and it is not runtime readiness evidence.

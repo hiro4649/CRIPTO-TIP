@@ -94,3 +94,7 @@ YouTube policy readiness.
 The v1.1.6 preparation contract is captured in
 `docs/POSTGRES_ADAPTER_CONTRACT_HARDENING.md` and
 `docs/POSTGRES_ADAPTER_OWNER_APPROVAL_CHECKLIST.md`.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+Real DB integration must first pass the owner-approved DB integration scope gate, including driver checklist, secret manager boundary, migration apply/rollback plan, and live test environment requirements. This skeleton remains no-driver and no-real-DB.

@@ -355,3 +355,7 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
   parser failure, rollback on unexpected row fields, safe parser-failure
   operator action, rollback on rowCount failure, compensation-required mapping,
   and no DB driver import.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+- `apps/api/src/db-integration-scope-gate.test.ts` covers the default not-approved state, owner approval field requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration test gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden readiness claims, and unsafe evidence rejection for connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.

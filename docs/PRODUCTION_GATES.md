@@ -113,3 +113,7 @@ The row parser contract is exact: unexpected manual gate or provider job
 columns are rejected before business validation. Manual gate status, ISO UTC
 timestamps, provider audit action vocabulary, and metadata-limited rowCount
 failures must remain covered before owner-approved live DB integration begins.
+
+## DB Integration Scope Gate v1.1.6 Prep
+
+Owner approval evidence is required before any real DB driver or package change. DB driver dependency, pnpm-lock change, real DB connection, live DB integration test execution, migration apply, provider SDK apply, and production deployment are blocked by default. Runtime, production, legal, and YouTube policy readiness claims remain forbidden until separately approved and evidenced.
