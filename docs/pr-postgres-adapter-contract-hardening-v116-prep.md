@@ -97,6 +97,30 @@ Review scope and verification:
 
 Current recorded test summary: 34 files, 489 passed, 6 skipped.
 
+Changed area: `apps/api/src/repositories/postgres-provider-apply-row-parsers.ts`,
+`apps/api/src/repositories/postgres-provider-apply-params.ts`,
+`apps/api/src/repositories/postgres-query-result-guards.ts`,
+`apps/api/src/repositories/postgres-provider-apply-transaction-adapter.ts`,
+their tests, and the Postgres adapter contract docs/evidence.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: exact manual gate row selected-column contract, exact
+provider job row selected-column contract, manual gate persistent status
+vocabulary, ISO UTC timestamp strictness, forbidden raw provider/display/YouTube
+fields, provider_apply_transaction audit action allowlist, SQL placeholder
+order and unsafe parameter rejection, rowCount zero and rowCount greater than
+one guards, metadata-limited phase labels, rollback on typed parser failure,
+safe parser-failure operator action, and existing provider apply transaction
+skeleton regression behavior.
+
+Edge cases: unexpected extra row key, raw_provider_response, provider_response,
+display_name, youtube_author_id, unknown manual gate status, non-ISO date,
+date without Z, invalid used_at, unknown audit action, safe-looking but unknown
+audit action, rowCount greater than one, unsafe transaction ID, unsafe safe
+summary, provider success followed by durable write failure, and parser failure
+without row contents in operator action.
+
 ## Security Boundaries
 
 - No real DB connection is implemented.
@@ -126,3 +150,34 @@ Current recorded test summary: 34 files, 489 passed, 6 skipped.
 - Human owner confirmation is required before production-like apply.
 - AI review recommendations are not recorded as human approval.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
+
+## Review Independence
+
+- Writer evidence is limited to current-head local verification, tests, docs,
+  and machine-readable .codex evidence.
+- AI review recommendation is not human approval.
+- Human owner confirmation is required before any real DB integration, DB
+  driver dependency, live DB test environment, real provider SDK apply, or
+  production-like deployment.
+
+## Best of N Evidence
+
+Candidate count: 3.
+
+Selected candidate: B.
+
+Candidate A: Add a real `pg` dependency and live DB adapter now.
+
+Candidate B: Add exact typed row parsers, SQL parameter builders, query result
+guards, mapping docs, and no real DB connection.
+
+Candidate C: Only update docs.
+
+Reason selected: Candidate B hardens the v1.1.6 adapter contract while
+preserving the no-driver, no-real-DB, no-provider-SDK, no-production-apply
+boundary.
+
+Rejected alternatives: Candidate A was rejected because it would add real DB
+driver and live DB scope before owner approval; Candidate C was rejected because
+docs-only evidence would not harden exact parser, SQL parameter, rowCount, or
+safe parser-failure paths.
