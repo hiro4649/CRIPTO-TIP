@@ -21,21 +21,21 @@ Done criteria: DB driver owner approval record schema exists; default record is 
 
 ## Evidence Integrity
 
-Head SHA: 0479c08a5a9d1e5184c4f51d9596243476d3175d
+Head SHA: 271785f769cbed4f27d4e088f19ee101c70ead4b
 
 Base SHA: 0479c08a5a9d1e5184c4f51d9596243476d3175d
 
-Product CI: pre_pr_local_evidence
+Product CI: success
 
-Quality-gate: pre_pr_local_evidence
+Quality-gate: success
 
-CI run: pre_pr_local_evidence
+CI run: 27237597034
 
-Quality-gate run: pre_pr_local_evidence
+Quality-gate run: 27238173789
 
-Quality-gate artifact: pre_pr_local_evidence
+Quality-gate artifact: 7521067332
 
-Tests: 36 test files, 598 passed, 6 skipped
+Tests: 36 test files, 636 passed, 6 skipped
 
 ## Testing and review
 
@@ -95,7 +95,15 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 36 files, 598 passed, 6 skipped.
+Current recorded test summary: 36 files, 636 passed, 6 skipped.
+
+Changed area: `apps/api/src/db-driver-owner-approval-record.ts`, `apps/api/src/db-driver-owner-approval-record.test.ts`, DB driver owner approval record docs, and `.codex` evidence.
+
+Test command: `corepack pnpm vitest run apps/api/src/db-driver-owner-approval-record.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
+
+What the test covers: default not-approved state, non-approved capability fail-closed behavior, allowed approval scopes, scope-to-capability mapping, project-owner role enforcement, AI/Codex/bot/GitHub Actions/Copilot/ChatGPT/OpenAI actor rejection, approval ID and approver actor format validation, target repository/PR/branch/commit/base binding, expiry and 72-hour approval window, fingerprint stability, replay rejection after canonical field changes, DB package/driver/secret-manager/migration/live-DB preconditions, forbidden provider/production/readiness/legal/YouTube policy/token/wallet/connector/Chain Listener scopes, and recursive unsafe key/value evidence rejection.
+
+Edge cases: missing approved fields, expired approval, future approval, wrong target commit, wrong target environment branch, used stale fingerprint, not_approved/rejected/expired/absent records with capability flags, unsafe secret-like keys, private URLs, wallet addresses, token-like values, raw provider responses, raw DB connection strings, raw GitHub log references, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, and migration apply without migration scope.
 
 ## Review Independence
 
@@ -106,9 +114,15 @@ Current recorded test summary: 36 files, 598 passed, 6 skipped.
 
 ## Best of N Evidence
 
+Candidates:
+
 - Candidate A: add the actual DB driver and live DB tests now. Rejected because owner approval, package change approval, secret manager scope, migration plan, and live DB manual gate are absent.
 - Candidate B: only document the approval requirement. Rejected because it would not provide a typed, replay-resistant approval record.
-- Candidate C: add a typed owner approval record boundary, target binding, replay fingerprint, unsafe evidence rejection, docs, and tests while keeping all real DB/package/provider actions denied. Selected as the smallest safe change.
+- Candidate C: add a typed owner approval record boundary, target binding, replay fingerprint, unsafe evidence rejection, fail-closed non-approved capabilities, strict scope-to-capability mapping, docs, and tests while keeping all real DB/package/provider actions denied.
+
+Selected candidate: Candidate C.
+
+Reason selected: Candidate C is the smallest safe change that adds machine-checkable owner approval evidence and closes non-approved capability loopholes without introducing DB drivers, package changes, migrations, real DB connections, provider SDK apply, or production readiness claims.
 
 ## Security Boundaries
 

@@ -120,6 +120,11 @@ export function validateDbDriverOwnerApprovalRecord(record: DbDriverOwnerApprova
   assertAllowedApprovalScopes(record.approval_scope);
   assertContextBinding(record, context);
   assertForbiddenCapabilitiesRemainFalse(record);
+  assertApprovalIdIsSafe(record);
+
+  if (record.approval_status !== "approved") {
+    assertNonApprovedRecordRemainsClosed(record);
+  }
 
   if (record.driver_package && !record.package_change_allowed) throw new Error("driver_package requires package_change_allowed");
   if (record.package_change_allowed && !record.driver_package) throw new Error("package change approval requires driver_package");
@@ -132,6 +137,7 @@ export function validateDbDriverOwnerApprovalRecord(record: DbDriverOwnerApprova
 
   if (record.approval_status === "approved") {
     assertApprovedRecord(record, context);
+    assertApprovedCapabilityScopes(record);
   }
 
   if (record.approval_status === "expired") {
@@ -157,6 +163,7 @@ export function canonicalizeApprovalRecord(record: DbDriverOwnerApprovalRecord) 
 function assertApprovedRecord(record: DbDriverOwnerApprovalRecord, context?: DbDriverOwnerApprovalContext) {
   if (record.approved_by_role !== "project-owner") throw new Error("approved DB driver approval requires project-owner role");
   if (!record.approved_by_actor) throw new Error("approved DB driver approval requires approved_by_actor");
+  if (!safeGithubActorPattern().test(record.approved_by_actor)) throw new Error("approved_by_actor must be a safe GitHub username");
   if (unsafeApproverActorPattern().test(record.approved_by_actor)) throw new Error("AI, bot, assistant, codex, github-actions, or unknown actor cannot approve DB driver scope");
   if (!record.approved_at) throw new Error("approved DB driver approval requires approved_at");
   if (!record.expires_at) throw new Error("approved DB driver approval requires expires_at");
@@ -172,6 +179,39 @@ function assertApprovedRecord(record: DbDriverOwnerApprovalRecord, context?: DbD
   if (!record.approval_fingerprint) throw new Error("approved DB driver approval requires approval_fingerprint");
   const expected = computeDbDriverOwnerApprovalFingerprint({ ...record, approval_fingerprint: undefined });
   if (record.approval_fingerprint !== expected) throw new Error("DB driver owner approval fingerprint mismatch");
+}
+
+function assertApprovalIdIsSafe(record: DbDriverOwnerApprovalRecord) {
+  if (record.approval_status === "approved" && !safeApprovalIdPattern().test(record.approval_id)) {
+    throw new Error("approved DB driver approval_id must use a safe approval ID format");
+  }
+  if (/\s|https?:\/\/|Bearer\s+|ghp_|sk-|xoxb-|AKIA|api[_-]?key|oauth|token|secret|0x[0-9a-fA-F]{40}/i.test(record.approval_id)) {
+    throw new Error("DB driver approval_id contains unsafe value");
+  }
+}
+
+function assertNonApprovedRecordRemainsClosed(record: DbDriverOwnerApprovalRecord) {
+  if (record.approval_scope.length) throw new Error("non-approved DB driver approval records cannot include approval_scope");
+  if (record.driver_package !== undefined) throw new Error("non-approved DB driver approval records cannot include driver_package");
+  if (record.driver_version_policy !== "not_selected") throw new Error("non-approved DB driver approval records require driver_version_policy not_selected");
+  if (record.package_change_allowed) throw new Error("non-approved DB driver approval records cannot allow package changes");
+  if (record.pnpm_lock_change_allowed) throw new Error("non-approved DB driver approval records cannot allow pnpm lock changes");
+  if (record.real_db_connection_allowed) throw new Error("non-approved DB driver approval records cannot allow real DB connections");
+  if (record.live_db_integration_tests_allowed) throw new Error("non-approved DB driver approval records cannot allow live DB integration tests");
+  if (record.migration_apply_allowed) throw new Error("non-approved DB driver approval records cannot allow migration apply");
+  if (record.secret_manager_scope_required) throw new Error("non-approved DB driver approval records cannot require secret manager DB scope");
+  if (record.db_credentials_storage_required === "secret_manager") throw new Error("non-approved DB driver approval records cannot require secret_manager credential storage");
+  if (record.approval_fingerprint !== undefined) throw new Error("non-approved DB driver approval records cannot include approval_fingerprint");
+}
+
+function assertApprovedCapabilityScopes(record: DbDriverOwnerApprovalRecord) {
+  const scopes = new Set(record.approval_scope);
+  if (record.driver_package && !scopes.has("db_driver_dependency_introduction")) throw new Error("driver_package requires db_driver_dependency_introduction approval scope");
+  if (record.package_change_allowed && !scopes.has("package_change_for_db_driver")) throw new Error("package_change_allowed requires package_change_for_db_driver approval scope");
+  if (record.pnpm_lock_change_allowed && !scopes.has("pnpm_lock_change_for_db_driver")) throw new Error("pnpm_lock_change_allowed requires pnpm_lock_change_for_db_driver approval scope");
+  if (record.real_db_connection_allowed && !scopes.has("db_secret_manager_scope")) throw new Error("real_db_connection_allowed requires db_secret_manager_scope approval scope");
+  if (record.live_db_integration_tests_allowed && !scopes.has("live_db_integration_test_plan")) throw new Error("live_db_integration_tests_allowed requires live_db_integration_test_plan approval scope");
+  if (record.migration_apply_allowed && !scopes.has("migration_apply_plan")) throw new Error("migration_apply_allowed requires migration_apply_plan approval scope");
 }
 
 function assertContextBinding(record: DbDriverOwnerApprovalRecord, context?: DbDriverOwnerApprovalContext) {
@@ -238,7 +278,15 @@ function stableStringify(value: unknown): string {
 }
 
 function unsafeApproverActorPattern() {
-  return /^(ai|ai-reviewer|assistant|codex|bot|github-actions|unknown)$|bot$|github-actions/i;
+  return /^(?:ai|ai-reviewer|assistant|codex|bot|github-actions|github-actions\[bot\]|dependabot\[bot\]|renovate\[bot\]|copilot|chatgpt|openai|openai-assistant|unknown|null|none|n\/a)$|(?:^|-)bot$|\[bot\]$/i;
+}
+
+function safeApprovalIdPattern() {
+  return /^(?:db-driver-approval-[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|appr_[a-z0-9]{12,64})$/;
+}
+
+function safeGithubActorPattern() {
+  return /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$/;
 }
 
 function forbiddenUnsafeEvidenceKeyPattern() {
