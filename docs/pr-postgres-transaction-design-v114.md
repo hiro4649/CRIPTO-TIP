@@ -97,6 +97,26 @@ Review scope and verification:
 
 Current recorded test summary: 30 files, 336 passed, 6 skipped.
 
+Changed area: Postgres provider apply transaction SQL design, repository
+contract stubs, retry classifier, migration index design, safe idempotency
+metadata, and provider transaction regression surface.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: SQL lock order, `SELECT FOR UPDATE` usage for manual gate
+and provider job rows, provider job update before manual gate used state,
+provider/manual audit insert before commit, retryable SQL reason codes,
+terminal SQL reason codes, compensation-required classification after provider
+success plus durable transaction failure, unsafe idempotency rejection,
+safe-summary rejection, migration index coverage, and PR #39/#38/#35 regression
+tests.
+
+Edge cases and failure paths: deadlock, serialization failure, lock timeout,
+unique violation, manual gate mismatch, invalid job transition, unsafe summary,
+provider diagnostic payload rejection, wallet/private URL/token-like value
+rejection, audit append after provider success, and duplicate/idempotency
+classification.
+
 ## Security Boundaries
 
 - No real DB connection is implemented.
