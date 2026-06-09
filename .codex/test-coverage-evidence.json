@@ -3,14 +3,14 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 44,
-  "headSha": "7575d44a5330c5c1c40e7ead6c80805966a26779",
+  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
   "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 35,
-    "passed": 511,
+    "passed": 533,
     "skipped": 6
   },
   "coverage": [
@@ -32,14 +32,15 @@
   ],
   "status": "pass",
   "testFiles": 35,
-  "passed": 511,
+  "passed": 533,
   "skipped": 6,
-  "summary": "35 files, 511 passed, 6 skipped",
+  "summary": "35 files, 533 passed, 6 skipped",
   "coverageNotes": [
     "DB integration scope gate default not-approved state covered.",
-    "Owner approval schema and project-owner role validation covered.",
-    "DB driver/package, real DB connection, live DB test, migration rollback, provider/prod apply, readiness claim, and unsafe evidence rejection covered."
+    "Requested scope allowlist validation covered.",
+    "Rejected and approved owner decision schema plus project-owner role validation covered.",
+    "DB driver/package, real DB connection, live DB test, migration rollback, provider/prod apply, readiness claim, and recursive unsafe evidence rejection covered."
   ],
-  "testsPassed": 511,
+  "testsPassed": 533,
   "testsSkipped": 6
 }

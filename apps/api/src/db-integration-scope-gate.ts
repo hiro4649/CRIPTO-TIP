@@ -6,6 +6,20 @@ export const dbIntegrationOwnerRoles = ["project-owner"] as const;
 
 export type DbIntegrationOwnerRole = typeof dbIntegrationOwnerRoles[number];
 
+export const allowedDbIntegrationRequestedScopes = [
+  "db_integration_scope_gate",
+  "owner_approval_record_schema",
+  "db_driver_introduction_checklist",
+  "live_db_integration_test_plan",
+  "db_secret_boundary",
+  "migration_apply_rollback_plan",
+  "tests",
+  "docs",
+  "codex_evidence"
+] as const;
+
+export type DbIntegrationRequestedScope = typeof allowedDbIntegrationRequestedScopes[number];
+
 export type DbIntegrationScopeGateRecord = {
   schema_version: string;
   harness_version: string;
@@ -17,6 +31,8 @@ export type DbIntegrationScopeGateRecord = {
   owner_approval_required: boolean;
   owner_approved_by?: DbIntegrationOwnerRole | string | undefined;
   owner_approved_at?: string | undefined;
+  owner_decided_by?: DbIntegrationOwnerRole | string | undefined;
+  owner_decided_at?: string | undefined;
   db_driver_package?: string | undefined;
   db_driver_version_policy: string;
   package_change_allowed: boolean;
@@ -56,6 +72,8 @@ export function createDefaultDbIntegrationScopeGateRecord(input: {
     owner_approval_required: true,
     owner_approved_by: undefined,
     owner_approved_at: undefined,
+    owner_decided_by: undefined,
+    owner_decided_at: undefined,
     db_driver_package: undefined,
     db_driver_version_policy: "not_selected",
     package_change_allowed: false,
@@ -78,13 +96,14 @@ export function createDefaultDbIntegrationScopeGateRecord(input: {
 }
 
 export function validateDbIntegrationScopeGateRecord(record: DbIntegrationScopeGateRecord) {
-  assertNoUnsafeDbIntegrationScopeGateEvidence(record);
   if (!dbIntegrationApprovalStatuses.includes(record.approval_status)) throw new Error("DB integration approval_status is invalid");
   if (!record.owner_approval_required) throw new Error("DB integration owner approval must be required");
   if (!/^[0-9a-f]{40}$/i.test(record.target_commit_sha)) throw new Error("DB integration target_commit_sha must be a 40-character SHA");
   if (!record.repository) throw new Error("DB integration repository is required");
   if (!record.target_branch) throw new Error("DB integration target_branch is required");
   if (!Array.isArray(record.requested_scope) || record.requested_scope.length === 0) throw new Error("DB integration requested_scope is required");
+  assertAllowedRequestedScopes(record.requested_scope);
+  assertNoUnsafeDbIntegrationScopeGateEvidence(record);
   assertIsoUtc(record.created_at, "created_at");
 
   if (record.approval_status === "approved") {
@@ -92,6 +111,13 @@ export function validateDbIntegrationScopeGateRecord(record: DbIntegrationScopeG
     if (!record.owner_approved_at) throw new Error("approved DB integration scope requires owner_approved_at");
     if (!dbIntegrationOwnerRoles.includes(record.owner_approved_by as DbIntegrationOwnerRole)) throw new Error("approved DB integration scope requires project-owner approval");
     assertIsoUtc(record.owner_approved_at, "owner_approved_at");
+  }
+
+  if (record.approval_status === "rejected") {
+    if (!record.owner_decided_by) throw new Error("rejected DB integration scope requires owner_decided_by");
+    if (!record.owner_decided_at) throw new Error("rejected DB integration scope requires owner_decided_at");
+    if (!dbIntegrationOwnerRoles.includes(record.owner_decided_by as DbIntegrationOwnerRole)) throw new Error("rejected DB integration scope requires project-owner decision");
+    assertIsoUtc(record.owner_decided_at, "owner_decided_at");
   }
 
   if (record.package_change_allowed && !record.db_driver_package) throw new Error("package change approval requires db_driver_package");
@@ -111,9 +137,15 @@ export function validateDbIntegrationScopeGateRecord(record: DbIntegrationScopeG
 }
 
 export function assertNoUnsafeDbIntegrationScopeGateEvidence(value: unknown) {
-  const text = JSON.stringify(value);
-  if (unsafeDbIntegrationEvidencePattern().test(text)) {
-    throw new Error("DB integration scope gate evidence contains unsafe secret, raw data, private URL, wallet, or raw log reference");
+  scanUnsafeEvidence(value);
+}
+
+function assertAllowedRequestedScopes(scopes: string[]) {
+  for (const scope of scopes) {
+    if (typeof scope !== "string" || !scope) throw new Error("DB integration requested_scope values must be non-empty strings");
+    if (allowedDbIntegrationRequestedScopes.includes(scope as DbIntegrationRequestedScope)) continue;
+    if (unsafeScopeValuePattern().test(scope)) throw new Error(`DB integration requested_scope contains unsafe value: ${scope}`);
+    throw new Error(`DB integration requested_scope is not allowed: ${scope}`);
   }
 }
 
@@ -122,6 +154,34 @@ function assertIsoUtc(value: string, label: string) {
   if (Number.isNaN(new Date(value).getTime())) throw new Error(`${label} must be parseable`);
 }
 
-function unsafeDbIntegrationEvidencePattern() {
-  return /Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|connection[_ -]?string|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|api[_-]?key|oauth|secret\s*[:=]|token\s*[:=]|private[_ -]?url|raw[_ -]?provider[_ -]?response|raw[_ -]?db|raw logs?|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|file_contents|dependency_tree/i;
+function scanUnsafeEvidence(value: unknown, path: string[] = []) {
+  if (value === null || value === undefined) return;
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => scanUnsafeEvidence(item, path.concat(String(index))));
+    return;
+  }
+  if (typeof value === "object") {
+    for (const [key, nestedValue] of Object.entries(value as Record<string, unknown>)) {
+      if (forbiddenUnsafeEvidenceKeyPattern().test(key)) {
+        throw new Error(`DB integration scope gate evidence contains unsafe key: ${path.concat(key).join(".")}`);
+      }
+      scanUnsafeEvidence(nestedValue, path.concat(key));
+    }
+    return;
+  }
+  if (typeof value === "string" && unsafeEvidenceValuePattern().test(value)) {
+    throw new Error("DB integration scope gate evidence contains unsafe secret, raw data, private URL, wallet, or raw log reference");
+  }
+}
+
+function forbiddenUnsafeEvidenceKeyPattern() {
+  return /^(secretValue|apiKey|apiKeyValue|refreshToken|refreshTokenValue|accessToken|accessTokenValue|connectionString|databaseUrl|postgresUrl|dbPassword|password|clientSecret|rawProviderResponse|rawDbConnectionString|githubRawLogs)$/i;
+}
+
+function unsafeScopeValuePattern() {
+  return /\s|Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|api[_-]?key|oauth|token|secret|private[_ -]?url|raw[_ -]?provider|raw[_ -]?db|raw logs?|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|file_contents|dependency_tree/i;
+}
+
+function unsafeEvidenceValuePattern() {
+  return /Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|file_contents|dependency_tree/i;
 }

@@ -21,21 +21,21 @@ Done criteria: DB integration scope gate validator exists; default record is not
 
 ## Evidence Integrity
 
-Head SHA: 7575d44a5330c5c1c40e7ead6c80805966a26779
+Head SHA: 6f50b645883d8f783b038fbc2fc089cce2d254ab
 
 Base SHA: 6fd5ab1ebd0e147af5385144df10f7354f03c418
 
-Product CI: not_available_after_current_head_update
+Product CI: success
 
-Quality-gate: not_available_after_current_head_update
+Quality-gate: success
 
-CI run: not_available_after_current_head_update
+CI run: 27230197473
 
-Quality-gate run: not_available_after_current_head_update
+Quality-gate run: 27230413181
 
-Quality-gate artifact: not_available_after_current_head_update
+Quality-gate artifact: 7518001924
 
-Tests: 35 test files, 511 passed, 6 skipped
+Tests: 35 test files, 533 passed, 6 skipped
 
 ## Testing and review
 
@@ -61,11 +61,11 @@ Product verification commands:
 - corepack pnpm install: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
-- corepack pnpm test: pass: 35 files, 511 passed, 6 skipped
-- npm test: pass: 35 files, 511 passed, 6 skipped
+- corepack pnpm test: pass: 35 files, 533 passed, 6 skipped
+- npm test: pass: 35 files, 533 passed, 6 skipped
 - corepack pnpm evidence:ci: pass
 - corepack pnpm quality:self-protection: pass
-- node scripts/write-test-summary.mjs: pass: 35 files, 511 passed, 6 skipped
+- node scripts/write-test-summary.mjs: pass: 35 files, 533 passed, 6 skipped
 - node scripts/check-evidence-placeholders.mjs: pass
 - node scripts/validate-evidence-freshness.mjs: pass
 - node scripts/check-quality-gate-self-protection.mjs: pass
@@ -95,15 +95,15 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 35 files, 511 passed, 6 skipped.
+Current recorded test summary: 35 files, 533 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-integration-scope-gate.ts`, `apps/api/src/db-integration-scope-gate.test.ts`, DB integration scope gate docs, and `.codex` evidence.
 
 Test command: `corepack pnpm vitest run apps/api/src/db-integration-scope-gate.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
 
-What the test covers: default not-approved state, owner approval field requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden runtime/production/legal/YouTube policy readiness claims, and unsafe evidence rejection.
+What the test covers: default not-approved state, requested_scope allowlist validation, owner approval field requirements, rejected owner decision requirements, project-owner role validation, DB driver/package gate, real DB connection gate, live DB integration gate, migration rollback requirement, forbidden provider SDK apply, forbidden production deployment, forbidden runtime/production/legal/YouTube policy readiness claims, and recursive unsafe key/value evidence rejection.
 
-Edge cases: missing owner approval fields, wrong owner role, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.
+Edge cases: unknown requested_scope, forbidden requested scopes such as real_db_connection and provider_sdk_apply, requested scope spaces/URLs/token-like values, missing approved owner fields, missing rejected owner decision fields, AI reviewer decision rejection, package flag without driver package, real DB without secret manager scope, live DB without real DB approval, migration apply without rollback plan, unsafe keys such as secretValue/apiKeyValue/refreshTokenValue/connectionString/postgresUrl, unsafe connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references.
 
 ## Security Boundaries
 
@@ -135,6 +135,20 @@ Edge cases: missing owner approval fields, wrong owner role, package flag withou
 - AI review recommendations are not recorded as human approval.
 - Future real DB work requires a new owner-approved PR.
 
+## Requested Scope Allowlist
+
+Machine-validated requested_scope values are limited to `db_integration_scope_gate`, `owner_approval_record_schema`, `db_driver_introduction_checklist`, `live_db_integration_test_plan`, `db_secret_boundary`, `migration_apply_rollback_plan`, `tests`, `docs`, and `codex_evidence`.
+
+Unknown scopes, forbidden DB/runtime/provider scopes, spaces, URLs, token-like values, and raw-log references are rejected.
+
+## Approval Status Semantics
+
+This PR defines the future approved shape but does not create an approved record. The repository evidence for PR #44 remains `not_approved`.
+
+`approved` requires `owner_approved_by: project-owner` and an ISO UTC `owner_approved_at` timestamp. `rejected` requires `owner_decided_by: project-owner` and an ISO UTC `owner_decided_at` timestamp. AI review cannot populate either owner decision path.
+
+Approved schema acceptance is a validator capability, not current approval. A future PR may use `approved` only after human project-owner confirmation on the target commit.
+
 ## Review Independence
 
 - Implementation evidence and review recommendation remain separate.
@@ -148,7 +162,7 @@ Candidates:
 
 - Candidate 1: add DB driver and live DB integration tests now. Rejected because package changes and real DB execution are outside this PR.
 - Candidate 2: docs-only approval checklist. Rejected because future v1.1.6 work needs typed validation and tests.
-- Candidate 3: typed DB integration scope gate, owner approval schema, safe defaults, docs, and quality evidence without package, lockfile, migration, or runtime DB changes.
+- Candidate 3: typed DB integration scope gate, requested_scope allowlist, owner approval/rejection schema, recursive unsafe evidence scan, safe defaults, docs, and quality evidence without package, lockfile, migration, or runtime DB changes.
 
 Selected candidate: Candidate 3.
 

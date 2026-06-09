@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 44,
-  "headSha": "7575d44a5330c5c1c40e7ead6c80805966a26779",
+  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
   "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,12 +53,13 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "Quality-gate passed on the reported PR head before this post-review hardening commit.",
+    "Requested scope allowlist, rejected owner decision requirements, and recursive unsafe evidence rejection are covered by local tests before push.",
     "Final PR body evidence is refreshed after the pushed head receives same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation"
+  "qualityGateRunId": "27230413181",
+  "qualityGateArtifactId": "7518001924"
 }

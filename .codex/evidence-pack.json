@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 44,
-  "headSha": "7575d44a5330c5c1c40e7ead6c80805966a26779",
+  "headSha": "6f50b645883d8f783b038fbc2fc089cce2d254ab",
   "baseSha": "6fd5ab1ebd0e147af5385144df10f7354f03c418",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db integration scope gate",
   "goal": "Prepare the owner-approved DB integration scope gate for v1.1.6 before any real DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "ciRunId": "not_available_after_current_head_update",
-  "qualityGateRunId": "not_available_after_current_head_update",
-  "qualityGateArtifactId": "not_available_after_current_head_update",
-  "productCiStatus": "not_available_after_current_head_update",
-  "qualityGateStatus": "not_available_after_current_head_update",
+  "ciRunId": "27230197473",
+  "qualityGateRunId": "27230413181",
+  "qualityGateArtifactId": "7518001924",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -85,11 +85,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 35 files, 511 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 35 files, 511 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -101,7 +101,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 35 files, 511 passed, 6 skipped"
+      "result": "pass: 35 files, 533 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -192,7 +192,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 35,
-    "passed": 511,
+    "passed": 533,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -222,18 +222,18 @@
     "AI review recommendations are not recorded as human approval.",
     "Future real DB work requires a new owner-approved PR."
   ],
-  "testsPassed": 511,
+  "testsPassed": 533,
   "testsSkipped": 6,
   "testFiles": 35,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 35 files, 511 passed, 6 skipped",
-    "npm test: pass: 35 files, 511 passed, 6 skipped",
+    "corepack pnpm test: pass: 35 files, 533 passed, 6 skipped",
+    "npm test: pass: 35 files, 533 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass: 35 files, 511 passed, 6 skipped",
+    "node scripts/write-test-summary.mjs: pass: 35 files, 533 passed, 6 skipped",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -272,9 +272,9 @@
     "verificationDelta": "Selected option adds validator tests for approval, unsafe evidence, forbidden runtime/provider/production scope, and safe defaults."
   },
   "prBodyPath": "docs/pr-db-integration-scope-gate-v116-prep.md",
-  "passed": 511,
+  "passed": 533,
   "skipped": 6,
-  "summary": "35 files, 511 passed, 6 skipped",
+  "summary": "35 files, 533 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-integration-scope-gate.json",
