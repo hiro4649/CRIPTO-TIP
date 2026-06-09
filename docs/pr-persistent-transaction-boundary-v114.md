@@ -17,25 +17,25 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: transaction draft rejects missing and unsafe fields; transaction repository commits provider job applied only after provider success and manual gate mark-used success; transaction repository marks manual gate used once; transaction repository appends provider and manual gate audit records; manual gate approval target commit and environment mismatch are rejected; provider job invalid transition is rejected; audit append failure is fail-closed; markUsed failure after provider success returns compensation_required true; rollback transaction records safe operator handoff only; provider diagnostic payload and unsafe summaries are rejected; PR #35 manual gate audit regression tests still pass; PR #38 provider job state-machine regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head.
+Done criteria: transaction draft rejects missing and unsafe fields; transaction repository commits provider job applied only after provider success and manual gate mark-used success; transaction repository marks manual gate used once; transaction repository appends provider and manual gate audit records; manual gate approval target commit and environment mismatch are rejected; provider job invalid transition is rejected; audit append failure is fail-closed; markUsed or audit append failure after provider success returns compensation_required true; rollback transaction records safe operator handoff only; provider diagnostic payload, unsafe summaries, and unsafe next actions are rejected; PR #35 manual gate audit regression tests still pass; PR #38 provider job state-machine regression tests still pass; no secret scan passes; no scraping scan passes; required checks pass on PR head.
 
 ## Evidence Integrity
 
-Head SHA: 901b87e7382cf03305a4d9956dfbb873585ecd91
+Head SHA: current_pr_head
 
-Base SHA: 901b87e7382cf03305a4d9956dfbb873585ecd91
+Base SHA: current_pr_base
 
 Product CI: local_verification_pass_before_pr
 
 Quality-gate: local_verification_pass_before_pr
 
-CI run: not_available_before_pr_creation
+CI run: 27181330789
 
-Quality-gate run: not_available_before_pr_creation
+Quality-gate run: 27181458886
 
-Quality-gate artifact: not_available_before_pr_creation
+Quality-gate artifact: 7497670438
 
-Tests: 28 test files, 298 passed, 6 skipped
+Tests: 28 test files, 308 passed, 6 skipped
 
 ## Testing and review
 
@@ -61,8 +61,8 @@ Product verification commands:
 - corepack pnpm install: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
-- corepack pnpm test: pass: 28 files, 298 passed, 6 skipped
-- npm test: pass: 28 files, 298 passed, 6 skipped
+- corepack pnpm test: pass: 28 files, 308 passed, 6 skipped
+- npm test: pass: 28 files, 308 passed, 6 skipped
 - corepack pnpm evidence:ci: pass
 - corepack pnpm quality:self-protection: pass
 - node scripts/write-test-summary.mjs: pass: summary recorded from measured test run
@@ -95,7 +95,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 28 files, 298 passed, 6 skipped.
+Current recorded test summary: 28 files, 308 passed, 6 skipped.
 
 ## Security Boundaries
 

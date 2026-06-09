@@ -4,6 +4,8 @@
 
 This is an operator handoff, not an automatic rollback.
 
+Compensation is also required when provider apply succeeded and durable state or audit append failed. In that case IRIS state may be rolled back while the provider side effect already occurred, so the operator must reconcile provider state through the approved manual-gated path.
+
 ## Operator Next Action
 
 1. Confirm the provider-side state through the approved manual-gated operations path.
@@ -21,14 +23,18 @@ The manual gate remains an approval record, not secret storage. If mark-used fai
 - `manual_gate_mark_used_succeeded: false`
 - `compensation_required: true`
 
+## Rollback Phase Mapping
+
+Rollback handoff records transaction phase `transaction_rolled_back` and audit action `provider_apply_transaction.rolled_back`. The rollback record is evidence of operator handoff only; it is not proof of provider rollback execution.
+
 ## What This PR Does Not Do
 
 - It does not execute provider rollback.
 - It does not call a real provider SDK.
 - It does not perform production deployment apply.
 - It does not operate a live YouTube account.
-- It does not store raw provider responses or secrets.
+- It does not store provider diagnostic payloads or secrets.
 
 ## Forbidden Evidence
 
-Do not store secret values, webhook URLs, provider tokens, OAuth tokens, API keys, private URLs, wallet addresses, raw user messages, raw display names, raw YouTube author IDs, raw payloads, raw provider responses, raw GitHub logs, stdout/stderr bodies, or stack traces.
+Do not store secret values, webhook URLs, provider tokens, OAuth tokens, API keys, private URLs, wallet addresses, user message bodies, display names, YouTube author IDs, provider diagnostic payloads, GitHub Actions log downloads, stdout/stderr bodies, or stack traces.

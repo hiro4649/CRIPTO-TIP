@@ -88,4 +88,44 @@ describe("provider apply transaction draft", () => {
     });
     expect(failure.safe_summary).toEqual({ kept: "safe" });
   });
+
+  it("transaction failure rejects unsafe next_operator_action private URL", () => {
+    expect(() => createProviderApplyTransactionFailure({
+      transaction_id: "provider-apply-tx-1",
+      job_id: "provider-job-1",
+      manual_gate_id: "provider_specific_deployment_apply-gate-1",
+      failed_phase: "metadata_limited_external_blocked",
+      compensation_required: false,
+      next_operator_action: "Open https://private.example.test/apply",
+      safe_summary: { phase: "metadata_limited_external_blocked" },
+      failed_at: createdAt
+    })).toThrow(/next_operator_action/);
+  });
+
+  it("transaction failure rejects unsafe next_operator_action token-like value", () => {
+    expect(() => createProviderApplyTransactionFailure({
+      transaction_id: "provider-apply-tx-1",
+      job_id: "provider-job-1",
+      manual_gate_id: "provider_specific_deployment_apply-gate-1",
+      failed_phase: "metadata_limited_external_blocked",
+      compensation_required: false,
+      next_operator_action: "Use Bearer value",
+      safe_summary: { phase: "metadata_limited_external_blocked" },
+      failed_at: createdAt
+    })).toThrow(/next_operator_action/);
+  });
+
+  it("transaction failure accepts safe operator handoff text", () => {
+    const failure = createProviderApplyTransactionFailure({
+      transaction_id: "provider-apply-tx-1",
+      job_id: "provider-job-1",
+      manual_gate_id: "provider_specific_deployment_apply-gate-1",
+      failed_phase: "metadata_limited_external_blocked",
+      compensation_required: false,
+      next_operator_action: "Follow provider apply compensation handoff and verify safe status evidence.",
+      safe_summary: { phase: "metadata_limited_external_blocked" },
+      failed_at: createdAt
+    });
+    expect(failure.next_operator_action).toMatch(/compensation handoff/);
+  });
 });

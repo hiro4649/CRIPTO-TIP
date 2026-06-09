@@ -86,7 +86,7 @@ export class InMemoryTransactionalProviderDeploymentRepository implements Transa
     const draft = this.requireTransaction(input.transactionId);
     const snapshots = this.snapshot();
     try {
-      const gate = this.requireApprovedGate(draft);
+      const gate = this.requireApprovedGate(draft, new Date(input.committedAt));
       let job = this.requireJob(draft.job_id);
       if (input.providerApplySucceeded && !input.providerApplyStarted) {
         throw new Error("provider_job_transition_invalid");
@@ -167,6 +167,20 @@ export class InMemoryTransactionalProviderDeploymentRepository implements Transa
     } catch (error) {
       this.restore(snapshots);
       if (error instanceof Error && error.message === "audit_append_failed") {
+        if (input.providerApplySucceeded) {
+          return this.failure(
+            draft,
+            "audit_append_failed",
+            true,
+            "Follow provider apply compensation handoff; provider may have applied while durable state and audit append failed.",
+            input.committedAt,
+            {
+              phase: "audit_append_failed_after_provider_success",
+              providerApplySucceeded: true,
+              durableStateRolledBack: true
+            }
+          );
+        }
         return this.failure(draft, "audit_append_failed", false, "Retry state recording after audit append storage is healthy.", input.committedAt, { phase: "audit_append_failed" });
       }
       throw error;
@@ -196,14 +210,14 @@ export class InMemoryTransactionalProviderDeploymentRepository implements Transa
     return [...this.manualGateAudits];
   }
 
-  private requireApprovedGate(draft: ProviderApplyTransactionDraft) {
+  private requireApprovedGate(draft: ProviderApplyTransactionDraft, now: Date) {
     const gate = this.requireGate(draft.manual_gate_id);
     try {
       return assertManualGateApproval(gate, {
         gateType: draft.operation,
         targetCommitSha: draft.target_commit_sha,
         targetEnvironment: draft.target_environment,
-        now: new Date(draft.created_at)
+        now
       });
     } catch (error) {
       if (error instanceof Error && /target|type/.test(error.message)) throw new Error("manual_gate_mismatch");

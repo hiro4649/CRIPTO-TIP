@@ -91,6 +91,7 @@ export function createProviderApplyTransactionDraft(draft: ProviderApplyTransact
 }
 
 export function createProviderApplyTransactionFailure(failure: ProviderApplyTransactionFailure): ProviderApplyTransactionFailure {
+  assertSafeTransactionText(failure.next_operator_action, "next_operator_action");
   return {
     transaction_id: sanitizeTransactionText(failure.transaction_id),
     job_id: sanitizeTransactionText(failure.job_id),
@@ -144,6 +145,12 @@ function assertProviderApplyTransactionDraft(draft: ProviderApplyTransactionDraf
   });
   if (unsafeTransactionPattern().test(serialized)) {
     throw new Error("provider apply transaction contains unsafe summary or target value");
+  }
+}
+
+function assertSafeTransactionText(value: string, label: string) {
+  if (unsafeTransactionPattern().test(String(value))) {
+    throw new Error(`provider apply transaction ${label} contains unsafe value`);
   }
 }
 

@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 28 files, 298 passed, 6 skipped"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 28 files, 298 passed, 6 skipped"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",

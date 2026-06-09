@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
 import { makeManualGate, targetCommitSha } from "../manual-gates.test-support.js";
 import type { ProviderApplyTransactionDraft } from "../provider-apply-transaction.js";
 import { InMemoryTransactionalProviderDeploymentRepository } from "./provider-apply-transaction-repository.js";
@@ -124,7 +125,7 @@ describe("transactional provider deployment repository", () => {
     })).toThrow(/provider_job_transition_invalid/);
   });
 
-  it("commit returns failure result if audit append fails and preserves pre-commit state", () => {
+  it("audit append failure after provider success returns compensation_required true", () => {
     const repository = repositoryWithApprovedGate({ failAuditAppend: true });
     repository.beginApplyTransaction(draft());
     const result = repository.commitApplyTransaction({
@@ -135,10 +136,48 @@ describe("transactional provider deployment repository", () => {
     });
     expect(result).toMatchObject({
       failed_phase: "audit_append_failed",
-      compensation_required: false
+      compensation_required: true,
+      safe_summary: {
+        phase: "audit_append_failed_after_provider_success",
+        providerApplySucceeded: true,
+        durableStateRolledBack: true
+      }
+    });
+    expect(JSON.stringify(result)).toContain("compensation handoff");
+  });
+
+  it("audit append failure after provider success does not mark job applied or gate used", () => {
+    const repository = repositoryWithApprovedGate({ failAuditAppend: true });
+    repository.beginApplyTransaction(draft());
+    const result = repository.commitApplyTransaction({
+      transactionId: "provider-apply-tx-1",
+      providerApplyStarted: true,
+      providerApplySucceeded: true,
+      committedAt
+    });
+    expect(result).toMatchObject({
+      failed_phase: "audit_append_failed",
+      compensation_required: true
     });
     expect(repository.getJob("provider-job-1")?.status).toBe("planned");
     expect(repository.getManualGate("provider_specific_deployment_apply-gate-1")?.status).toBe("approved");
+    expect(JSON.stringify(result)).not.toContain("transaction_committed");
+  });
+
+  it("audit append failure before provider success returns compensation_required false", () => {
+    const repository = repositoryWithApprovedGate({ failAuditAppend: true });
+    repository.beginApplyTransaction(draft());
+    const result = repository.commitApplyTransaction({
+      transactionId: "provider-apply-tx-1",
+      providerApplyStarted: true,
+      providerApplySucceeded: false,
+      committedAt
+    });
+    expect(result).toMatchObject({
+      failed_phase: "audit_append_failed",
+      compensation_required: false,
+      safe_summary: { phase: "audit_append_failed" }
+    });
   });
 
   it("markUsed failure after provider success produces compensation_required true", () => {
@@ -192,6 +231,35 @@ describe("transactional provider deployment repository", () => {
     expect(repository.listProviderAudits().map((audit) => audit.action)).toContain("provider_apply_transaction.rolled_back");
   });
 
+  it("rollback transaction audit action is provider_apply_transaction.rolled_back", () => {
+    const repository = repositoryWithApprovedGate();
+    repository.beginApplyTransaction(draft());
+    repository.rollbackApplyTransaction("provider-apply-tx-1", committedAt, {
+      phase: "transaction_rolled_back"
+    });
+    const rollbackAudit = repository.listProviderAudits().find((audit) => audit.action === "provider_apply_transaction.rolled_back");
+    expect(rollbackAudit).toMatchObject({
+      action: "provider_apply_transaction.rolled_back",
+      safe_summary: { phase: "transaction_rolled_back" }
+    });
+  });
+
+  it("rollback transaction failure phase remains metadata_limited_external_blocked", () => {
+    const repository = repositoryWithApprovedGate();
+    repository.beginApplyTransaction(draft());
+    const result = repository.rollbackApplyTransaction("provider-apply-tx-1", committedAt, {
+      phase: "transaction_rolled_back"
+    });
+    expect(result.failed_phase).toBe("metadata_limited_external_blocked");
+  });
+
+  it("rollback docs mention phase/action mapping", () => {
+    const boundaryDoc = fs.readFileSync(new URL("../../../../docs/PROVIDER_APPLY_TRANSACTION_BOUNDARY.md", import.meta.url), "utf8");
+    const handoffDoc = fs.readFileSync(new URL("../../../../docs/PROVIDER_APPLY_COMPENSATION_HANDOFF.md", import.meta.url), "utf8");
+    expect(`${boundaryDoc}\n${handoffDoc}`).toContain("transaction phase: `transaction_rolled_back`");
+    expect(`${boundaryDoc}\n${handoffDoc}`).toContain("audit action: `provider_apply_transaction.rolled_back`");
+  });
+
   it("transaction rollback rejects unsafe summary", () => {
     const repository = repositoryWithApprovedGate();
     repository.beginApplyTransaction(draft());
@@ -219,5 +287,37 @@ describe("transactional provider deployment repository", () => {
         raw_provider_response: "remove"
       }
     }))).toThrow(/unsafe/);
+  });
+
+  it("commit rejects manual gate expired at committedAt even if valid at draft createdAt", () => {
+    const repository = new InMemoryTransactionalProviderDeploymentRepository();
+    repository.createManualGate(makeManualGate("provider_specific_deployment_apply", {
+      expires_at: "2026-06-09T02:20:30.000Z"
+    }));
+    repository.beginApplyTransaction(draft());
+    expect(() => repository.commitApplyTransaction({
+      transactionId: "provider-apply-tx-1",
+      providerApplyStarted: true,
+      providerApplySucceeded: true,
+      committedAt
+    })).toThrow(/manual_gate_not_approved/);
+  });
+
+  it("commit accepts manual gate valid at committedAt", () => {
+    const repository = new InMemoryTransactionalProviderDeploymentRepository();
+    repository.createManualGate(makeManualGate("provider_specific_deployment_apply", {
+      expires_at: "2026-06-09T02:22:00.000Z"
+    }));
+    repository.beginApplyTransaction(draft());
+    const result = repository.commitApplyTransaction({
+      transactionId: "provider-apply-tx-1",
+      providerApplyStarted: true,
+      providerApplySucceeded: true,
+      committedAt
+    });
+    expect(result).toMatchObject({
+      job_status: "applied",
+      manual_gate_status: "used"
+    });
   });
 });

@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add provider apply transaction boundary",
   "goal": "Prepare persistent transaction boundary for provider apply, manual gate used state, provider job state, and audit logs under harness v1.1.4 without real provider SDK apply or production deployment.",
-  "ciRunId": "not_available_before_pr_creation",
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation",
+  "ciRunId": "27181330789",
+  "qualityGateRunId": "27181458886",
+  "qualityGateArtifactId": "7497670438",
   "productCiStatus": "local_verification_pass_before_pr",
   "qualityGateStatus": "local_verification_pass_before_pr",
   "runtimeReadinessClaim": "no",
@@ -92,11 +92,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 28 files, 298 passed, 6 skipped"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 28 files, 298 passed, 6 skipped"
+      "result": "pass: 28 files, 308 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -181,9 +181,9 @@
     "manual gate approval target commit and environment mismatch are rejected",
     "provider job invalid transition is rejected",
     "audit append failure is fail-closed",
-    "markUsed failure after provider success returns compensation_required true",
+    "markUsed or audit append failure after provider success returns compensation_required true",
     "rollback transaction records safe operator handoff only",
-    "provider diagnostic payload and unsafe summaries are rejected",
+    "provider diagnostic payload, unsafe summaries, and unsafe next actions are rejected",
     "PR #35 manual gate audit regression tests still pass",
     "PR #38 provider job state-machine regression tests still pass",
     "no secret scan passes",
@@ -194,7 +194,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 28,
-    "passed": 298,
+    "passed": 308,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -218,15 +218,15 @@
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 298,
+  "testsPassed": 308,
   "testsSkipped": 6,
   "testFiles": 28,
   "productVerificationCommands": [
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 28 files, 298 passed, 6 skipped",
-    "npm test: pass: 28 files, 298 passed, 6 skipped",
+    "corepack pnpm test: pass: 28 files, 308 passed, 6 skipped",
+    "npm test: pass: 28 files, 308 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass: summary recorded from measured test run",

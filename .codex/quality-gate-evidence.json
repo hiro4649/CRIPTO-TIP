@@ -7,8 +7,8 @@
   "baseSha": "901b87e7382cf03305a4d9956dfbb873585ecd91",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "local_verification_pass_before_pr",
-  "latestAnalyzedRunId": "not_available_before_pr_creation",
-  "latestAnalyzedArtifactId": "not_available_before_pr_creation",
+  "latestAnalyzedRunId": "27181458886",
+  "latestAnalyzedArtifactId": "7497670438",
   "reasonCodeMappings": {
     "providerApplyTransactionBoundaryStatus": "pass",
     "providerApplyCompensationHandoffStatus": "pass",
