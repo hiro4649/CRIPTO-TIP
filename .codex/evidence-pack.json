@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 42,
+  "headSha": "71544eb9c4d00c343828252bc3c909e3e22cf31d",
+  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add postgres transaction adapter skeleton",
   "goal": "Add Postgres transaction adapter skeleton and mock-client tests for provider apply/manual gate/audit consistency under harness v1.1.5 and v1.1.6 readiness, without real DB connection, DB driver, real provider SDK apply, or production deployment.",
-  "ciRunId": "local_verification_before_pr",
-  "qualityGateRunId": "local_verification_before_pr",
-  "qualityGateArtifactId": "local_verification_before_pr",
-  "productCiStatus": "local_verification_pass_before_pr",
-  "qualityGateStatus": "local_verification_pass_before_pr",
+  "ciRunId": "27207843214",
+  "qualityGateRunId": "27208627782",
+  "qualityGateArtifactId": "7508707370",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -75,11 +75,11 @@
   "commands": [
     {
       "name": "corepack pnpm install",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm lint",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
@@ -87,42 +87,54 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: parser reported 31 files, 404 passed, 6 skipped; Vitest source of truth reported 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pending_local_verification"
+      "result": "pass"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pending_local_verification"
+      "result": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27207843214",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27208627782",
+      "result": "success",
+      "artifactId": "7508707370"
+    }
+  ],
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -202,7 +214,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 31,
-    "passed": 404,
+    "passed": 422,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -230,22 +242,22 @@
     "AI review recommendations are not recorded as human approval.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testsPassed": 404,
+  "testsPassed": 422,
   "testsSkipped": 6,
   "testFiles": 31,
   "productVerificationCommands": [
-    "corepack pnpm install: pending_local_verification",
-    "corepack pnpm lint: pending_local_verification",
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass: 31 files, 404 passed, 6 skipped",
-    "npm test: pass: 31 files, 404 passed, 6 skipped",
-    "corepack pnpm evidence:ci: pending_local_verification",
-    "corepack pnpm quality:self-protection: pending_local_verification",
-    "node scripts/write-test-summary.mjs: pass: 31 files, 404 passed, 6 skipped",
-    "node scripts/check-evidence-placeholders.mjs: pending_local_verification",
-    "node scripts/validate-evidence-freshness.mjs: pending_local_verification",
-    "node scripts/check-quality-gate-self-protection.mjs: pending_local_verification",
-    "node scripts/codex-secret-safety-scan.mjs: pending_local_verification"
+    "corepack pnpm test: pass: 31 files, 422 passed, 6 skipped",
+    "npm test: pass: 31 files, 422 passed, 6 skipped",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass: 31 files, 422 passed, 6 skipped",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -273,7 +285,7 @@
     "summary": "Candidate B implements an adapter skeleton with mock transaction client, query order checks, rowCount fail-closed tests, retry classification, and no real DB connection."
   },
   "prBodyPath": "docs/pr-postgres-transaction-adapter-skeleton-v115-prep.md",
-  "passed": 404,
+  "passed": 422,
   "skipped": 6,
-  "summary": "31 files, 404 passed, 6 skipped"
+  "summary": "31 files, 422 passed, 6 skipped"
 }

@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 42,
+  "headSha": "71544eb9c4d00c343828252bc3c909e3e22cf31d",
+  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "local_verification_pass_before_pr",
   "latestAnalyzedRunId": "local_verification_before_pr",
@@ -52,7 +52,7 @@
     "no_scraping_scan"
   ],
   "status": "local_verification_pass_before_pr",
-  "qualityGateStatus": "local_verification_pass_before_pr",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "Quality-gate must pass on the pushed PR head.",
     "Evidence refresh will inject current head, CI run, quality-gate run, and artifact after PR creation.",

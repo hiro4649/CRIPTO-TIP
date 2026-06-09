@@ -5,7 +5,8 @@ import {
   classifyPostgresProviderApplyTransactionError,
   postgresProviderApplyTransactionSql,
   type PostgresProviderApplyTransactionIdempotency,
-  type PostgresTransactionRetryClassification
+  type PostgresTransactionRetryClassification,
+  unsafePostgresTransactionPattern
 } from "../provider-apply-postgres-transaction.js";
 import type {
   ProviderApplyTransactionFailure,
@@ -62,18 +63,36 @@ export class PostgresProviderApplyTransactionAdapter {
       const job = await this.lockProviderJob(input);
       this.validateProviderJob(job, input);
 
-      phase = "update_provider_job";
-      await this.expectWrite("provider_job_transition_invalid", postgresProviderApplyTransactionSql.updateProviderJob, this.params(input, {
-        status: input.providerApplySucceeded ? "applied" : "failed",
-        externalProviderApplyStarted: input.providerApplySucceeded,
-        manualGateMarkUsedAttempted: input.providerApplySucceeded,
-        manualGateMarkUsedSucceeded: false,
-        compensationRequired: false
-      }), input.providerApplySucceeded);
-
       if (input.providerApplySucceeded) {
+        phase = "update_provider_job_after_provider_success_before_gate_used";
+        await this.expectWrite("provider_job_transition_invalid", postgresProviderApplyTransactionSql.updateProviderJob, this.params(input, {
+          status: "running",
+          externalProviderApplyStarted: true,
+          manualGateMarkUsedAttempted: true,
+          manualGateMarkUsedSucceeded: false,
+          compensationRequired: false
+        }), true);
+
         phase = "mark_used_failed_after_provider_apply";
         await this.expectWrite("mark_used_failed_after_provider_apply", postgresProviderApplyTransactionSql.markManualGateUsed, this.params(input), true);
+
+        phase = "update_provider_job_applied_after_gate_used";
+        await this.expectWrite("provider_job_transition_invalid", postgresProviderApplyTransactionSql.updateProviderJob, this.params(input, {
+          status: "applied",
+          externalProviderApplyStarted: true,
+          manualGateMarkUsedAttempted: true,
+          manualGateMarkUsedSucceeded: true,
+          compensationRequired: false
+        }), true);
+      } else {
+        phase = "update_provider_job";
+        await this.expectWrite("provider_job_transition_invalid", postgresProviderApplyTransactionSql.updateProviderJob, this.params(input, {
+          status: "failed",
+          externalProviderApplyStarted: false,
+          manualGateMarkUsedAttempted: false,
+          manualGateMarkUsedSucceeded: false,
+          compensationRequired: false
+        }), false);
       }
 
       phase = "audit_append_failed";
@@ -98,7 +117,9 @@ export class PostgresProviderApplyTransactionAdapter {
         manual_gate_id: input.idempotency.manual_gate_id,
         job_status: input.providerApplySucceeded ? "applied" : "failed",
         manual_gate_status: input.providerApplySucceeded ? "used" : "approved",
-        audit_record_ids: [`${input.transactionId}-provider-audit`, `${input.transactionId}-manual-gate-audit`],
+        audit_record_ids: input.providerApplySucceeded
+          ? [`${input.transactionId}-provider-audit`, `${input.transactionId}-manual-gate-audit`]
+          : [`${input.transactionId}-provider-audit`],
         compensation_required: false,
         safe_summary: input.safeSummary,
         committed_at: input.committedAt
@@ -120,10 +141,10 @@ export class PostgresProviderApplyTransactionAdapter {
 
   async appendSafeAudit(input: Omit<PostgresAdapterInput, "providerApplySucceeded">) {
     this.assertInput(input.idempotency, input.safeSummary);
-    await this.client.query(postgresProviderApplyTransactionSql.insertProviderAudit, this.params({
+    await this.expectWrite("audit_append_failed", postgresProviderApplyTransactionSql.insertProviderAudit, this.params({
       ...input,
       providerApplySucceeded: false
-    }));
+    }), false);
   }
 
   classifyRetry(error: unknown, context: { providerApplySucceeded?: boolean | undefined; phase?: string | undefined } = {}): PostgresTransactionRetryClassification {
@@ -149,7 +170,7 @@ export class PostgresProviderApplyTransactionAdapter {
   private async expectWrite(phase: ProviderApplyTransactionFailure["failed_phase"], sql: string, params: readonly unknown[], providerApplySucceeded: boolean) {
     const result = await this.client.query(sql, params);
     if (result.rowCount === 0) {
-      throw new Error(providerApplySucceeded ? phase : "provider_job_transition_invalid");
+      throw new Error(phase);
     }
   }
 
@@ -164,9 +185,12 @@ export class PostgresProviderApplyTransactionAdapter {
 
   private validateProviderJob(job: ProviderJobRow, input: PostgresAdapterInput) {
     if (!["planned", "running"].includes(job.status)) throw new Error("provider_job_transition_invalid");
+    if (job.operation !== input.idempotency.operation) throw new Error("provider_job_transition_invalid");
     if (job.manual_gate_id !== input.idempotency.manual_gate_id) throw new Error("provider_job_transition_invalid");
     if (job.target_commit_sha !== input.idempotency.target_commit_sha) throw new Error("provider_job_transition_invalid");
     if (job.target_environment !== input.idempotency.target_environment) throw new Error("provider_job_transition_invalid");
+    this.assertSafeRequiredRef(job.rollback_plan_ref, "rollback_plan_ref");
+    this.assertSafeRequiredRef(job.operator_runbook_ref, "operator_runbook_ref");
   }
 
   private params(input: PostgresAdapterInput, options: {
@@ -218,7 +242,9 @@ export class PostgresProviderApplyTransactionAdapter {
       manual_gate_id: input.idempotency.manual_gate_id,
       failed_phase: failurePhase(phase),
       compensation_required: compensationRequired || classified.compensationRequired,
-      next_operator_action: compensationRequired
+      next_operator_action: phase === "commit" && input.providerApplySucceeded
+        ? "Inspect durable safe evidence before retrying; COMMIT outcome is metadata-limited and provider apply must not be re-executed."
+        : compensationRequired
         ? "Follow provider apply compensation handoff; do not re-execute provider apply."
         : classified.nextOperatorAction,
       safe_summary: input.safeSummary,
@@ -228,6 +254,7 @@ export class PostgresProviderApplyTransactionAdapter {
 
   private shouldCompensate(providerApplySucceeded: boolean, phase: string) {
     return providerApplySucceeded && [
+      "update_provider_job_applied_after_gate_used",
       "mark_used_failed_after_provider_apply",
       "audit_append_failed",
       "commit"
@@ -237,6 +264,11 @@ export class PostgresProviderApplyTransactionAdapter {
   private assertInput(idempotency: PostgresProviderApplyTransactionIdempotency, safeSummary: SafeAuditSummary) {
     assertSafePostgresProviderApplyIdempotency(idempotency);
     assertSafePostgresProviderApplySummary(safeSummary);
+  }
+
+  private assertSafeRequiredRef(value: string | undefined, field: "rollback_plan_ref" | "operator_runbook_ref") {
+    if (!value) throw new Error("provider_job_transition_invalid");
+    if (unsafePostgresTransactionPattern().test(value)) throw new Error("provider_job_transition_invalid");
   }
 }
 
@@ -252,7 +284,9 @@ function sqlStateFromError(error: unknown) {
 
 function phaseForClassifier(phase: string) {
   if (phase === "mark_used_failed_after_provider_apply") return "audit_append_failed";
+  if (phase === "update_provider_job_applied_after_gate_used") return "job_transition_invalid";
   if (phase === "update_provider_job") return "job_transition_invalid";
+  if (phase === "update_provider_job_after_provider_success_before_gate_used") return "job_transition_invalid";
   return phase;
 }
 

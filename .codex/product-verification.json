@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 42,
+  "headSha": "71544eb9c4d00c343828252bc3c909e3e22cf31d",
+  "baseSha": "507855ae652061c728ba23bf2282fb0fbdf85ce1",
   "productVerificationStatus": "pass",
   "commands": [
     {
@@ -21,11 +21,11 @@
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "npm test",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -37,7 +37,7 @@
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass: 31 files, 404 passed, 6 skipped"
+      "result": "pass: parser reported 31 files, 404 passed, 6 skipped; Vitest source of truth reported 31 files, 422 passed, 6 skipped"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
@@ -45,7 +45,7 @@
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pass: local pre-PR evidence validation"
+      "result": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
@@ -66,9 +66,9 @@
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "status": "pass",
-  "testFiles": 30,
-  "passed": 361,
+  "testFiles": 31,
+  "passed": 422,
   "skipped": 6,
-  "testsPassed": 361,
+  "testsPassed": 422,
   "testsSkipped": 6
 }

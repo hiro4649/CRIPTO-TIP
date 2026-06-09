@@ -58,9 +58,17 @@ attempts are terminal.
 
 If `COMMIT` fails after provider success, the adapter returns
 `compensation_required` and instructs the operator not to re-execute provider
-apply. If `COMMIT` fails before provider success, no compensation is required.
-Rollback failure is metadata-limited; raw DB logs, stdout, stderr, and stack
-traces remain forbidden.
+apply. This outcome is metadata-limited because the durable transaction result
+can be unknown at the boundary; the adapter must not claim rollback completed
+after a failed `COMMIT`. Operators must inspect durable safe evidence before
+retrying. If `COMMIT` fails before provider success, no compensation is
+required. Rollback failure is metadata-limited; expanded command diagnostics
+remain forbidden.
+
+Audit append row-count failures classify as `audit_append_failed`. Before
+provider success they do not require compensation. After provider success they
+require compensation handoff and must not be mislabeled as a provider job
+transition error.
 
 ## Safe Artifact Expectations
 
