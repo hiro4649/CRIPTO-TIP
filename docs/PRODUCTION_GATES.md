@@ -134,3 +134,14 @@ pinning, lockfile, package diff, and secret manager reviews are required.
 Package, lockfile, real DB, live DB, migration, provider SDK, production apply,
 runtime readiness, and production readiness flags must remain false until a
 separate owner-approved PR authorizes them.
+
+## DB Driver Approval Dry-Run v1.1.6 Prep
+
+DB driver approval dry-run is a pre-approval validation gate. It can prove that
+a future evidence bundle is complete, but current committed evidence remains
+`not_ready` and cannot authorize driver selection, package changes, lockfile
+changes, real DB connections, migration execution, provider SDK apply, or
+production deployment.
+
+The dry-run does not claim runtime readiness, production readiness, legal
+compliance, or YouTube policy compliance.

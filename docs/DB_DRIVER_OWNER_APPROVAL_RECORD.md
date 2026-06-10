@@ -88,3 +88,10 @@ migration execution, provider SDK apply, or production deployment work.
 The preflight record must keep `driver_choice_status: not_selected` until a
 project-owner-approved approval record explicitly authorizes driver selection
 for the target commit. AI review recommendations are not owner approval.
+
+## Approval Dry-Run Connection
+
+The approval dry-run validator may use a fake approved record in test-only
+fixtures to prove future validation behavior. That fixture is not committed
+owner approval and cannot authorize current DB driver selection or dependency
+introduction.
