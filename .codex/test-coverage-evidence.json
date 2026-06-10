@@ -7,8 +7,8 @@
   "baseSha": "f3e10067ec542592de2c6acf8694042e638feba2",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
-    "testFiles": 38,
-    "passed": 747,
+    "testFiles": 39,
+    "passed": 759,
     "skipped": 6
   },
   "coverage": [
@@ -20,17 +20,17 @@
     "Unsafe evidence and approval/selection/readiness/compliance wording rejection covered."
   ],
   "status": "pass",
-  "testFiles": 38,
-  "passed": 747,
+  "testFiles": 39,
+  "passed": 759,
   "skipped": 6,
-  "summary": "38 files, 747 passed, 6 skipped",
+  "summary": "39 files, 759 passed, 6 skipped",
   "coverageNotes": [
     "DB driver owner approval record default not_approved state covered.",
     "Target commit, branch, PR, base commit, expiry, fingerprint, and replay protection covered.",
     "Owner role and AI/bot actor rejection covered.",
     "Unsafe evidence rejection and forbidden capability denial covered."
   ],
-  "testsPassed": 747,
+  "testsPassed": 759,
   "testsSkipped": 6,
   "title": "feat: add db driver approval dry run",
   "goal": "Prepare DB driver approval dry-run validation for v1.1.6 using safe test-only fixtures and machine-readable not_ready evidence, without selecting a DB driver, adding DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
@@ -111,3 +111,4 @@
   "qualityGateRunId": "27247923448",
   "qualityGateArtifactId": "7524755603"
 }
+

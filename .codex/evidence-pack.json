@@ -244,8 +244,8 @@
     "no DB driver dependency, package, lockfile, migration, real DB connection, provider SDK apply, or production deployment is introduced"
   ],
   "testSummary": {
-    "testFiles": 38,
-    "passed": 747,
+    "testFiles": 39,
+    "passed": 759,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -271,9 +271,9 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 747,
+  "testsPassed": 759,
   "testsSkipped": 6,
-  "testFiles": 38,
+  "testFiles": 39,
   "productVerificationCommands": [
     {
       "command": "corepack pnpm install",
@@ -368,9 +368,9 @@
     "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
   "prBodyPath": "docs/pr-db-driver-preflight-policy-v116-prep.md",
-  "passed": 747,
+  "passed": 759,
   "skipped": 6,
-  "summary": "38 files, 747 passed, 6 skipped",
+  "summary": "39 files, 759 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-preflight-policy.json",
@@ -409,8 +409,8 @@
     "Unsafe evidence rejection covered."
   ],
   "testing": {
-    "testFiles": 38,
-    "passed": 747,
+    "testFiles": 39,
+    "passed": 759,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",
@@ -428,3 +428,4 @@
     ]
   }
 }
+

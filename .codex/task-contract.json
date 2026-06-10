@@ -102,8 +102,9 @@
   "qualityGateRunId": "27247923448",
   "qualityGateArtifactId": "7524755603",
   "testSummary": {
-    "testFiles": 38,
-    "passed": 747,
+    "testFiles": 39,
+    "passed": 759,
     "skipped": 6
   }
 }
+

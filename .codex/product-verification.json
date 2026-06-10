@@ -84,10 +84,10 @@
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "status": "pass",
-  "testFiles": 38,
-  "passed": 747,
+  "testFiles": 39,
+  "passed": 759,
   "skipped": 6,
-  "testsPassed": 747,
+  "testsPassed": 759,
   "testsSkipped": 6,
   "productVerificationCommands": [
     {
@@ -679,7 +679,7 @@
   "ciRunId": "27247785490",
   "title": "feat: add db driver approval dry run",
   "goal": "Prepare DB driver approval dry-run validation for v1.1.6 using safe test-only fixtures and machine-readable not_ready evidence, without selecting a DB driver, adding DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "summary": "38 files, 747 passed, 6 skipped",
+  "summary": "39 files, 759 passed, 6 skipped",
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -761,8 +761,9 @@
   "qualityGateRunId": "27247923448",
   "qualityGateArtifactId": "7524755603",
   "testSummary": {
-    "testFiles": 38,
-    "passed": 747,
+    "testFiles": 39,
+    "passed": 759,
     "skipped": 6
   }
 }
+
