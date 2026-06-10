@@ -39,21 +39,21 @@ review evidence remains blocking; forbidden scope evidence fails closed.
 
 ## Evidence Integrity
 
-Head SHA: f8b52aa81360cda462e8926a76730db8c0ce20b2
+Head SHA: 05784ac8c9bd46717b022404f7f172078c970893
 
 Base SHA: f8b52aa81360cda462e8926a76730db8c0ce20b2
 
-Product CI: local verification before PR creation
+Product CI: success
 
-Quality-gate: local verification before PR creation
+Quality-gate: success
 
-CI run: local verification before PR creation
+CI run: 27257955767
 
-Quality-gate run: local verification before PR creation
+Quality-gate run: 27258264650
 
-Quality-gate artifact: local verification before PR creation
+Quality-gate artifact: 7528356152
 
-Tests: 39 test files, 759 passed, 6 skipped
+Tests: 39 test files, 784 passed, 6 skipped
 
 ## Testing and review
 
@@ -67,7 +67,7 @@ Tests: 39 test files, 759 passed, 6 skipped
 - `node scripts/check-evidence-placeholders.mjs`
 - `node scripts/check-quality-gate-self-protection.mjs`
 
-Product verification: local lint, typecheck, test, npm test, evidence CI, and quality self-protection passed before PR creation.
+Product verification: local lint, typecheck, test, npm test, evidence CI, quality self-protection, and secret safety scan passed for this PR head.
 
 Package verification: no package scripts changed, no runtime dependencies added,
 no DB driver dependency added, no `package.json` change, and no
@@ -84,7 +84,7 @@ readiness reporting, docs, evidence, and tests only.
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 39 files, 759 passed, 6 skipped.
+Current recorded test summary: 39 files, 784 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-readiness-report.ts`,
 `apps/api/src/db-driver-readiness-report.test.ts`, DB driver readiness docs, and
@@ -97,7 +97,15 @@ Test command: `corepack pnpm vitest run apps/api/src/db-driver-readiness-report.
 What the test covers: committed not_ready report, selected driver rejection,
 owner approval blocker, dry-run blocker, missing review blockers, forbidden
 package/lockfile/real DB/migration/provider SDK/production/readiness evidence,
-context binding, and unsafe evidence rejection.
+legal/YouTube policy claim evidence, context binding, machine-readable PR/head
+evidence freshness, recursive unsafe key/value scanning, and unsafe evidence
+rejection.
+
+Edge cases: stale PR number, stale head equal to base, selected driver,
+approved owner status, passing dry-run status, empty blockers, selected
+preflight policy, legal compliance claim, YouTube policy compliance claim,
+unsafe nested keys, unsafe token-like values, private URLs, wallet-shaped
+values, and owner/preflight context mismatches are covered.
 
 ## Review Independence
 

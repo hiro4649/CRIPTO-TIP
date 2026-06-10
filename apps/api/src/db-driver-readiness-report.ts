@@ -22,6 +22,8 @@ export const dbDriverReadinessBlockers = [
   "provider_sdk_apply_forbidden",
   "production_deployment_forbidden",
   "readiness_claim_forbidden",
+  "legal_compliance_claim_forbidden",
+  "youtube_policy_compliance_claim_forbidden",
   "selected_driver_forbidden_in_committed_report"
 ] as const;
 
@@ -95,8 +97,8 @@ export function buildDbDriverReadinessReport(
     blockers: blockerList,
     forbidden_scope_status: blockerList.some(isForbiddenScopeBlocker) ? "fail" : "pass",
     safe_summary: blockerList.length === 0
-      ? "DB driver readiness report is ready; this state is not expected for the committed v1.1.6 preparation evidence."
-      : "DB driver readiness report is not ready. No driver is selected, owner approval is not approved, and required reviews remain incomplete.",
+      ? "DB driver readiness report is ready only for a future owner-approved driver dependency PR with complete package, lockfile, license, supply-chain, advisory, version, and secret-boundary evidence."
+      : "DB driver readiness report is not ready. No driver dependency is authorized, no driver is selected, owner approval is not approved, and required reviews remain incomplete.",
     created_at: context.createdAt
   };
 }
@@ -106,6 +108,7 @@ export function validateCommittedDbDriverReadinessReport(report: DbDriverReadine
   if (report.readiness_status !== "not_ready") failures.push("readiness_status_not_not_ready");
   if (report.selected_driver !== null) failures.push("selected_driver_present");
   if (report.owner_approval_status !== "not_approved") failures.push("owner_approval_not_not_approved");
+  if (report.approval_dry_run_status === "pass") failures.push("approval_dry_run_status_pass");
   for (const required of [
     "owner_approval_not_approved",
     "driver_not_selected",
@@ -152,6 +155,8 @@ function addForbiddenScopeBlockers(input: DbDriverReadinessReportInput, blockers
   ) {
     blockers.add("readiness_claim_forbidden");
   }
+  if (dryRun.legal_compliance_claim_detected || preflight.legal_compliance_claim_allowed) blockers.add("legal_compliance_claim_forbidden");
+  if (dryRun.youtube_policy_compliance_claim_detected || preflight.youtube_policy_compliance_claim_allowed) blockers.add("youtube_policy_compliance_claim_forbidden");
 }
 
 function assertContextBinding(input: DbDriverReadinessReportInput, context: DbDriverReadinessReportContext) {
@@ -172,13 +177,33 @@ function isForbiddenScopeBlocker(blocker: DbDriverReadinessBlocker) {
     "provider_sdk_apply_forbidden",
     "production_deployment_forbidden",
     "readiness_claim_forbidden",
+    "legal_compliance_claim_forbidden",
+    "youtube_policy_compliance_claim_forbidden",
     "selected_driver_forbidden_in_committed_report"
   ].includes(blocker);
 }
 
-function assertNoUnsafeReadinessReport(value: unknown) {
-  const text = JSON.stringify(value);
-  if (/Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|password|clientSecret|apiKey|refreshToken|accessToken|secretValue|connectionString|databaseUrl|postgresUrl|PRIVATE KEY|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|raw[_ -]?provider/i.test(text)) {
-    throw new Error("DB driver readiness report contains unsafe evidence");
+function assertNoUnsafeReadinessReport(value: unknown, path: string[] = []) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => assertNoUnsafeReadinessReport(entry, path.concat(String(index))));
+    return;
   }
+  if (value && typeof value === "object") {
+    for (const [key, nested] of Object.entries(value)) {
+      if (unsafeEvidenceKeyPattern().test(key)) throw new Error(`DB driver readiness report contains unsafe key: ${path.concat(key).join(".")}`);
+      assertNoUnsafeReadinessReport(nested, path.concat(key));
+    }
+    return;
+  }
+  if (typeof value === "string" && unsafeEvidenceValuePattern().test(value)) {
+    throw new Error(`DB driver readiness report contains unsafe evidence: ${path.join(".") || "value"}`);
+  }
+}
+
+function unsafeEvidenceKeyPattern() {
+  return /^(password|dbPassword|clientSecret|client_secret|apiKey|api_key|api-key|refreshToken|refresh_token|accessToken|access_token|secretValue|secret_value|connectionString|connection_string|databaseUrl|database_url|postgresUrl|postgres_url|rawProviderResponse|githubRawLogs)$/i;
+}
+
+function unsafeEvidenceValuePattern() {
+  return /Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|password|dbPassword|clientSecret|client_secret|client_secret=|apiKey|api_key|api-key|refreshToken|refresh_token|accessToken|access_token|secretValue|secret_value|connectionString|connection_string|databaseUrl|database_url|postgresUrl|postgres_url|PRIVATE KEY|BEGIN PRIVATE KEY|password=|token=|secret=|oauth|private|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|raw[_ -]?provider[_ -]?response/i;
 }

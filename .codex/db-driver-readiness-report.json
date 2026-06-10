@@ -2,8 +2,8 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 48,
-  "headSha": "f8b52aa81360cda462e8926a76730db8c0ce20b2",
+  "prNumber": 49,
+  "headSha": "05784ac8c9bd46717b022404f7f172078c970893",
   "baseSha": "f8b52aa81360cda462e8926a76730db8c0ce20b2",
   "readinessStatus": "not_ready",
   "selectedDriver": null,
@@ -23,5 +23,5 @@
     "secret_boundary_review_missing"
   ],
   "forbiddenScopeStatus": "pass",
-  "safeSummary": "DB driver readiness report is not ready. No driver is selected, owner approval is not approved, and required reviews remain incomplete."
+  "safeSummary": "DB driver readiness report is not ready. No driver dependency is authorized, no driver is selected, owner approval is not approved, and required reviews remain incomplete."
 }
