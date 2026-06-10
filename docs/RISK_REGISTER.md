@@ -201,3 +201,12 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Secret manager setup remains future work. | Security owner | DB secret manager setup PR | Approval evidence stores references and safe summaries only, not secret values or connection strings. |
 | Medium | Migration execution remains future work. | Backend owner | Migration apply PR | Migration apply requires explicit allowed scope and remains out of this PR. |
 | Medium | Provider SDK apply and production deployment remain out of scope. | Operations owner | Separate manual-gated provider/deployment PR | The validator rejects provider SDK apply and actual production deployment flags. |
+
+## DB Driver Preflight Policy v1.1.6 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Driver choice could be treated as approved before owner review. | Storage owner | Owner-approved DB driver selection PR | Preflight evidence records `driverChoiceStatus: not_selected` and rejects selected drivers without approved owner approval status. |
+| Medium | Package or lockfile changes could be bundled with policy work. | Storage owner | Future dependency PR | Package and lockfile flags remain false and package files are not changed in this PR. |
+| Medium | License, supply-chain, advisory, version, lockfile, or package diff review could be skipped later. | Storage owner | Future dependency PR | Preflight validator requires each review gate before driver introduction. |
+| Medium | Production readiness could be inferred from policy docs. | Backend owner | Future runtime PR | Docs state this is policy-only and no runtime or production readiness is claimed. |

@@ -77,3 +77,14 @@ invalidates the fingerprint.
 A future DB driver PR must carry a fresh project-owner approval record for the
 target commit, branch, PR, and scope. Any code change that changes the target
 commit requires regenerated approval evidence before real DB scope can proceed.
+
+## Preflight Policy Connection
+
+The DB driver preflight policy is the next gate after this owner approval record
+boundary. A future DB driver dependency PR must satisfy the preflight record
+before any package, lockfile, real DB connection, live DB integration test,
+migration execution, provider SDK apply, or production deployment work.
+
+The preflight record must keep `driver_choice_status: not_selected` until a
+project-owner-approved approval record explicitly authorizes driver selection
+for the target commit. AI review recommendations are not owner approval.

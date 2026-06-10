@@ -762,6 +762,114 @@
       "surface": "evidence",
       "risk": "R2",
       "owner": "backend"
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-preflight-policy.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver preflight policy validator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-preflight-policy.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver preflight policy tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_PREFLIGHT_POLICY.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver preflight policy documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_EVALUATION.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate evaluation documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_LICENSE_REVIEW.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver license review documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SUPPLY_CHAIN_REVIEW.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver supply-chain review documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_VERSION_PINNING_POLICY.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver version pinning policy documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_LOCKFILE_REVIEW_POLICY.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver lockfile review policy documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_PACKAGE_DIFF_REVIEW.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver package diff review documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SECURITY_ADVISORY_MONITORING.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver security advisory monitoring documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-preflight-policy-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver preflight policy."
+    },
+    {
+      "pathPattern": ".codex/db-driver-preflight-policy.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver preflight policy evidence."
     }
   ],
   "safeSummaryOnly": true

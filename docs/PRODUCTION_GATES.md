@@ -123,3 +123,14 @@ failures must remain covered before owner-approved live DB integration begins.
 ## DB Integration Scope Gate v1.1.6 Prep
 
 Owner approval evidence is required before any real DB driver or package change. DB driver dependency, pnpm-lock change, real DB connection, live DB integration test execution, migration apply, provider SDK apply, and production deployment are blocked by default. Runtime, production, legal, and YouTube policy readiness claims remain forbidden until separately approved and evidenced.
+
+## DB Driver Preflight Gate v1.1.6 Prep
+
+Before any DB driver dependency is introduced, a preflight policy record must
+prove that the driver choice remains `not_selected`, candidate packages are only
+reviewed as candidates, and license, supply-chain, security advisory, version
+pinning, lockfile, package diff, and secret manager reviews are required.
+
+Package, lockfile, real DB, live DB, migration, provider SDK, production apply,
+runtime readiness, and production readiness flags must remain false until a
+separate owner-approved PR authorizes them.

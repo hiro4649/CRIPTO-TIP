@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 45,
-  "headSha": "271785f769cbed4f27d4e088f19ee101c70ead4b",
-  "baseSha": "0479c08a5a9d1e5184c4f51d9596243476d3175d",
+  "prNumber": 46,
+  "headSha": "040573da0853d42032420919128bd3c48e027c91",
+  "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add db driver owner approval record",
-  "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "ciRunId": "27237597034",
-  "qualityGateRunId": "27238173789",
-  "qualityGateArtifactId": "7521067332",
+  "title": "feat: add db driver preflight policy",
+  "goal": "Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driver, package.json change, pnpm-lock change, real DB connection, live DB integration test, migration execution, provider SDK apply, or production deployment.",
+  "ciRunId": "27243372594",
+  "qualityGateRunId": "27244093501",
+  "qualityGateArtifactId": "7523339400",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,7 +22,7 @@
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
-      ".codex/db-driver-owner-approval-record.json",
+      ".codex/db-driver-preflight-policy.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -31,23 +31,28 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/db-driver-owner-approval-record.ts",
-      "apps/api/src/db-driver-owner-approval-record.test.ts",
+      "apps/api/src/db-driver-preflight-policy.ts",
+      "apps/api/src/db-driver-preflight-policy.test.ts",
+      "docs/DB_DRIVER_PREFLIGHT_POLICY.md",
+      "docs/DB_DRIVER_CANDIDATE_EVALUATION.md",
+      "docs/DB_DRIVER_LICENSE_REVIEW.md",
+      "docs/DB_DRIVER_SUPPLY_CHAIN_REVIEW.md",
+      "docs/DB_DRIVER_VERSION_PINNING_POLICY.md",
+      "docs/DB_DRIVER_LOCKFILE_REVIEW_POLICY.md",
+      "docs/DB_DRIVER_PACKAGE_DIFF_REVIEW.md",
+      "docs/DB_DRIVER_SECURITY_ADVISORY_MONITORING.md",
       "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
-      "docs/DB_DRIVER_APPROVAL_REPLAY_PROTECTION.md",
-      "docs/DB_DRIVER_APPROVAL_TARGET_BINDING.md",
-      "docs/DB_INTEGRATION_SCOPE_GATE.md",
       "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-db-driver-owner-approval-record-v116-prep.md"
+      "docs/pr-db-driver-preflight-policy-v116-prep.md"
     ],
     "allowedPaths": [
-      "apps/api/src/db-driver-owner-approval-record.ts",
-      "apps/api/src/db-driver-owner-approval-record.test.ts",
+      "apps/api/src/db-driver-preflight-policy.ts",
+      "apps/api/src/db-driver-preflight-policy.test.ts",
       "docs/**",
       ".codex/**"
     ],
@@ -69,51 +74,63 @@
   "commands": [
     {
       "name": "corepack pnpm install",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm lint",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "npm test",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/write-test-summary.mjs",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "local_optional_until_pr_refresh"
+      "result": "local_optional_until_pr_refresh",
+      "status": "local_optional_until_pr_refresh"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pass"
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "remoteRuns": [],
@@ -129,13 +146,14 @@
     "status": "pass"
   },
   "allowedScope": [
-    "db_driver_owner_approval_record",
-    "approval_target_commit_binding",
-    "approval_branch_pr_binding",
-    "approval_replay_protection",
-    "approval_expiry",
-    "approval_fingerprint",
-    "owner_role_validation",
+    "db_driver_preflight_policy",
+    "candidate_driver_evaluation",
+    "license_review_policy",
+    "supply_chain_review_policy",
+    "security_advisory_review_policy",
+    "version_pinning_policy",
+    "lockfile_review_policy",
+    "package_diff_review_policy",
     "tests",
     "docs",
     ".codex evidence"
@@ -172,102 +190,108 @@
     "quality-gate weakening"
   ],
   "doneCriteria": [
-    "DB driver owner approval record schema exists",
-    "default record is not approved",
-    "target commit, base commit, branch, and PR bindings are validated",
-    "approval scope is allowlisted",
-    "approval expiry is ISO UTC and within 72 hours",
-    "AI, assistant, Codex, bot, GitHub Actions, and unknown actors cannot approve",
-    "project-owner role is required for approved records",
-    "fingerprint is stable and rejects replay after canonical field changes",
-    "forbidden provider, production, readiness, legal, YouTube policy, token, wallet, connector, and Chain Listener scopes remain rejected",
-    "unsafe secrets, private URLs, wallet addresses, raw provider responses, raw DB connection strings, token-like values, and raw GitHub log references are rejected",
-    "docs and .codex evidence record safe not_approved defaults"
+    "DB driver preflight policy validator exists",
+    "default record is not_selected",
+    "candidate drivers are limited to pg and postgres",
+    "no selected driver is recorded",
+    "owner approval record remains required and not_approved",
+    "package and lockfile changes remain disabled",
+    "real DB, live DB, migration, provider SDK, production apply, and readiness flags remain disabled",
+    "license, supply-chain, advisory, version pinning, lockfile, package diff, and secret manager reviews remain required"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 36,
-    "passed": 636,
+    "testFiles": 37,
+    "passed": 695,
     "skipped": 6
   },
   "securityBoundaries": [
     "No DB driver dependency is added.",
-    "No real DB connection is implemented.",
     "No package.json or pnpm-lock change is introduced.",
-    "No migration change or execution is introduced.",
-    "No approved owner record is committed.",
-    "AI review is not owner approval.",
-    "Approval fingerprints do not store secret values.",
+    "No real DB connection is implemented.",
+    "No migration is changed or executed.",
+    "No live DB integration test is executed.",
+    "No selected driver is recorded.",
     "GitHub raw logs remain forbidden."
   ],
   "residualRisks": [
-    "Real DB driver approval remains future human-owner work.",
-    "Approval record does not itself grant runtime readiness.",
-    "Fingerprint prevents accidental replay but does not replace code review.",
-    "Real DB integration tests remain future work.",
-    "Secret manager setup remains future work.",
-    "Migration execution remains future work.",
-    "Provider SDK apply remains future work.",
-    "Production deployment remains out of scope."
+    "Driver choice remains future owner-approved work.",
+    "License review remains future work.",
+    "Supply-chain review remains future work.",
+    "Security advisory review remains future work.",
+    "Lockfile and package diff review remain future work.",
+    "Runtime and production readiness remain out of scope."
   ],
   "humanConfirmation": [
     "Owner approval status is not_approved for this PR.",
-    "No approved owner record is committed.",
+    "Driver choice status is not_selected for this PR.",
     "AI review recommendations are not recorded as human approval.",
-    "Future real DB work requires a new project-owner-approved PR."
+    "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 636,
+  "testsPassed": 695,
   "testsSkipped": 6,
-  "testFiles": 36,
+  "testFiles": 37,
   "productVerificationCommands": [
     {
       "command": "corepack pnpm install",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "corepack pnpm lint",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "corepack pnpm typecheck",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "corepack pnpm test",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "npm test",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "corepack pnpm evidence:ci",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "corepack pnpm quality:self-protection",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "node scripts/write-test-summary.mjs",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "node scripts/check-evidence-placeholders.mjs",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "node scripts/validate-evidence-freshness.mjs",
-      "status": "local_optional_until_pr_refresh"
+      "status": "local_optional_until_pr_refresh",
+      "result": "local_optional_until_pr_refresh"
     },
     {
       "command": "node scripts/check-quality-gate-self-protection.mjs",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     },
     {
       "command": "node scripts/codex-secret-safety-scan.mjs",
-      "status": "pass"
+      "status": "pass",
+      "result": "pass"
     }
   ],
   "packageVerification": {
@@ -278,36 +302,36 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds an internal DB integration scope gate validator and tests without DB driver, real DB connection, migrations, provider SDK, public API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
+    "statement": "Adds an internal DB driver preflight policy validator and tests without DB driver, package change, lockfile change, real DB connection, migrations, provider SDK, public API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds planning gates, schema, docs, and tests only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds preflight policy, docs, evidence, and tests only.",
   "reviewScope": {
-    "scope": "DB integration scope gate validator, tests, docs, owner approval schema, checklist, and machine-readable evidence.",
-    "riskSummary": "Main risk is accidentally expanding into real DB/package/migration/provider execution before owner approval.",
-    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, DB driver import scan, and GitHub checks."
+    "scope": "DB driver preflight policy validator, tests, docs, candidate evaluation, review checklists, and machine-readable evidence.",
+    "riskSummary": "Main risk is accidentally selecting or installing a DB driver before owner approval and preflight review.",
+    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, DB driver import scan, package/lockfile diff check, and GitHub checks."
   },
   "reviewIndependence": [
     "Writer evidence and AI review recommendation remain separate.",
     "AI review is not human approval.",
-    "Human project-owner confirmation is required before any real DB integration scope.",
-    "This PR keeps owner approval status not_approved."
+    "Human project-owner confirmation is required before DB driver selection or dependency introduction.",
+    "This PR keeps driver choice status not_selected."
   ],
   "bestOfN": {
     "selected": "Candidate B",
     "candidates": [
-      "Candidate A: add real pg driver now using the approval record as implicit permission.",
-      "Candidate B: add approval record schema, validator, fingerprint, replay protection, docs, tests, and not_approved evidence only.",
-      "Candidate C: only update checklist docs."
+      "Candidate A: add pg dependency now and run package install.",
+      "Candidate B: add DB driver preflight policy, candidate evaluation matrix, review checklists, tests, and evidence without dependency/package changes.",
+      "Candidate C: only document that a driver is needed later."
     ],
-    "reason": "Candidate B prevents accidental v1.1.6 DB scope expansion while avoiding DB driver, package, live DB, provider SDK, and production apply changes."
+    "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
-  "prBodyPath": "docs/pr-db-driver-owner-approval-record-v116-prep.md",
-  "passed": 636,
+  "prBodyPath": "docs/pr-db-driver-preflight-policy-v116-prep.md",
+  "passed": 695,
   "skipped": 6,
-  "summary": "36 files, 636 passed, 6 skipped",
+  "summary": "37 files, 695 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-owner-approval-record.json",
+    ".codex/db-driver-preflight-policy.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -316,24 +340,30 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-owner-approval-record.ts",
-    "apps/api/src/db-driver-owner-approval-record.test.ts",
+    "apps/api/src/db-driver-preflight-policy.ts",
+    "apps/api/src/db-driver-preflight-policy.test.ts",
+    "docs/DB_DRIVER_PREFLIGHT_POLICY.md",
+    "docs/DB_DRIVER_CANDIDATE_EVALUATION.md",
+    "docs/DB_DRIVER_LICENSE_REVIEW.md",
+    "docs/DB_DRIVER_SUPPLY_CHAIN_REVIEW.md",
+    "docs/DB_DRIVER_VERSION_PINNING_POLICY.md",
+    "docs/DB_DRIVER_LOCKFILE_REVIEW_POLICY.md",
+    "docs/DB_DRIVER_PACKAGE_DIFF_REVIEW.md",
+    "docs/DB_DRIVER_SECURITY_ADVISORY_MONITORING.md",
     "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
-    "docs/DB_DRIVER_APPROVAL_REPLAY_PROTECTION.md",
-    "docs/DB_DRIVER_APPROVAL_TARGET_BINDING.md",
-    "docs/DB_INTEGRATION_SCOPE_GATE.md",
     "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-owner-approval-record-v116-prep.md"
+    "docs/pr-db-driver-preflight-policy-v116-prep.md"
   ],
   "testCoverageEvidence": [
-    "DB driver owner approval record default not_approved state covered.",
-    "Target commit, branch, PR, base commit, expiry, fingerprint, and replay protection covered.",
-    "Owner role and AI/bot actor rejection covered.",
-    "Unsafe evidence rejection and forbidden capability denial covered."
+    "DB driver preflight default not_selected state covered.",
+    "Candidate allowlist and selected-driver owner approval requirement covered.",
+    "Package, lockfile, real DB, live DB, migration, provider, production, and readiness denials covered.",
+    "License, supply-chain, advisory, version, lockfile, package diff, and secret manager review requirements covered.",
+    "Unsafe evidence rejection covered."
   ]
 }

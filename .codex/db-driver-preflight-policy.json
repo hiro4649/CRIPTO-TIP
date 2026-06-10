@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.1.5",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 46,
+  "headSha": "040573da0853d42032420919128bd3c48e027c91",
+  "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
+  "driverChoiceStatus": "not_selected",
+  "selectedDriver": null,
+  "candidateDrivers": [
+    "pg",
+    "postgres"
+  ],
+  "ownerApprovalRecordRequired": true,
+  "ownerApprovalRecordStatus": "not_approved",
+  "packageChangeAllowed": false,
+  "pnpmLockChangeAllowed": false,
+  "realDbConnectionAllowed": false,
+  "liveDbIntegrationTestsAllowed": false,
+  "migrationApplyAllowed": false,
+  "providerSdkApplyAllowed": false,
+  "actualProductionDeploymentAllowed": false,
+  "runtimeReadinessClaimAllowed": false,
+  "productionReadinessClaimAllowed": false,
+  "legalComplianceClaimAllowed": false,
+  "youtubePolicyComplianceClaimAllowed": false,
+  "licenseReviewRequired": true,
+  "supplyChainReviewRequired": true,
+  "securityAdvisoryReviewRequired": true,
+  "versionPinningRequired": true,
+  "lockfileReviewRequired": true,
+  "packageDiffReviewRequired": true,
+  "secretManagerReviewRequired": true,
+  "candidateEvaluations": [
+    {
+      "driverName": "pg",
+      "npmPackageName": "pg",
+      "license": "future_review_required",
+      "maintenanceStatus": "future_review_required",
+      "securityAdvisoryStatus": "future_review_required",
+      "transitiveDependencyCount": "not_reviewed",
+      "recommendedStatus": "needs_owner_review"
+    },
+    {
+      "driverName": "postgres",
+      "npmPackageName": "postgres",
+      "license": "future_review_required",
+      "maintenanceStatus": "future_review_required",
+      "securityAdvisoryStatus": "future_review_required",
+      "transitiveDependencyCount": "not_reviewed",
+      "recommendedStatus": "needs_owner_review"
+    }
+  ],
+  "forbiddenScopeStatus": "pass"
+}

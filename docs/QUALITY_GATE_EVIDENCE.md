@@ -377,3 +377,12 @@ quality-gate weakening is introduced.
   rejection, approval ID format validation, and machine-readable evidence safe
   defaults.
 - The PR defines validator support for future approved owner records but does not commit an approved record and does not add a DB driver, package change, pnpm-lock change, migration change, real DB connection, provider SDK apply, production deployment, or readiness claim.
+
+## DB Driver Preflight Policy v1.1.6 Prep
+
+- Added machine-readable DB driver preflight policy evidence.
+- Current driver choice status is `not_selected`.
+- Candidate drivers are the exact review set `pg` and `postgres` for future review only.
+- Candidate evaluations are required for both candidates and cannot contain approval, selection, production readiness, owner approval, legal compliance, or YouTube policy compliance wording.
+- No package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, production readiness, legal compliance, or YouTube policy compliance capability is enabled.
+- License, supply-chain, security advisory, version pinning, lockfile, package diff, and secret manager reviews are required before future driver introduction.
