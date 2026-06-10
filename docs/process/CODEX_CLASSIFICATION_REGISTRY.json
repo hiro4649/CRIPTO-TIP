@@ -1043,6 +1043,87 @@
       "notes": "Committed blocked machine evidence for DB driver final approval gate."
     },
     {
+      "pathPattern": "apps/api/src/db-driver-dependency-pr-template.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver dependency PR template validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-dependency-pr-template.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver dependency PR template and future-fixture tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_DEPENDENCY_PR_TEMPLATE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver dependency PR template documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_DEPENDENCY_EVIDENCE_CONTRACT.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver dependency machine evidence contract documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_PACKAGE_DIFF_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver package diff evidence documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_LOCKFILE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver lockfile evidence documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_REVIEW_ATTACHMENT_RULES.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver review attachment rules."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-dependency-pr-template-v117-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver dependency PR template."
+    },
+    {
+      "pathPattern": ".codex/db-driver-dependency-pr-template.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Committed template-ready machine evidence for a future DB driver dependency PR."
+    },
+    {
       "pathPattern": ".gitignore",
       "classification": "repo_config",
       "surface": "repository_hygiene",
