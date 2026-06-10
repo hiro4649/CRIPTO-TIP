@@ -933,6 +933,51 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver approval dry-run evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-readiness-report.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver readiness report aggregator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-readiness-report.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver readiness report tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_READINESS_REPORT.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver readiness report documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-readiness-report-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver readiness report."
+    },
+    {
+      "pathPattern": ".codex/db-driver-readiness-report.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver readiness report evidence."
     }
   ],
   "safeSummaryOnly": true
