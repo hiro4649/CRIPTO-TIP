@@ -210,3 +210,13 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Package or lockfile changes could be bundled with policy work. | Storage owner | Future dependency PR | Package and lockfile flags remain false and package files are not changed in this PR. |
 | Medium | License, supply-chain, advisory, version, lockfile, or package diff review could be skipped later. | Storage owner | Future dependency PR | Preflight validator requires each review gate before driver introduction. |
 | Medium | Production readiness could be inferred from policy docs. | Backend owner | Future runtime PR | Docs state this is policy-only and no runtime or production readiness is claimed. |
+
+## DB Driver Approval Dry-Run v1.1.6 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Dry-run could be mistaken for current owner approval. | Storage owner | Future owner-approved DB driver PR | Committed evidence remains `not_ready`, selected driver is null, and owner approval is not_approved. |
+| Medium | Test-only approved fixture could be copied into machine evidence. | Storage owner | Review checklist | Passing future fixture exists only in tests and must not be copied into `.codex` as current approval evidence. |
+| Medium | Future package diff and lockfile reviews remain incomplete. | Storage owner | Future dependency PR | Dry-run requires package diff and lockfile evidence before any real package or lockfile change. |
+| Medium | Future live DB and secret boundary reviews remain incomplete. | Security owner | Future live DB PR | Dry-run requires secret manager boundary evidence and rejects raw connection strings. |
+| Low | Real DB driver choice remains future owner-approved work. | Project owner | Future DB driver PR | This PR does not choose between `pg` and `postgres`. |

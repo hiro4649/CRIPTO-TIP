@@ -35,3 +35,10 @@ Before a future DB driver PR may add a dependency, it must include:
 This document does not claim runtime readiness, production readiness, legal compliance, or YouTube policy compliance.
 
 This PR defines preflight policy only and cannot select a driver. `driver_choice_status` must remain `not_selected`, `selected_driver` must remain null, and candidate evaluations may only use neutral review states such as `needs_owner_review`, `not_selected`, or `rejected_future_review`.
+
+## Approval Dry-Run Connection
+
+The DB driver approval dry-run builds on this preflight policy. The dry-run may
+simulate a future complete approval bundle in tests, but committed evidence
+still keeps `driver_choice_status: not_selected`, `selected_driver: null`, and
+no package or lockfile changes.

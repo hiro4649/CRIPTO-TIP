@@ -386,3 +386,10 @@ quality-gate weakening is introduced.
 - Candidate evaluations are required for both candidates and cannot contain approval, selection, production readiness, owner approval, legal compliance, or YouTube policy compliance wording.
 - No package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, production readiness, legal compliance, or YouTube policy compliance capability is enabled.
 - License, supply-chain, security advisory, version pinning, lockfile, package diff, and secret manager reviews are required before future driver introduction.
+
+## DB Driver Approval Dry-Run v1.1.6 Prep
+
+- `.codex/db-driver-approval-dry-run.json` records `dryRunStatus: not_ready`.
+- Committed evidence keeps `selectedDriver: null` and `ownerApprovalRecordStatus: not_approved`.
+- The validator rejects missing owner approval, missing review evidence, target binding mismatch, expired approval, fingerprint mismatch, package changes, lockfile changes, added `pg` or `postgres` dependencies, real DB connection, migration execution, provider SDK apply, production deployment, readiness claims, unsafe values, and raw log references.
+- The future complete approval fixture is test-only and is not committed as current approval evidence.

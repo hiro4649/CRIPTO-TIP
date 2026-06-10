@@ -870,6 +870,69 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver preflight policy evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-approval-dry-run.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver approval dry-run validator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-approval-dry-run.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver approval dry-run tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_APPROVAL_DRY_RUN.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver approval dry-run documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_DRY_RUN_EVIDENCE_REQUIREMENTS.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver dry-run evidence requirements."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_DRY_RUN_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "release_gate",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver dry-run failure reason documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-approval-dry-run-v116-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver approval dry-run."
+    },
+    {
+      "pathPattern": ".codex/db-driver-approval-dry-run.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver approval dry-run evidence."
     }
   ],
   "safeSummaryOnly": true
