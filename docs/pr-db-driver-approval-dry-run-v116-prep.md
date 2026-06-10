@@ -66,7 +66,11 @@ Current recorded test summary: 38 files, 728 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-approval-dry-run.ts`, `apps/api/src/db-driver-approval-dry-run.test.ts`, DB driver dry-run docs, and `.codex` evidence.
 
-What the tests cover: default `not_ready` evidence, selectedDriver null, owner approval missing, package change rejection, lockfile change rejection, added `pg` and `postgres` dependency rejection, changed script rejection, selected driver without owner approval, expired approval, target commit mismatch, branch mismatch, PR mismatch, fingerprint mismatch, missing preflight policy, missing license review, missing supply-chain review, missing security advisory review, missing version pinning review, missing lockfile review, missing package diff review, missing secret boundary review, unsafe private URL/raw log evidence rejection, raw connection string rejection, runtime readiness claim rejection, production readiness claim rejection, legal compliance claim rejection, YouTube policy compliance claim rejection, provider SDK apply rejection, production deployment rejection, test-only future complete fixture acceptance, and committed machine-readable evidence remaining not_ready.
+Test command: `corepack pnpm vitest run apps/api/src/db-driver-approval-dry-run.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
+
+What the test covers: default `not_ready` evidence, selectedDriver null, owner approval missing, package change rejection, lockfile change rejection, added `pg` and `postgres` dependency rejection, changed script rejection, selected driver without owner approval, expired approval, target commit mismatch, branch mismatch, PR mismatch, fingerprint mismatch, missing preflight policy, missing license review, missing supply-chain review, missing security advisory review, missing version pinning review, missing lockfile review, missing package diff review, missing secret boundary review, unsafe private URL/raw log evidence rejection, raw connection string rejection, runtime readiness claim rejection, production readiness claim rejection, legal compliance claim rejection, YouTube policy compliance claim rejection, provider SDK apply rejection, production deployment rejection, test-only future complete fixture acceptance, and committed machine-readable evidence remaining not_ready.
+
+Edge cases: missing owner approval, selected driver without review evidence, unsafe private URL values, raw log references, raw DB connection strings, changed package scripts, package dependency additions, lockfile changes, stale approval targets, branch mismatch, PR mismatch, fingerprint mismatch, forbidden readiness/compliance claims, provider SDK apply flags, and production deployment flags.
 
 ## Review Independence
 
@@ -74,11 +78,17 @@ Writer evidence and AI review recommendation remain separate. AI review is not h
 
 ## Best of N Evidence
 
+Candidate count: 3.
+
 Candidate A: Select `pg` now and add a fake approval dry-run pass as current evidence. Rejected because it selects a driver and risks bypassing owner approval.
 
 Candidate B: Add dry-run validator, failure reasons, test-only future approved fixture, docs, and committed not_ready evidence. Adopted.
 
 Candidate C: Only write docs. Rejected because it leaves no machine-readable dry-run gate.
+
+Selected candidate: Candidate B.
+
+Reason selected: Candidate B is the smallest safe change that adds machine-checkable dry-run validation and future pass fixture coverage while keeping committed evidence not_ready, selectedDriver null, owner approval not_approved, no DB driver dependency, no package or lockfile change, no real DB connection, no migration execution, and no readiness claim.
 
 ## Security Boundaries
 
