@@ -1,7 +1,0 @@
-{
-  "status": "pass",
-  "safeSummaryOnly": true,
-  "reasonCodes": [],
-  "warnings": [],
-  "script": "scripts/codex-evidence-minimality-gate.mjs"
-}

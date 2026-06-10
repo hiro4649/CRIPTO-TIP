@@ -1,9 +1,0 @@
-{
-  "status": "not_applicable",
-  "safeSummaryOnly": true,
-  "reasonCodes": [
-    "single_agent_session"
-  ],
-  "warnings": [],
-  "script": "scripts/codex-agent-session-governance-gate.mjs"
-}

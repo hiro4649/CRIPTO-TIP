@@ -10,3 +10,4 @@ out
 artifacts
 broadcast
 foundry.toml.bak
+.codex/tmp-*
