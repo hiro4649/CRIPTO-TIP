@@ -22,7 +22,7 @@
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
-      ".codex/db-driver-approval-dry-run.json",
+      ".codex/db-driver-final-approval-gate.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -31,24 +31,26 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/db-driver-approval-dry-run.ts",
-      "apps/api/src/db-driver-approval-dry-run.test.ts",
-      "docs/DB_DRIVER_APPROVAL_DRY_RUN.md",
-      "docs/DB_DRIVER_DRY_RUN_EVIDENCE_REQUIREMENTS.md",
-      "docs/DB_DRIVER_DRY_RUN_FAILURE_REASONS.md",
+      ".gitignore",
+      "apps/api/src/db-driver-final-approval-gate.ts",
+      "apps/api/src/db-driver-final-approval-gate.test.ts",
+      "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+      "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+      "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      ".gitignore",
-      "docs/pr-db-driver-approval-dry-run-v116-prep.md"
+      "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "allowedPaths": [
-      "apps/api/src/db-driver-approval-dry-run.ts",
-      "apps/api/src/db-driver-approval-dry-run.test.ts",
+      "apps/api/src/db-driver-final-approval-gate.ts",
+      "apps/api/src/db-driver-final-approval-gate.test.ts",
       "docs/**",
-      ".codex/**"
+      ".codex/**",
+      ".gitignore"
     ],
     "forbiddenPaths": [
       ".github/workflows/**",
@@ -92,7 +94,7 @@
       "production readiness claim",
       "legal compliance claim",
       "YouTube policy compliance claim",
-      "raw GitHub log reading",
+      "GitHub Actions raw trace reading",
       "quality-gate weakening",
       "committed approved owner record",
       "selected DB driver in committed evidence"
@@ -227,7 +229,7 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub Actions raw trace reading",
     "quality-gate weakening",
     "committed approved owner record",
     "selected DB driver in committed evidence",
@@ -254,7 +256,7 @@
     "No migration is changed or executed.",
     "No live DB integration test is executed.",
     "No selected driver is recorded.",
-    "GitHub raw logs remain forbidden."
+    "GitHub Actions raw trace output remains forbidden."
   ],
   "residualRisks": [
     "Driver choice remains future owner-approved work.",
@@ -270,7 +272,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 759,
+  "testsPassed": 816,
   "testsSkipped": 6,
   "testFiles": 40,
   "productVerificationCommands": [
@@ -316,7 +318,7 @@
   "prBodyPath": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
   "passed": 816,
   "skipped": 6,
-  "summary": "39 files, 759 passed, 6 skipped",
+  "summary": "40 files, 816 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-final-approval-gate.json",
@@ -339,18 +341,18 @@
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-final-approval-gate-v117-prep.md"
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "testCoverageEvidence": [
-    "DB driver preflight default not_selected state covered.",
-    "Candidate allowlist and selected-driver owner approval requirement covered.",
-    "Package, lockfile, real DB, live DB, migration, provider, production, and readiness denials covered.",
-    "License, supply-chain, advisory, version, lockfile, package diff, and secret manager review requirements covered.",
-    "Unsafe evidence rejection covered."
+    "Changed area: DB driver final approval gate aggregation, committed blocked evidence, docs, and .codex evidence.",
+    "Test command: corepack pnpm test and npm test both passed with 40 files, 816 passed, 6 skipped.",
+    "What the test covers: blocked committed state, null selected driver, not_approved owner status, not_ready readiness and dry-run inputs, false final permission flags, future approval fixture isolation, unsafe evidence rejection, and context mismatch rejection.",
+    "Edge cases: approved committed evidence, selected driver, permission flag true, unsafe URLs/tokens/wallet values, unsafe trace references, wrong PR, wrong branch, wrong head, and wrong base are rejected."
   ],
   "testing": {
-    "testFiles": 39,
-    "passed": 759,
+    "testFiles": 40,
+    "passed": 816,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",

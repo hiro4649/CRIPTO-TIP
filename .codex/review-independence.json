@@ -45,7 +45,8 @@
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-final-approval-gate-v117-prep.md"
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "allowedScope": [
     "db_driver_final_approval_gate",
@@ -87,7 +88,7 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub Actions raw trace reading",
     "quality-gate weakening",
     "committed approved owner record",
     "selected DB driver in committed evidence",
@@ -148,5 +149,7 @@
   "testCoverageEvidenceStatus": "pass",
   "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
   "contractGovernanceStatus": "pass",
-  "codeReviewMonitorStatus": "pass"
+  "codeReviewMonitorStatus": "pass",
+  "testsPassed": 816,
+  "testsSkipped": 6
 }

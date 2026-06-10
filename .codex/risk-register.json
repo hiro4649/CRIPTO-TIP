@@ -94,7 +94,7 @@
       "risk": "Unsafe DB or provider details could leak through final approval evidence.",
       "owner": "Security owner",
       "nextPr": "Future secret-boundary PR",
-      "mitigation": "Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references."
+      "mitigation": "Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and unsafe GitHub Actions trace references."
     }
   ],
   "entries": [
@@ -113,7 +113,7 @@
   "goal": "Add a DB driver readiness report for v1.1.6 that aggregates owner approval, preflight policy, and approval dry-run evidence into committed not_ready evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-approval-dry-run.json",
+    ".codex/db-driver-final-approval-gate.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -122,18 +122,19 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-approval-dry-run.ts",
-    "apps/api/src/db-driver-approval-dry-run.test.ts",
-    "docs/DB_DRIVER_APPROVAL_DRY_RUN.md",
-    "docs/DB_DRIVER_DRY_RUN_EVIDENCE_REQUIREMENTS.md",
-    "docs/DB_DRIVER_DRY_RUN_FAILURE_REASONS.md",
+    ".gitignore",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    ".gitignore",
-    "docs/pr-db-driver-approval-dry-run-v116-prep.md"
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "allowedScope": [
     "db_driver_approval_dry_run",
@@ -178,7 +179,7 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub Actions raw trace reading",
     "quality-gate weakening",
     "committed approved owner record",
     "selected DB driver in committed evidence"
@@ -224,5 +225,7 @@
   "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
-  "codeReviewMonitorStatus": "pass"
+  "codeReviewMonitorStatus": "pass",
+  "testsPassed": 816,
+  "testsSkipped": 6
 }
