@@ -21,6 +21,16 @@ and is validated by `apps/api/src/db-driver-candidate-review-pack.ts`.
 
 The candidate list is a review queue. It is not a dependency decision.
 
+## Candidate Status Semantics
+
+- `candidateStatus: candidate` means the package is included in the future
+  review queue.
+- `candidateStatus: candidate` is not adoption, selection, approval, dependency
+  authorization, runtime readiness, or production readiness.
+- `driverChoiceStatus: not_selected` is the current driver choice state.
+- `selectedDriver: null` is the committed evidence state.
+- `pg` and `postgres` are comparison candidates only.
+
 ## Required Blocking Evidence
 
 The pack remains blocked until a future owner-approved dependency PR supplies all
@@ -61,4 +71,3 @@ of the following evidence:
 - pass or approved statuses in committed evidence
 - any permission flag set to true
 - unsafe values or keys in evidence
-

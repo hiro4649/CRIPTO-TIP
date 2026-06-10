@@ -54,6 +54,14 @@ export type DbDriverCandidateReviewPackContext = {
   harnessVersion?: string | undefined;
 };
 
+export type DbDriverCandidateReviewPackValidationContext = {
+  repository: string;
+  prNumber: number;
+  targetBranch: string;
+  targetCommitSha: string;
+  baseCommitSha: string;
+};
+
 export type DbDriverCandidateReview = {
   driverName: DbDriverCandidateDriverName;
   packageName: DbDriverCandidateDriverName;
@@ -178,6 +186,20 @@ export function validateCurrentDbDriverCandidateReviewPackRecord(record: DbDrive
   return record;
 }
 
+export function validateCommittedDbDriverCandidateReviewPackEvidence(
+  record: DbDriverCandidateReviewPackRecord,
+  context: DbDriverCandidateReviewPackValidationContext
+) {
+  validateCurrentDbDriverCandidateReviewPackRecord(record);
+  if (record.repository !== context.repository) throw new Error("committed DB driver candidate review pack repository must match context");
+  if (record.prNumber !== context.prNumber) throw new Error("committed DB driver candidate review pack prNumber must match context");
+  if (record.targetBranch !== context.targetBranch) throw new Error("committed DB driver candidate review pack targetBranch must match context");
+  if (record.targetCommitSha !== context.targetCommitSha) throw new Error("committed DB driver candidate review pack targetCommitSha must match context");
+  if (record.baseCommitSha !== context.baseCommitSha) throw new Error("committed DB driver candidate review pack baseCommitSha must match context");
+  if (record.targetCommitSha === record.baseCommitSha) throw new Error("committed DB driver candidate review pack targetCommitSha must differ from baseCommitSha");
+  return record;
+}
+
 export function assertNoUnsafeDbDriverCandidateReviewPackEvidence(value: unknown) {
   scanUnsafeEvidence(value);
 }
@@ -238,8 +260,8 @@ function assertCandidateReviews(candidateReviews: DbDriverCandidateReview[]) {
       throw new Error("current DB driver candidate review pack rejects extra candidate review driver");
     }
     if (review.packageName !== review.driverName) throw new Error("current DB driver candidate review packageName must match driverName");
-    if (review.candidateStatus !== "candidate" && review.candidateStatus !== "not_selected") {
-      throw new Error("current DB driver candidate review status must remain candidate or not_selected");
+    if (review.candidateStatus !== "candidate") {
+      throw new Error("current DB driver candidate review status must remain candidate");
     }
     assertCandidateReviewStatuses(review);
     assertBlockers(review.blockers);
@@ -334,6 +356,17 @@ function assertCandidateSummaryDoesNotClaimApproval(value: string) {
   const unsafeApprovalPatterns = [
     /\bapproved\b/i,
     /\bselected\b/i,
+    /\brecommended\b/i,
+    /\bwinner\b/i,
+    /\bbest\s+choice\b/i,
+    /\bpreferred\b/i,
+    /\bapproved\s+choice\b/i,
+    /\bsafe\s+for\s+dependency\b/i,
+    /\bready\s+for\s+dependency\b/i,
+    /\binstall\s+now\b/i,
+    /\bproduction\s+candidate\b/i,
+    /\blegally\s+safe\b/i,
+    /\bpolicy\s+compliant\b/i,
     /production[_ -]?ready/i,
     /runtime[_ -]?ready/i,
     /legal[_ -]?compliant/i,

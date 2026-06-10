@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 53,
-  "headSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
+  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
   "baseSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
+  "qualityGateRunId": "27310615842",
+  "qualityGateArtifactId": "7550011884",
   "title": "feat: add db driver candidate review pack",
   "goal": "Prepare the v1.1.7 DB driver candidate review pack without selecting a driver, adding a dependency, changing package files, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
@@ -136,15 +136,15 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "ciRunId": "local_not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27310036429",
   "testSummary": {
     "testFiles": 42,
-    "passed": 981,
+    "passed": 1004,
     "skipped": 6
   },
   "testFiles": 42,
-  "passed": 981,
+  "passed": 1004,
   "skipped": 6,
   "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
@@ -192,7 +192,7 @@
   ],
   "storageOracle": "Committed candidate review evidence remains not_ready, driverChoiceStatus not_selected, selectedDriver null, candidateDrivers pg/postgres, owner approval not_approved, final gate blocked, package and lockfile evidence missing, all permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
-  "testsPassed": 981,
+  "testsPassed": 1004,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "riskLevel": "R3",
@@ -219,7 +219,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
-  "summary": "42 files, 981 passed, 6 skipped",
+  "summary": "42 files, 1004 passed, 6 skipped",
   "testCoverageEvidence": [
     "Changed area: DB driver candidate review pack validator, committed not-ready candidate evidence, candidate review docs, and .codex evidence.",
     "Test command: corepack pnpm test and npm test cover the candidate review pack together with repository tests.",

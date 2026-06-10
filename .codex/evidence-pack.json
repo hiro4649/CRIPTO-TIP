@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 53,
-  "headSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
+  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
   "baseSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db driver candidate review pack",
   "goal": "Prepare the v1.1.7 DB driver candidate review pack without selecting a driver, adding a dependency, changing package files, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
-  "ciRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
+  "ciRunId": "27310036429",
+  "qualityGateRunId": "27310615842",
+  "qualityGateArtifactId": "7550011884",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -243,7 +243,7 @@
   ],
   "testSummary": {
     "testFiles": 42,
-    "passed": 981,
+    "passed": 1004,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -269,7 +269,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
-  "testsPassed": 981,
+  "testsPassed": 1004,
   "testsSkipped": 6,
   "testFiles": 42,
   "productVerificationCommands": [
@@ -313,9 +313,9 @@
     "reason": "Candidate B creates review structure without crossing the owner approval or dependency boundary."
   },
   "prBodyPath": "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
-  "passed": 981,
+  "passed": 1004,
   "skipped": 6,
-  "summary": "42 files, 981 passed, 6 skipped",
+  "summary": "42 files, 1004 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-candidate-review-pack.json",
@@ -350,7 +350,7 @@
   ],
   "testing": {
     "testFiles": 42,
-    "passed": 981,
+    "passed": 1004,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",

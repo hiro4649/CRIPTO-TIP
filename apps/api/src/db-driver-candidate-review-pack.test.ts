@@ -6,19 +6,32 @@ import {
   createDefaultDbDriverCandidateReviewPackRecord,
   dbDriverCandidateReviewPackBlockers,
   dbDriverCandidateReviewPackRequiredSections,
+  validateCommittedDbDriverCandidateReviewPackEvidence,
   validateCurrentDbDriverCandidateReviewPackRecord,
   type DbDriverCandidateReview,
   type DbDriverCandidateReviewPackRecord
 } from "./db-driver-candidate-review-pack.js";
+
+const pr53HeadSha = "cbde064f86d4906e206ba679dffa306b090fd0c8";
+const pr53BaseSha = "62bbe12522e51b82b422a364271f8553ad2eed49";
+const pr51MergeSha = "3ba972cd1f923d31dabeb1926749eff7d5bcb27d";
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
   prNumber: 53,
   targetBranch: "feat/db-driver-candidate-review-pack-v117-prep",
   targetCommitSha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-  baseCommitSha: "62bbe12522e51b82b422a364271f8553ad2eed49",
+  baseCommitSha: pr53BaseSha,
   createdAt: "2026-06-11T00:00:00.000Z",
   harnessVersion: "1.1.7"
+};
+
+const pr53Context = {
+  repository: "hiro4649/CRIPTO-TIP",
+  prNumber: 53,
+  targetBranch: "feat/db-driver-candidate-review-pack-v117-prep",
+  targetCommitSha: pr53HeadSha,
+  baseCommitSha: pr53BaseSha
 };
 
 function pack(patch: Partial<DbDriverCandidateReviewPackRecord> = {}) {
@@ -41,6 +54,15 @@ function candidateReview(driverName: "pg" | "postgres", patch: Partial<DbDriverC
 
 function committedPackFromDisk() {
   return JSON.parse(readFileSync(".codex/db-driver-candidate-review-pack.json", "utf8")) as DbDriverCandidateReviewPackRecord;
+}
+
+function evidencePackFromDisk() {
+  return JSON.parse(readFileSync(".codex/evidence-pack.json", "utf8")) as {
+    prNumber: number;
+    headSha: string;
+    baseSha: string;
+    testSummary: { testFiles: number; passed: number; skipped: number };
+  };
 }
 
 describe("db driver candidate review pack", () => {
@@ -113,6 +135,21 @@ describe("db driver candidate review pack", () => {
     expect(record.pnpmLockChangeAllowed).toBe(false);
     expect(record.dbDriverDependencyAllowed).toBe(false);
     expect(validateCurrentDbDriverCandidateReviewPackRecord(record)).toBe(record);
+    expect(validateCommittedDbDriverCandidateReviewPackEvidence(record, pr53Context)).toBe(record);
+  });
+
+  it("keeps committed evidence bound to PR 53 head and base without selecting a driver", () => {
+    const record = committedPackFromDisk();
+    const evidencePack = evidencePackFromDisk();
+
+    expect(record.prNumber).toBe(53);
+    expect(record.targetCommitSha).toBe(pr53HeadSha);
+    expect(record.baseCommitSha).toBe(pr53BaseSha);
+    expect(record.targetCommitSha).not.toBe(record.baseCommitSha);
+    expect(evidencePack.prNumber).toBe(53);
+    expect(evidencePack.headSha).toBe(pr53HeadSha);
+    expect(evidencePack.baseSha).toBe(pr53BaseSha);
+    expect(evidencePack.headSha).not.toBe(evidencePack.baseSha);
   });
 
   it.each([
@@ -162,13 +199,33 @@ describe("db driver candidate review pack", () => {
     ["extra review", [candidateReview("pg"), candidateReview("postgres"), { ...candidateReview("pg"), driverName: "future-db-driver" }], /exactly one review/],
     ["duplicate review", [candidateReview("pg"), candidateReview("pg")], /duplicate DB driver candidate review/],
     ["package name mismatch", [candidateReview("pg", { packageName: "postgres" }), candidateReview("postgres")], /packageName must match/],
-    ["selected candidate status", [candidateReview("pg", { candidateStatus: "selected" as "candidate" }), candidateReview("postgres")], /status must remain candidate or not_selected/],
-    ["rejected candidate status", [candidateReview("pg", { candidateStatus: "rejected" }), candidateReview("postgres")], /status must remain candidate or not_selected/],
+    ["selected candidate status", [candidateReview("pg", { candidateStatus: "selected" as "candidate" }), candidateReview("postgres")], /status must remain candidate/],
+    ["not selected candidate status", [candidateReview("pg", { candidateStatus: "not_selected" }), candidateReview("postgres")], /status must remain candidate/],
+    ["rejected candidate status", [candidateReview("pg", { candidateStatus: "rejected" }), candidateReview("postgres")], /status must remain candidate/],
     ["candidate license pass", [candidateReview("pg", { licenseReviewStatus: "pass" }), candidateReview("postgres")], /pg licenseReviewStatus must remain not_reviewed/],
     ["candidate package diff pass", [candidateReview("pg", { packageDiffStatus: "pass" }), candidateReview("postgres")], /pg packageDiffStatus must remain missing/],
     ["candidate final gate approved", [candidateReview("pg", { finalApprovalGateStatus: "approved_for_dependency_pr" }), candidateReview("postgres")], /pg finalApprovalGateStatus must remain blocked/]
   ] as Array<[string, DbDriverCandidateReview[], RegExp]>)("rejects candidate review with %s", (_label, candidateReviews, expected) => {
     expect(() => validateCurrentDbDriverCandidateReviewPackRecord(pack({ candidateReviews }))).toThrow(expected);
+  });
+
+  it("keeps candidate status separate from driver selection", () => {
+    const record = pack();
+
+    expect(record.candidateReviews.every((review) => review.candidateStatus === "candidate")).toBe(true);
+    expect(record.driverChoiceStatus).toBe("not_selected");
+    expect(record.selectedDriver).toBeNull();
+    expect(record.ownerApprovalStatus).toBe("not_approved");
+    expect(record.packageDiffStatus).toBe("missing");
+  });
+
+  it.each([
+    ["candidate status does not allow driverChoiceStatus selected", { driverChoiceStatus: "selected" }, /driverChoiceStatus must remain not_selected/],
+    ["candidate status does not allow selectedDriver", { selectedDriver: "pg" }, /must not select a driver/],
+    ["candidate status still requires ownerApprovalStatus not_approved", { ownerApprovalStatus: "approved" }, /ownerApprovalStatus must remain not_approved/],
+    ["candidate status still requires packageDiffStatus missing", { packageDiffStatus: "pass" }, /packageDiffStatus must remain missing/]
+  ] as Array<[string, Partial<DbDriverCandidateReviewPackRecord>, RegExp]>)("%s", (_label, patch, expected) => {
+    expect(() => validateCurrentDbDriverCandidateReviewPackRecord(pack(patch))).toThrow(expected);
   });
 
   it("requires every review pack section", () => {
@@ -209,7 +266,18 @@ describe("db driver candidate review pack", () => {
     ["candidate selection wording", "Candidate is selected for implementation."],
     ["candidate production readiness wording", "Candidate is production_ready."],
     ["candidate legal compliant wording", "Candidate is legal_compliant."],
-    ["candidate YouTube policy compliant wording", "Candidate is youtube_policy_compliant."]
+    ["candidate YouTube policy compliant wording", "Candidate is youtube_policy_compliant."],
+    ["candidate recommended wording", "Candidate is recommended for review."],
+    ["candidate winner wording", "Candidate is the winner."],
+    ["candidate best choice wording", "Candidate is the best choice."],
+    ["candidate preferred wording", "Candidate is preferred."],
+    ["candidate approved choice wording", "Candidate is the approved choice."],
+    ["candidate safe for dependency wording", "Candidate is safe for dependency."],
+    ["candidate ready for dependency wording", "Candidate is ready for dependency."],
+    ["candidate install now wording", "Install now."],
+    ["candidate production candidate wording", "Candidate is a production candidate."],
+    ["candidate legally safe wording", "Candidate is legally safe."],
+    ["candidate policy compliant wording", "Candidate is policy compliant."]
   ])("rejects candidate safeSummary claim: %s", (_label, safeSummary) => {
     expect(() =>
       validateCurrentDbDriverCandidateReviewPackRecord(
@@ -264,6 +332,16 @@ describe("db driver candidate review pack", () => {
     ["non-UTC createdAt", { createdAt: "2026-06-11T00:00:00.000+09:00" }, /createdAt must be UTC/]
   ])("rejects invalid context %s", (_label, patch, expected) => {
     expect(() => validateCurrentDbDriverCandidateReviewPackRecord(pack(patch))).toThrow(expected);
+  });
+
+  it.each([
+    ["stale targetCommitSha equal to rollout main SHA", { targetCommitSha: pr53BaseSha }, /targetCommitSha must match context|targetCommitSha must differ/],
+    ["baseCommitSha from PR 51 merge commit", { targetCommitSha: pr53HeadSha, baseCommitSha: pr51MergeSha }, /baseCommitSha must match context/],
+    ["targetCommitSha equal baseCommitSha", { targetCommitSha: pr53BaseSha, baseCommitSha: pr53BaseSha }, /targetCommitSha must differ/],
+    ["wrong prNumber", { prNumber: 52, targetCommitSha: pr53HeadSha, baseCommitSha: pr53BaseSha }, /prNumber must match context/],
+    ["wrong branch", { targetBranch: "feat/old-branch", targetCommitSha: pr53HeadSha, baseCommitSha: pr53BaseSha }, /targetBranch must match context/]
+  ] as Array<[string, Partial<DbDriverCandidateReviewPackRecord>, RegExp]>)("rejects committed candidate review pack with %s", (_label, patch, expected) => {
+    expect(() => validateCommittedDbDriverCandidateReviewPackEvidence(pack(patch), pr53Context)).toThrow(expected);
   });
 
   it("does not commit a selected or ready review pack as machine-readable evidence", () => {

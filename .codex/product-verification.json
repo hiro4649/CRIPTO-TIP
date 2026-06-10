@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 53,
-  "headSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
+  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
   "baseSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
   "productVerificationStatus": "pass",
   "commands": [
@@ -27,9 +27,9 @@
   "productionReadinessClaimed": false,
   "status": "pass",
   "testFiles": 42,
-  "passed": 981,
+  "passed": 1004,
   "skipped": 6,
-  "testsPassed": 981,
+  "testsPassed": 1004,
   "testsSkipped": 6,
   "productVerificationCommands": [
     "corepack pnpm lint: pass",
@@ -40,11 +40,11 @@
     "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "ciRunId": "local_not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27310036429",
   "title": "feat: add db driver candidate review pack",
   "goal": "Prepare the v1.1.7 DB driver candidate review pack without selecting a driver, adding a dependency, changing package files, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
-  "summary": "42 files, 981 passed, 6 skipped",
+  "summary": "42 files, 1004 passed, 6 skipped",
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -121,12 +121,12 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27310615842",
+  "qualityGateArtifactId": "7550011884",
   "testSummary": {
     "testFiles": 42,
-    "passed": 981,
+    "passed": 1004,
     "skipped": 6
   },
   "prBodyPath": "docs/pr-db-driver-candidate-review-pack-v117-prep.md",

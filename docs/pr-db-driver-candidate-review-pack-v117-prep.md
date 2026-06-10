@@ -21,21 +21,21 @@ Done criteria: DB driver candidate review pack record exists; committed review p
 
 ## Evidence Integrity
 
-Head SHA: 62bbe12522e51b82b422a364271f8553ad2eed49
+Head SHA: cbde064f86d4906e206ba679dffa306b090fd0c8
 
 Base SHA: 62bbe12522e51b82b422a364271f8553ad2eed49
 
-Product CI: local_not_applicable_before_pr_creation
+Product CI: success
 
-Quality-gate: local_not_applicable_before_pr_creation
+Quality-gate: success
 
-CI run: local_not_applicable_before_pr_creation
+CI run: 27310036429
 
-Quality-gate run: local_not_applicable_before_pr_creation
+Quality-gate run: 27310615842
 
-Quality-gate artifact: local_not_applicable_before_pr_creation
+Quality-gate artifact: 7550011884
 
-Tests: 42 test files, 981 passed, 6 skipped
+Tests: 42 test files, 1004 passed, 6 skipped
 
 ## Testing and review
 
@@ -88,9 +88,27 @@ Review scope and verification:
 - Risk summary: Main risk is mistaking candidate listing for actual DB driver selection; committed evidence remains no-driver and no-package-change.
 - Verification oracle: Vitest candidate review coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan.
 
+## Best of N Evidence
+
+Candidate count: 3
+
+Selected candidate: Candidate B - add a candidate review pack, matrix, safety validation, docs, and not-ready evidence without package changes.
+
+Reason selected: It creates review structure while preserving the no-driver, no-dependency, no-runtime-readiness boundary.
+
+Rejected alternatives: Candidate A selected a DB driver and package changes too early; Candidate C created informal notes without machine-checkable enforcement.
+
 ## Test Coverage Evidence
 
-Current recorded test summary: 42 files, 981 passed, 6 skipped.
+Current recorded test summary: 42 files, 1004 passed, 6 skipped.
+
+Changed area: DB driver candidate review pack validator, committed not-ready candidate evidence, candidate review docs, and .codex evidence.
+
+Test command: corepack pnpm test and npm test cover the candidate review pack together with repository tests.
+
+What the test covers: default not-ready evidence, exact pg/postgres candidates, candidate review completeness, selected/ready/pass/approved rejection, permission flag rejection, unsafe evidence rejection, PR head/base freshness validation, candidate status semantics, required sections, blocker vocabulary, and committed machine-readable evidence remaining not-ready.
+
+Edge cases: stale target commit, stale base commit, target equal to base, wrong PR number, wrong branch, missing, extra, duplicate, or mismatched candidates, selected candidate status, readiness or compliance wording, private URLs, DB connection strings, wallet addresses, token-like values, unsafe output copies, provider output copies, console stream and trace copies, and secret-like keys are rejected.
 
 ## Security Boundaries
 

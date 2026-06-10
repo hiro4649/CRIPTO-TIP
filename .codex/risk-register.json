@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 53,
-  "headSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
+  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -197,18 +197,18 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
-  "ciRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27310036429",
+  "qualityGateRunId": "27310615842",
+  "qualityGateArtifactId": "7550011884",
   "testSummary": {
     "testFiles": 42,
-    "passed": 981,
+    "passed": 1004,
     "skipped": 6
   },
   "testFiles": 42,
-  "passed": 981,
+  "passed": 1004,
   "skipped": 6,
   "verificationSurface": [
     "apps/api/src/db-driver-candidate-review-pack.test.ts",
@@ -239,7 +239,7 @@
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
-  "testsPassed": 981,
+  "testsPassed": 1004,
   "testsSkipped": 6,
   "prProfile": "product_r3",
   "taskMode": "feature",
@@ -283,7 +283,7 @@
     "package and lockfile evidence remain missing",
     "all permission flags remain false in committed evidence"
   ],
-  "summary": "42 files, 981 passed, 6 skipped",
+  "summary": "42 files, 1004 passed, 6 skipped",
   "testCoverageEvidence": [
     "Changed area: DB driver candidate review pack validator, committed not-ready candidate evidence, candidate review docs, and .codex evidence.",
     "Test command: corepack pnpm test and npm test cover the candidate review pack together with repository tests.",
