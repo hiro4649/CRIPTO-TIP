@@ -229,3 +229,13 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future complete approval fixture could be copied into committed evidence. | Storage owner | Review checklist | The `approved_for_dependency_pr` path exists only in tests and committed evidence rejects approved, selected, or ready states. |
 | Medium | Unsafe DB or provider details could leak through approval evidence. | Security owner | Future secret-boundary PR | Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references. |
 | Low | Package or lockfile change could be bundled into final-gate prep. | Storage owner | Future dependency PR | This PR does not edit `package.json` or `pnpm-lock.yaml`; package and lockfile permission flags remain false in committed evidence. |
+
+## DB Driver Dependency PR Template v1.1.7 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Template evidence could be mistaken for dependency approval. | Storage owner | Future owner-approved dependency PR | Committed evidence is `template_ready`, `selectedDriver: null`, owner approval `not_approved`, final gate `blocked`, and all permission flags false. |
+| Medium | Future package diff could introduce supply-chain risk. | Storage owner | Future dependency PR | Package diff evidence requires exactly one approved DB driver, no scripts, and no unrelated dependency changes. |
+| Medium | Future lockfile review could miss transitive behavior. | Storage owner | Future dependency PR | Lockfile evidence requires transitive count, integrity, optional dependency, native module, and postinstall review. |
+| Medium | Future owner approval could expire or mismatch target commit. | Project owner | Future dependency PR | Attachment rules require owner approval and final gate evidence bound to the exact target commit. |
+| Medium | Runtime readiness could be inferred from template docs. | Backend owner | Future runtime PR | Template docs explicitly keep runtime, production, legal, and YouTube policy readiness out of scope. |

@@ -401,3 +401,11 @@ quality-gate weakening is introduced.
 - The final gate aggregates owner approval, readiness report, preflight policy, approval dry-run, and review status evidence without authorizing package, lockfile, real DB, migration, provider SDK, production, runtime readiness, legal compliance, or YouTube policy scope.
 - The future complete approval fixture reaches `approved_for_dependency_pr` only inside tests and is rejected as committed evidence.
 - Unsafe values, DB connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references remain rejected.
+
+## DB Driver Dependency PR Template v1.1.7 Prep
+
+- `.codex/db-driver-dependency-pr-template.json` records `templateStatus: template_ready`.
+- Committed evidence keeps `selectedDriver: null`, `ownerApprovalRecordStatus: not_approved`, `finalApprovalGateStatus: blocked`, and package/lockfile/review statuses `missing`.
+- The validator rejects selected drivers, DB driver dependency allowance, package/lockfile allowance, real DB connection, migration execution, live DB integration tests, provider SDK apply, production deployment, runtime readiness, production readiness, legal compliance claims, and YouTube policy compliance claims in current template evidence.
+- Future package diff evidence must add exactly one approved DB driver and must not change scripts or unrelated dependencies.
+- Future complete dependency PR evidence exists only inside tests and is rejected as current committed template evidence.

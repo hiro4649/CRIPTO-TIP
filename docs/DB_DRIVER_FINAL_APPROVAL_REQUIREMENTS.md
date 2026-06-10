@@ -38,3 +38,7 @@ The future complete fixture in tests is non-operational test data. Copying that
 fixture into `.codex` evidence is forbidden. An actual dependency PR must
 regenerate evidence bound to the exact target commit and project-owner approval
 record for that PR.
+
+## Future Dependency PR Evidence
+
+The final approval gate is necessary but not sufficient for dependency introduction. A future dependency PR must also attach package diff evidence, lockfile review evidence, license review, supply-chain review, security advisory review, version pinning, and secret boundary evidence as defined by the DB driver dependency PR template contract.

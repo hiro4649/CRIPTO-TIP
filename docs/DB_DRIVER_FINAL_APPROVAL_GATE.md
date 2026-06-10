@@ -54,3 +54,7 @@ approval and review evidence pass.
 The final gate rejects unsafe evidence, including raw GitHub logs, raw provider responses, DB
 connection strings, private URLs, wallet addresses, and token-like values. The committed evidence is
 not a secret store and must contain safe summaries only.
+
+## Dependency PR Template Link
+
+The allowed next step is the DB driver dependency PR template and evidence contract, not dependency introduction. Future dependency work must use `docs/DB_DRIVER_DEPENDENCY_PR_TEMPLATE.md` and `docs/DB_DRIVER_DEPENDENCY_EVIDENCE_CONTRACT.md` to attach owner approval, final gate, package diff, lockfile, license, supply-chain, advisory, version pinning, and secret boundary evidence before any package or lockfile change is considered.

@@ -157,3 +157,16 @@ deployment, runtime readiness, production readiness, legal compliance, or
 YouTube policy compliance.
 
 The approved future fixture is test-only and is not production readiness.
+
+## DB Driver Dependency PR Template v1.1.7 Prep
+
+The DB driver dependency PR template defines evidence required before any
+future package or lockfile change. Current committed evidence is
+`template_ready`, does not select a driver, and does not authorize DB driver
+dependency introduction.
+
+Future dependency PRs still require project-owner approval, final approval gate
+evidence, package diff review, lockfile review, license review, supply-chain
+review, security advisory review, version pinning, and secret boundary evidence.
+Runtime readiness, production readiness, legal compliance, and YouTube policy
+compliance remain out of scope.
