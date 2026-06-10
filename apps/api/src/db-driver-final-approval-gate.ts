@@ -18,6 +18,7 @@ export const dbDriverFinalApprovalGateBlockers = [
   "preflight_policy_not_pass",
   "approval_dry_run_not_pass",
   "driver_not_selected",
+  "selected_driver_source_mismatch",
   "license_review_missing",
   "supply_chain_review_missing",
   "security_advisory_review_missing",
@@ -110,6 +111,7 @@ export function buildDbDriverFinalApprovalGate(
 
   const blockers = new Set<DbDriverFinalApprovalGateBlocker>();
   const selectedDriver = resolveSelectedDriver(input);
+  if (!allSelectedDriverSourcesAgree(input)) blockers.add("selected_driver_source_mismatch");
   if (selectedDriver === null) blockers.add("driver_not_selected");
   if (input.ownerApprovalRecord.approval_status !== "approved") blockers.add("owner_approval_not_approved");
   if (!isOwnerFingerprintValid(input.ownerApprovalRecord)) blockers.add("owner_approval_fingerprint_not_valid");
@@ -181,6 +183,9 @@ export function validateCommittedDbDriverFinalApprovalGateRecord(record: DbDrive
   assertReviewStatus(record, "secret_boundary_review_status");
   assertCommittedFlagsFalse(record);
   if (record.forbidden_scope_status !== "pass") throw new Error("committed final approval forbidden_scope_status must remain pass");
+  if (record.blockers.length === 0) throw new Error("committed DB driver final approval gate must keep blockers");
+  const ownerOnly = record.blockers.every((blocker) => blocker === "owner_approval_not_approved" || blocker === "owner_approval_fingerprint_not_valid");
+  if (ownerOnly) throw new Error("committed DB driver final approval gate must not be ready_for_owner_review");
   assertRequiredCommittedBlockers(record);
   return record;
 }
@@ -189,13 +194,25 @@ export function assertNoUnsafeDbDriverFinalApprovalGateEvidence(value: unknown) 
   scanUnsafeEvidence(value);
 }
 
-function resolveSelectedDriver(input: DbDriverFinalApprovalGateInput) {
-  const candidates = [
-    input.approvalDryRunRecord.selected_driver,
-    input.readinessReport.selected_driver,
+function selectedDriverSources(input: DbDriverFinalApprovalGateInput) {
+  return [
+    input.ownerApprovalRecord.driver_package ?? null,
     input.preflightPolicyRecord.selected_driver,
-    input.ownerApprovalRecord.driver_package ?? null
-  ].filter((candidate): candidate is string => candidate !== null && candidate !== undefined);
+    input.approvalDryRunRecord.selected_driver,
+    input.readinessReport.selected_driver
+  ];
+}
+
+function allSelectedDriverSourcesAgree(input: DbDriverFinalApprovalGateInput) {
+  const sources = selectedDriverSources(input);
+  if (sources.every((candidate) => candidate === null || candidate === undefined)) return true;
+  if (sources.some((candidate) => candidate === null || candidate === undefined)) return false;
+  return new Set(sources).size === 1;
+}
+
+function resolveSelectedDriver(input: DbDriverFinalApprovalGateInput) {
+  if (!allSelectedDriverSourcesAgree(input)) return null;
+  const candidates = selectedDriverSources(input).filter((candidate): candidate is string => candidate !== null && candidate !== undefined);
   const unique = new Set(candidates);
   if (unique.size > 1) throw new Error("DB driver final approval selected driver inputs disagree");
   return candidates[0] ?? null;
@@ -393,6 +410,24 @@ function assertSafeString(value: string, path: string) {
     /api[_-]?key\s*[:=]/i,
     /oauth\s*token/i
   ];
+  const unsafeKeyPatterns = [
+    /password/i,
+    /clientSecret/i,
+    /client_secret/i,
+    /apiKey/i,
+    /api_key/i,
+    /refreshToken/i,
+    /refresh_token/i,
+    /connectionString/i,
+    /connection_string/i,
+    /rawProviderResponse/i,
+    /raw_provider_response/i
+  ];
+  if (path.endsWith(".key")) {
+    for (const pattern of unsafeKeyPatterns) {
+      if (pattern.test(value)) throw new Error(`unsafe DB driver final approval evidence rejected at ${path}`);
+    }
+  }
   for (const pattern of unsafePatterns) {
     if (pattern.test(value)) throw new Error(`unsafe DB driver final approval evidence rejected at ${path}`);
   }

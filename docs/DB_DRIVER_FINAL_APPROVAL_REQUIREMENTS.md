@@ -33,3 +33,8 @@ claim `approved_for_dependency_pr`.
 
 This PR only adds the final approval gate, tests, safe evidence, and documentation. It intentionally
 does not introduce a DB driver dependency or any runtime database behavior.
+
+The future complete fixture in tests is non-operational test data. Copying that
+fixture into `.codex` evidence is forbidden. An actual dependency PR must
+regenerate evidence bound to the exact target commit and project-owner approval
+record for that PR.

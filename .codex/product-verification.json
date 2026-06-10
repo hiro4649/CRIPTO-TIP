@@ -27,9 +27,9 @@
   "productionReadinessClaimed": false,
   "status": "pass",
   "testFiles": 40,
-  "passed": 816,
+  "passed": 832,
   "skipped": 6,
-  "testsPassed": 816,
+  "testsPassed": 832,
   "testsSkipped": 6,
   "productVerificationCommands": [
     "corepack pnpm lint: pass",
@@ -41,10 +41,10 @@
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27265957340",
+  "ciRunId": "27268100898",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "summary": "40 files, 816 passed, 6 skipped",
+  "summary": "40 files, 832 passed, 6 skipped",
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -122,12 +122,12 @@
     "selected DB driver in committed evidence",
     "approved final gate in committed evidence"
   ],
-  "qualityGateStatus": "awaiting_current_head_quality_gate",
-  "qualityGateRunId": "awaiting_current_head_quality_gate",
-  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27268127670",
+  "qualityGateArtifactId": "7532340839",
   "testSummary": {
     "testFiles": 40,
-    "passed": 816,
+    "passed": 832,
     "skipped": 6
   },
   "prBodyPath": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
@@ -168,7 +168,7 @@
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
   "testCoverageEvidenceStatus": "pass",
-  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
+  "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass"

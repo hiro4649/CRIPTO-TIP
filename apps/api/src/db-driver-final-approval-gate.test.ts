@@ -5,6 +5,7 @@ import {
   type DbDriverApprovalDryRunRecord
 } from "./db-driver-approval-dry-run.js";
 import {
+  assertNoUnsafeDbDriverFinalApprovalGateEvidence,
   buildDbDriverFinalApprovalGate,
   validateCommittedDbDriverFinalApprovalGateRecord,
   type DbDriverFinalApprovalGateRecord
@@ -178,6 +179,8 @@ describe("db driver final approval gate", () => {
 
     expect(evidence.pr_number).toBe(50);
     expect(evidence.target_commit_sha).toMatch(/^[0-9a-f]{40}$/i);
+    expect(evidence.target_commit_sha).not.toBe("89bc65a7eb173b4ec6964387d9e52eb6f9913a02");
+    expect(evidence.target_commit_sha).not.toBe("d0113b8d4bb2a3473874ee23895fdc85e165b132");
     expect(evidence.target_commit_sha).not.toBe(evidence.base_commit_sha);
     expect(evidence.gate_status).toBe("blocked");
     expect(evidence.selected_driver).toBeNull();
@@ -185,6 +188,10 @@ describe("db driver final approval gate", () => {
     expect(evidence.owner_approval_fingerprint_status).toBe("not_applicable");
     expect(evidence.readiness_report_status).toBe("not_ready");
     expect(evidence.approval_dry_run_status).toBe("not_ready");
+    expect(evidence.package_change_allowed).toBe(false);
+    expect(evidence.pnpm_lock_change_allowed).toBe(false);
+    expect(evidence.blockers).toContain("package_change_not_approved");
+    expect(evidence.blockers).toContain("pnpm_lock_change_not_approved");
     expect(evidence.forbidden_scope_status).toBe("pass");
     expect(validateCommittedDbDriverFinalApprovalGateRecord(evidence)).toBe(evidence);
   });
@@ -200,7 +207,11 @@ describe("db driver final approval gate", () => {
 
   it.each([
     ["selected driver", { selected_driver: "pg" }, /must not select a driver/],
+    ["postgres selected driver", { selected_driver: "postgres" }, /must not select a driver/],
+    ["ready owner review gate", { gate_status: "ready_for_owner_review" }, /must remain blocked/],
     ["approved gate", { gate_status: "approved_for_dependency_pr" }, /must remain blocked/],
+    ["empty blockers", { blockers: [] }, /must keep blockers/],
+    ["owner-only blocker", { blockers: ["owner_approval_not_approved"] }, /must not be ready_for_owner_review/],
     ["approved owner", { owner_approval_status: "approved" }, /must remain not_approved/],
     ["valid owner fingerprint", { owner_approval_fingerprint_status: "pass" }, /must remain not_applicable/],
     ["ready readiness report", { readiness_report_status: "ready" }, /must remain not_ready/],
@@ -237,16 +248,26 @@ describe("db driver final approval gate", () => {
   });
 
   it.each([
+    ["unsafe key password", { password: "safe-looking" }],
+    ["unsafe key clientSecret", { clientSecret: "safe-looking" }],
+    ["unsafe key apiKey", { apiKey: "safe-looking" }],
+    ["unsafe key refreshToken", { refreshToken: "safe-looking" }],
+    ["unsafe key connectionString", { connectionString: "safe-looking" }],
+    ["unsafe key rawProviderResponse", { rawProviderResponse: "safe-looking" }],
     ["private URL", "private URL https://example.invalid/dashboard"],
     ["DB connection string", "postgres://user:pass@db.local:5432/app"],
     ["wallet address", "0x1111111111111111111111111111111111111111"],
     ["token-like value", "Bearer abc.def.ghi"],
-    ["GitHub raw log reference", "raw GitHub logs include failure payload"],
+    ["GitHub raw trace reference", "raw GitHub logs include failure payload"],
     ["raw provider response", "raw provider response: unavailable"]
   ] as const)("rejects unsafe %s evidence", (_label, unsafeValue) => {
-    expect(() => gate({
-      readiness: readinessReport({ safe_summary: unsafeValue })
-    })).toThrow(/unsafe DB driver final approval evidence rejected/);
+    if (typeof unsafeValue === "string") {
+      expect(() => gate({
+        readiness: readinessReport({ safe_summary: unsafeValue })
+      })).toThrow(/unsafe DB driver final approval evidence rejected/);
+      return;
+    }
+    expect(() => assertNoUnsafeDbDriverFinalApprovalGateEvidence(unsafeValue)).toThrow(/unsafe DB driver final approval evidence rejected/);
   });
 
   it.each([
@@ -262,12 +283,65 @@ describe("db driver final approval gate", () => {
 
   it("does not commit the future complete fixture as machine-readable evidence", () => {
     const evidence = committedGateFromDisk();
+    const future = completeFutureFixture();
 
+    expect(evidence).not.toEqual(future);
     expect(evidence.gate_status).not.toBe("approved_for_dependency_pr");
+    expect(evidence.gate_status).toBe("blocked");
     expect(evidence.selected_driver).toBeNull();
+    expect(evidence.owner_approval_status).toBe("not_approved");
     expect(evidence.package_change_allowed).toBe(false);
     expect(evidence.pnpm_lock_change_allowed).toBe(false);
     expect(evidence.real_db_connection_allowed).toBe(false);
     expect(evidence.actual_production_deployment_allowed).toBe(false);
+    expect(() => validateCommittedDbDriverFinalApprovalGateRecord(future)).toThrow(/must remain blocked/);
+  });
+
+  it.each([
+    ["owner driver only", { owner: approvedOwner(), preflight: preflightPolicy(), approval: dryRun(), readiness: readinessReport() }],
+    ["preflight selected without dry-run", {
+      preflight: preflightPolicy({ driver_choice_status: "selected", selected_driver: "pg", package_change_allowed: true, pnpm_lock_change_allowed: true }),
+      approval: dryRun(),
+      readiness: readinessReport()
+    }],
+    ["dry-run selected without readiness", {
+      preflight: preflightPolicy({ driver_choice_status: "selected", selected_driver: "pg", package_change_allowed: true, pnpm_lock_change_allowed: true }),
+      approval: dryRun({ selected_driver: "pg" }),
+      readiness: readinessReport()
+    }],
+    ["mismatched selected drivers", {
+      owner: approvedOwner(),
+      preflight: preflightPolicy({ driver_choice_status: "selected", selected_driver: "pg", package_change_allowed: true, pnpm_lock_change_allowed: true }),
+      approval: dryRun({ selected_driver: "postgres" }),
+      readiness: readinessReport({ selected_driver: "pg" })
+    }]
+  ] as const)("blocks selected driver source mismatch for %s", (_label, parts) => {
+    const result = gate(parts);
+
+    expect(result.gate_status).toBe("blocked");
+    expect(result.selected_driver).toBeNull();
+    expect(result.blockers).toEqual(expect.arrayContaining(["driver_not_selected", "selected_driver_source_mismatch"]));
+  });
+
+  it("requires all selected driver sources to agree for the future complete fixture", () => {
+    const result = completeFutureFixture();
+
+    expect(result.gate_status).toBe("approved_for_dependency_pr");
+    expect(result.selected_driver).toBe("pg");
+  });
+
+  it("keeps selected preflight policy alone blocked without owner approval or dry-run pass", () => {
+    const result = gate({
+      preflight: preflightPolicy({ driver_choice_status: "selected", selected_driver: "pg", package_change_allowed: true, pnpm_lock_change_allowed: true }),
+      approval: dryRun(),
+      readiness: readinessReport()
+    });
+
+    expect(result.gate_status).toBe("blocked");
+    expect(result.blockers).toEqual(expect.arrayContaining([
+      "owner_approval_not_approved",
+      "approval_dry_run_not_pass",
+      "selected_driver_source_mismatch"
+    ]));
   });
 });

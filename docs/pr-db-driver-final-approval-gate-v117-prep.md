@@ -14,6 +14,8 @@ This PR prepares the DB driver final approval boundary after the owner approval,
 
 Changed area: DB driver final approval gate code, final approval gate tests, DB driver final approval docs, `.codex` machine evidence, and classification rules for `.gitignore`.
 
+`.gitignore` change: excludes local temporary `.codex/tmp-*` working artifacts from accidental commit. It does not hide required machine evidence; required `.codex/*.json` files remain tracked. It has no product runtime effect and no package or dependency effect.
+
 ## Constraints
 
 No DB driver dependency, package or lockfile change, real DB connection, migration execution, live DB integration test, real provider SDK apply, production deployment, runtime readiness claim, legal compliance claim, YouTube policy compliance claim, or GitHub Actions raw trace reading is introduced.
@@ -40,21 +42,21 @@ Done when: committed evidence stays blocked and unapproved, all local checks pas
 
 ## Evidence Integrity
 
-Head SHA: d0113b8d4bb2a3473874ee23895fdc85e165b132
+Head SHA: a9e25c5da52c7e9af6e926320ce060d67dcccb2f
 
 Base SHA: 735557519cbf3b1cc1b186c5591744336d4d7eeb
 
 Product CI: success
 
-Quality-gate: awaiting_current_head_quality_gate
+Quality-gate: success
 
-CI run: 27265957340
+CI run: 27268100898
 
-Quality-gate run: awaiting_current_head_quality_gate
+Quality-gate run: 27268127670
 
-Quality-gate artifact: awaiting_current_head_quality_gate
+Quality-gate artifact: 7532340839
 
-Tests: 40 test files, 816 passed, 6 skipped
+Tests: 40 test files, 832 passed, 6 skipped
 
 ## Testing and review
 
@@ -121,10 +123,10 @@ Reason selected: Candidate B creates enforceable approval controls without cross
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 40 files, 816 passed, 6 skipped.
+Current recorded test summary: 40 files, 832 passed, 6 skipped.
 
 - Changed area: DB driver final approval gate aggregation, committed blocked evidence, documentation, and `.codex` evidence.
-- Test command: `corepack pnpm test` and `npm test` both passed with 40 files, 816 passed, 6 skipped.
+- Test command: `corepack pnpm test` and `npm test` both passed with 40 files, 832 passed, 6 skipped.
 - What the test covers: blocked committed state, null selected driver, `not_approved` owner status, `not_ready` readiness and dry-run inputs, false final permission flags, future approval fixture isolation, unsafe evidence rejection, and context mismatch rejection.
 - Edge cases: approved committed evidence, selected driver, permission flag true, unsafe URLs, token-like values, wallet values, unsafe trace references, wrong PR, wrong branch, wrong head, and wrong base are rejected.
 
@@ -180,7 +182,7 @@ Merge-after verify: only after same-head required GitHub checks pass and PR evid
 
 ## Stale Evidence Check
 
-Current evidence uses `current_pr_head` and `current_pr_base` in `.codex` machine evidence, with rendered PR evidence refreshed for the PR head.
+Current evidence is rendered for the PR head, and the committed final approval gate record is bound to PR #50 and the PR base.
 
 ## Manual Confirmation Limits
 

@@ -23,12 +23,31 @@ The committed `.codex/db-driver-final-approval-gate.json` is intentionally block
 - `approval_dry_run_status`: `not_ready`
 - all package, lockfile, real DB, migration, provider SDK, production, readiness, legal, and YouTube policy permission flags: `false`
 
+`ready_for_owner_review` is a future computed state only. `approved_for_dependency_pr`
+is also a future computed state only. Committed `.codex` evidence for PR #50 must
+remain `blocked`; AI review does not move the gate to `ready_for_owner_review`.
+Human project-owner approval still requires a separate PR.
+
 ## Future Approval Boundary
 
 A future dependency PR may reach `approved_for_dependency_pr` only when a testable owner-approved
 record, readiness report, preflight policy, approval dry-run, and all required reviews are complete
 and safe. That approval still does not authorize production readiness, legal compliance, YouTube
 policy compliance, provider SDK apply, production deployment, or live database execution.
+
+The selected driver must be present and consistent in all final-approval sources:
+owner approval, preflight policy, approval dry-run, and readiness report. A driver
+appearing in only one source, or disagreeing across sources, keeps the final gate
+blocked.
+
+`preflight_policy_status: pass` only means the preflight record is internally
+consistent. It does not mean the driver dependency is approved. Final approval
+still requires owner approval, readiness report, approval dry-run, and complete
+review evidence.
+
+For the current PR, package and lockfile changes are forbidden and absent. In a
+future dependency PR, package and lockfile changes remain blocked until owner
+approval and review evidence pass.
 
 ## Safety Rules
 

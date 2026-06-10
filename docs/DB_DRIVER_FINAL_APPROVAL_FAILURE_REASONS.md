@@ -11,6 +11,7 @@ future DB driver dependency PR is not yet approved.
 - `preflight_policy_not_pass`
 - `approval_dry_run_not_pass`
 - `driver_not_selected`
+- `selected_driver_source_mismatch`
 
 ## Required Reviews
 

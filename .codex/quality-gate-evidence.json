@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "awaiting_current_head_quality_gate",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "awaiting_current_head_quality_gate",
-  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
+  "qualityGateRunId": "27268127670",
+  "qualityGateArtifactId": "7532340839",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
@@ -138,16 +138,16 @@
     "approved final gate in committed evidence"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27265957340",
+  "ciRunId": "27268100898",
   "testSummary": {
     "testFiles": 40,
-    "passed": 816,
+    "passed": 832,
     "skipped": 6
   },
   "testFiles": 40,
-  "passed": 816,
+  "passed": 832,
   "skipped": 6,
-  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
+  "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
@@ -190,6 +190,6 @@
   ],
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
-  "testsPassed": 816,
+  "testsPassed": 832,
   "testsSkipped": 6
 }

@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "ciRunId": "27265957340",
-  "qualityGateRunId": "awaiting_current_head_quality_gate",
-  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
+  "ciRunId": "27268100898",
+  "qualityGateRunId": "27268127670",
+  "qualityGateArtifactId": "7532340839",
   "productCiStatus": "success",
-  "qualityGateStatus": "awaiting_current_head_quality_gate",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -246,7 +246,7 @@
   ],
   "testSummary": {
     "testFiles": 40,
-    "passed": 816,
+    "passed": 832,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -272,7 +272,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 816,
+  "testsPassed": 832,
   "testsSkipped": 6,
   "testFiles": 40,
   "productVerificationCommands": [
@@ -316,9 +316,9 @@
     "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
   "prBodyPath": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
-  "passed": 816,
+  "passed": 832,
   "skipped": 6,
-  "summary": "40 files, 816 passed, 6 skipped",
+  "summary": "40 files, 832 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-final-approval-gate.json",
@@ -346,13 +346,13 @@
   ],
   "testCoverageEvidence": [
     "Changed area: DB driver final approval gate aggregation, committed blocked evidence, docs, and .codex evidence.",
-    "Test command: corepack pnpm test and npm test both passed with 40 files, 816 passed, 6 skipped.",
+    "Test command: corepack pnpm test and npm test both passed with 40 files, 832 passed, 6 skipped.",
     "What the test covers: blocked committed state, null selected driver, not_approved owner status, not_ready readiness and dry-run inputs, false final permission flags, future approval fixture isolation, unsafe evidence rejection, and context mismatch rejection.",
     "Edge cases: approved committed evidence, selected driver, permission flag true, unsafe URLs/tokens/wallet values, unsafe trace references, wrong PR, wrong branch, wrong head, and wrong base are rejected."
   ],
   "testing": {
     "testFiles": 40,
-    "passed": 816,
+    "passed": 832,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",
@@ -394,7 +394,7 @@
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
   "testCoverageEvidenceStatus": "pass",
-  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
+  "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass"
