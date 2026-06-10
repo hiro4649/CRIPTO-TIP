@@ -1041,6 +1041,15 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Committed blocked machine evidence for DB driver final approval gate."
+    },
+    {
+      "pathPattern": ".gitignore",
+      "classification": "repo_config",
+      "surface": "repository_hygiene",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Ignores generated temporary safe-artifact download directories."
     }
   ],
   "safeSummaryOnly": true

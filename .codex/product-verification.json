@@ -3,8 +3,8 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 50,
-  "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
-  "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "productVerificationStatus": "pass",
   "commands": [
     "corepack pnpm test -- apps/api/src/db-driver-final-approval-gate.test.ts",
@@ -41,7 +41,7 @@
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27265551608",
+  "ciRunId": "27265957340",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "summary": "40 files, 816 passed, 6 skipped",
@@ -62,6 +62,7 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
+    ".gitignore",
     "apps/api/src/db-driver-final-approval-gate.ts",
     "apps/api/src/db-driver-final-approval-gate.test.ts",
     "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
@@ -120,9 +121,9 @@
     "selected DB driver in committed evidence",
     "approved final gate in committed evidence"
   ],
-  "qualityGateStatus": "previous_run_failed_after_initial_pr_body",
-  "qualityGateRunId": "27265552322",
-  "qualityGateArtifactId": "safe_artifact_downloaded_from_failed_run",
+  "qualityGateStatus": "awaiting_current_head_quality_gate",
+  "qualityGateRunId": "awaiting_current_head_quality_gate",
+  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
   "testSummary": {
     "testFiles": 40,
     "passed": 816,
@@ -166,7 +167,7 @@
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
   "testCoverageEvidenceStatus": "pass",
-  "targetQualityScoreStatus": "pending_after_repair_push",
+  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass"

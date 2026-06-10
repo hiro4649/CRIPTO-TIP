@@ -21,19 +21,19 @@ Done criteria: DB driver final approval gate record exists; committed gate remai
 
 ## Evidence Integrity
 
-Head SHA: 89bc65a7eb173b4ec6964387d9e52eb6f9913a02
+Head SHA: edc6fe54c9514f80770e5c05ebeb2e38a96b6f47
 
 Base SHA: 735557519cbf3b1cc1b186c5591744336d4d7eeb
 
 Product CI: success
 
-Quality-gate: previous_run_failed_after_initial_pr_body
+Quality-gate: awaiting_current_head_quality_gate
 
-CI run: 27265551608
+CI run: 27265957340
 
-Quality-gate run: 27265552322
+Quality-gate run: awaiting_current_head_quality_gate
 
-Quality-gate artifact: safe_artifact_downloaded_from_failed_run
+Quality-gate artifact: awaiting_current_head_quality_gate
 
 Tests: 40 test files, 816 passed, 6 skipped
 

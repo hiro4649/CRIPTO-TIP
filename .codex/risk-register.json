@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 50,
-  "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
+  "headSha": "current_pr_head",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -107,7 +107,7 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
+  "baseSha": "current_pr_base",
   "status": "pass",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver readiness report for v1.1.6 that aggregates owner approval, preflight policy, and approval dry-run evidence into committed not_ready evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
@@ -132,6 +132,7 @@
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
+    ".gitignore",
     "docs/pr-db-driver-approval-dry-run-v116-prep.md"
   ],
   "allowedScope": [
@@ -183,10 +184,10 @@
     "selected DB driver in committed evidence"
   ],
   "productCiStatus": "success",
-  "qualityGateStatus": "previous_run_failed_after_initial_pr_body",
-  "ciRunId": "27265551608",
-  "qualityGateRunId": "27265552322",
-  "qualityGateArtifactId": "safe_artifact_downloaded_from_failed_run",
+  "qualityGateStatus": "awaiting_current_head_quality_gate",
+  "ciRunId": "27265957340",
+  "qualityGateRunId": "awaiting_current_head_quality_gate",
+  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
   "testSummary": {
     "testFiles": 40,
     "passed": 816,
@@ -220,7 +221,7 @@
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
   "testCoverageEvidenceStatus": "pass",
-  "targetQualityScoreStatus": "pending_after_repair_push",
+  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass"

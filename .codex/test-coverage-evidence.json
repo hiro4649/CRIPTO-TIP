@@ -3,8 +3,8 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 50,
-  "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
-  "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "testFiles": 40,
@@ -44,6 +44,7 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
+    ".gitignore",
     "apps/api/src/db-driver-final-approval-gate.ts",
     "apps/api/src/db-driver-final-approval-gate.test.ts",
     "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
@@ -103,10 +104,10 @@
     "approved final gate in committed evidence"
   ],
   "productCiStatus": "success",
-  "qualityGateStatus": "previous_run_failed_after_initial_pr_body",
-  "ciRunId": "27265551608",
-  "qualityGateRunId": "27265552322",
-  "qualityGateArtifactId": "safe_artifact_downloaded_from_failed_run",
+  "qualityGateStatus": "awaiting_current_head_quality_gate",
+  "ciRunId": "27265957340",
+  "qualityGateRunId": "awaiting_current_head_quality_gate",
+  "qualityGateArtifactId": "awaiting_current_head_quality_gate",
   "prBodyPath": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
   "doneCriteria": [
     "DB driver final approval gate record exists",
@@ -154,7 +155,7 @@
   ],
   "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
-  "targetQualityScoreStatus": "pending_after_repair_push",
+  "targetQualityScoreStatus": "awaiting_current_head_quality_gate",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass"
