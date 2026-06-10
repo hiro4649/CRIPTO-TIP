@@ -7,7 +7,6 @@ export const allowedDbDriverCandidates = ["pg", "postgres"] as const;
 export type DbDriverCandidate = typeof allowedDbDriverCandidates[number];
 
 export const dbDriverRecommendedStatuses = [
-  "candidate",
   "rejected_future_review",
   "needs_owner_review",
   "not_selected"
@@ -58,6 +57,8 @@ export type DbDriverPreflightPolicyRecord = {
   actual_production_deployment_allowed: boolean;
   runtime_readiness_claim_allowed: boolean;
   production_readiness_claim_allowed: boolean;
+  legal_compliance_claim_allowed: boolean;
+  youtube_policy_compliance_claim_allowed: boolean;
   license_review_required: boolean;
   supply_chain_review_required: boolean;
   security_advisory_review_required: boolean;
@@ -66,7 +67,7 @@ export type DbDriverPreflightPolicyRecord = {
   package_diff_review_required: boolean;
   secret_manager_review_required: boolean;
   created_at: string;
-  candidate_evaluations?: DbDriverCandidateEvaluation[] | undefined;
+  candidate_evaluations: DbDriverCandidateEvaluation[];
 };
 
 export type DbDriverPreflightPolicyContext = {
@@ -108,6 +109,8 @@ export function createDefaultDbDriverPreflightPolicyRecord(input: {
     actual_production_deployment_allowed: false,
     runtime_readiness_claim_allowed: false,
     production_readiness_claim_allowed: false,
+    legal_compliance_claim_allowed: false,
+    youtube_policy_compliance_claim_allowed: false,
     license_review_required: true,
     supply_chain_review_required: true,
     security_advisory_review_required: true,
@@ -139,15 +142,8 @@ export function validateDbDriverPreflightPolicyRecord(
   assertAllowedCandidateDrivers(record.candidate_drivers);
   assertCandidateEvaluations(record);
 
-  if (record.selected_driver !== null && record.driver_choice_status !== "selected") {
-    throw new Error("selected_driver requires driver_choice_status selected");
-  }
-  if (record.driver_choice_status === "selected" && record.owner_approval_record_status !== "approved") {
-    throw new Error("driver_choice_status selected requires approved owner approval record");
-  }
-  if (record.selected_driver && !record.candidate_drivers.includes(record.selected_driver)) {
-    throw new Error("selected_driver must be listed in candidate_drivers");
-  }
+  if (record.driver_choice_status === "selected") throw new Error("this PR cannot select a DB driver");
+  if (record.selected_driver !== null) throw new Error("selected_driver must remain null in DB driver preflight PR");
   if (!record.owner_approval_record_required) throw new Error("DB driver preflight requires owner approval record");
   assertReviewRequirements(record);
   assertForbiddenPreflightCapabilitiesRemainFalse(record);
@@ -183,21 +179,35 @@ export function assertNoUnsafeDbDriverPreflightEvidence(value: unknown) {
 
 function assertAllowedCandidateDrivers(candidates: string[]) {
   if (!Array.isArray(candidates) || candidates.length === 0) throw new Error("candidate_drivers must include allowed candidates");
-  const unique = new Set<string>();
-  for (const candidate of candidates) {
-    if (!allowedDbDriverCandidates.includes(candidate as DbDriverCandidate)) throw new Error(`unknown DB driver candidate: ${candidate}`);
-    unique.add(candidate);
-  }
+  const unique = new Set(candidates);
   if (unique.size !== candidates.length) throw new Error("candidate_drivers must not contain duplicates");
+  for (const candidate of unique) {
+    if (!allowedDbDriverCandidates.includes(candidate as DbDriverCandidate)) throw new Error(`unknown DB driver candidate: ${candidate}`);
+  }
+  for (const requiredCandidate of allowedDbDriverCandidates) {
+    if (!unique.has(requiredCandidate)) throw new Error(`candidate_drivers must include ${requiredCandidate}`);
+  }
+  if (unique.size !== allowedDbDriverCandidates.length) throw new Error("candidate_drivers must exactly match allowed review candidates");
 }
 
 function assertCandidateEvaluations(record: DbDriverPreflightPolicyRecord) {
-  if (!record.candidate_evaluations) return;
+  if (!Array.isArray(record.candidate_evaluations) || record.candidate_evaluations.length === 0) {
+    throw new Error("candidate_evaluations are required for DB driver preflight policy");
+  }
+  const evaluatedCandidates = new Set<string>();
   for (const evaluation of record.candidate_evaluations) {
     if (!allowedDbDriverCandidates.includes(evaluation.driver_name as DbDriverCandidate)) throw new Error(`unknown DB driver evaluation candidate: ${evaluation.driver_name}`);
     if (evaluation.driver_name !== evaluation.npm_package_name) throw new Error("candidate evaluation package must match allowed driver name");
+    if (evaluatedCandidates.has(evaluation.driver_name)) throw new Error("candidate_evaluations must not contain duplicate candidates");
+    evaluatedCandidates.add(evaluation.driver_name);
     if (!dbDriverRecommendedStatuses.includes(evaluation.recommended_status)) throw new Error("candidate evaluation recommended_status is invalid");
-    if (evaluation.recommended_status === "candidate") throw new Error("this PR cannot mark a driver as a final candidate");
+    assertNoSelectionOrApprovalWording(evaluation);
+  }
+  for (const candidate of record.candidate_drivers) {
+    if (!evaluatedCandidates.has(candidate)) throw new Error(`candidate_evaluations must include ${candidate}`);
+  }
+  if (evaluatedCandidates.size !== record.candidate_drivers.length) {
+    throw new Error("candidate_evaluations must exactly match candidate_drivers");
   }
 }
 
@@ -221,6 +231,8 @@ function assertForbiddenPreflightCapabilitiesRemainFalse(record: DbDriverPreflig
   if (record.actual_production_deployment_allowed) throw new Error("actual production deployment remains forbidden");
   if (record.runtime_readiness_claim_allowed) throw new Error("runtime readiness claim remains forbidden");
   if (record.production_readiness_claim_allowed) throw new Error("production readiness claim remains forbidden");
+  if (record.legal_compliance_claim_allowed) throw new Error("legal compliance claim remains forbidden");
+  if (record.youtube_policy_compliance_claim_allowed) throw new Error("YouTube policy compliance claim remains forbidden");
 }
 
 function assertContextBinding(record: DbDriverPreflightPolicyRecord, context?: DbDriverPreflightPolicyContext) {
@@ -250,6 +262,15 @@ function scanUnsafeEvidence(value: unknown, path: string[] = []) {
   }
 }
 
+function assertNoSelectionOrApprovalWording(evaluation: DbDriverCandidateEvaluation) {
+  const forbiddenWording = /\b(approved|selected|production_ready|recommended_final|safe_for_production|owner_approved|legal_compliant|youtube_policy_compliant)\b/i;
+  for (const value of Object.values(evaluation)) {
+    if (typeof value === "string" && forbiddenWording.test(value)) {
+      throw new Error("candidate evaluation must not contain approval, selection, readiness, legal compliance, or YouTube policy compliance wording");
+    }
+  }
+}
+
 function assertIsoUtc(value: string, label: string) {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/.test(value)) throw new Error(`${label} must be ISO UTC`);
   if (Number.isNaN(new Date(value).getTime())) throw new Error(`${label} must be parseable`);
@@ -260,5 +281,5 @@ function unsafeEvidenceKeyPattern() {
 }
 
 function unsafeEvidenceValuePattern() {
-  return /Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|PRIVATE KEY|BEGIN PRIVATE KEY|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|file_contents|dependency_tree|raw[_ -]?provider[_ -]?response/i;
+  return /Bearer\s+|https?:\/\/|postgres(?:ql)?:\/\/|DATABASE_URL|POSTGRES_URL|password|dbPassword|clientSecret|client_secret|client_secret=|apiKey|api_key|api-key|refreshToken|refresh_token|accessToken|access_token|secretValue|secret_value|connectionString|connection_string|databaseUrl|database_url|postgresUrl|postgres_url|PRIVATE KEY|BEGIN PRIVATE KEY|password=|token=|secret=|ghp_|sk-|xoxb-|AKIA|0x[0-9a-fA-F]{40}|gh run view --log|logs_url|stdout|stderr|stack[_ -]?trace|file_contents|dependency_tree|raw[_ -]?provider[_ -]?response/i;
 }

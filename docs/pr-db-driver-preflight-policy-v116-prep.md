@@ -5,9 +5,17 @@ Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driv
 PR profile: product_r3
 Task mode: feature
 
+## Goal
+
+Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driver, package.json change, pnpm-lock change, real DB connection, live DB integration test, migration execution, provider SDK apply, or production deployment.
+
 ## Risk level
 
-R3. This is product-relevant preflight policy and evidence work that touches an internal validator, tests, docs, and `.codex` evidence. It intentionally does not add a DB driver dependency, package change, lockfile change, real DB connection, migration execution, provider SDK apply, or production deployment.
+R3. Product-relevant preflight policy and evidence work. No DB driver dependency, package change, lockfile change, real DB connection, migration execution, provider SDK apply, or production deployment is introduced.
+
+## Product verification
+
+Local verification includes install, lint, typecheck, pnpm test, npm test, evidence CI, quality self-protection, placeholder check, quality self-protection script check, and secret safety scan. GitHub typescript, contracts, and quality-gate must pass on current head before merge.
 
 ## Affected entrypoints
 
@@ -20,7 +28,7 @@ R3. This is product-relevant preflight policy and evidence work that touches an 
 
 - A driver is selected without project-owner approval.
 - A package or lockfile change is allowed before the dependency review.
-- Real DB, live DB, migration, provider SDK, or production readiness flags are enabled too early.
+- Real DB, live DB, migration, provider SDK, production, legal compliance, YouTube policy compliance, or readiness flags are enabled too early.
 - Unsafe evidence values such as DB URLs, private URLs, wallet addresses, token-like values, raw provider responses, or raw GitHub logs are recorded.
 - AI review recommendation is mistaken for human owner approval.
 
@@ -40,25 +48,27 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: DB driver preflight policy validator exists; default record is not_selected; candidate drivers are limited to pg and postgres; no selected driver is recorded; owner approval record remains required and not_approved; package and lockfile changes remain disabled; real DB, live DB, migration, provider SDK, production apply, and readiness flags remain disabled; license, supply-chain, advisory, version pinning, lockfile, package diff, and secret manager reviews remain required.
+Done criteria: DB driver preflight policy validator exists; default record is not_selected; candidate drivers are the exact review set pg and postgres; candidate evaluations are required and complete; no selected driver is recorded; owner approval record remains required and not_approved; package and lockfile changes remain disabled; real DB, live DB, migration, provider SDK, production apply, legal compliance, YouTube policy compliance, and readiness flags remain disabled; license, supply-chain, advisory, version pinning, lockfile, package diff, and secret manager reviews remain required.
+
+This PR defines preflight policy only and cannot select a driver.
 
 ## Evidence Integrity
 
-Head SHA: 2f45bf9b84770b3adaad6b147477918e2b5b67ce
+Head SHA: 040573da0853d42032420919128bd3c48e027c91
 
 Base SHA: 9b41e6453172ef9287c9ce41774a50589568a728
 
 Product CI: success
 
-Quality-gate: awaiting_rerun_after_current_head_evidence_refresh
+Quality-gate: success
 
-CI run: 27242908477
+CI run: 27243372594
 
-Quality-gate run: 27242908499
+Quality-gate run: 27244093501
 
-Quality-gate artifact: 7522902327
+Quality-gate artifact: 7523339400
 
-Tests: 37 test files, 670 passed, 6 skipped
+Tests: 37 test files, 695 passed, 6 skipped
 
 ## Testing and review
 
@@ -89,10 +99,10 @@ Product verification commands:
 - `corepack pnpm evidence:ci` - pass
 - `corepack pnpm quality:self-protection` - pass
 - `node scripts/write-test-summary.mjs` - pass
+- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-db-driver-preflight-policy-v116-prep.md` - pass
 - `node scripts/check-evidence-placeholders.mjs` - pass
-- `node scripts/validate-evidence-freshness.mjs` - local optional until PR refresh
+- `node scripts/validate-evidence-freshness.mjs` - pass
 - `node scripts/check-quality-gate-self-protection.mjs` - pass
-- `node scripts/codex-secret-safety-scan.mjs` - pass
 
 Package verification:
 
@@ -118,34 +128,22 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 37 files, 670 passed, 6 skipped.
+Current recorded test summary: 37 files, 695 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-preflight-policy.ts`, `apps/api/src/db-driver-preflight-policy.test.ts`, DB driver preflight docs, and `.codex` evidence.
 
 Test command: `corepack pnpm vitest run apps/api/src/db-driver-preflight-policy.test.ts`; `corepack pnpm test`; `npm test`; `corepack pnpm evidence:ci`; `corepack pnpm quality:self-protection`.
 
-What the tests cover: safe default `not_selected` state, candidate allowlist, selected driver rejection without approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness denial, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.
+What the test covers: safe default `not_selected` state, exact `pg` and `postgres` candidate set, required candidate evaluations, selected driver rejection even with approved owner record, package/lockfile/real DB/live DB/migration/provider/production/readiness/legal/YouTube policy denials, review requirement enforcement, unsafe value rejection, context binding, and machine-readable evidence safe defaults.
 
-Edge cases: unknown candidate driver, selected driver without approved owner record, selected driver not in candidates, package change allowed, pnpm lock change allowed, real DB connection allowed, live DB integration allowed, migration apply allowed, provider SDK apply allowed, production deployment allowed, runtime readiness claim allowed, production readiness claim allowed, missing review requirement, DB connection string, private URL, wallet address, token-like value, raw provider response, raw GitHub logs reference, and stale target commit binding.
-
-## Review Independence
-
-- Writer evidence and AI review recommendation remain separate.
-- AI review recommendation is not human owner approval.
-- Human project-owner confirmation is required before DB driver selection or dependency introduction.
-- This PR keeps driver choice status `not_selected`.
+Edge cases: missing `pg`, missing `postgres`, duplicate candidate evaluation, selected driver with approved owner record, forbidden capability flags, missing review requirement, DB connection string, private URL, wallet address, token-like value, password/client secret/API key/refresh token/access token/connection string/private key patterns, approval/selection/readiness/compliance wording, raw provider response, raw GitHub logs reference, and stale target commit binding.
 
 ## Best of N Evidence
 
-Candidates:
-
-- Candidate A: add `pg` dependency now and run package install. Rejected because owner approval and dependency preflight review are absent.
-- Candidate B: add DB driver preflight policy, candidate evaluation matrix, review checklists, tests, and evidence without dependency/package changes.
-- Candidate C: only document that a driver is needed later. Rejected because it leaves no machine-readable preflight gate.
-
-Selected candidate: Candidate B.
-
-Reason selected: Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval.
+Candidate count: 3
+Selected candidate: Candidate B, preflight policy plus candidate/review evidence without dependency/package changes.
+Reason selected: enforceable preflight guardrails with no DB driver or package/lockfile change.
+Rejected alternatives: Candidate A adds a DB driver too early; Candidate C is docs-only and lacks machine-readable gates.
 
 ## Security Boundaries
 
@@ -172,4 +170,3 @@ Reason selected: Candidate B creates enforceable preflight gates without adding 
 - Driver choice status is not_selected for this PR.
 - AI review recommendations are not recorded as human approval.
 - Future DB driver dependency introduction requires a new project-owner-approved PR.
-

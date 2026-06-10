@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 46,
-  "headSha": "2f45bf9b84770b3adaad6b147477918e2b5b67ce",
+  "headSha": "040573da0853d42032420919128bd3c48e027c91",
   "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "awaiting_rerun_after_current_head_evidence_refresh",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "27242908499",
-  "qualityGateArtifactId": "7522902327",
+  "qualityGateRunId": "27244093501",
+  "qualityGateArtifactId": "7523339400",
   "title": "feat: add db driver owner approval record",
   "goal": "Prepare DB driver owner approval record boundary for v1.1.6 with target commit binding, replay protection, expiry, owner role validation, fingerprint validation, and safe default not_approved evidence, without adding a DB driver, real DB connection, package change, live DB integration test, migration execution, provider SDK apply, or production deployment.",
   "evidenceStatus": "current_head_refresh_requested",

@@ -42,6 +42,16 @@ function firstEvaluation(patch: Partial<DbDriverCandidateEvaluation> = {}): DbDr
   return { ...evaluation, ...patch };
 }
 
+function secondEvaluation(patch: Partial<DbDriverCandidateEvaluation> = {}): DbDriverCandidateEvaluation {
+  const evaluation = base().candidate_evaluations?.[1];
+  if (!evaluation) throw new Error("missing test candidate evaluation");
+  return { ...evaluation, ...patch };
+}
+
+function evaluations(...evaluations: DbDriverCandidateEvaluation[]) {
+  return evaluations;
+}
+
 describe("DB driver preflight policy", () => {
   it("default DB driver preflight policy is not_selected", () => {
     const record = validateDbDriverPreflightPolicyRecord(base());
@@ -63,7 +73,9 @@ describe("DB driver preflight policy", () => {
     ["provider SDK apply allowed", { provider_sdk_apply_allowed: true }],
     ["production deployment allowed", { actual_production_deployment_allowed: true }],
     ["runtime readiness claim allowed", { runtime_readiness_claim_allowed: true }],
-    ["production readiness claim allowed", { production_readiness_claim_allowed: true }]
+    ["production readiness claim allowed", { production_readiness_claim_allowed: true }],
+    ["legal compliance claim allowed", { legal_compliance_claim_allowed: true }],
+    ["YouTube policy compliance claim allowed", { youtube_policy_compliance_claim_allowed: true }]
   ])("default DB driver preflight policy rejects %s", (_label, patch) => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord(patch))).toThrow();
   });
@@ -80,38 +92,94 @@ describe("DB driver preflight policy", () => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord(patch))).toThrow();
   });
 
-  it("preflight policy accepts pg as candidate", () => {
-    expect(validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["pg"] })).candidate_drivers).toEqual(["pg"]);
+  it("preflight policy rejects candidate list missing pg", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["postgres"] }))).toThrow(/pg/);
   });
 
-  it("preflight policy accepts postgres as candidate", () => {
-    expect(validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["postgres"] })).candidate_drivers).toEqual(["postgres"]);
+  it("preflight policy rejects candidate list missing postgres", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["pg"] }))).toThrow(/postgres/);
+  });
+
+  it("preflight policy accepts exact candidate list pg and postgres", () => {
+    expect(validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["pg", "postgres"] })).candidate_drivers).toEqual(["pg", "postgres"]);
   });
 
   it("preflight policy rejects unknown candidate driver", () => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["mysql"] }))).toThrow(/unknown/);
   });
 
+  it("preflight policy rejects candidate list with extra driver", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_drivers: ["pg", "postgres", "mysql"] }))).toThrow(/unknown/);
+  });
+
   it("preflight policy rejects selected driver without approved owner record", () => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
       driver_choice_status: "selected",
       selected_driver: "pg"
-    }))).toThrow(/approved owner/);
+    }))).toThrow(/cannot select/);
   });
 
-  it("preflight policy rejects selected driver not in candidates", () => {
+  it("preflight policy rejects selected driver even with approved owner record", () => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
       driver_choice_status: "selected",
       selected_driver: "pg",
-      candidate_drivers: ["postgres"],
       owner_approval_record_status: "approved"
-    }))).toThrow(/candidate_drivers/);
+    }))).toThrow(/cannot select/);
+  });
+
+  it("preflight policy rejects driver_choice_status selected", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
+      driver_choice_status: "selected",
+      selected_driver: null,
+      owner_approval_record_status: "approved"
+    }))).toThrow(/cannot select/);
+  });
+
+  it("preflight policy requires selected_driver null", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ selected_driver: "postgres" }))).toThrow(/selected_driver/);
   });
 
   it("preflight policy rejects candidate evaluation final candidate status", () => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
-      candidate_evaluations: [firstEvaluation({ recommended_status: "candidate" })]
-    }))).toThrow(/final candidate/);
+      candidate_evaluations: [firstEvaluation({ recommended_status: "candidate" as DbDriverCandidateEvaluation["recommended_status"] })]
+    }))).toThrow(/invalid/);
+  });
+
+  it("preflight policy rejects missing candidate evaluations", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord({
+      ...base(),
+      candidate_evaluations: undefined as unknown as DbDriverCandidateEvaluation[]
+    })).toThrow(/candidate_evaluations/);
+  });
+
+  it("preflight policy rejects empty candidate evaluations", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_evaluations: [] }))).toThrow(/candidate_evaluations/);
+  });
+
+  it("preflight policy rejects missing pg evaluation", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_evaluations: [secondEvaluation()] }))).toThrow(/pg/);
+  });
+
+  it("preflight policy rejects missing postgres evaluation", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({ candidate_evaluations: [firstEvaluation()] }))).toThrow(/postgres/);
+  });
+
+  it("preflight policy rejects duplicate candidate evaluation", () => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
+      candidate_evaluations: evaluations(firstEvaluation(), firstEvaluation())
+    }))).toThrow(/duplicate/);
+  });
+
+  it("preflight policy requires evaluation set to match candidate drivers", () => {
+    const record = base();
+    expect(() => validateDbDriverPreflightPolicyRecord({
+      ...record,
+      candidate_drivers: ["pg", "postgres"],
+      candidate_evaluations: [
+        firstEvaluation(),
+        secondEvaluation({ driver_name: "pg" })
+      ]
+    })).toThrow(/duplicate|match|include/);
   });
 
   it.each([
@@ -120,9 +188,32 @@ describe("DB driver preflight policy", () => {
     ["wallet address", { candidate_evaluations: [firstEvaluation({ operational_risk: "0x1234567890abcdef1234567890abcdef12345678" })] }],
     ["token-like value", { candidate_evaluations: [firstEvaluation({ operational_risk: "sk-test-token" })] }],
     ["raw provider response", { candidate_evaluations: [firstEvaluation({ operational_risk: "raw provider response" })] }],
-    ["raw GitHub logs reference", { candidate_evaluations: [firstEvaluation({ operational_risk: ["gh run view", "--log 123"].join(" ") })] }]
+    ["raw GitHub logs reference", { candidate_evaluations: [firstEvaluation({ operational_risk: ["gh run view", "--log 123"].join(" ") })] }],
+    ["password value", { candidate_evaluations: [firstEvaluation({ operational_risk: "password=example" })] }],
+    ["clientSecret value", { candidate_evaluations: [firstEvaluation({ operational_risk: "clientSecret example" })] }],
+    ["apiKey value", { candidate_evaluations: [firstEvaluation({ operational_risk: "apiKey example" })] }],
+    ["refreshToken value", { candidate_evaluations: [firstEvaluation({ operational_risk: "refreshToken example" })] }],
+    ["accessToken value", { candidate_evaluations: [firstEvaluation({ operational_risk: "accessToken example" })] }],
+    ["connectionString value", { candidate_evaluations: [firstEvaluation({ operational_risk: "connectionString example" })] }],
+    ["BEGIN PRIVATE KEY value", { candidate_evaluations: [firstEvaluation({ operational_risk: "BEGIN PRIVATE KEY" })] }]
   ])("preflight policy rejects %s", (_label, patch) => {
     expect(() => validateDbDriverPreflightPolicyRecord(withRecord(patch))).toThrow(/unsafe/);
+  });
+
+  it.each([
+    ["approved wording", { maintenance_status: "approved" }],
+    ["selected wording", { maintenance_status: "selected" }],
+    ["production_ready wording", { operational_risk: "production_ready" }],
+    ["owner_approved wording", { maintenance_status: "owner_approved" }],
+    ["legal_compliant wording", { license_risk: "legal_compliant" }],
+    ["youtube_policy_compliant wording", { operational_risk: "youtube_policy_compliant" }]
+  ])("preflight policy rejects %s in candidate evaluation", (_label, patch) => {
+    expect(() => validateDbDriverPreflightPolicyRecord(withRecord({
+      candidate_evaluations: [
+        firstEvaluation(patch),
+        secondEvaluation()
+      ]
+    }))).toThrow(/approval|selection|readiness|compliance/);
   });
 
   it("preflight policy allows safe review-required strings", () => {
@@ -145,6 +236,8 @@ describe("DB driver preflight policy", () => {
     const evidence = machineEvidence();
     expect(evidence.packageChangeAllowed).toBe(false);
     expect(evidence.pnpmLockChangeAllowed).toBe(false);
+    expect(evidence.legalComplianceClaimAllowed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimAllowed).toBe(false);
     expect(evidence.driverChoiceStatus).toBe("not_selected");
     expect(evidence.selectedDriver).toBeNull();
     expect(evidence.candidateDrivers).toEqual(["pg", "postgres"]);

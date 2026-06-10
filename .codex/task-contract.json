@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 46,
-  "headSha": "2f45bf9b84770b3adaad6b147477918e2b5b67ce",
+  "headSha": "040573da0853d42032420919128bd3c48e027c91",
   "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "goal": "Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driver, package.json change, pnpm-lock change, real DB connection, live DB integration test, migration execution, provider SDK apply, or production deployment.",
   "allowedScope": [

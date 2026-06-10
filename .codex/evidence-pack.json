@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 46,
-  "headSha": "2f45bf9b84770b3adaad6b147477918e2b5b67ce",
+  "headSha": "040573da0853d42032420919128bd3c48e027c91",
   "baseSha": "9b41e6453172ef9287c9ce41774a50589568a728",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db driver preflight policy",
   "goal": "Prepare DB driver dependency preflight policy for v1.1.6 before any real DB driver, package.json change, pnpm-lock change, real DB connection, live DB integration test, migration execution, provider SDK apply, or production deployment.",
-  "ciRunId": "27242908477",
-  "qualityGateRunId": "27242908499",
-  "qualityGateArtifactId": "7522902327",
+  "ciRunId": "27243372594",
+  "qualityGateRunId": "27244093501",
+  "qualityGateArtifactId": "7523339400",
   "productCiStatus": "success",
-  "qualityGateStatus": "awaiting_rerun_after_current_head_evidence_refresh",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -203,7 +203,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 37,
-    "passed": 670,
+    "passed": 695,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -229,7 +229,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 670,
+  "testsPassed": 695,
   "testsSkipped": 6,
   "testFiles": 37,
   "productVerificationCommands": [
@@ -326,9 +326,9 @@
     "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
   "prBodyPath": "docs/pr-db-driver-preflight-policy-v116-prep.md",
-  "passed": 670,
+  "passed": 695,
   "skipped": 6,
-  "summary": "37 files, 670 passed, 6 skipped",
+  "summary": "37 files, 695 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-preflight-policy.json",

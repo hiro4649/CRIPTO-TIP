@@ -382,6 +382,7 @@ quality-gate weakening is introduced.
 
 - Added machine-readable DB driver preflight policy evidence.
 - Current driver choice status is `not_selected`.
-- Candidate drivers are limited to `pg` and `postgres` for future review only.
-- No package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, or production readiness capability is enabled.
+- Candidate drivers are the exact review set `pg` and `postgres` for future review only.
+- Candidate evaluations are required for both candidates and cannot contain approval, selection, production readiness, owner approval, legal compliance, or YouTube policy compliance wording.
+- No package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, production readiness, legal compliance, or YouTube policy compliance capability is enabled.
 - License, supply-chain, security advisory, version pinning, lockfile, package diff, and secret manager reviews are required before future driver introduction.

@@ -382,8 +382,10 @@ Latest local test evidence for the required/advisory split: 21 test files, 209 p
 ## DB Driver Preflight Policy v1.1.6 Prep
 
 - Validates default `not_selected` state.
-- Validates candidate drivers are limited to `pg` and `postgres`.
-- Validates selected drivers require approved owner approval status.
-- Validates package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, and production readiness flags remain rejected.
+- Validates candidate drivers are the exact review set `pg` and `postgres`.
+- Validates candidate evaluations are required, complete, duplicate-free, and aligned with the candidate driver set.
+- Validates driver selection remains rejected even with approved owner approval status.
+- Validates package, lockfile, real DB, live DB, migration, provider SDK, production apply, runtime readiness, production readiness, legal compliance, and YouTube policy compliance flags remain rejected.
 - Validates license, supply-chain, security advisory, version pinning, lockfile, package diff, and secret manager review requirements remain enabled.
-- Validates unsafe evidence rejection for DB connection strings, private URLs, wallet addresses, token-like values, raw provider response, and raw GitHub log references.
+- Validates unsafe evidence rejection for DB connection strings, private URLs, wallet addresses, token-like values, password/client secret/API key/refresh token/access token/connection string/private key patterns, raw provider response, and raw GitHub log references.
+- Validates candidate evaluations reject approval, selection, production readiness, owner approval, legal compliance, and YouTube policy compliance wording.
