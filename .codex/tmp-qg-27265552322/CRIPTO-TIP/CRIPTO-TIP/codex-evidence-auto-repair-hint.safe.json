@@ -1,0 +1,10 @@
+{
+  "missingField": "",
+  "expectedFieldName": "",
+  "safeSuggestedLine": "",
+  "affectedSection": "Task Contract",
+  "headShaExpected": "",
+  "headShaFound": "",
+  "bodyOnlyRepairAllowed": false,
+  "safeSummaryOnly": true
+}

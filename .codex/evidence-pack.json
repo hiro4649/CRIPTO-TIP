@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 50,
-  "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
   "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "ciRunId": "not_available_before_pr_creation",
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation",
-  "productCiStatus": "not_available_before_pr_creation",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "ciRunId": "27265551608",
+  "qualityGateRunId": "27265552322",
+  "qualityGateArtifactId": "safe_artifact_downloaded_from_failed_run",
+  "productCiStatus": "success",
+  "qualityGateStatus": "previous_run_failed_after_initial_pr_body",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -364,5 +364,34 @@
       "node scripts/check-quality-gate-self-protection.mjs",
       "node scripts/codex-secret-safety-scan.mjs"
     ]
-  }
+  },
+  "verificationSurface": [
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    ".codex/db-driver-final-approval-gate.json",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "corepack pnpm lint",
+    "corepack pnpm typecheck",
+    "corepack pnpm test",
+    "npm test",
+    "corepack pnpm evidence:ci",
+    "corepack pnpm quality:self-protection",
+    "secret scan",
+    "no-scraping scan"
+  ],
+  "solvabilityConstraints": [
+    "No DB driver dependency may be added.",
+    "No package.json or pnpm-lock change may be introduced.",
+    "No real DB connection, migration apply, live DB integration test, provider SDK apply, production deployment, or readiness claim may be introduced.",
+    "Committed machine evidence must remain blocked and unapproved.",
+    "Future approved fixture must remain test-only."
+  ],
+  "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
+  "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
+  "testCoverageEvidenceStatus": "pass",
+  "targetQualityScoreStatus": "pending_after_repair_push",
+  "contractGovernanceStatus": "pass",
+  "reviewIndependenceStatus": "pass",
+  "codeReviewMonitorStatus": "pass"
 }

@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 50,
-  "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -183,16 +183,45 @@
     "selected DB driver in committed evidence"
   ],
   "productCiStatus": "success",
-  "qualityGateStatus": "success",
-  "ciRunId": "27257955767",
-  "qualityGateRunId": "27258264650",
-  "qualityGateArtifactId": "7528356152",
+  "qualityGateStatus": "previous_run_failed_after_initial_pr_body",
+  "ciRunId": "27265551608",
+  "qualityGateRunId": "27265552322",
+  "qualityGateArtifactId": "safe_artifact_downloaded_from_failed_run",
   "testSummary": {
-    "testFiles": 39,
-    "passed": 784,
+    "testFiles": 40,
+    "passed": 816,
     "skipped": 6
   },
-  "testFiles": 39,
-  "passed": 784,
-  "skipped": 6
+  "testFiles": 40,
+  "passed": 816,
+  "skipped": 6,
+  "verificationSurface": [
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    ".codex/db-driver-final-approval-gate.json",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "corepack pnpm lint",
+    "corepack pnpm typecheck",
+    "corepack pnpm test",
+    "npm test",
+    "corepack pnpm evidence:ci",
+    "corepack pnpm quality:self-protection",
+    "secret scan",
+    "no-scraping scan"
+  ],
+  "solvabilityConstraints": [
+    "No DB driver dependency may be added.",
+    "No package.json or pnpm-lock change may be introduced.",
+    "No real DB connection, migration apply, live DB integration test, provider SDK apply, production deployment, or readiness claim may be introduced.",
+    "Committed machine evidence must remain blocked and unapproved.",
+    "Future approved fixture must remain test-only."
+  ],
+  "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
+  "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
+  "testCoverageEvidenceStatus": "pass",
+  "targetQualityScoreStatus": "pending_after_repair_push",
+  "contractGovernanceStatus": "pass",
+  "reviewIndependenceStatus": "pass",
+  "codeReviewMonitorStatus": "pass"
 }

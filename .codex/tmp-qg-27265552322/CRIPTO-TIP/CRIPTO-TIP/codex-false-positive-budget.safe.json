@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "warnings": [],
+  "metrics": {
+    "bodyOnlyRepairCount": 0,
+    "nearMissHeadingCount": 0,
+    "manualConfirmationLoopCount": 0,
+    "rerunSameHeadCount": 0,
+    "artifactPendingCount": 0,
+    "classificationFalsePositiveCount": 0
+  },
+  "script": "scripts/codex-false-positive-budget-gate.mjs"
+}

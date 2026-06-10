@@ -1,0 +1,6 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "script": "scripts/codex-product-baseline-continuity-gate.mjs"
+}

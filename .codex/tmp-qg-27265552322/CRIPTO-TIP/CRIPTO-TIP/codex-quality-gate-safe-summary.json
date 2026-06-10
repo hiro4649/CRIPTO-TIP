@@ -1,0 +1,4326 @@
+{
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.3",
+  "harnessVersion": "1.1.3",
+  "mode": "target",
+  "status": "fail",
+  "mergeReady": false,
+  "targetMergeReady": false,
+  "humanReviewRequired": false,
+  "qualityScoreStatus": {
+    "status": "fail",
+    "score": 70,
+    "labels": [
+      "target_quality_score_blocking_failure",
+      "manual_confirmation_remaining",
+      "optional_not_applicable_allowed"
+    ],
+    "blockingStatuses": [
+      {
+        "key": "stalePrAuditStatus",
+        "status": "fail",
+        "effectiveStatus": "fail",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "bestOfNEvidenceStatus",
+        "status": "fail",
+        "effectiveStatus": "fail",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "testCoverageEvidenceStatus",
+        "status": "fail",
+        "effectiveStatus": "fail",
+        "compatibilityClass": "blocking_current"
+      }
+    ],
+    "manualStatuses": [
+      {
+        "key": "v085StabilityStatus",
+        "status": "manual_confirmation_required",
+        "effectiveStatus": "manual_confirmation_required",
+        "compatibilityClass": "blocking_current"
+      }
+    ],
+    "notApplicableStatuses": [
+      {
+        "key": "dockerSmokeCurrentHeadArtifactStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "productRelevantEvidenceLockStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "runtimeJobSafetyStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "txPathStateEvidenceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "envConsistencyStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "stagingNoTxPreflightStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "runtimeLogSecretScanStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "chainScopeStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "agentSessionGovernanceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "evalTraceHarvestStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "operatorVisibleDeltaStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "traceToEvalCandidateStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "subagentGovernanceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "subagentReviewMatrixStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "stateMachineSchemaStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "stateTransitionHelperStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "receiptEvidenceSchemaStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "workerReadinessSequenceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "kRuleCoverageStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "live2dSpecSyncStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "runtimeLatencyBudgetStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "browserSmokeArtifactStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "runtimeStateAdoptionStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "claimTransitionStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "timeoutAdoptionStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "txReconciliationServiceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "txHashBeforeWaitStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "receiptResumeBoundaryStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "migrationRolloutSafetyStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "migrationRuntimeCompatStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "datasetAuditReadinessStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "gameToolAdapterContractFixtureStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "belovedAvatarSafetyAuditStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "gameToolAdapterContractFixtureStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "belovedAvatarSafetyAuditStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "safeArtifactIndexStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "invalidReportRecoveryStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "openPrHygieneStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "targetFinalSummaryStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "taskQueueLiteStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "safeTraceSchemaStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "curatorReportStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "offlineEvolutionProposalStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "performanceEvidenceStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      },
+      {
+        "key": "v081SelfTestStatus",
+        "status": "not_applicable",
+        "effectiveStatus": "pass_optional",
+        "compatibilityClass": "blocking_current"
+      }
+    ],
+    "safeSummaryOnly": true
+  },
+  "reasonSummary": {
+    "status": "fail",
+    "mode": "target",
+    "score": 70,
+    "blockingReasons": [
+      {
+        "reasonCode": "stale_confirmation_detected",
+        "gate": "stalePrAuditStatus"
+      },
+      {
+        "reasonCode": "stale_evidence",
+        "gate": "stalePrAuditStatus"
+      },
+      {
+        "reasonCode": "best_of_n_required",
+        "gate": "bestOfNEvidenceStatus"
+      },
+      {
+        "reasonCode": "test_coverage_evidence_missing",
+        "gate": "testCoverageEvidenceStatus"
+      },
+      {
+        "reasonCode": "targetQualityScoreStatus",
+        "gate": "targetQualityScoreStatus"
+      },
+      {
+        "reasonCode": "stalePrAuditStatus.failed",
+        "gate": "localQualityGate"
+      },
+      {
+        "reasonCode": "testCoverageEvidenceStatus.failed",
+        "gate": "localQualityGate"
+      },
+      {
+        "reasonCode": "targetQualityScoreStatus.failed",
+        "gate": "localQualityGate"
+      }
+    ],
+    "manualReasons": [
+      {
+        "reasonCode": "task_mode_not_bugfix",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "pr_profile_repair_hint_available",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "pr_profile_conflict",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "missing_required_method_sections",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "import_smoke_config_absent",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "runtime_risk_register_absent",
+        "gate": "v085StabilityStatus"
+      },
+      {
+        "reasonCode": "fast_path_full_verification_required",
+        "gate": "v085StabilityStatus"
+      }
+    ],
+    "optionalNotApplicable": [
+      "safeArtifactIndexStatus",
+      "invalidReportRecoveryStatus",
+      "openPrHygieneStatus",
+      "targetFinalSummaryStatus",
+      "taskQueueLiteStatus",
+      "safeTraceSchemaStatus",
+      "curatorReportStatus",
+      "offlineEvolutionProposalStatus",
+      "performanceEvidenceStatus",
+      "v081SelfTestStatus",
+      "v082SelfTestStatus",
+      "dockerSmokeCurrentHeadArtifactStatus",
+      "productRelevantEvidenceLockStatus",
+      "runtimeJobSafetyStatus",
+      "txPathStateEvidenceStatus",
+      "envConsistencyStatus",
+      "stagingNoTxPreflightStatus",
+      "runtimeLogSecretScanStatus",
+      "chainScopeStatus",
+      "agentSessionGovernanceStatus"
+    ],
+    "topNextActions": [
+      "Add current-head structured confirmation.",
+      "Rerun checks and update evidence.",
+      "Add candidate count, selected candidate, and safe reasons.",
+      "Map changed area to test command and edge/failure paths.",
+      "Review targetQualityScoreStatus safe reason targetQualityScoreStatus."
+    ],
+    "safeSummaryOnly": true
+  },
+  "v085StabilityStatus": {
+    "status": "manual_confirmation_required",
+    "safeSummaryOnly": true,
+    "taskDisciplineStatus": {
+      "status": "pass",
+      "taskMode": "feature",
+      "declaredTaskMode": "feature",
+      "inferredTaskMode": "unknown",
+      "allowedTaskModes": [
+        "bugfix",
+        "feature",
+        "refactor",
+        "investigation",
+        "review",
+        "release_gate",
+        "harness_change",
+        "docs_only",
+        "unknown"
+      ],
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "bugfixEvidenceStatus": {
+      "status": "not_applicable",
+      "reasonCodes": [
+        "task_mode_not_bugfix"
+      ],
+      "safeSummaryOnly": true
+    },
+    "prProfileAssistStatus": {
+      "status": "warning",
+      "declaredProfile": "product_r3",
+      "inferredProfile": "product_minor_r2",
+      "profileConflict": true,
+      "allowedProfiles": [
+        "docs_only_r1_r2",
+        "harness_only_r2",
+        "harness_workflow_r3",
+        "product_minor_r2",
+        "product_r3",
+        "security_r3",
+        "release_r3",
+        "readiness_claim_r3"
+      ],
+      "requiredMethodSections": [
+        "Risk level",
+        "Affected entrypoints",
+        "Failure paths considered",
+        "Human confirmation needed"
+      ],
+      "missingSections": [
+        "Risk level",
+        "Affected entrypoints",
+        "Failure paths considered",
+        "Human confirmation needed"
+      ],
+      "suggestedPatchSummary": "Add the missing profile sections listed in safe summary form.",
+      "reasonCodes": [
+        "pr_profile_repair_hint_available",
+        "pr_profile_conflict",
+        "missing_required_method_sections"
+      ],
+      "safeSummaryOnly": true
+    },
+    "productEvidenceExplainStatus": {
+      "status": "pass",
+      "productVerificationStatus": "pass",
+      "explanation": {
+        "npmNotRun": false,
+        "evidenceMissing": false,
+        "evidenceFailed": false,
+        "baselineFailed": false,
+        "candidateRegression": false,
+        "skipNotAllowed": false,
+        "remoteBaselineMissing": false,
+        "remoteEvidenceStale": false
+      },
+      "nextBestFix": "no_product_evidence_action_required",
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "importSmokeMicroStatus": {
+      "status": "not_applicable",
+      "reasonCodes": [
+        "import_smoke_config_absent"
+      ],
+      "safeSummaryOnly": true
+    },
+    "runtimeRiskRegisterStatus": {
+      "status": "not_applicable",
+      "reasonCodes": [
+        "runtime_risk_register_absent"
+      ],
+      "safeSummaryOnly": true
+    },
+    "checkoutEvidencePriorityStatus": {
+      "status": "pass",
+      "localCheckoutEvidencePresent": true,
+      "remoteEvidencePresent": true,
+      "discrepancyDetected": false,
+      "priorityRule": "current_checkout_over_connector_when_same_head",
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "fastPathExplainabilityStatus": {
+      "status": "pass",
+      "decision": "denied_full_verification_required",
+      "oneLineReason": "full_verification_required",
+      "mergeInterpretation": "full_verification_required",
+      "reasonCodes": [
+        "fast_path_full_verification_required"
+      ],
+      "safeSummaryOnly": true
+    },
+    "oneScreenDashboardStatus": {
+      "status": "pass",
+      "mode": "target",
+      "mergeReady": true,
+      "targetMergeReady": true,
+      "topBlockingReason": "",
+      "topNextAction": "ready_for_review",
+      "fastPathDecision": "denied_full_verification_required",
+      "productEvidenceSummary": "no_product_evidence_action_required",
+      "runtimeRiskSummary": "not_applicable",
+      "importSmokeSummary": "not_applicable",
+      "prProfileHintSummary": "warning",
+      "safeSummaryOnly": true
+    },
+    "reasonCodes": [
+      "task_mode_not_bugfix",
+      "pr_profile_repair_hint_available",
+      "pr_profile_conflict",
+      "missing_required_method_sections",
+      "import_smoke_config_absent",
+      "runtime_risk_register_absent",
+      "fast_path_full_verification_required"
+    ],
+    "script": "scripts/codex-v085-stability-gate.mjs"
+  },
+  "codeReviewMonitorStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "mode": "enforce",
+    "reviewProfile": "feature",
+    "changedSurfaceSummary": {
+      "productCodeChanged": true,
+      "testCodeChanged": true,
+      "authSurfaceChanged": false,
+      "storageSurfaceChanged": true,
+      "apiSurfaceChanged": true,
+      "runtimeSurfaceChanged": true,
+      "configSurfaceChanged": false,
+      "packageOrLockfileChanged": false,
+      "harnessOnly": false,
+      "docsOnly": false
+    },
+    "riskSignals": [
+      "large_diff"
+    ],
+    "evidenceGaps": [],
+    "blockingFindings": [],
+    "manualFindings": [
+      {
+        "severity": "P1",
+        "reasonCode": "code_review_monitor_failed",
+        "checklist": "correctness",
+        "nextAction": "resolve_v085_manual_status",
+        "safeSummaryOnly": true
+      }
+    ],
+    "warnings": [],
+    "requiredNextActions": [
+      "resolve_v085_manual_status"
+    ],
+    "reviewChecklist": {
+      "correctness": "manual_confirmation_required",
+      "regression": "pass",
+      "security": "pass",
+      "dataIntegrity": "pass",
+      "runtimeSafety": "pass",
+      "testEvidence": "pass",
+      "diffScope": "pass"
+    },
+    "largeDiffSummary": {
+      "status": "pass",
+      "changedFiles": 21,
+      "changedLines": 2456,
+      "large": true,
+      "veryLarge": true,
+      "safeSummaryOnly": true
+    },
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "code_review_monitor_failed"
+    ],
+    "script": "scripts/codex-code-review-monitor.mjs",
+    "originalStatus": "manual_confirmation_required",
+    "compatibilityShadow": true
+  },
+  "promptGovernanceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "mode": "enforce",
+    "promptLikeFilesChanged": true,
+    "changedPromptSurfaces": [
+      "unknown"
+    ],
+    "promptChangeRisk": "R1",
+    "evalRequired": false,
+    "evalProvided": true,
+    "promptEvalSuiteStatus": {
+      "status": "pass",
+      "casesRun": 11,
+      "failures": [],
+      "cases": [
+        {
+          "id": "bugfix_skill_requires_reproduction",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "bugfix_skill_requires_root_cause",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "bugfix_skill_requires_verification",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "bugfix_skill_forbids_unrelated_changes",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "agents_keeps_task_specific_detail_out",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "agents_forbids_raw_logs_and_auto_approve",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "agents_points_to_docs_not_long_manual",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "pr_template_keeps_task_mode_and_evidence_fields",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "manual_confirmation_policy_not_weakened",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "product_verification_policy_not_weakened",
+          "status": "pass",
+          "reasonCode": null
+        },
+        {
+          "id": "fast_path_policy_keeps_product_denial",
+          "status": "pass",
+          "reasonCode": null
+        }
+      ],
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "reviewEvalSuiteStatus": {
+      "status": "pass",
+      "casesRun": 19,
+      "failures": [],
+      "cases": [
+        {
+          "id": "docs_only_safe",
+          "status": "pass",
+          "expectedStatus": "pass",
+          "actualStatus": "pass",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "harness_only_safe",
+          "status": "pass",
+          "expectedStatus": "pass",
+          "actualStatus": "pass",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "harness_change_mixed_with_product_files_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "bugfix_with_reproduction_root_cause_verification_pass",
+          "status": "pass",
+          "expectedStatus": "pass",
+          "actualStatus": "pass",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "bugfix_missing_root_cause_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "feature_product_change_with_acceptance_and_verification_pass",
+          "status": "pass",
+          "expectedStatus": "pass",
+          "actualStatus": "pass",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "feature_missing_acceptance_warning",
+          "status": "pass",
+          "expectedStatus": "warning",
+          "actualStatus": "warning",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "auth_surface_without_negative_test_manual",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "storage_surface_without_integrity_evidence_manual",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "runtime_readiness_with_open_release_blocking_risk_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "large_product_diff_without_review_scope_manual",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "package_change_with_product_verification_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "product_verification_fail_remains_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "product_fast_path_misuse_fail",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "contract_criterion_missing_verification",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "stub_feature_not_accepted_as_complete",
+          "status": "pass",
+          "expectedStatus": "fail",
+          "actualStatus": "fail",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "display_only_feature_flagged",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "api_route_ordering_risk_flagged",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        },
+        {
+          "id": "delete_handler_condition_risk_flagged",
+          "status": "pass",
+          "expectedStatus": "manual_confirmation_required",
+          "actualStatus": "manual_confirmation_required",
+          "missingReasonCount": 0,
+          "safeSummaryOnly": true
+        }
+      ],
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "variantSuggestionStatus": {
+      "status": "suggestion_only",
+      "autoApply": false,
+      "autoCommit": false,
+      "autoPush": false,
+      "candidateCount": 1,
+      "safeSuggestions": [
+        "Keep prompt variants review-only and evaluate them with deterministic fixtures before any manual edit."
+      ],
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "reasonCodes": [],
+    "script": "scripts/codex-prompt-governance-gate.mjs"
+  },
+  "knowledgeGovernanceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "mode": "enforce",
+    "knowledgeMapStatus": "pass",
+    "agentsMapStatus": "pass",
+    "sourceOfRecordStatus": "pass",
+    "orphanPolicyStatus": "not_applicable",
+    "versionReferenceStatus": "pass",
+    "reasonCodes": [],
+    "script": "scripts/codex-knowledge-governance-gate.mjs"
+  },
+  "contractGovernanceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "contractRequired": false,
+    "contractProvided": true,
+    "contractSource": ".codex/task-contract.json",
+    "handoffStatus": {
+      "status": "not_applicable",
+      "reasonCodes": [],
+      "source": "not_provided"
+    },
+    "loadBearingEvidenceStatus": "not_applicable",
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "task_contract_verification_surface_missing"
+    ],
+    "script": "scripts/codex-contract-governance-gate.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "complexityGovernanceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "mode": "enforce",
+    "regime": "high",
+    "solvabilityStatus": {
+      "status": "fail",
+      "constraintsPresent": true,
+      "constraintsConsistent": true,
+      "acceptanceCriteriaPresent": true,
+      "knownImpossibleCondition": false,
+      "reasonCodes": [
+        "solvability_constraints_missing",
+        "task_contract_verification_surface_missing",
+        "reasoning_evidence_effort_mismatch"
+      ],
+      "safeSummaryOnly": true
+    },
+    "oracleRequirementStatus": {
+      "status": "manual_confirmation_required",
+      "oracleRequired": true,
+      "oracleProvided": true,
+      "oracleType": "smoke",
+      "surface": "storage",
+      "reasonCodes": [
+        "oracle_required_for_storage_surface"
+      ],
+      "safeSummaryOnly": true
+    },
+    "reasoningEvidenceEffortStatus": {
+      "status": "manual_confirmation_required",
+      "taskComplexity": "high",
+      "planEvidencePresent": false,
+      "contractEvidencePresent": true,
+      "verificationEvidencePresent": true,
+      "attemptEvidencePresent": true,
+      "effortMismatch": true,
+      "reasonCodes": [
+        "reasoning_evidence_effort_mismatch"
+      ],
+      "safeSummaryOnly": true
+    },
+    "executionInterfaceStatus": {
+      "status": "pass",
+      "requiredTools": [],
+      "availableTools": [],
+      "missingTools": [],
+      "missingToolImpact": "none",
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "algorithmicArtifactStatus": {
+      "status": "pass",
+      "artifactRequired": true,
+      "artifactProvided": true,
+      "artifactType": "smoke_command",
+      "reasonCodes": [],
+      "safeSummaryOnly": true
+    },
+    "splitRequirementStatus": {
+      "status": "manual_confirmation_required",
+      "splitRequired": true,
+      "splitProvided": false,
+      "splitReason": "",
+      "reasonCodes": [
+        "split_required_for_large_diff"
+      ],
+      "safeSummaryOnly": true
+    },
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "solvability_constraints_missing",
+      "task_contract_verification_surface_missing",
+      "reasoning_evidence_effort_mismatch",
+      "oracle_required_for_storage_surface",
+      "split_required_for_large_diff"
+    ],
+    "requiredNextAction": "add split plan or split reason",
+    "script": "scripts/codex-complexity-governance-gate.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "artifactLifeboatStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "phase": "workflow_started",
+    "artifactCreated": true,
+    "mirrorCreated": false,
+    "artifactPath": "codex-minimal-safe-failure.json",
+    "mirrorPath": "not_configured",
+    "lastKnownGate": "not_started",
+    "lastKnownReasonCodes": [],
+    "safeNextAction": "Review safe reason codes and rerun after the smallest correction.",
+    "reasonCodes": [],
+    "script": "scripts/codex-artifact-lifeboat.mjs"
+  },
+  "classificationCoverageStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "changedFileCount": 21,
+    "classifiedCount": 21,
+    "unknownCount": 0,
+    "unknownClasses": [],
+    "suggestedRegistryEntries": [],
+    "reasonCodes": [],
+    "script": "scripts/codex-classification-coverage-gate.mjs"
+  },
+  "remoteLocalParityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "localContextHash": "274df44395abdda2",
+    "remoteContextHash": "274df44395abdda2",
+    "registryHash": "27cc481d3f301bb5",
+    "rulesVersion": "0.9.0",
+    "mismatchReasons": [],
+    "safeNextAction": "No parity action required.",
+    "reasonCodes": [],
+    "script": "scripts/codex-remote-local-parity-gate.mjs"
+  },
+  "noArtifactFailureStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "artifactExpected": true,
+    "artifactFound": true,
+    "failurePhase": "unknown",
+    "reasonCodes": [],
+    "safeNextAction": "Inspect safe artifact summary.",
+    "script": "scripts/codex-no-artifact-failure-classifier.mjs"
+  },
+  "versionLineageStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "active_marker_version_mismatch",
+      "version_lineage_failed",
+      "version_lineage_v092_self_test_missing",
+      "version_lineage_v093_self_test_missing",
+      "version_lineage_v094_self_test_missing",
+      "version_lineage_v095_self_test_missing",
+      "version_lineage_local_gate_mismatch"
+    ],
+    "warnings": [],
+    "checkedFiles": 9,
+    "script": "scripts/codex-version-lineage-gate.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "prEvidenceRendererStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [
+      "artifact_id_pending"
+    ],
+    "blocks": {
+      "remoteLocalEvidenceBlock": "## Remote/Local Evidence\nLocal quality summary: available_safe_summary\nRemote safe summary: pending_or_not_applicable",
+      "evidenceIntegrityBlock": "## Evidence Integrity\nBase SHA: 735557519cbf3b1cc1b186c5591744336d4d7eeb\nHead SHA: 89bc65a7eb173b4ec6964387d9e52eb6f9913a02\nStale Evidence Check: pass",
+      "humanConfirmationBlock": "## Human Confirmation\nHuman confirmation: present\nProduct code changed: no\nRuntime readiness claimed: no",
+      "evidencePack": {
+        "schemaVersion": "0.9.2",
+        "harnessVersion": "1.1.3",
+        "repository": "hiro4649/CRIPTO-TIP",
+        "prNumber": "50",
+        "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
+        "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
+        "runId": "27265552322",
+        "artifactId": "",
+        "productCodeChanged": false,
+        "runtimeReadinessClaimed": false,
+        "targetRollout": false,
+        "humanConfirmation": {
+          "present": true,
+          "confirmedByRole": "project-owner",
+          "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02"
+        },
+        "safeSummaryOnly": true
+      },
+      "manualConfirmation": {
+        "schemaVersion": "0.9.2",
+        "headSha": "89bc65a7eb173b4ec6964387d9e52eb6f9913a02",
+        "productCodeChanged": false,
+        "runtimeReadinessClaimed": false,
+        "confirmedByRole": "project-owner",
+        "safeSummaryOnly": true
+      },
+      "residualRisksBlock": "## Residual risks\nGenerated evidence is safe-summary only and does not prove product runtime readiness.",
+      "rollbackBlock": "## Rollback\nRevert the harness-only change or rerun verification on the current head before merge.",
+      "staleEvidenceCheckBlock": "## Stale Evidence Check\nCurrent head evidence: current"
+    },
+    "script": "scripts/codex-pr-evidence-block-renderer.mjs"
+  },
+  "safeArtifactClassifierStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "classification": "rerun_same_head_allowed",
+    "safeNextAction": "Rerun the same head and inspect safe summary artifacts.",
+    "blockingReasonCodes": [],
+    "nonBlockingWarnings": [],
+    "reasonCodes": [],
+    "script": "scripts/codex-safe-artifact-classifier.mjs"
+  },
+  "securityLifecycleStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "layers": {
+      "edit_pattern_scan": "pass",
+      "turn_diff_surface_scan": "pass",
+      "commit_boundary_scan": "pass",
+      "workflow_permission_scan": "pass",
+      "secret_prefix_scan": "pass",
+      "dangerous_api_scan": "pass",
+      "security_guidance_alignment": "pass"
+    },
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-security-lifecycle-gate.mjs"
+  },
+  "reviewIndependenceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "writerEvidencePresent": false,
+    "reviewEvidencePresent": false,
+    "reviewChecklistPresent": false,
+    "productCodeChanged": false,
+    "runtimeReadinessClaimed": false,
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "writer_only_review_detected",
+      "review_independence_missing"
+    ],
+    "script": "scripts/codex-review-independence-gate.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "taskBriefCompilerStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "brief": {
+      "Goal": "Maintain Codex harness safety gate behavior.",
+      "Context": "Deterministic harness-managed evidence and policy update.",
+      "Allowed scope": "harness-managed files",
+      "Forbidden scope": "product runtime code, package files, profiles",
+      "Done criteria": "targeted harness checks pass",
+      "Verification surface": "local quality gate and self-test",
+      "Risk surface": "harness evidence and CI gate behavior",
+      "Oracle requirement": "required for runtime readiness claims only",
+      "Rollback condition": "revert harness-managed change",
+      "Runtime readiness claim": "no",
+      "Product code changed claim": "no",
+      "Expected files": [],
+      "Do-not-touch list": [
+        "src",
+        "apps",
+        "contracts",
+        "package files",
+        "profiles"
+      ],
+      "safeSummaryOnly": true
+    },
+    "script": "scripts/codex-task-brief-compiler.mjs"
+  },
+  "bestOfNDecisionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "mode": "not_applicable",
+    "reasonCodes": [
+      "best_of_n_not_used"
+    ],
+    "script": "scripts/codex-best-of-n-decision-record.mjs"
+  },
+  "environmentProfileStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "profile": {
+      "nodeVersion": "20.20.2",
+      "npmAvailable": true,
+      "gitAvailable": true,
+      "ghAvailable": true,
+      "ghAuthStatus": "available",
+      "workflowDispatchAvailability": "available_if_authenticated",
+      "packageInstallPolicy": "package_present",
+      "networkRequired": false,
+      "internetUnavailableReason": "",
+      "platform": "linux",
+      "lineEndingRisk": "low",
+      "pathSeparatorRisk": "low",
+      "safeSummaryOnly": true
+    },
+    "script": "scripts/codex-environment-profile-gate.mjs"
+  },
+  "agentsContextBudgetStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [
+      "old_version_marker"
+    ],
+    "byteLength": 6578,
+    "maxBytes": 12000,
+    "script": "scripts/codex-agents-context-budget-gate.mjs"
+  },
+  "evidenceAutoRepairHintStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "hint": {
+      "missingField": "",
+      "expectedFieldName": "",
+      "safeSuggestedLine": "",
+      "affectedSection": "Task Contract",
+      "headShaExpected": "",
+      "headShaFound": "",
+      "bodyOnlyRepairAllowed": false,
+      "safeSummaryOnly": true
+    },
+    "script": "scripts/codex-evidence-auto-repair-hint.mjs"
+  },
+  "baselineHealthStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "baselineRequired": true,
+    "baselinePresent": true,
+    "baselineFresh": true,
+    "baselineResult": "pass",
+    "productRelevantSkipOnly": false,
+    "reasonCodes": [],
+    "script": "scripts/codex-baseline-health-gate.mjs"
+  },
+  "evidenceContinuityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "pathsChecked": [
+      "remote_product_baseline",
+      "product_verification",
+      "npm_diagnostic",
+      "evidence_pack",
+      "human_confirmation",
+      "complexity_oracle",
+      "self_test_case_export",
+      "score_decomposition"
+    ],
+    "lostPaths": [],
+    "reasonCodes": [],
+    "script": "scripts/codex-evidence-continuity-gate.mjs"
+  },
+  "prBodySurfaceNormalizerStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "detectedSurfaces": [
+      "api",
+      "auth",
+      "release",
+      "runtime",
+      "storage"
+    ],
+    "negatedSurfaces": [
+      "api",
+      "runtime"
+    ],
+    "forbiddenScopeSurfaces": [],
+    "residualRiskSurfaces": [
+      "auth",
+      "release",
+      "runtime"
+    ],
+    "effectiveChangedSurfaces": [
+      "storage"
+    ],
+    "requiredHeadingHintStatus": {
+      "status": "pass",
+      "missingHeadings": [],
+      "nearMisses": [],
+      "safeSuggestedPatch": [],
+      "safeSummaryOnly": true
+    },
+    "reasonCodes": [],
+    "script": "scripts/codex-pr-body-surface-normalizer.mjs"
+  },
+  "prTemplateCompilerStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "templateProfile": "harness_workflow_r3",
+    "missingInputs": [],
+    "compiledSections": [
+      "Goal",
+      "Context",
+      "Files or scope",
+      "Task Mode",
+      "Task Contract",
+      "Load-bearing evidence",
+      "Testing",
+      "Residual risks"
+    ],
+    "safeSuggestedBodyPath": "codex-pr-body-skeleton.safe.md",
+    "autoApply": false,
+    "autoCommit": false,
+    "autoPush": false,
+    "reasonCodes": [],
+    "script": "scripts/codex-pr-template-compiler.mjs"
+  },
+  "selfTestCaseExportStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "suite": "v089",
+    "caseCount": 17,
+    "failedCaseCount": 0,
+    "failedCases": [
+      {
+        "caseId": "baseline_health_product_change_requires_baseline",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "baseline_evidence_missing"
+        ],
+        "safeMessage": "self-test case failed"
+      },
+      {
+        "caseId": "baseline_health_skip_npm_product_change_fails",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "product_skip_npm_without_verification"
+        ],
+        "safeMessage": "self-test case failed"
+      },
+      {
+        "caseId": "fast_harness_profile_denied_for_product_change",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "self_test_profile_not_allowed"
+        ],
+        "safeMessage": "self-test case failed"
+      },
+      {
+        "caseId": "old_harness_marker_source_managed_fails",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "old_source_marker_detected"
+        ],
+        "safeMessage": "self-test case failed"
+      }
+    ],
+    "reasonCodes": [],
+    "script": "scripts/codex-self-test-case-export.mjs"
+  },
+  "scoreDecompositionStatus": {
+    "status": "pass",
+    "score": 70,
+    "caps": [
+      {
+        "gate": "v085StabilityStatus",
+        "status": "manual_confirmation_required",
+        "reasonCodes": [
+          "task_mode_not_bugfix",
+          "pr_profile_repair_hint_available",
+          "pr_profile_conflict",
+          "missing_required_method_sections",
+          "import_smoke_config_absent"
+        ]
+      },
+      {
+        "gate": "stalePrAuditStatus",
+        "status": "fail",
+        "reasonCodes": [
+          "stale_confirmation_detected",
+          "stale_evidence"
+        ]
+      },
+      {
+        "gate": "bestOfNEvidenceStatus",
+        "status": "fail",
+        "reasonCodes": [
+          "best_of_n_required"
+        ]
+      },
+      {
+        "gate": "testCoverageEvidenceStatus",
+        "status": "fail",
+        "reasonCodes": [
+          "test_coverage_evidence_missing"
+        ]
+      },
+      {
+        "gate": "targetQualityScoreStatus",
+        "status": "fail",
+        "reasonCodes": []
+      }
+    ],
+    "topBlockingReasons": [
+      "task_mode_not_bugfix",
+      "stale_confirmation_detected",
+      "best_of_n_required",
+      "test_coverage_evidence_missing",
+      "targetQualityScoreStatus:fail"
+    ],
+    "topNextActions": [
+      "Review v085StabilityStatus",
+      "Review stalePrAuditStatus",
+      "Review bestOfNEvidenceStatus",
+      "Review testCoverageEvidenceStatus",
+      "Review targetQualityScoreStatus"
+    ],
+    "safeSummaryOnly": true
+  },
+  "gateDecisionTraceStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "score": 100,
+    "decisionPath": [
+      "all_required_passed"
+    ],
+    "topBlockingReasons": [
+      "agentsContextStatus:agents_context_missing_harness_block",
+      "prProfileStatus:pr_profile_conflict",
+      "contractGovernanceStatus:task_contract_verification_surface_missing",
+      "complexityGovernanceStatus:solvability_constraints_missing",
+      "stalePrAuditStatus:stale_confirmation_detected"
+    ],
+    "topManualReasons": [
+      "v085StabilityStatus:task_mode_not_bugfix",
+      "codeReviewMonitorStatus:code_review_monitor_failed"
+    ],
+    "topWarnings": [
+      "oldHarnessMarkerStatus:old_harness_marker_detected"
+    ],
+    "topNextActions": [
+      "Resolve agentsContextStatus:agents_context_missing_harness_block",
+      "Resolve prProfileStatus:pr_profile_conflict",
+      "Resolve contractGovernanceStatus:task_contract_verification_surface_missing",
+      "Resolve complexityGovernanceStatus:solvability_constraints_missing",
+      "Resolve stalePrAuditStatus:stale_confirmation_detected"
+    ],
+    "reasonCodes": [],
+    "script": "scripts/codex-gate-decision-trace.mjs"
+  },
+  "oldHarnessMarkerStatus": {
+    "status": "pass",
+    "currentVersion": "1.1.6",
+    "oldMarkersFound": [
+      {
+        "path": ".github/pull_request_template.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": ".github/workflows/quality-gate.yml",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CI_SAFE_FAILURE_ARTIFACTS.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_5_5_LOW_MODE_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACCEPTANCE_CRITERIA_MATRIX_SCHEMA.json",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACCEPTANCE_EVIDENCE_SCHEMA.json",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACTIONS_BLOCKER_RECOVERY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACTIONS_RUNTIME_ADVISORY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACTIVE_SELF_TEST_ARTIFACT_SOURCE_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACTIVE_SELF_TEST_REGISTRY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ACTIVE_SELF_TEST_SINGLE_SOURCE.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_CONTEXT_BUDGET_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_CONTEXT_INTEGRITY_POLICY.json",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_CONTEXT_INTEGRITY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_CONTEXT_INTEGRITY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_DOCTRINE_POLICY.json",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENTS_DOCTRINE_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENT_CONTAINMENT_BOUNDARY_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_AGENT_SESSION_GOVERNANCE_POLICY.md",
+        "version": "1.0.7"
+      },
+      {
+        "path": "docs/process/CODEX_ANNOTATION_WORKPACKET_POLICY.md",
+        "version": "1.0.7"
+      }
+    ],
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "old_harness_marker_detected"
+    ],
+    "safeSummaryOnly": true,
+    "originalStatus": "warning",
+    "compatibilityShadow": true
+  },
+  "v089SelfTestStatus": {
+    "status": "pass",
+    "suite": "v089",
+    "caseCount": 17,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "baseline_health_product_change_requires_baseline",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "baseline_evidence_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "baseline_health_harness_only_not_applicable",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "not_applicable",
+        "reasonCodes": [
+          "baseline_not_required_for_harness_only"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "baseline_health_skip_npm_product_change_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "product_skip_npm_without_verification"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_continuity_remote_baseline_survives_workflow",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_continuity_product_verification_survives_summary",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_continuity_evidence_pack_human_confirmation_survives",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "self_test_case_export_reports_failed_case_id",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "surface_normalizer_no_auth_changes_not_auth_surface",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "surface_normalizer_forbidden_scope_auth_not_auth_surface",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "surface_normalizer_residual_runtime_not_runtime_surface",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "surface_normalizer_product_auth_file_overrides_denial",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "required_heading_hint_task_contract_near_miss",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "score_decomposition_shows_cap_gate",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "fast_harness_profile_denied_for_product_change",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "self_test_profile_not_allowed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "fast_harness_profile_allowed_for_harness_only",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "old_harness_marker_source_managed_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "old_source_marker_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v089_pr_fixture_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "not_applicable/pass/pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v089-self-test.mjs"
+  },
+  "v090SelfTestStatus": {
+    "status": "pass",
+    "suite": "v090",
+    "caseCount": 35,
+    "failedCaseCount": 3,
+    "failedCases": [
+      "workflow_dispatch_main_does_not_require_human_confirmation",
+      "workflow_dispatch_main_does_not_require_evidence_pack",
+      "pull_request_still_requires_evidence_pack"
+    ],
+    "cases": [
+      {
+        "id": "artifact_lifeboat_created_before_gate",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "artifact_lifeboat_safe_shape",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "no_artifact_failure_classified",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "no_artifact_failure_unclassified",
+          "artifact_lifeboat_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "artifact_lifeboat_pre_checkout_shell_payload_safe_shape",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "artifact_lifeboat_runner_temp_path_counts_as_found",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "artifact_lifeboat_mirror_path_written",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "artifact_lifeboat_node_update_failure_does_not_remove_pre_checkout_lifeboat",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "artifact_lifeboat_missing",
+          "artifact_lifeboat_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "upload_artifact_path_includes_runner_temp_lifeboat",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_lifeboat_step_before_checkout",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_lifeboat_step_before_setup_node",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_lifeboat_step_before_install_dependencies",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "lifeboat_runner_temp_does_not_dirty_worktree",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "lifeboat_repo_root_safe_artifact_ignored_by_source_manifest",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "0",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "unknown_untracked_file_still_fails_source_manifest",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "scratch-output.json",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "product_like_untracked_file_still_fails_source_manifest",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "package.json,profiles/iris/generated.json,src/runtime-generated.js",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_no_repo_root_lifeboat_before_quality_gate",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_uploads_runner_temp_lifeboat",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_dispatch_main_does_not_require_human_confirmation",
+        "status": "fail",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_dispatch_main_does_not_require_evidence_pack",
+        "status": "fail",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pull_request_still_requires_human_confirmation",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pull_request_still_requires_evidence_pack",
+        "status": "fail",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_dispatch_source_core_remote_verification_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pull_request_strictness_not_weakened",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "classification_registry_scripts_codex_harness",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "harness_managed",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "classification_registry_dev_server_entrypoint",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "dev_server_entrypoint",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "classification_unknown_file_fails_with_hint",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "classification_unknown_file",
+          "entrypoint_unclassified"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "classification_scripts_all_not_product",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_local_parity_detects_unknown_remote_only",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_unknown_file_not_seen_locally"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_local_parity_pass_same_context",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_template_compiler_harness_r3_outputs_required_sections",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "required_heading_near_miss_hint",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "gate_decision_trace_score_70_has_top_reason",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "lifeboat_no_raw_log_output",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "old_v089_statuses_still_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v090_pr_fixture_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass/pass/pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only"
+    ],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v090-self-test.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "v092SelfTestStatus": {
+    "status": "pass",
+    "suite": "v092",
+    "caseCount": 25,
+    "failedCaseCount": 1,
+    "failedCases": [
+      "version_lineage_all_active_markers_match_092"
+    ],
+    "cases": [
+      {
+        "id": "version_lineage_all_active_markers_match_092",
+        "status": "fail",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "active_marker_version_mismatch",
+          "version_lineage_failed",
+          "version_lineage_v092_self_test_missing",
+          "version_lineage_v093_self_test_missing",
+          "version_lineage_v094_self_test_missing",
+          "version_lineage_v095_self_test_missing",
+          "missing",
+          "version_lineage_readme_mismatch",
+          "version_lineage_local_gate_mismatch"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "version_lineage_old_active_marker_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "active_marker_version_mismatch"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_evidence_renderer_outputs_current_head_pack",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_evidence_renderer_rejects_stale_head",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "pr_evidence_stale_head"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_evidence_renderer_no_raw_log",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "pr_evidence_unsafe_output"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_body_only_repair",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_code_repair_required",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_actions_queue_issue",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_blocks_runtime_ready_without_oracle",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_readiness_not_proven"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "security_lifecycle_eval_pattern_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "dangerous_api_pattern_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "security_lifecycle_workflow_permission_escalation_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "workflow_permission_escalation_unjustified"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "security_lifecycle_test_fixture_pattern_warns",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "review_independence_writer_only_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "review_independence_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "review_independence_separate_checklist_passes",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "task_brief_high_complexity_requires_forbidden_scope",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "task_brief_forbidden_scope_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "task_brief_target_rollout_harness_only_passes",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "best_of_n_used_without_reason_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "best_of_n_decision_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "best_of_n_raw_candidate_output_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "best_of_n_raw_candidate_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "environment_profile_gh_unavailable_for_rerun_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "environment_profile_failed",
+          "gh_auth_required_but_unavailable"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "environment_profile_local_only_without_gh_warns",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agents_context_budget_large_manual_fails",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "agents_context_budget_exceeded"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_auto_repair_hint_forbidden_scope_missing",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_auto_repair_hint_does_not_weaken_gate",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "evidence_auto_repair_unsafe"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v092_pr_fixture_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v092_fixture_pass",
+        "status": "pass",
+        "expectedStatus": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only"
+    ],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v092-self-test.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "v093SelfTestStatus": {
+    "status": "pass",
+    "suite": "v093",
+    "caseCount": 26,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "previous_target_hotfix_preserved_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "previous_target_hotfix_overwritten_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_hotfix_overwritten"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_patch_manifest_missing_entry_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_patch_manifest_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_rollout_conflict_detects_deleted_target_policy",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_only_policy_deleted"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_product_pr_context_skip_npm_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_pr_context_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_product_pr_context_workflow_dispatch_not_substitute",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "workflow_dispatch_used_as_pr_substitute"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "scripts_run_tests_product_relevant_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "scripts_codex_star_harness_managed_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "scripts_dev_server_entrypoint_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "unknown_script_requires_classification",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_script_classification_lost"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "same_head_artifact_all_match_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "same_head_artifact_head_mismatch_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "same_head_artifact_mismatch"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "manual_confirmation_stale_head_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "manual_confirmation_stale_head"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "docker_smoke_required_artifact_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "docker_smoke_artifact_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "docker_smoke_required_same_head_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "docker_smoke_fast_path_skip_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "docker_smoke_fast_path_skip_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_skip_npm_product_override_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_skip_npm_product_override"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_skip_npm_harness_only_passes",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "goal_condition_target_rollout_must_not_change_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "goal_condition_scope_expansion_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "goal_scope_expansion_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "review_policy_docs_only_light_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "review_policy_security_requires_independence_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "review_policy_classifier_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_evidence_compact_raw_log_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "raw_log_in_pr_body"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "pr_evidence_compact_large_file_list_warns",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v093_pr_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v093_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v093-self-test.mjs"
+  },
+  "v094SelfTestStatus": {
+    "status": "pass",
+    "suite": "v094",
+    "caseCount": 31,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "remote_product_context_present_in_pull_request_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_product_context_replay_changed_files_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_product_context_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_context_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "product_relevant_changed_file_requires_product_verification",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_context_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "product_relevant_changed_file_requires_remote_baseline",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_context_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "product_relevant_with_skip_npm_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skip_npm_product_bypass"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "harness_only_with_skip_npm_passes",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_dispatch_not_pr_substitute_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "workflow_dispatch_not_pr_substitute"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "changed_files_empty_in_pr_context_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "pull_request_context_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "same_head_product_evidence_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "same_head_product_evidence_mismatch_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "same_head_artifact_mismatch"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "baseline_continuity_survives_runner_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "baseline_continuity_lost_in_final_summary_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "product_baseline_lost"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "product_baseline_fail_not_diagnostic_pass",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_baseline_failing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_rollout_does_not_disable_product_context",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "scripts_run_tests_product_relevant_context_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_product_context_missing",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "product_context_artifact_classification_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_classifier_skip_npm_bypass_fail",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skip_npm_product_bypass"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "body_only_repair_does_not_hide_product_evidence_missing",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "product_relevant_evidence_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_job_scheduler_tx_without_ownership_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_job_ownership_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_job_external_api_polling_without_retry_warns",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "tx_path_without_txhash_receipt_policy_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "tx_hash_receipt_policy_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "processed_boolean_only_double_send_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "double_send_risk_unaddressed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "worker_boundary_missing_with_runtime_readiness_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_job_safety_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "env_docs_validator_mismatch_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "env_consistency_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "staging_chain_prod_chain_mixed_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "chain_scope_conflict"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "staging_no_tx_readiness_without_log_scan_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "staging_no_tx_preflight_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_log_raw_output_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "raw_runtime_log_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "false_positive_budget_body_only_loop_warns",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v094_pr_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v094_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v094-self-test.mjs"
+  },
+  "v095SelfTestStatus": {
+    "status": "pass",
+    "suite": "v095",
+    "caseCount": 41,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "agents_doctrine_short_map_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agents_doctrine_large_manual_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "agents_manual_too_large"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agents_doctrine_policy_in_docs_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_routing_harness_rollout_limited_skills_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_routing_too_many_skills_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skill_count_exceeded"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_routing_runtime_pr_requires_runtime_safety",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skill_routing_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_load_budget_more_than_five_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skill_load_budget_exceeded"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_drift_old_marker_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skill_drift_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_drift_target_hotfix_preserved_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agent_session_parallel_same_branch_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "agent_session_conflict"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agent_session_needs_input_merge_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "agent_needs_input_merge_blocked"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agent_containment_external_content_untrusted_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agent_containment_egress_capability_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "external_content_trust_violation"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "agent_containment_write_permission_for_readonly_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "tool_permission_too_broad"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "eval_trace_expected_observed_pair_required",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "eval_trace_invalid"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "eval_trace_raw_production_data_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "raw_production_data_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "operator_visible_delta_product_change_required",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "operator_visible_delta_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "operator_visible_delta_harness_only_not_applicable",
+        "status": "pass",
+        "actualStatus": "not_applicable",
+        "reasonCodes": [
+          "no_product_visible_delta"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "trace_to_eval_candidate_requires_targeted_eval",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "trace_to_eval_candidate_invalid"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "trace_to_eval_candidate_requires_regression_eval",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "trace_to_eval_candidate_invalid"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "subagent_security_required_for_security_pr",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "subagent_governance_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "subagent_runtime_required_for_runtime_pr",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "subagent_governance_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "subagent_raw_output_forbidden",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "subagent_raw_output_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "subagent_docs_only_light_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "state_machine_processed_boolean_only_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "processed_boolean_only_state_machine"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "state_machine_schema_fields_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "state_transition_helper_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "state_transition_helper_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "state_transition_helper_mutates_db_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "state_transition_helper_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "receipt_evidence_private_key_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "receipt_private_data_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "receipt_evidence_safe_public_fields_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "worker_readiness_wrong_sequence_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "worker_readiness_sequence_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "worker_readiness_schema_first_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_minimality_raw_log_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "evidence_minimality_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_minimality_harness_only_compact_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "evidence_dedup_conflicting_head_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "evidence_dedup_conflict"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_next_action_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "safe_artifact_next_action_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "safe_artifact_next_action_body_only_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_evidence_link_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "skill_evidence_link_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "skill_evidence_obsolete_warning",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v095_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v095_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v095-self-test.mjs"
+  },
+  "remoteProductContextRestoreStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "productRelevant": false,
+    "pullRequestContext": true,
+    "changedFileCount": 0,
+    "script": "scripts/codex-remote-product-context-restore-gate.mjs"
+  },
+  "productRelevantEvidenceLockStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_product_relevant_change"
+    ],
+    "script": "scripts/codex-product-relevant-evidence-lock-gate.mjs"
+  },
+  "productBaselineContinuityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "script": "scripts/codex-product-baseline-continuity-gate.mjs"
+  },
+  "skipNpmProductBypassStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "productRelevant": false,
+    "skipNpm": false,
+    "harnessOnlySkipAllowed": false,
+    "script": "scripts/codex-skip-npm-product-bypass-gate.mjs"
+  },
+  "pullRequestContextFidelityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "target_compatibility_shadow_count_only",
+      "pull_request_context_missing"
+    ],
+    "pullRequestContext": true,
+    "changedFileCount": 0,
+    "script": "scripts/codex-pull-request-context-fidelity-gate.mjs",
+    "originalStatus": "fail",
+    "compatibilityShadow": true
+  },
+  "productContextSafeArtifactStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "classification": "manual_required",
+    "script": "scripts/codex-product-context-safe-artifact-gate.mjs"
+  },
+  "runtimeJobSafetyStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_runtime_job_surface"
+    ],
+    "script": "scripts/codex-runtime-job-safety-gate.mjs"
+  },
+  "txPathStateEvidenceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_tx_path_surface"
+    ],
+    "script": "scripts/codex-tx-path-state-evidence-gate.mjs"
+  },
+  "envConsistencyStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "env_consistency_not_required"
+    ],
+    "script": "scripts/codex-env-consistency-gate.mjs"
+  },
+  "stagingNoTxPreflightStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_runtime_readiness_claim"
+    ],
+    "script": "scripts/codex-staging-no-tx-preflight-gate.mjs"
+  },
+  "runtimeLogSecretScanStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_runtime_readiness_claim"
+    ],
+    "script": "scripts/codex-runtime-log-secret-scan-gate.mjs"
+  },
+  "chainScopeStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_chain_scope_claim"
+    ],
+    "script": "scripts/codex-chain-scope-gate.mjs"
+  },
+  "falsePositiveBudgetStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "metrics": {
+      "bodyOnlyRepairCount": 0,
+      "nearMissHeadingCount": 0,
+      "manualConfirmationLoopCount": 0,
+      "rerunSameHeadCount": 0,
+      "artifactPendingCount": 0,
+      "classificationFalsePositiveCount": 0
+    },
+    "script": "scripts/codex-false-positive-budget-gate.mjs"
+  },
+  "agentsDoctrineStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-agents-doctrine-gate.mjs"
+  },
+  "skillRoutingStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "skillCount": 0,
+    "script": "scripts/codex-skill-routing-gate.mjs"
+  },
+  "skillLoadBudgetStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "loadedSkillCount": 0,
+    "script": "scripts/codex-skill-load-budget-gate.mjs"
+  },
+  "skillDriftStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-skill-drift-gate.mjs"
+  },
+  "agentSessionGovernanceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "single_agent_session"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-agent-session-governance-gate.mjs"
+  },
+  "agentContainmentBoundaryStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-agent-containment-boundary-gate.mjs"
+  },
+  "evalTraceHarvestStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "eval_trace_not_present"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-eval-trace-harvest-gate.mjs"
+  },
+  "operatorVisibleDeltaStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_product_visible_delta"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-operator-visible-delta-gate.mjs"
+  },
+  "traceToEvalCandidateStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "trace_to_eval_not_present"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-trace-to-eval-candidate-gate.mjs"
+  },
+  "subagentGovernanceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "subagent_not_required"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-subagent-governance-gate.mjs"
+  },
+  "subagentReviewMatrixStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "subagent_matrix_not_required"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-subagent-review-matrix-gate.mjs"
+  },
+  "skillEvidenceLinkStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-skill-evidence-link-gate.mjs"
+  },
+  "stateMachineSchemaStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_state_machine_surface"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-prisma-state-machine-schema-gate.mjs"
+  },
+  "stateTransitionHelperStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "no_state_transition_surface"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-state-transition-helper-gate.mjs"
+  },
+  "receiptEvidenceSchemaStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "receipt_evidence_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-receipt-evidence-schema-gate.mjs"
+  },
+  "workerReadinessSequenceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "worker_readiness_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-worker-readiness-sequence-gate.mjs"
+  },
+  "evidenceMinimalityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-evidence-minimality-gate.mjs"
+  },
+  "evidenceDedupStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-evidence-dedup-gate.mjs"
+  },
+  "safeArtifactNextActionStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "classification": "not_applicable",
+    "warnings": [],
+    "script": "scripts/codex-safe-artifact-next-action-classifier.mjs"
+  },
+  "kRuleCoverageStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "k_rule_coverage_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-k-rule-coverage-gate.mjs"
+  },
+  "live2dSpecSyncStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "live2d_spec_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-live2d-spec-sync-gate.mjs"
+  },
+  "runtimeLatencyBudgetStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "runtime_latency_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-runtime-latency-budget-gate.mjs"
+  },
+  "obsoleteOpenPrStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-obsolete-open-pr-gate.mjs"
+  },
+  "ownerSummaryCompactStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-owner-summary-compact-gate.mjs"
+  },
+  "browserSmokeArtifactStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "browser_smoke_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-browser-smoke-artifact-gate.mjs"
+  },
+  "failureToRepairPlanStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-failure-to-repair-plan-gate.mjs"
+  },
+  "runtimeStateAdoptionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "runtime_state_adoption_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-runtime-state-adoption-gate.mjs"
+  },
+  "claimTransitionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "claim_transition_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-claim-transition-gate.mjs"
+  },
+  "timeoutAdoptionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "timeout_adoption_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-timeout-adoption-gate.mjs"
+  },
+  "txReconciliationServiceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "tx_reconciliation_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-tx-reconciliation-service-gate.mjs"
+  },
+  "txHashBeforeWaitStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "txhash_before_wait_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-txhash-before-wait-gate.mjs"
+  },
+  "receiptResumeBoundaryStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "receipt_resume_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-receipt-resume-boundary-gate.mjs"
+  },
+  "migrationRolloutSafetyStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "migration_rollout_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-migration-rollout-safety-gate.mjs"
+  },
+  "migrationRuntimeCompatStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "migration_runtime_compat_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-migration-runtime-compat-gate.mjs"
+  },
+  "humanReviewDigestStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "digestRequired": false,
+    "warnings": [],
+    "script": "scripts/codex-human-review-digest-gate.mjs"
+  },
+  "datasetAuditReadinessStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "dataset_audit_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-dataset-audit-readiness-gate.mjs"
+  },
+  "gameToolAdapterContractFixtureStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "game_tool_adapter_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-game-tool-adapter-contract-fixture-gate.mjs"
+  },
+  "belovedAvatarSafetyAuditStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "beloved_avatar_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-beloved-avatar-safety-audit-gate.mjs"
+  },
+  "v096SelfTestStatus": {
+    "status": "pass",
+    "suite": "v096",
+    "caseCount": 35,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "k_rule_coverage_live2d_allowlist_required_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "k_rule_coverage_missing_test_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "k_rule_coverage_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "k_rule_stale_coverage_manifest_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "k_rule_coverage_stale"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "live2d_spec_phase_order_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "live2d_spec_future_phase_mixed_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "live2d_spec_future_phase_mixed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_latency_duplicate_delivery_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_latency_duplicate_delivery"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_latency_queue_drain_before_ready_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_latency_queue_drain_before_ready"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_latency_bounded_interval_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "obsolete_open_pr_old_harness_warns",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "obsolete_open_pr_reuse_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "obsolete_open_pr_reuse_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "owner_summary_7line_required_pass",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "owner_summary_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "owner_summary_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "browser_smoke_safe_artifact_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "browser_smoke_raw_console_log_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "browser_smoke_raw_output_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "failure_to_repair_plan_body_only_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "failure_to_repair_plan_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "failure_to_repair_plan_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_state_adoption_schema_only_not_ready",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_state_adoption_helper_used_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "claim_transition_atomic_required",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "claim_transition_atomic_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "timeout_adoption_tx_wait_without_timeout_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "timeout_adoption_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "tx_reconciliation_service_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "tx_reconciliation_service_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "txhash_before_wait_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "txhash_before_wait_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "receipt_resume_boundary_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "receipt_resume_boundary_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "migration_rollout_additive_nullable_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "migration_rollout_destructive_without_rollback_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "migration_rollout_safety_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "migration_runtime_compat_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "migration_runtime_compat_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "human_review_digest_required_for_r3",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "human_review_digest_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "dataset_audit_readiness_schema_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "dataset_audit_auto_fix_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "dataset_audit_auto_fix_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "game_tool_candidate_direct_handoff_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "game_tool_adapter_direct_handoff",
+          "game_tool_adapter_contract_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "game_tool_approved_action_passes",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "beloved_avatar_memory_privacy_violation_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "beloved_avatar_memory_privacy_violation"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "beloved_avatar_docs_only_not_applicable",
+        "status": "pass",
+        "actualStatus": "not_applicable",
+        "reasonCodes": [
+          "beloved_avatar_not_applicable"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v096_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v096_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v096-self-test.mjs"
+  },
+  "activeSelfTestRegistryStatus": {
+    "status": "pass",
+    "activeHarnessVersion": "1.1.6",
+    "activeSelfTestSuite": "v116",
+    "activeSelfTestStatusKey": "v116SelfTestStatus",
+    "targetModeMapping": true,
+    "reasonCodes": [
+      "target_mode_active_self_test_registry_mapped"
+    ],
+    "safeSummaryOnly": true
+  },
+  "workflowProductVerificationInvariantStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "requiredStepCount": 6,
+    "requiredArtifactCount": 4,
+    "warnings": [],
+    "script": "scripts/codex-workflow-product-verification-invariant-gate.mjs"
+  },
+  "targetHotfixRegressionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "target_hotfix_regression_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-target-hotfix-regression-gate.mjs"
+  },
+  "harnessRolloutDiffRegressionStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "harness_rollout_diff_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-harness-rollout-diff-regression-gate.mjs"
+  },
+  "blockerRootCauseClassifierStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "rootCause": "none",
+    "warnings": [],
+    "script": "scripts/codex-blocker-root-cause-classifier.mjs"
+  },
+  "localRemoteEvidencePhaseStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "local_remote_evidence_phase_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-local-remote-evidence-phase-gate.mjs"
+  },
+  "structuredSolvabilityStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "remoteEvidencePhase": "not_required",
+    "warnings": [],
+    "script": "scripts/codex-structured-solvability-gate.mjs"
+  },
+  "live2dDatasetRowAuditStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "live2d_dataset_row_audit_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-live2d-dataset-row-audit-gate.mjs"
+  },
+  "motionAllowlistSyncStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "motion_allowlist_sync_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-motion-allowlist-sync-gate.mjs"
+  },
+  "trustedLoaderEvidenceStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "trusted_loader_evidence_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-trusted-loader-evidence-gate.mjs"
+  },
+  "live2dEvidenceCollectorContractStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "live2d_evidence_collector_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-live2d-evidence-collector-contract-gate.mjs"
+  },
+  "avatarUxSafetyStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "avatar_ux_safety_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-avatar-ux-safety-gate.mjs"
+  },
+  "runtimeLatencyMeasurementStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "runtime_latency_measurement_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-runtime-latency-measurement-gate.mjs"
+  },
+  "browserSmokeJsonArtifactStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "browser_smoke_json_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-browser-smoke-json-artifact-gate.mjs"
+  },
+  "ownerDecisionDigestStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-owner-decision-digest-gate.mjs"
+  },
+  "obsoletePrAutoRecommendStatus": {
+    "status": "pass",
+    "safeSummaryOnly": true,
+    "reasonCodes": [],
+    "warnings": [],
+    "script": "scripts/codex-obsolete-pr-auto-recommend-gate.mjs"
+  },
+  "datasetAuditV2SchemaStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "dataset_audit_v2_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-dataset-audit-v2-schema-gate.mjs"
+  },
+  "datasetAuditRunnerReadinessStatus": {
+    "status": "not_applicable",
+    "safeSummaryOnly": true,
+    "reasonCodes": [
+      "dataset_audit_runner_not_applicable"
+    ],
+    "warnings": [],
+    "script": "scripts/codex-dataset-audit-runner-readiness-gate.mjs"
+  },
+  "v097SelfTestStatus": {
+    "status": "pass",
+    "suite": "v097",
+    "caseCount": 35,
+    "failedCaseCount": 0,
+    "failedCases": [],
+    "cases": [
+      {
+        "id": "active_self_test_registry_v097_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "active_self_test_registry_missing_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "active_self_test_registry_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_product_verification_step_present_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "workflow_product_verification_step_removed_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "workflow_product_verification_step_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_product_artifact_upload_removed_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "remote_product_artifact_upload_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_hotfix_regression_preserved_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_hotfix_regression_prepare_product_verification_removed_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "target_hotfix_regression_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "harness_rollout_diff_step_deletion_requires_reason",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "harness_rollout_diff_regression_detected"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "blocker_root_cause_workflow_step_missing",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "blocker_root_cause_active_self_test_missing",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "blocker_root_cause_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "local_pre_push_remote_pending_allowed",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "remote_evidence_required_after_push",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "local_remote_evidence_phase_conflict"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "structured_solvability_local_remote_split_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "structured_solvability_conflict_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "structured_solvability_conflict"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "live2d_dataset_row_audit_valid_row_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "live2d_dataset_row_audit_future_label_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "live2d_dataset_row_audit_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "motion_allowlist_sync_future_label_runtime_executable_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "motion_allowlist_sync_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "trusted_loader_browser_self_asserted_ready_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "trusted_loader_evidence_missing"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "trusted_loader_allowlisted_evidence_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "live2d_evidence_collector_raw_cue_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "live2d_evidence_collector_contract_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "avatar_ux_safety_subtitle_obstruction_needs_review",
+        "status": "pass",
+        "actualStatus": "warning",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "avatar_ux_safety_monetization_closeup_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "avatar_ux_safety_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_latency_duplicate_delivery_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "runtime_latency_measurement_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "runtime_latency_safe_metric_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "browser_smoke_json_required_fields_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "browser_smoke_json_raw_console_log_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "browser_smoke_json_artifact_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "owner_decision_digest_required_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "obsolete_pr_reuse_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "obsolete_pr_reuse_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "dataset_audit_v2_schema_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "dataset_audit_auto_fix_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "dataset_audit_auto_fix_forbidden"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "game_tool_candidate_direct_handoff_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "game_tool_adapter_contract_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "game_tool_approved_action_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "beloved_avatar_memory_privacy_fails",
+        "status": "pass",
+        "actualStatus": "fail",
+        "reasonCodes": [
+          "beloved_avatar_safety_failed"
+        ],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "source_harness_only_v097_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      },
+      {
+        "id": "target_harness_rollout_v097_fixture_pass",
+        "status": "pass",
+        "actualStatus": "pass",
+        "reasonCodes": [],
+        "safeSummaryOnly": true
+      }
+    ],
+    "reasonCodes": [],
+    "safeSummaryOnly": true,
+    "script": "scripts/codex-v097-self-test.mjs"
+  },
+  "failureCount": 3,
+  "warningCount": 0,
+  "requiredStatusClosureV3Status": {
+    "status": "fail",
+    "closedFalseWorkflowRequiredStatusFailure": false,
+    "failureCountBeforeClosure": 3,
+    "reasonCodes": [
+      "not_v113_target_mode",
+      "target_safe_summary_not_pass"
+    ],
+    "safeSummaryOnly": true
+  },
+  "targetSafeSummaryRequiredClosureStatus": {
+    "status": "fail",
+    "targetSummaryPass": false,
+    "trueBlockerPresent": false,
+    "reasonCodes": [
+      "not_v113_target_mode",
+      "target_safe_summary_not_pass"
+    ],
+    "safeSummaryOnly": true
+  },
+  "workflowRequiredStatusClosureRepairStatus": {
+    "status": "fail",
+    "repair": "v113_target_safe_summary_closes_legacy_required_status_false_positive",
+    "remoteRequiredChecksSubstituted": false,
+    "trueBlockersPreserved": true,
+    "reasonCodes": [
+      "not_v113_target_mode",
+      "target_safe_summary_not_pass"
+    ],
+    "safeSummaryOnly": true
+  },
+  "safeSummaryOnly": true
+}

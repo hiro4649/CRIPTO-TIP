@@ -1,0 +1,328 @@
+{
+  "schemaVersion": "0.8.4",
+  "harnessVersion": "1.1.3",
+  "mode": "target",
+  "score": 70,
+  "pathMode": "full_product_path",
+  "blockingReasons": [
+    {
+      "gate": "stalePrAuditStatus",
+      "status": "fail",
+      "reasonCodes": [
+        "stale_confirmation_detected",
+        "stale_evidence"
+      ]
+    },
+    {
+      "gate": "bestOfNEvidenceStatus",
+      "status": "fail",
+      "reasonCodes": [
+        "best_of_n_required"
+      ]
+    },
+    {
+      "gate": "testCoverageEvidenceStatus",
+      "status": "fail",
+      "reasonCodes": [
+        "test_coverage_evidence_missing"
+      ]
+    },
+    {
+      "gate": "targetQualityScoreStatus",
+      "status": "fail",
+      "reasonCodes": [
+        "targetqualityscorestatus_failed"
+      ]
+    }
+  ],
+  "manualReasons": [
+    {
+      "gate": "v085StabilityStatus",
+      "status": "manual_confirmation_required",
+      "reasonCodes": [
+        "task_mode_not_bugfix",
+        "pr_profile_repair_hint_available",
+        "pr_profile_conflict",
+        "missing_required_method_sections",
+        "import_smoke_config_absent"
+      ]
+    }
+  ],
+  "optionalReasons": [
+    {
+      "gate": "safeArtifactIndexStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "safe_artifact_index_not_requested"
+      ]
+    },
+    {
+      "gate": "invalidReportRecoveryStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "invalid_report_recovery_not_needed"
+      ]
+    },
+    {
+      "gate": "openPrHygieneStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "open_pr_hygiene_not_requested"
+      ]
+    },
+    {
+      "gate": "targetFinalSummaryStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "final_summary_not_requested"
+      ]
+    },
+    {
+      "gate": "taskQueueLiteStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "task_queue_not_enabled"
+      ]
+    },
+    {
+      "gate": "safeTraceSchemaStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "trace_not_enabled"
+      ]
+    },
+    {
+      "gate": "curatorReportStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "curator_not_enabled"
+      ]
+    },
+    {
+      "gate": "offlineEvolutionProposalStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "offline_evolution_not_enabled"
+      ]
+    },
+    {
+      "gate": "performanceEvidenceStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "performance_claim_not_present"
+      ]
+    },
+    {
+      "gate": "v081SelfTestStatus",
+      "status": "not_applicable",
+      "reasonCodes": [
+        "self_test_recursion_guard"
+      ]
+    }
+  ],
+  "unsafeValueClasses": [],
+  "invalidReportSummary": null,
+  "baselineSummary": {
+    "status": "pass"
+  },
+  "npmDiagnosticSummary": {
+    "status": "pass"
+  },
+  "stalePrSummary": {
+    "status": "fail"
+  },
+  "artifactIndexSummary": {
+    "status": "not_applicable"
+  },
+  "v094Summary": {
+    "remoteProductContextRestore": "pass",
+    "productRelevantEvidenceLock": "not_applicable",
+    "productBaselineContinuity": "pass",
+    "skipNpmProductBypass": "pass",
+    "pullRequestContextFidelity": "pass",
+    "productVerificationContext": "pass",
+    "productEvidencePropagation": "pass",
+    "productContextSafeArtifact": "pass",
+    "runtimeJobSafety": "not_applicable",
+    "txPathStateEvidence": "not_applicable",
+    "envConsistency": "not_applicable",
+    "stagingNoTxPreflight": "not_applicable",
+    "runtimeLogSecretScan": "not_applicable",
+    "chainScope": "not_applicable",
+    "falsePositiveBudget": "pass",
+    "v094SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v095Summary": {
+    "agentsDoctrine": "pass",
+    "skillRouting": "pass",
+    "skillLoadBudget": "pass",
+    "skillDrift": "pass",
+    "agentSessionGovernance": "not_applicable",
+    "agentContainmentBoundary": "pass",
+    "evalTraceHarvest": "not_applicable",
+    "operatorVisibleDelta": "not_applicable",
+    "traceToEvalCandidate": "not_applicable",
+    "subagentGovernance": "not_applicable",
+    "subagentReviewMatrix": "not_applicable",
+    "skillEvidenceLink": "pass",
+    "stateMachineSchema": "not_applicable",
+    "stateTransitionHelper": "not_applicable",
+    "receiptEvidenceSchema": "not_applicable",
+    "workerReadinessSequence": "not_applicable",
+    "evidenceMinimality": "pass",
+    "evidenceDedup": "pass",
+    "safeArtifactNextAction": "pass",
+    "v095SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v097Summary": {
+    "activeSelfTestRegistry": "pass",
+    "workflowProductVerificationInvariant": "pass",
+    "targetHotfixRegression": "not_applicable",
+    "harnessRolloutDiffRegression": "not_applicable",
+    "blockerRootCauseClassifier": "pass",
+    "localRemoteEvidencePhase": "not_applicable",
+    "structuredSolvability": "pass",
+    "live2dDatasetRowAudit": "not_applicable",
+    "motionAllowlistSync": "not_applicable",
+    "trustedLoaderEvidence": "not_applicable",
+    "live2dEvidenceCollectorContract": "not_applicable",
+    "avatarUxSafety": "not_applicable",
+    "runtimeLatencyMeasurement": "not_applicable",
+    "browserSmokeJsonArtifact": "not_applicable",
+    "ownerDecisionDigest": "pass",
+    "obsoletePrAutoRecommend": "pass",
+    "datasetAuditV2Schema": "not_applicable",
+    "datasetAuditRunnerReadiness": "not_applicable",
+    "v097SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v098Summary": {
+    "remoteProductEvidenceExecution": "pass",
+    "remoteProductEvidenceRunner": "pass",
+    "productEvidenceConsumption": "pass",
+    "placeholderEvidenceForbidden": "pass",
+    "localRemotePhase": "not_applicable",
+    "structuredSolvabilityFields": "pass",
+    "live2dDatasetRowAuditRunner": "not_applicable",
+    "motionAllowlistDiff": "not_applicable",
+    "trustedLoaderEvidenceEnforcer": "not_applicable",
+    "avatarUxSafetyRunner": "not_applicable",
+    "runtimeLatencySafeMetric": "not_applicable",
+    "browserSmokeVisualSafetyArtifact": "not_applicable",
+    "openPrRebaseReadiness": "pass",
+    "fiveLineOwnerDigest": "pass",
+    "v098SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v099Summary": {
+    "formalEvidencePrecedence": "pass",
+    "lifeboatSemantics": "pass",
+    "placeholderOnlyEvidence": "pass",
+    "remoteNpmDiagnosticNormalization": "pass",
+    "legacySelfTestAdvisory": "pass",
+    "authSurfaceClassifierRefinement": "not_applicable",
+    "targetQualityBlockerDigest": "pass",
+    "prEvidenceAutoRepairHint": "pass",
+    "actionsBlockerRecovery": "not_applicable",
+    "prContextRerunAssistant": "not_applicable",
+    "sameHeadEvidenceRefresh": "not_applicable",
+    "safeArtifactBundleCompleteness": "pass",
+    "datasetAuditV2P0Schema": "not_applicable",
+    "gameToolAdapterFixtureReadiness": "not_applicable",
+    "belovedAvatarSafetyReadiness": "not_applicable",
+    "v099SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v096Summary": {
+    "kRuleCoverage": "not_applicable",
+    "live2dSpecSync": "not_applicable",
+    "runtimeLatencyBudget": "not_applicable",
+    "obsoleteOpenPr": "pass",
+    "ownerSummaryCompact": "pass",
+    "browserSmokeArtifact": "not_applicable",
+    "failureToRepairPlan": "pass",
+    "runtimeStateAdoption": "not_applicable",
+    "claimTransition": "not_applicable",
+    "timeoutAdoption": "not_applicable",
+    "txReconciliationService": "not_applicable",
+    "txHashBeforeWait": "not_applicable",
+    "receiptResumeBoundary": "not_applicable",
+    "migrationRolloutSafety": "not_applicable",
+    "migrationRuntimeCompat": "not_applicable",
+    "humanReviewDigest": "pass",
+    "datasetAuditReadiness": "not_applicable",
+    "gameToolAdapterContractFixture": "not_applicable",
+    "belovedAvatarSafetyAudit": "not_applicable",
+    "v096SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v093Summary": {
+    "previousTargetHotfixPreservation": "pass",
+    "targetPatchManifest": "pass",
+    "targetRolloutConflict": "pass",
+    "remoteProductPrContextFixture": "pass",
+    "targetScriptClassificationFixture": "pass",
+    "sameHeadArtifactEvidence": "pass",
+    "dockerSmokeCurrentHeadArtifact": "not_applicable",
+    "targetSkipNpmProductOverride": "pass",
+    "goalCondition": "pass",
+    "reviewPolicyClassifier": "pass",
+    "prEvidenceCompact": "pass",
+    "v093SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v092Summary": {
+    "versionLineage": "pass",
+    "prEvidenceRenderer": "pass",
+    "safeArtifactClassifier": "pass",
+    "securityLifecycle": "pass",
+    "reviewIndependence": "pass",
+    "taskBriefCompiler": "pass",
+    "bestOfNDecision": "not_applicable",
+    "environmentProfile": "pass",
+    "agentsContextBudget": "pass",
+    "evidenceAutoRepairHint": "pass",
+    "v092SelfTest": "pass",
+    "safeSummaryOnly": true
+  },
+  "v085Summary": {
+    "status": "manual_confirmation_required",
+    "taskDiscipline": "pass",
+    "bugfixEvidence": "not_applicable",
+    "fastPathDecision": "denied_full_verification_required"
+  },
+  "codeReviewMonitorSummary": {
+    "status": "pass",
+    "reviewProfile": "feature",
+    "blockingCount": 0,
+    "manualCount": 1,
+    "warningCount": 0,
+    "safeSummaryOnly": true
+  },
+  "governanceSummary": {
+    "prompt": "pass",
+    "knowledge": "pass",
+    "contract": "pass",
+    "safeSummaryOnly": true
+  },
+  "oneScreenDashboard": {
+    "status": "pass",
+    "mode": "target",
+    "mergeReady": true,
+    "targetMergeReady": true,
+    "topBlockingReason": "",
+    "topNextAction": "ready_for_review",
+    "fastPathDecision": "denied_full_verification_required",
+    "productEvidenceSummary": "no_product_evidence_action_required",
+    "runtimeRiskSummary": "not_applicable",
+    "importSmokeSummary": "not_applicable",
+    "prProfileHintSummary": "warning",
+    "safeSummaryOnly": true
+  },
+  "nextActions": [
+    "fix_blocking_gate"
+  ],
+  "safeSummaryOnly": true
+}

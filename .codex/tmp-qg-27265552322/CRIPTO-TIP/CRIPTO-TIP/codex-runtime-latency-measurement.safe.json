@@ -1,0 +1,9 @@
+{
+  "status": "not_applicable",
+  "safeSummaryOnly": true,
+  "reasonCodes": [
+    "runtime_latency_measurement_not_applicable"
+  ],
+  "warnings": [],
+  "script": "scripts/codex-runtime-latency-measurement-gate.mjs"
+}

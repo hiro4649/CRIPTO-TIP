@@ -1,0 +1,7 @@
+{
+  "status": "pass",
+  "safeSummaryOnly": true,
+  "reasonCodes": [],
+  "classification": "manual_required",
+  "script": "scripts/codex-product-context-safe-artifact-gate.mjs"
+}
