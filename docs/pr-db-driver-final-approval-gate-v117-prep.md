@@ -40,7 +40,7 @@ Done when: committed evidence stays blocked and unapproved, all local checks pas
 
 ## Evidence Integrity
 
-Head SHA: 025f84f4d4e73bc8427afad9656d99c6f00677b5
+Head SHA: d0113b8d4bb2a3473874ee23895fdc85e165b132
 
 Base SHA: 735557519cbf3b1cc1b186c5591744336d4d7eeb
 
@@ -107,12 +107,17 @@ Review scope and verification:
 - Risk summary: Main risk is mistaking final-gate preparation for dependency approval; committed evidence remains blocked and unapproved.
 - Verification oracle: Vitest final gate coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan.
 
-Best of N:
+## Best of N Evidence
+
+Candidate count: 3.
 
 - Candidate A: add the DB driver dependency now and run package install.
 - Candidate B: add the final approval gate, committed blocked evidence, docs, and tests without dependency or package changes.
 - Candidate C: only document that a driver is needed later.
-- Selected: Candidate B, because it creates enforceable approval controls without crossing the owner-approval boundary.
+
+Selected candidate: Candidate B.
+
+Reason selected: Candidate B creates enforceable approval controls without crossing the owner-approval boundary.
 
 ## Test Coverage Evidence
 
