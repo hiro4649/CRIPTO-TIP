@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 49,
-  "headSha": "05784ac8c9bd46717b022404f7f172078c970893",
+  "prNumber": 50,
+  "headSha": "current_pr_head",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -74,6 +74,27 @@
       "owner": "Storage owner",
       "nextPr": "Future dependency PR",
       "mitigation": "Package and lockfile flags remain false and package files are unchanged."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Final approval gate could be mistaken for current dependency approval.",
+      "owner": "Storage owner",
+      "nextPr": "Future owner-approved DB driver dependency PR",
+      "mitigation": "Committed final gate evidence remains blocked, selected driver is null, owner approval is not_approved, and all permission flags are false."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Test-only future approval fixture could be copied into committed machine evidence.",
+      "owner": "Storage owner",
+      "nextPr": "Future dependency PR review checklist",
+      "mitigation": "Committed validation rejects approved, selected, or ready states and tests prove the future fixture is not committed."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Unsafe DB or provider details could leak through final approval evidence.",
+      "owner": "Security owner",
+      "nextPr": "Future secret-boundary PR",
+      "mitigation": "Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and unsafe GitHub Actions trace references."
     }
   ],
   "entries": [
@@ -86,13 +107,13 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "f8b52aa81360cda462e8926a76730db8c0ce20b2",
+  "baseSha": "current_pr_base",
   "status": "pass",
-  "title": "feat: add db driver approval dry run",
+  "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver readiness report for v1.1.6 that aggregates owner approval, preflight policy, and approval dry-run evidence into committed not_ready evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-approval-dry-run.json",
+    ".codex/db-driver-final-approval-gate.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -101,17 +122,19 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-approval-dry-run.ts",
-    "apps/api/src/db-driver-approval-dry-run.test.ts",
-    "docs/DB_DRIVER_APPROVAL_DRY_RUN.md",
-    "docs/DB_DRIVER_DRY_RUN_EVIDENCE_REQUIREMENTS.md",
-    "docs/DB_DRIVER_DRY_RUN_FAILURE_REASONS.md",
+    ".gitignore",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-approval-dry-run-v116-prep.md"
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "allowedScope": [
     "db_driver_approval_dry_run",
@@ -156,22 +179,53 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub Actions raw trace reading",
     "quality-gate weakening",
     "committed approved owner record",
     "selected DB driver in committed evidence"
   ],
   "productCiStatus": "success",
   "qualityGateStatus": "success",
-  "ciRunId": "27257955767",
-  "qualityGateRunId": "27258264650",
-  "qualityGateArtifactId": "7528356152",
+  "ciRunId": "27268100898",
+  "qualityGateRunId": "27268127670",
+  "qualityGateArtifactId": "7532340839",
   "testSummary": {
-    "testFiles": 39,
-    "passed": 784,
+    "testFiles": 40,
+    "passed": 832,
     "skipped": 6
   },
-  "testFiles": 39,
-  "passed": 784,
-  "skipped": 6
+  "testFiles": 40,
+  "passed": 832,
+  "skipped": 6,
+  "verificationSurface": [
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    ".codex/db-driver-final-approval-gate.json",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "corepack pnpm lint",
+    "corepack pnpm typecheck",
+    "corepack pnpm test",
+    "npm test",
+    "corepack pnpm evidence:ci",
+    "corepack pnpm quality:self-protection",
+    "secret scan",
+    "no-scraping scan"
+  ],
+  "solvabilityConstraints": [
+    "No DB driver dependency may be added.",
+    "No package.json or pnpm-lock change may be introduced.",
+    "No real DB connection, migration apply, live DB integration test, provider SDK apply, production deployment, or readiness claim may be introduced.",
+    "Committed machine evidence must remain blocked and unapproved.",
+    "Future approved fixture must remain test-only."
+  ],
+  "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
+  "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
+  "testCoverageEvidenceStatus": "pass",
+  "targetQualityScoreStatus": "pass",
+  "contractGovernanceStatus": "pass",
+  "reviewIndependenceStatus": "pass",
+  "codeReviewMonitorStatus": "pass",
+  "testsPassed": 832,
+  "testsSkipped": 6
 }

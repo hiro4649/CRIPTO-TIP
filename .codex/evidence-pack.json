@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 49,
-  "headSha": "05784ac8c9bd46717b022404f7f172078c970893",
-  "baseSha": "f8b52aa81360cda462e8926a76730db8c0ce20b2",
+  "prNumber": 50,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_relevant",
   "riskLevel": "R3",
-  "title": "feat: add db driver approval dry run",
-  "goal": "Add a DB driver readiness report for v1.1.6 that aggregates owner approval, preflight policy, and approval dry-run evidence into committed not_ready evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "ciRunId": "27257955767",
-  "qualityGateRunId": "27258264650",
-  "qualityGateArtifactId": "7528356152",
+  "title": "feat: add db driver final approval gate",
+  "goal": "Add a DB driver final approval gate for v1.1.7 preparation that aggregates owner approval, readiness report, preflight policy, approval dry-run, and review evidence into committed blocked evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "ciRunId": "27268100898",
+  "qualityGateRunId": "27268127670",
+  "qualityGateArtifactId": "7532340839",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,7 +22,7 @@
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
-      ".codex/db-driver-approval-dry-run.json",
+      ".codex/db-driver-final-approval-gate.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -31,23 +31,26 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/db-driver-approval-dry-run.ts",
-      "apps/api/src/db-driver-approval-dry-run.test.ts",
-      "docs/DB_DRIVER_APPROVAL_DRY_RUN.md",
-      "docs/DB_DRIVER_DRY_RUN_EVIDENCE_REQUIREMENTS.md",
-      "docs/DB_DRIVER_DRY_RUN_FAILURE_REASONS.md",
+      ".gitignore",
+      "apps/api/src/db-driver-final-approval-gate.ts",
+      "apps/api/src/db-driver-final-approval-gate.test.ts",
+      "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+      "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+      "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-db-driver-approval-dry-run-v116-prep.md"
+      "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
     ],
     "allowedPaths": [
-      "apps/api/src/db-driver-approval-dry-run.ts",
-      "apps/api/src/db-driver-approval-dry-run.test.ts",
+      "apps/api/src/db-driver-final-approval-gate.ts",
+      "apps/api/src/db-driver-final-approval-gate.test.ts",
       "docs/**",
-      ".codex/**"
+      ".codex/**",
+      ".gitignore"
     ],
     "forbiddenPaths": [
       ".github/workflows/**",
@@ -91,7 +94,7 @@
       "production readiness claim",
       "legal compliance claim",
       "YouTube policy compliance claim",
-      "raw GitHub log reading",
+      "GitHub Actions raw trace reading",
       "quality-gate weakening",
       "committed approved owner record",
       "selected DB driver in committed evidence"
@@ -187,16 +190,13 @@
     "status": "pass"
   },
   "allowedScope": [
-    "db_driver_approval_dry_run",
-    "dry_run_failure_reason_vocabulary",
-    "test_only_future_approval_fixture",
-    "package_diff_evidence_schema",
-    "lockfile_review_evidence_schema",
-    "license_review_evidence_schema",
-    "supply_chain_review_evidence_schema",
-    "security_advisory_review_evidence_schema",
-    "version_pinning_evidence_schema",
-    "secret_boundary_evidence_schema",
+    "db_driver_final_approval_gate",
+    "owner_approval_aggregation",
+    "readiness_report_aggregation",
+    "preflight_policy_aggregation",
+    "approval_dry_run_aggregation",
+    "review_evidence_completeness_check",
+    "test_only_future_complete_fixture",
     "tests",
     "docs",
     ".codex evidence"
@@ -229,23 +229,24 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub Actions raw trace reading",
     "quality-gate weakening",
     "committed approved owner record",
-    "selected DB driver in committed evidence"
+    "selected DB driver in committed evidence",
+    "approved final gate in committed evidence"
   ],
   "doneCriteria": [
-    "DB driver approval dry-run validator exists",
-    "committed dry-run evidence remains not_ready",
-    "committed selectedDriver is null",
-    "test-only future complete fixture passes only in tests",
-    "missing owner approval and reviews are rejected",
-    "package and lockfile changes are rejected",
-    "no DB driver dependency, package, lockfile, migration, real DB connection, provider SDK apply, or production deployment is introduced"
+    "DB driver final approval gate record exists",
+    "committed gate remains blocked",
+    "selected driver remains null in committed evidence",
+    "owner approval remains not_approved in committed evidence",
+    "readiness and dry-run remain not_ready in committed evidence",
+    "all final permission flags remain false in committed evidence",
+    "future complete approval is test-only and not committed"
   ],
   "testSummary": {
-    "testFiles": 39,
-    "passed": 784,
+    "testFiles": 40,
+    "passed": 832,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -255,7 +256,7 @@
     "No migration is changed or executed.",
     "No live DB integration test is executed.",
     "No selected driver is recorded.",
-    "GitHub raw logs remain forbidden."
+    "GitHub Actions raw trace output remains forbidden."
   ],
   "residualRisks": [
     "Driver choice remains future owner-approved work.",
@@ -271,70 +272,17 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 759,
+  "testsPassed": 832,
   "testsSkipped": 6,
-  "testFiles": 39,
+  "testFiles": 40,
   "productVerificationCommands": [
-    {
-      "command": "corepack pnpm install",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "corepack pnpm lint",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "corepack pnpm typecheck",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "corepack pnpm test",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "npm test",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "corepack pnpm evidence:ci",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "corepack pnpm quality:self-protection",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "node scripts/write-test-summary.mjs",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "node scripts/check-evidence-placeholders.mjs",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "node scripts/validate-evidence-freshness.mjs",
-      "status": "local_optional_until_pr_refresh",
-      "result": "local_optional_until_pr_refresh"
-    },
-    {
-      "command": "node scripts/check-quality-gate-self-protection.mjs",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "command": "node scripts/codex-secret-safety-scan.mjs",
-      "status": "pass",
-      "result": "pass"
-    }
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -343,14 +291,14 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds an internal DB driver preflight policy validator and tests without DB driver, package change, lockfile change, real DB connection, migrations, provider SDK, public API, contract ABI, YouTube connector, Chain Listener, or IRIS delivery changes."
+    "internalRuntimeApiChanged": false,
+    "statement": "No runtime DB API or public API is changed; this adds an offline final approval gate and tests."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR adds preflight policy, docs, evidence, and tests only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline approval-gate evidence and tests only.",
   "reviewScope": {
-    "scope": "DB driver preflight policy validator, tests, docs, candidate evaluation, review checklists, and machine-readable evidence.",
-    "riskSummary": "Main risk is accidentally selecting or installing a DB driver before owner approval and preflight review.",
-    "verificationOracle": "Vitest coverage, typecheck, evidence CI, quality self-protection, secret scan, no-scraping scan, DB driver import scan, package/lockfile diff check, and GitHub checks."
+    "scope": "DB driver final approval gate, committed blocked evidence, docs, and tests.",
+    "riskSummary": "Main risk is mistaking final-gate preparation for dependency approval; committed evidence remains blocked and unapproved.",
+    "verificationOracle": "Vitest final gate coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan."
   },
   "reviewIndependence": [
     "Writer evidence and AI review recommendation remain separate.",
@@ -367,13 +315,13 @@
     ],
     "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
-  "prBodyPath": "docs/pr-db-driver-readiness-report-v116-prep.md",
-  "passed": 784,
+  "prBodyPath": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+  "passed": 832,
   "skipped": 6,
-  "summary": "39 files, 759 passed, 6 skipped",
+  "summary": "40 files, 832 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-preflight-policy.json",
+    ".codex/db-driver-final-approval-gate.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -382,35 +330,29 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-preflight-policy.ts",
-    "apps/api/src/db-driver-preflight-policy.test.ts",
-    "docs/DB_DRIVER_PREFLIGHT_POLICY.md",
-    "docs/DB_DRIVER_CANDIDATE_EVALUATION.md",
-    "docs/DB_DRIVER_LICENSE_REVIEW.md",
-    "docs/DB_DRIVER_SUPPLY_CHAIN_REVIEW.md",
-    "docs/DB_DRIVER_VERSION_PINNING_POLICY.md",
-    "docs/DB_DRIVER_LOCKFILE_REVIEW_POLICY.md",
-    "docs/DB_DRIVER_PACKAGE_DIFF_REVIEW.md",
-    "docs/DB_DRIVER_SECURITY_ADVISORY_MONITORING.md",
-    "docs/DB_DRIVER_OWNER_APPROVAL_RECORD.md",
-    "docs/DB_DRIVER_INTRODUCTION_CHECKLIST.md",
+    ".gitignore",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+    "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-readiness-report-v116-prep.md"
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json"
   ],
   "testCoverageEvidence": [
-    "DB driver preflight default not_selected state covered.",
-    "Candidate allowlist and selected-driver owner approval requirement covered.",
-    "Package, lockfile, real DB, live DB, migration, provider, production, and readiness denials covered.",
-    "License, supply-chain, advisory, version, lockfile, package diff, and secret manager review requirements covered.",
-    "Unsafe evidence rejection covered."
+    "Changed area: DB driver final approval gate aggregation, committed blocked evidence, docs, and .codex evidence.",
+    "Test command: corepack pnpm test and npm test both passed with 40 files, 832 passed, 6 skipped.",
+    "What the test covers: blocked committed state, null selected driver, not_approved owner status, not_ready readiness and dry-run inputs, false final permission flags, future approval fixture isolation, unsafe evidence rejection, and context mismatch rejection.",
+    "Edge cases: approved committed evidence, selected driver, permission flag true, unsafe URLs/tokens/wallet values, unsafe trace references, wrong PR, wrong branch, wrong head, and wrong base are rejected."
   ],
   "testing": {
-    "testFiles": 39,
-    "passed": 759,
+    "testFiles": 40,
+    "passed": 832,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",
@@ -426,5 +368,34 @@
       "node scripts/check-quality-gate-self-protection.mjs",
       "node scripts/codex-secret-safety-scan.mjs"
     ]
-  }
+  },
+  "verificationSurface": [
+    "apps/api/src/db-driver-final-approval-gate.test.ts",
+    "apps/api/src/db-driver-final-approval-gate.ts",
+    ".codex/db-driver-final-approval-gate.json",
+    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "corepack pnpm lint",
+    "corepack pnpm typecheck",
+    "corepack pnpm test",
+    "npm test",
+    "corepack pnpm evidence:ci",
+    "corepack pnpm quality:self-protection",
+    "secret scan",
+    "no-scraping scan"
+  ],
+  "solvabilityConstraints": [
+    "No DB driver dependency may be added.",
+    "No package.json or pnpm-lock change may be introduced.",
+    "No real DB connection, migration apply, live DB integration test, provider SDK apply, production deployment, or readiness claim may be introduced.",
+    "Committed machine evidence must remain blocked and unapproved.",
+    "Future approved fixture must remain test-only."
+  ],
+  "storageOracle": "Committed final approval evidence remains blocked, selected_driver null, owner approval not_approved, all final permission flags false.",
+  "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
+  "testCoverageEvidenceStatus": "pass",
+  "targetQualityScoreStatus": "pass",
+  "contractGovernanceStatus": "pass",
+  "reviewIndependenceStatus": "pass",
+  "codeReviewMonitorStatus": "pass"
 }

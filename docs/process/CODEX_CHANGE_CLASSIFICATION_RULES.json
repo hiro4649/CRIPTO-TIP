@@ -77,7 +77,8 @@
     "next.config.*",
     "webpack.config.*",
     "eslint.config.*",
-    ".env*"
+    ".env*",
+    ".gitignore"
   ],
   "authorityFiles": [
     "IRIS_SPEC_AUTHORITY.md",

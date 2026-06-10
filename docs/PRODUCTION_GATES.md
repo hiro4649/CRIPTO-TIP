@@ -145,3 +145,15 @@ production deployment.
 
 The dry-run does not claim runtime readiness, production readiness, legal
 compliance, or YouTube policy compliance.
+
+## DB Driver Final Approval Gate v1.1.7 Prep
+
+DB driver final approval gate aggregates owner approval, readiness, preflight,
+approval dry-run, and review evidence before a future dependency PR. Current
+committed evidence remains `blocked`, does not select `pg` or `postgres`, and
+does not authorize package changes, lockfile changes, real DB connections,
+live DB integration tests, migration apply, provider SDK apply, production
+deployment, runtime readiness, production readiness, legal compliance, or
+YouTube policy compliance.
+
+The approved future fixture is test-only and is not production readiness.

@@ -220,3 +220,12 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future package diff and lockfile reviews remain incomplete. | Storage owner | Future dependency PR | Dry-run requires package diff and lockfile evidence before any real package or lockfile change. |
 | Medium | Future live DB and secret boundary reviews remain incomplete. | Security owner | Future live DB PR | Dry-run requires secret manager boundary evidence and rejects raw connection strings. |
 | Low | Real DB driver choice remains future owner-approved work. | Project owner | Future DB driver PR | This PR does not choose between `pg` and `postgres`. |
+
+## DB Driver Final Approval Gate v1.1.7 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Final gate could be mistaken for current dependency approval. | Storage owner | Future owner-approved DB driver dependency PR | Committed final gate evidence remains `blocked`, selected driver is null, owner approval is not_approved, and all permission flags are false. |
+| Medium | Future complete approval fixture could be copied into committed evidence. | Storage owner | Review checklist | The `approved_for_dependency_pr` path exists only in tests and committed evidence rejects approved, selected, or ready states. |
+| Medium | Unsafe DB or provider details could leak through approval evidence. | Security owner | Future secret-boundary PR | Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references. |
+| Low | Package or lockfile change could be bundled into final-gate prep. | Storage owner | Future dependency PR | This PR does not edit `package.json` or `pnpm-lock.yaml`; package and lockfile permission flags remain false in committed evidence. |
