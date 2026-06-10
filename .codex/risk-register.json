@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 49,
-  "headSha": "05784ac8c9bd46717b022404f7f172078c970893",
+  "prNumber": 50,
+  "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -74,6 +74,27 @@
       "owner": "Storage owner",
       "nextPr": "Future dependency PR",
       "mitigation": "Package and lockfile flags remain false and package files are unchanged."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Final approval gate could be mistaken for current dependency approval.",
+      "owner": "Storage owner",
+      "nextPr": "Future owner-approved DB driver dependency PR",
+      "mitigation": "Committed final gate evidence remains blocked, selected driver is null, owner approval is not_approved, and all permission flags are false."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Test-only future approval fixture could be copied into committed machine evidence.",
+      "owner": "Storage owner",
+      "nextPr": "Future dependency PR review checklist",
+      "mitigation": "Committed validation rejects approved, selected, or ready states and tests prove the future fixture is not committed."
+    },
+    {
+      "severity": "Medium",
+      "risk": "Unsafe DB or provider details could leak through final approval evidence.",
+      "owner": "Security owner",
+      "nextPr": "Future secret-boundary PR",
+      "mitigation": "Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references."
     }
   ],
   "entries": [
@@ -86,9 +107,9 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "f8b52aa81360cda462e8926a76730db8c0ce20b2",
+  "baseSha": "735557519cbf3b1cc1b186c5591744336d4d7eeb",
   "status": "pass",
-  "title": "feat: add db driver approval dry run",
+  "title": "feat: add db driver final approval gate",
   "goal": "Add a DB driver readiness report for v1.1.6 that aggregates owner approval, preflight policy, and approval dry-run evidence into committed not_ready evidence without selecting a DB driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "changedFiles": [
     ".codex/change-classification.json",

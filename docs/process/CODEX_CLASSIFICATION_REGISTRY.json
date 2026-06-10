@@ -978,6 +978,69 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver readiness report evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-final-approval-gate.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver final approval gate aggregation only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-final-approval-gate.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver final approval gate blocked and future-fixture tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver final approval gate documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver final approval requirements documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_FINAL_APPROVAL_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver final approval blocker vocabulary documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver final approval gate."
+    },
+    {
+      "pathPattern": ".codex/db-driver-final-approval-gate.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Committed blocked machine evidence for DB driver final approval gate."
     }
   ],
   "safeSummaryOnly": true

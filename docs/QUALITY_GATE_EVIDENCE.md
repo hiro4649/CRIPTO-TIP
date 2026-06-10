@@ -393,3 +393,11 @@ quality-gate weakening is introduced.
 - Committed evidence keeps `selectedDriver: null` and `ownerApprovalRecordStatus: not_approved`.
 - The validator rejects missing owner approval, missing review evidence, target binding mismatch, expired approval, fingerprint mismatch, package changes, lockfile changes, added `pg` or `postgres` dependencies, real DB connection, migration execution, provider SDK apply, production deployment, readiness claims, unsafe values, and raw log references.
 - The future complete approval fixture is test-only and is not committed as current approval evidence.
+
+## DB Driver Final Approval Gate v1.1.7 Prep
+
+- `.codex/db-driver-final-approval-gate.json` records `gate_status: blocked`.
+- Committed evidence keeps `selected_driver: null`, `owner_approval_status: not_approved`, `readiness_report_status: not_ready`, and `approval_dry_run_status: not_ready`.
+- The final gate aggregates owner approval, readiness report, preflight policy, approval dry-run, and review status evidence without authorizing package, lockfile, real DB, migration, provider SDK, production, runtime readiness, legal compliance, or YouTube policy scope.
+- The future complete approval fixture reaches `approved_for_dependency_pr` only inside tests and is rejected as committed evidence.
+- Unsafe values, DB connection strings, private URLs, wallet addresses, token-like values, raw provider responses, and raw GitHub log references remain rejected.
