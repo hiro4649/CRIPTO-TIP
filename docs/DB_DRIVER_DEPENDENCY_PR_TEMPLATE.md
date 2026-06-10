@@ -42,3 +42,14 @@ The committed `.codex/db-driver-dependency-pr-template.json` record must remain:
 
 The template does not authorize dependency introduction.
 
+## Candidate Review Pack Dependency
+
+Before a future dependency PR can use this template, the candidate review pack
+must still prove that driver choice is not made in preparatory work. See
+`docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md` and
+`.codex/db-driver-candidate-review-pack.json`.
+
+The candidate review pack may list `pg` and `postgres`, but it must keep
+`driverChoiceStatus: not_selected`, `selectedDriver: null`, owner approval
+`not_approved`, final gate `blocked`, package diff `missing`, lockfile review
+`missing`, and all permission flags false.

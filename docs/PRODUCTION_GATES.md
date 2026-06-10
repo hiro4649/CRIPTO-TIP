@@ -170,3 +170,15 @@ evidence, package diff review, lockfile review, license review, supply-chain
 review, security advisory review, version pinning, and secret boundary evidence.
 Runtime readiness, production readiness, legal compliance, and YouTube policy
 compliance remain out of scope.
+
+## DB Driver Candidate Review Pack v1.1.7 Prep
+
+The DB driver candidate review pack is not a production gate pass. It lists
+`pg` and `postgres` for future owner review only and keeps the current outcome
+`not_ready`.
+
+Production and runtime gates remain blocked until a separate owner-approved PR
+selects a driver, completes license, supply-chain, advisory, version, package,
+lockfile, and secret-boundary reviews, attaches final approval evidence, and
+then separately proves live DB integration. This PR performs none of those
+actions.
