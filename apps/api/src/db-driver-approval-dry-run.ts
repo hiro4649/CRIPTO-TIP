@@ -174,6 +174,36 @@ export type DbDriverApprovalDryRunRecord = {
   created_at: string;
 };
 
+export type CommittedDbDriverApprovalDryRunEvidence = {
+  prNumber: number;
+  headSha: string;
+  baseSha: string;
+  dryRunStatus: DbDriverApprovalDryRunStatus;
+  selectedDriver: DbDriverCandidate | null;
+  ownerApprovalRecordStatus: "not_approved" | "approved" | "missing" | "expired" | "invalid";
+  ownerApprovalRecordFingerprintStatus: "not_applicable" | "pass" | "failed";
+  preflightPolicyStatus: DbDriverReviewStatus;
+  licenseReviewStatus: DbDriverReviewStatus;
+  supplyChainReviewStatus: DbDriverReviewStatus;
+  securityAdvisoryReviewStatus: DbDriverReviewStatus;
+  versionPinningReviewStatus: DbDriverReviewStatus;
+  lockfileReviewStatus: DbDriverReviewStatus;
+  packageDiffReviewStatus: DbDriverReviewStatus;
+  secretBoundaryReviewStatus: DbDriverReviewStatus;
+  packageChangeDetected: boolean;
+  pnpmLockChangeDetected: boolean;
+  realDbConnectionDetected: boolean;
+  migrationChangeDetected: boolean;
+  providerSdkApplyDetected: boolean;
+  productionDeploymentDetected: boolean;
+  runtimeReadinessClaimDetected: boolean;
+  productionReadinessClaimDetected: boolean;
+  legalComplianceClaimDetected: boolean;
+  youtubePolicyComplianceClaimDetected: boolean;
+  failureReasons: DbDriverApprovalDryRunFailureReason[];
+  forbiddenScopeStatus: "pass" | "fail";
+};
+
 export function createDefaultDbDriverApprovalDryRunRecord(input: {
   repository: string;
   prNumber: number;
@@ -186,7 +216,7 @@ export function createDefaultDbDriverApprovalDryRunRecord(input: {
 }): DbDriverApprovalDryRunRecord {
   return {
     schema_version: "1.0.0",
-    harness_version: input.harnessVersion ?? "1.1.5",
+    harness_version: input.harnessVersion ?? "1.1.6",
     repository: input.repository,
     pr_number: input.prNumber,
     target_branch: input.targetBranch,
@@ -264,6 +294,7 @@ export function evaluateDbDriverApprovalDryRun(inputs: DbDriverApprovalDryRunInp
   record.owner_approval_record_status = ownerApprovalStatus.status;
   record.owner_approval_record_fingerprint_status = ownerApprovalStatus.fingerprintStatus;
   record.preflight_policy_status = collectPreflightReasons(inputs.preflightPolicyRecord, selectedDriver, context, reasons);
+  if (Boolean(inputs.licenseReviewEvidence?.legal_compliance_claim)) reasons.add("legal_compliance_claim_forbidden");
   record.license_review_status = collectReviewStatus(inputs.licenseReviewEvidence, selectedDriver, "license_review_missing", reasons, isPassingLicenseReview);
   record.supply_chain_review_status = collectReviewStatus(inputs.supplyChainReviewEvidence, selectedDriver, "supply_chain_review_missing", reasons, isPassingSupplyChainReview);
   record.security_advisory_review_status = collectReviewStatus(inputs.securityAdvisoryReviewEvidence, selectedDriver, "security_advisory_review_missing", reasons, isPassingSecurityAdvisoryReview);
@@ -284,6 +315,63 @@ export function evaluateDbDriverApprovalDryRun(inputs: DbDriverApprovalDryRunInp
     ? "Test-only DB driver approval dry-run fixture is complete; this does not authorize current driver selection."
     : "DB driver approval dry-run is not ready; required owner approval and review evidence are incomplete.";
   return record;
+}
+
+export function validateCommittedDbDriverApprovalDryRunEvidence(
+  evidence: CommittedDbDriverApprovalDryRunEvidence,
+  context: { prNumber: number; baseSha: string; staleHeadSha?: string | undefined }
+) {
+  const failures: string[] = [];
+  if (evidence.prNumber !== context.prNumber) failures.push("pr_number_mismatch");
+  if (!/^[0-9a-f]{40}$/i.test(evidence.headSha)) failures.push("head_sha_invalid");
+  if (evidence.headSha === context.baseSha || evidence.headSha === context.staleHeadSha) failures.push("head_sha_stale");
+  if (evidence.baseSha !== context.baseSha) failures.push("base_sha_mismatch");
+  if (evidence.dryRunStatus !== "not_ready") failures.push("dry_run_status_not_not_ready");
+  if (evidence.selectedDriver !== null) failures.push("selected_driver_present");
+  if (evidence.ownerApprovalRecordStatus !== "not_approved") failures.push("owner_approval_not_not_approved");
+  if (evidence.ownerApprovalRecordFingerprintStatus !== "not_applicable") failures.push("owner_approval_fingerprint_not_not_applicable");
+  if (evidence.preflightPolicyStatus !== "pass") failures.push("preflight_policy_not_pass");
+  for (const [key, value] of Object.entries({
+    licenseReviewStatus: evidence.licenseReviewStatus,
+    supplyChainReviewStatus: evidence.supplyChainReviewStatus,
+    securityAdvisoryReviewStatus: evidence.securityAdvisoryReviewStatus,
+    versionPinningReviewStatus: evidence.versionPinningReviewStatus,
+    lockfileReviewStatus: evidence.lockfileReviewStatus,
+    packageDiffReviewStatus: evidence.packageDiffReviewStatus,
+    secretBoundaryReviewStatus: evidence.secretBoundaryReviewStatus
+  })) {
+    if (value !== "missing") failures.push(`${key}_not_missing`);
+  }
+  for (const [key, value] of Object.entries({
+    packageChangeDetected: evidence.packageChangeDetected,
+    pnpmLockChangeDetected: evidence.pnpmLockChangeDetected,
+    realDbConnectionDetected: evidence.realDbConnectionDetected,
+    migrationChangeDetected: evidence.migrationChangeDetected,
+    providerSdkApplyDetected: evidence.providerSdkApplyDetected,
+    productionDeploymentDetected: evidence.productionDeploymentDetected,
+    runtimeReadinessClaimDetected: evidence.runtimeReadinessClaimDetected,
+    productionReadinessClaimDetected: evidence.productionReadinessClaimDetected,
+    legalComplianceClaimDetected: evidence.legalComplianceClaimDetected,
+    youtubePolicyComplianceClaimDetected: evidence.youtubePolicyComplianceClaimDetected
+  })) {
+    if (value !== false) failures.push(`${key}_not_false`);
+  }
+  for (const requiredReason of [
+    "owner_approval_missing",
+    "driver_not_selected",
+    "license_review_missing",
+    "supply_chain_review_missing",
+    "security_advisory_review_missing",
+    "version_pinning_review_missing",
+    "lockfile_review_missing",
+    "package_diff_review_missing",
+    "secret_boundary_review_missing"
+  ] satisfies DbDriverApprovalDryRunFailureReason[]) {
+    if (!evidence.failureReasons.includes(requiredReason)) failures.push(`missing_${requiredReason}`);
+  }
+  if (evidence.forbiddenScopeStatus !== "pass") failures.push("forbidden_scope_not_pass");
+  if (failures.length > 0) throw new Error(`Committed DB driver approval dry-run evidence is unsafe: ${failures.join(", ")}`);
+  return evidence;
 }
 
 export function assertNoUnsafeDbDriverApprovalDryRunEvidence(value: unknown, path: string[] = []) {

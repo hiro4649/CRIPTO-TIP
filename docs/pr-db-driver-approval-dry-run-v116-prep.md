@@ -21,21 +21,21 @@ Done criteria: DB driver approval dry-run validator exists; default dry-run evid
 
 ## Evidence Integrity
 
-Head SHA: f3e10067ec542592de2c6acf8694042e638feba2
+Head SHA: 9a375a254b403096a2054e969515bb4150d21f7d
 
 Base SHA: f3e10067ec542592de2c6acf8694042e638feba2
 
-Product CI: local_pending_before_pr_creation
+Product CI: success
 
-Quality-gate: local_pending_before_pr_creation
+Quality-gate: success
 
-CI run: local_pending_before_pr_creation
+CI run: 27247785490
 
-Quality-gate run: local_pending_before_pr_creation
+Quality-gate run: 27247923448
 
-Quality-gate artifact: local_pending_before_pr_creation
+Quality-gate artifact: 7524755603
 
-Tests: 38 test files, 728 passed, 6 skipped
+Tests: 38 test files, 747 passed, 6 skipped
 
 ## Testing and review
 
@@ -62,7 +62,7 @@ Runtime smoke rationale: no runtime readiness is claimed; this PR adds dry-run v
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 38 files, 728 passed, 6 skipped.
+Current recorded test summary: 38 files, 747 passed, 6 skipped.
 
 Changed area: `apps/api/src/db-driver-approval-dry-run.ts`, `apps/api/src/db-driver-approval-dry-run.test.ts`, DB driver dry-run docs, and `.codex` evidence.
 

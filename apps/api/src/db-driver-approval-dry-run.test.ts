@@ -9,6 +9,7 @@ import { createDefaultDbDriverPreflightPolicyRecord } from "./db-driver-prefligh
 import {
   createDefaultDbDriverApprovalDryRunRecord,
   evaluateDbDriverApprovalDryRun,
+  validateCommittedDbDriverApprovalDryRunEvidence,
   type DbDriverApprovalDryRunContext,
   type DbDriverApprovalDryRunInputs,
   type DbDriverLicenseReviewEvidence,
@@ -153,6 +154,49 @@ function machineEvidence() {
   return JSON.parse(readFileSync(".codex/db-driver-approval-dry-run.json", "utf8")) as Record<string, unknown>;
 }
 
+function committedEvidence(patch: Record<string, unknown> = {}) {
+  return {
+    prNumber: 47,
+    headSha: targetCommit,
+    baseSha: baseCommit,
+    dryRunStatus: "not_ready",
+    selectedDriver: null,
+    ownerApprovalRecordStatus: "not_approved",
+    ownerApprovalRecordFingerprintStatus: "not_applicable",
+    preflightPolicyStatus: "pass",
+    licenseReviewStatus: "missing",
+    supplyChainReviewStatus: "missing",
+    securityAdvisoryReviewStatus: "missing",
+    versionPinningReviewStatus: "missing",
+    lockfileReviewStatus: "missing",
+    packageDiffReviewStatus: "missing",
+    secretBoundaryReviewStatus: "missing",
+    packageChangeDetected: false,
+    pnpmLockChangeDetected: false,
+    realDbConnectionDetected: false,
+    migrationChangeDetected: false,
+    providerSdkApplyDetected: false,
+    productionDeploymentDetected: false,
+    runtimeReadinessClaimDetected: false,
+    productionReadinessClaimDetected: false,
+    legalComplianceClaimDetected: false,
+    youtubePolicyComplianceClaimDetected: false,
+    failureReasons: [
+      "owner_approval_missing",
+      "driver_not_selected",
+      "license_review_missing",
+      "supply_chain_review_missing",
+      "security_advisory_review_missing",
+      "version_pinning_review_missing",
+      "lockfile_review_missing",
+      "package_diff_review_missing",
+      "secret_boundary_review_missing"
+    ],
+    forbiddenScopeStatus: "pass",
+    ...patch
+  };
+}
+
 describe("DB driver approval dry-run", () => {
   it("dry-run default record is not_ready", () => {
     const record = createDefaultDbDriverApprovalDryRunRecord({
@@ -225,6 +269,7 @@ describe("DB driver approval dry-run", () => {
 
   it("dry-run rejects license review with legal compliance claim", () => {
     const record = evaluateDbDriverApprovalDryRun({ ...completeFutureFixture(), licenseReviewEvidence: licenseReview({ legal_compliance_claim: true as false }) }, context());
+    expect(record.failure_reasons).toContain("legal_compliance_claim_forbidden");
     expect(record.failure_reasons).toContain("license_review_missing");
   });
 
@@ -259,5 +304,50 @@ describe("DB driver approval dry-run", () => {
     expect(evidence.packageChangeDetected).toBe(false);
     expect(evidence.pnpmLockChangeDetected).toBe(false);
     expect(evidence.realDbConnectionDetected).toBe(false);
+  });
+
+  it("machine-readable dry-run evidence headSha is not the stale base merge commit", () => {
+    const evidence = machineEvidence();
+    expect(evidence.headSha).not.toBe("f3e10067ec542592de2c6acf8694042e638feba2");
+    expect(evidence.baseSha).toBe("f3e10067ec542592de2c6acf8694042e638feba2");
+  });
+
+  it("committed dry-run evidence accepts safe not_ready evidence", () => {
+    expect(validateCommittedDbDriverApprovalDryRunEvidence(committedEvidence() as never, {
+      prNumber: 47,
+      baseSha: baseCommit,
+      staleHeadSha: "f3e10067ec542592de2c6acf8694042e638feba2"
+    })).toMatchObject({ dryRunStatus: "not_ready", selectedDriver: null });
+  });
+
+  it.each([
+    ["pass status", { dryRunStatus: "pass" }],
+    ["selected driver", { selectedDriver: "pg" }],
+    ["selected postgres driver", { selectedDriver: "postgres" }],
+    ["owner approval approved", { ownerApprovalRecordStatus: "approved" }],
+    ["package change detected", { packageChangeDetected: true }],
+    ["pnpm lock change detected", { pnpmLockChangeDetected: true }],
+    ["real DB connection detected", { realDbConnectionDetected: true }],
+    ["package diff pass", { packageDiffReviewStatus: "pass" }],
+    ["missing owner approval reason", { failureReasons: committedEvidence().failureReasons.filter((reason) => reason !== "owner_approval_missing") }],
+    ["missing driver not selected reason", { failureReasons: committedEvidence().failureReasons.filter((reason) => reason !== "driver_not_selected") }]
+  ])("committed dry-run evidence rejects %s", (_name, patch) => {
+    expect(() => validateCommittedDbDriverApprovalDryRunEvidence(committedEvidence(patch) as never, {
+      prNumber: 47,
+      baseSha: baseCommit,
+      staleHeadSha: "f3e10067ec542592de2c6acf8694042e638feba2"
+    })).toThrow(/unsafe/i);
+  });
+
+  it.each(["password", "clientSecret", "apiKey", "refreshToken", "connectionString", "rawProviderResponse"])("dry-run rejects unsafe key %s", (key) => {
+    expect(() => evaluateDbDriverApprovalDryRun({ ...completeFutureFixture(), [key]: "redacted" } as never, context())).toThrow(/unsafe key/i);
+  });
+
+  it("dry-run maps owner approval missing scope to owner_approval_scope_missing", () => {
+    const record = evaluateDbDriverApprovalDryRun({
+      ...completeFutureFixture(),
+      ownerApprovalRecord: ownerApproval({ approval_scope: [] })
+    }, context());
+    expect(record.failure_reasons).toContain("owner_approval_scope_missing");
   });
 });

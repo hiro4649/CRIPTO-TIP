@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1.0.0",
-  "harnessVersion": "1.1.5",
+  "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 47,
-  "headSha": "f3e10067ec542592de2c6acf8694042e638feba2",
+  "headSha": "9a375a254b403096a2054e969515bb4150d21f7d",
   "baseSha": "f3e10067ec542592de2c6acf8694042e638feba2",
   "dryRunStatus": "not_ready",
   "selectedDriver": null,

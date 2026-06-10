@@ -1,9 +1,9 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
-  "harnessVersion": "1.1.5",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
+  "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 47,
-  "headSha": "f3e10067ec542592de2c6acf8694042e638feba2",
+  "headSha": "9a375a254b403096a2054e969515bb4150d21f7d",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -161,14 +161,14 @@
     "committed approved owner record",
     "selected DB driver in committed evidence"
   ],
-  "productCiStatus": "local_pending_before_pr_creation",
-  "qualityGateStatus": "local_pending_before_pr_creation",
-  "ciRunId": "local_pending_before_pr_creation",
-  "qualityGateRunId": "local_pending_before_pr_creation",
-  "qualityGateArtifactId": "local_pending_before_pr_creation",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27247785490",
+  "qualityGateRunId": "27247923448",
+  "qualityGateArtifactId": "7524755603",
   "testSummary": {
     "testFiles": 38,
-    "passed": 728,
+    "passed": 747,
     "skipped": 6
   }
 }

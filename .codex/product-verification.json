@@ -1,9 +1,9 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
-  "harnessVersion": "1.1.5",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
+  "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 47,
-  "headSha": "f3e10067ec542592de2c6acf8694042e638feba2",
+  "headSha": "9a375a254b403096a2054e969515bb4150d21f7d",
   "baseSha": "f3e10067ec542592de2c6acf8694042e638feba2",
   "productVerificationStatus": "pass",
   "commands": [
@@ -85,9 +85,9 @@
   "productionReadinessClaimed": false,
   "status": "pass",
   "testFiles": 38,
-  "passed": 728,
+  "passed": 747,
   "skipped": 6,
-  "testsPassed": 728,
+  "testsPassed": 747,
   "testsSkipped": 6,
   "productVerificationCommands": [
     {
@@ -675,11 +675,11 @@
       "result": "pass"
     }
   ],
-  "productCiStatus": "local_pending_before_pr_creation",
-  "ciRunId": "local_pending_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27247785490",
   "title": "feat: add db driver approval dry run",
   "goal": "Prepare DB driver approval dry-run validation for v1.1.6 using safe test-only fixtures and machine-readable not_ready evidence, without selecting a DB driver, adding DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "summary": "38 files, 728 passed, 6 skipped",
+  "summary": "38 files, 747 passed, 6 skipped",
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -757,12 +757,12 @@
     "committed approved owner record",
     "selected DB driver in committed evidence"
   ],
-  "qualityGateStatus": "local_pending_before_pr_creation",
-  "qualityGateRunId": "local_pending_before_pr_creation",
-  "qualityGateArtifactId": "local_pending_before_pr_creation",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27247923448",
+  "qualityGateArtifactId": "7524755603",
   "testSummary": {
     "testFiles": 38,
-    "passed": 728,
+    "passed": 747,
     "skipped": 6
   }
 }

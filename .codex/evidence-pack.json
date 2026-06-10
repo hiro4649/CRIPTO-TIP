@@ -1,9 +1,9 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.5",
-  "harnessVersion": "1.1.5",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
+  "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 47,
-  "headSha": "f3e10067ec542592de2c6acf8694042e638feba2",
+  "headSha": "9a375a254b403096a2054e969515bb4150d21f7d",
   "baseSha": "f3e10067ec542592de2c6acf8694042e638feba2",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add db driver approval dry run",
   "goal": "Prepare DB driver approval dry-run validation for v1.1.6 using safe test-only fixtures and machine-readable not_ready evidence, without selecting a DB driver, adding DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "ciRunId": "local_pending_before_pr_creation",
-  "qualityGateRunId": "local_pending_before_pr_creation",
-  "qualityGateArtifactId": "local_pending_before_pr_creation",
-  "productCiStatus": "local_pending_before_pr_creation",
-  "qualityGateStatus": "local_pending_before_pr_creation",
+  "ciRunId": "27247785490",
+  "qualityGateRunId": "27247923448",
+  "qualityGateArtifactId": "7524755603",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -245,7 +245,7 @@
   ],
   "testSummary": {
     "testFiles": 38,
-    "passed": 728,
+    "passed": 747,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -271,7 +271,7 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a new project-owner-approved PR."
   ],
-  "testsPassed": 728,
+  "testsPassed": 747,
   "testsSkipped": 6,
   "testFiles": 38,
   "productVerificationCommands": [
@@ -368,9 +368,9 @@
     "reason": "Candidate B creates enforceable preflight gates without adding DB driver or package/lockfile changes before owner approval."
   },
   "prBodyPath": "docs/pr-db-driver-preflight-policy-v116-prep.md",
-  "passed": 728,
+  "passed": 747,
   "skipped": 6,
-  "summary": "38 files, 728 passed, 6 skipped",
+  "summary": "38 files, 747 passed, 6 skipped",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-preflight-policy.json",
@@ -410,7 +410,7 @@
   ],
   "testing": {
     "testFiles": 38,
-    "passed": 728,
+    "passed": 747,
     "skipped": 6,
     "commands": [
       "corepack pnpm install",

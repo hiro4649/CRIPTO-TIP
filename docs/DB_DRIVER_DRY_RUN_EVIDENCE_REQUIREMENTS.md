@@ -15,3 +15,21 @@ A future DB driver approval dry-run can pass only when every safe evidence class
 The dry-run fails if it detects package or lockfile changes without approval, real DB connection, migration execution, provider SDK apply, production deployment, runtime readiness claim, production readiness claim, legal compliance claim, YouTube policy compliance claim, raw log reference, or unsafe evidence values.
 
 Current committed evidence remains incomplete by design: no selected driver, no approved owner record, no package change, no lockfile change, no real DB connection, and no readiness claim.
+
+## Current Committed Evidence Requirements
+
+Committed evidence requirements:
+
+- `dryRunStatus` must remain `not_ready`.
+- `selectedDriver` must remain `null`.
+- `ownerApprovalRecordStatus` must remain `not_approved`.
+- Review statuses for license, supply-chain, advisory, version pinning, lockfile, package diff, and secret boundary must remain `missing`.
+- Package, lockfile, real DB, migration, provider SDK apply, production deployment, readiness, legal compliance, and YouTube policy claim detection flags must remain `false`.
+
+Test-only fixture requirements:
+
+- A pass fixture may exist only inside unit tests.
+- The fixture must use fake review evidence and fake owner approval.
+- The fixture must not be committed as current `.codex` evidence.
+
+No pass status, selected driver, or approved owner record is allowed in committed evidence for this PR.
