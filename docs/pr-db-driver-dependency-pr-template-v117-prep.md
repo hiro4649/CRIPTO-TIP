@@ -53,6 +53,14 @@ Review focus: no-driver evidence, future package/lockfile evidence, unsafe evide
 
 Current recorded test summary: 41 files, 864 passed, 6 skipped.
 
+Changed area: offline DB driver dependency PR template validator, committed template evidence, docs, tests, and `.codex` evidence.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: no-driver current evidence, owner/final gate blocked state, package/lockfile permission rejection, future package/lockfile/license/supply-chain/security/version/secret evidence requirements, unsafe value rejection, and readiness-claim rejection.
+
+Edge cases: selected driver, dependency allowance, package/lockfile allowance, real DB connection, migration execution, live DB test, provider SDK apply, production deployment, raw logs, private URLs, DB connection strings, and readiness overclaim.
+
 Risk-To-Test Mapping: `apps/api/src/db-driver-dependency-pr-template.test.ts` covers no-driver current evidence, owner/final gate blocked state, package/lockfile permission rejection, future package/lockfile/license/supply-chain/security/version/secret evidence requirements, unsafe value rejection, and readiness-claim rejection.
 
 ## Security Boundaries
@@ -61,7 +69,11 @@ No DB driver dependency, package/lockfile change, real DB connection, migration 
 
 ## Best of N Evidence
 
-Candidate count: 3. Selected: offline validator plus template-ready evidence and docs. Rejected: docs-only checklist was too weak; adding a dependency now was out of scope without owner approval, final approval, package diff review, lockfile review, license review, supply-chain review, advisory review, version pinning review, and secret-boundary review.
+Candidate count: 3. Candidates: docs-only checklist; add DB dependency now; offline validator plus template-ready evidence and docs.
+
+Selected candidate: offline validator plus template-ready evidence and docs.
+
+Reason selected: it adds typed future dependency checks while preserving no-driver, no-package-change, no-lockfile-change, and no-readiness boundaries.
 
 ## Residual risks
 
