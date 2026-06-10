@@ -52,3 +52,22 @@ Future dependency PR body evidence must include:
 Raw logs, secrets, private URLs, DB connection strings, wallet addresses, raw provider responses, legal compliance claims, and YouTube policy compliance claims are forbidden in evidence.
 
 License review evidence is package license metadata review only. It is not legal advice, legal approval, or a legal compliance claim.
+
+## Candidate Review Pack Contract
+
+`.codex/db-driver-candidate-review-pack.json` is the machine-readable contract
+for candidate comparison before a future dependency PR. It is valid only while:
+
+- `candidateDrivers` is exactly `pg`, `postgres`
+- `driverChoiceStatus` is `not_selected`
+- `selectedDriver` is `null`
+- `reviewPackStatus` is `not_ready`
+- license, supply-chain, advisory, version, package, lockfile, and secret
+  evidence remain incomplete
+- owner approval is `not_approved`
+- final approval gate is `blocked`
+- package, lockfile, dependency, real DB, migration, live DB test, provider
+  apply, deployment, readiness, legal, and YouTube policy flags are false
+
+The candidate pack is not a dependency decision and cannot replace owner
+approval or final approval gate evidence.

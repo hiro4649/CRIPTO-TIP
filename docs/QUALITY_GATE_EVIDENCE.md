@@ -409,3 +409,10 @@ quality-gate weakening is introduced.
 - The validator rejects selected drivers, DB driver dependency allowance, package/lockfile allowance, real DB connection, migration execution, live DB integration tests, provider SDK apply, production deployment, runtime readiness, production readiness, legal compliance claims, and YouTube policy compliance claims in current template evidence.
 - Future package diff evidence must add exactly one approved DB driver and must not change scripts or unrelated dependencies.
 - Future complete dependency PR evidence exists only inside tests and is rejected as current committed template evidence.
+
+## DB Driver Candidate Review Pack v1.1.7 Prep
+
+- `.codex/db-driver-candidate-review-pack.json` records `reviewPackStatus: not_ready`.
+- Committed evidence keeps `driverChoiceStatus: not_selected`, `selectedDriver: null`, `candidateDrivers: [pg, postgres]`, owner approval `not_approved`, final gate `blocked`, package diff `missing`, and lockfile review `missing`.
+- `apps/api/src/db-driver-candidate-review-pack.test.ts` verifies candidate list exactness, candidate review completeness, selected/ready/pass/approved rejection, permission flag rejection, unsafe evidence rejection, required sections, blocker vocabulary, and committed machine-readable evidence safe defaults.
+- This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.

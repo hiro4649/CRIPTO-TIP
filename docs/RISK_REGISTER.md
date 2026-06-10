@@ -239,3 +239,12 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future lockfile review could miss transitive behavior. | Storage owner | Future dependency PR | Lockfile evidence requires transitive count, integrity, optional dependency, native module, and postinstall review. |
 | Medium | Future owner approval could expire or mismatch target commit. | Project owner | Future dependency PR | Attachment rules require owner approval and final gate evidence bound to the exact target commit. |
 | Medium | Runtime readiness could be inferred from template docs. | Backend owner | Future runtime PR | Template docs explicitly keep runtime, production, legal, and YouTube policy readiness out of scope. |
+
+## DB Driver Candidate Review Pack v1.1.7 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Candidate listing could be mistaken for driver selection. | Storage owner | Future owner-approved dependency PR | Committed evidence keeps `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate statuses as candidate-only, owner approval `not_approved`, and final gate `blocked`. |
+| Medium | Future review could skip license, supply-chain, advisory, version, package, lockfile, or secret checks. | Storage owner | Future dependency PR | Candidate pack blocks on explicit `not_reviewed`, `not_selected`, and `missing` statuses for every review dimension. |
+| Medium | Package or lockfile changes could be bundled with review-pack prep. | Storage owner | Future dependency PR | This PR does not edit `package.json` or `pnpm-lock.yaml`; package, lockfile, and dependency permission flags remain false. |
+| Medium | Unsafe operational details could leak through review evidence. | Security owner | Future secret-boundary PR | Validator rejects raw logs, raw provider output, DB connection strings, token-like values, wallet addresses, private URLs, and unsafe secret-looking keys. |

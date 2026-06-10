@@ -1,10 +1,10 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.6",
-  "harnessVersion": "1.1.6",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
+  "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 51,
-  "headSha": "0bed9e8a1ef5b90fdd6b3644d884053864f340f6",
-  "baseSha": "0b975a8d2093464f4e1e520742c7eac5a25e9070",
+  "prNumber": 53,
+  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
+  "baseSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
   "latestAnalyzedRunId": "27258264650",
@@ -59,16 +59,16 @@
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "27273796044",
-  "qualityGateArtifactId": "7534659584",
-  "title": "feat: add db driver dependency pr template",
-  "goal": "Prepare the future DB driver dependency PR template and evidence contract for v1.1.7 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "qualityGateRunId": "27310615842",
+  "qualityGateArtifactId": "7550011884",
+  "title": "feat: add db driver candidate review pack",
+  "goal": "Prepare the v1.1.7 DB driver candidate review pack without selecting a driver, adding a dependency, changing package files, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
   "forbiddenScopeStatus": "pass",
   "dbDriverPreflightPolicyStatus": "not_selected",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-dependency-pr-template.json",
+    ".codex/db-driver-candidate-review-pack.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -77,41 +77,33 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-dependency-pr-template.ts",
-    "apps/api/src/db-driver-dependency-pr-template.test.ts",
+    "apps/api/src/db-driver-candidate-review-pack.ts",
+    "apps/api/src/db-driver-candidate-review-pack.test.ts",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_MATRIX.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_EVIDENCE.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_FAILURE_REASONS.md",
     "docs/DB_DRIVER_DEPENDENCY_PR_TEMPLATE.md",
     "docs/DB_DRIVER_DEPENDENCY_EVIDENCE_CONTRACT.md",
-    "docs/DB_DRIVER_PACKAGE_DIFF_EVIDENCE.md",
-    "docs/DB_DRIVER_LOCKFILE_EVIDENCE.md",
-    "docs/DB_DRIVER_REVIEW_ATTACHMENT_RULES.md",
-    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
-    "docs/DB_DRIVER_FINAL_APPROVAL_REQUIREMENTS.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-dependency-pr-template-v117-prep.md"
+    "docs/pr-db-driver-candidate-review-pack-v117-prep.md"
   ],
   "allowedScope": [
-    "db_driver_dependency_pr_template",
-    "future_dependency_evidence_contract",
-    "owner_approval_attachment_rules",
-    "final_approval_gate_attachment_rules",
-    "package_diff_evidence_schema",
-    "lockfile_review_evidence_schema",
-    "license_review_attachment_rules",
-    "supply_chain_review_attachment_rules",
-    "security_advisory_attachment_rules",
-    "version_pinning_attachment_rules",
-    "secret_boundary_attachment_rules",
+    "db_driver_candidate_review_pack",
+    "candidate_driver_review_matrix",
+    "candidate_review_failure_reasons",
+    "candidate_review_machine_evidence",
     "tests",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
     "real DB connection",
-    "DB driver dependency",
+    "DB driver dependency introduction",
     "package.json change",
     "pnpm-lock change",
     "migration change",
@@ -137,7 +129,7 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "raw GitHub log reading",
+    "GitHub unsafe output reading",
     "quality-gate weakening",
     "committed approved owner record",
     "selected DB driver in committed evidence",
@@ -145,41 +137,43 @@
     "DB driver selected in current PR"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27273607630",
+  "ciRunId": "27310036429",
   "testSummary": {
-    "testFiles": 41,
-    "passed": 864,
+    "testFiles": 42,
+    "passed": 1004,
     "skipped": 6
   },
-  "testFiles": 41,
-  "passed": 864,
+  "testFiles": 42,
+  "passed": 1004,
   "skipped": 6,
   "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
   "testCoverageEvidenceStatus": "pass",
-  "prBodyPath": "docs/pr-db-driver-dependency-pr-template-v117-prep.md",
+  "prBodyPath": "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
   "doneCriteria": [
-    "DB driver dependency PR template record exists",
-    "committed template status remains template_ready",
+    "DB driver candidate review pack record exists",
+    "committed review pack status remains not_ready",
+    "driver choice status remains not_selected",
     "selected driver remains null in committed evidence",
+    "candidate drivers remain exactly pg and postgres",
+    "candidate reviews remain candidate-only and not approved",
     "owner approval remains not_approved in committed evidence",
     "final approval gate remains blocked in committed evidence",
     "package and lockfile evidence remain missing",
-    "all permission flags remain false in committed evidence",
-    "future complete dependency fixture is test-only and not committed"
+    "all permission flags remain false in committed evidence"
   ],
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "prProfile": "product_r3",
   "taskMode": "feature",
   "verificationSurface": [
-    "apps/api/src/db-driver-final-approval-gate.test.ts",
-    "apps/api/src/db-driver-final-approval-gate.ts",
-    ".codex/db-driver-final-approval-gate.json",
-    "docs/DB_DRIVER_FINAL_APPROVAL_GATE.md",
-    "docs/pr-db-driver-final-approval-gate-v117-prep.md",
+    "apps/api/src/db-driver-candidate-review-pack.test.ts",
+    "apps/api/src/db-driver-candidate-review-pack.ts",
+    ".codex/db-driver-candidate-review-pack.json",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md",
+    "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
     "corepack pnpm lint",
     "corepack pnpm typecheck",
     "corepack pnpm test",
@@ -193,12 +187,12 @@
     "No DB driver dependency may be added.",
     "No package.json or pnpm-lock change may be introduced.",
     "No real DB connection, migration apply, live DB integration test, provider SDK apply, production deployment, or readiness claim may be introduced.",
-    "Committed machine evidence must remain blocked and unapproved.",
-    "Future approved fixture must remain test-only."
+    "Committed machine evidence must remain not_ready, not_selected, blocked, and unapproved.",
+    "Future owner approval and final approval gate remain separate work."
   ],
-  "storageOracle": "Committed dependency template evidence remains template_ready, selectedDriver null, owner approval not_approved, final gate blocked, package and lockfile evidence missing, all permission flags false.",
+  "storageOracle": "Committed candidate review evidence remains not_ready, driverChoiceStatus not_selected, selectedDriver null, candidateDrivers pg/postgres, owner approval not_approved, final gate blocked, package and lockfile evidence missing, all permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
-  "testsPassed": 864,
+  "testsPassed": 1004,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "riskLevel": "R3",
@@ -208,47 +202,64 @@
     "No real DB connection is implemented.",
     "No migration is changed or executed.",
     "No live DB integration test is executed.",
+    "No provider SDK apply or production deployment is introduced.",
     "No runtime, production, legal, or YouTube policy readiness is claimed.",
-    "Future package and lockfile evidence remain missing in committed evidence."
+    "Candidate review evidence rejects unsafe run-output copies, provider output copy, token-like values, wallet addresses, private URLs, and DB connection strings."
   ],
   "residualRisks": [
-    "The template does not authorize a dependency.",
+    "The candidate review pack does not authorize a dependency.",
     "Future package diff may still introduce supply-chain risk.",
+    "Future license, advisory, version, package, lockfile, and secret-boundary reviews remain required.",
     "Future owner approval may expire or mismatch target commit.",
-    "Future lockfile review remains required.",
     "Runtime and production readiness remain out of scope."
   ],
   "humanConfirmation": [
     "Owner approval status is not_approved for this PR.",
     "Driver choice status is not_selected for this PR.",
     "AI review recommendations are not recorded as human approval.",
-    "Future DB driver dependency introduction requires a new project-owner-approved PR."
+    "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
-  "summary": "41 files, 864 passed, 6 skipped",
+  "summary": "42 files, 1004 passed, 6 skipped",
   "testCoverageEvidence": [
-    "Changed area: DB driver dependency PR template validator, committed template_ready evidence, future package diff and lockfile evidence contracts, review attachment rules, docs, and .codex evidence.",
-    "Test command: targeted Vitest passed with 41 files, 864 passed, 6 skipped.",
-    "What the test covers: current template evidence stays template_ready, selected driver null, owner approval not_approved, final gate blocked, package and lockfile evidence missing, all permission flags false, future complete dependency fixture accepted only in tests, and unsafe evidence rejected.",
-    "Edge cases: selected driver, dependency allowance, package/lockfile allowance, real DB connection, migration execution, live DB integration test, provider SDK apply, production deployment, readiness claims, legal/YouTube policy claims, missing future sections, multiple dependencies, script changes, unrelated package or lockfile changes, raw logs, connection strings, private URLs, wallet values, and token-like values are rejected."
+    "Changed area: DB driver candidate review pack validator, committed not-ready candidate evidence, candidate review docs, and .codex evidence.",
+    "Test command: corepack pnpm test and npm test cover the candidate review pack together with repository tests.",
+    "What the test covers: default not-ready evidence, exact pg/postgres candidates, candidate review completeness, selected/ready/pass/approved rejection, permission flag rejection, unsafe evidence rejection, required sections, blocker vocabulary, and committed machine-readable evidence remaining not-ready.",
+    "Edge cases: missing, extra, duplicate, or mismatched candidates; selected candidate status; readiness or compliance wording; private URLs; DB connection strings; wallet addresses; token-like values; unsafe run-output copies; provider response copies; console stream and trace copies; and secret-like keys are rejected."
   ],
   "reviewScope": {
-    "scope": "DB driver dependency PR template validator, committed template_ready evidence, docs, and tests.",
-    "riskSummary": "Main risk is mistaking a future dependency PR template for actual dependency approval; committed evidence remains no-driver and no-package-change.",
-    "verificationOracle": "Vitest template coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan."
+    "scope": "DB driver candidate review pack validator, committed not-ready candidate evidence, docs, and tests.",
+    "riskSummary": "Main risk is mistaking candidate listing for actual DB driver selection; committed evidence remains no-driver and no-package-change.",
+    "verificationOracle": "Vitest candidate review coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan."
   },
   "bestOfN": {
     "selected": "Candidate B",
     "candidates": [
-      "Candidate A: add pg dependency and update package files now.",
-      "Candidate B: add dependency PR template, evidence contract, docs, tests, and committed template_ready evidence without package changes.",
-      "Candidate C: only write informal docs."
+      "Candidate A: choose a DB driver and update package files now.",
+      "Candidate B: add candidate review pack, matrix, safety validation, docs, and not-ready evidence without package changes.",
+      "Candidate C: write informal candidate notes only."
     ],
-    "reason": "Candidate B creates a machine-readable future dependency contract without crossing the owner approval boundary."
+    "reason": "Candidate B creates review structure without crossing the owner approval or dependency boundary."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No runtime DB API or public API is changed; this adds an offline dependency PR template validator and tests."
+    "statement": "No runtime DB API or public API is changed; this adds an offline candidate review pack validator and tests."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline dependency-template evidence and tests only."
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline candidate-review evidence and tests only.",
+  "productionReadinessClaim": false,
+  "runtimeReadinessClaimed": false,
+  "productVerificationCommands": [
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, package.json, or pnpm-lock changes are introduced by this PR."
+  }
 }

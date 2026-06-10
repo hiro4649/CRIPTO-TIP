@@ -1124,6 +1124,78 @@
       "notes": "Committed template-ready machine evidence for a future DB driver dependency PR."
     },
     {
+      "pathPattern": "apps/api/src/db-driver-candidate-review-pack.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review pack validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-candidate-review-pack.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review pack and unsafe-evidence tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review pack documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_MATRIX.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review matrix documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review evidence documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review failure reasons documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver candidate review pack."
+    },
+    {
+      "pathPattern": ".codex/db-driver-candidate-review-pack.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Committed not-ready machine evidence for DB driver candidate review pack."
+    },
+    {
       "pathPattern": ".gitignore",
       "classification": "repo_config",
       "surface": "repository_hygiene",
