@@ -29,7 +29,7 @@ function template(patch: Partial<DbDriverDependencyPrTemplateRecord> = {}) {
 function futureCompleteFixture(patch: Partial<DbDriverDependencyPrTemplateRecord> = {}) {
   return template({
     templateStatus: "template_ready",
-    selectedDriver: "future-db-driver",
+    selectedDriver: "pg",
     ownerApprovalRecordStatus: "approved",
     finalApprovalGateStatus: "approved_for_dependency_pr",
     packageDiffEvidenceStatus: "pass",
@@ -45,12 +45,12 @@ function futureCompleteFixture(patch: Partial<DbDriverDependencyPrTemplateRecord
     packageDiffEvidence: {
       packageJsonChanged: true,
       pnpmLockChanged: true,
-      addedDependencies: ["future-db-driver"],
+      addedDependencies: ["pg"],
       removedDependencies: [],
       changedScripts: [],
       dependencySection: "dependencies",
-      selectedDriver: "future-db-driver",
-      packageName: "future-db-driver",
+      selectedDriver: "pg",
+      packageName: "pg",
       versionSpec: "1.2.3",
       noLifecycleScriptsAdded: true,
       unrelatedDependencyChanges: false,
@@ -58,7 +58,7 @@ function futureCompleteFixture(patch: Partial<DbDriverDependencyPrTemplateRecord
     },
     lockfileEvidence: {
       pnpmLockChanged: true,
-      selectedDriver: "future-db-driver",
+      selectedDriver: "pg",
       transitiveDependencyCount: 3,
       unrelatedDependencyChanges: false,
       integrityEntriesReviewed: true,
@@ -73,7 +73,7 @@ function futureCompleteFixture(patch: Partial<DbDriverDependencyPrTemplateRecord
       licenseSource: "package metadata",
       legalComplianceClaim: false,
       noLegalAdviceClaim: true,
-      safeSummary: "License metadata was reviewed without legal advice assertions."
+      safeSummary: "License metadata reviewed with no compliance assertion."
     },
     supplyChainReviewEvidence: {
       maintainerReviewed: true,
@@ -155,7 +155,7 @@ describe("db driver dependency PR template", () => {
   });
 
   it.each([
-    ["selected driver", { selectedDriver: "future-db-driver" }, /must not select a driver/],
+    ["selected driver", { selectedDriver: "pg" }, /must not select a driver/],
     ["DB driver dependency allowed", { dbDriverDependencyAllowed: true }, /dbDriverDependencyAllowed must remain false/],
     ["package change allowed", { packageJsonChangeAllowed: true }, /packageJsonChangeAllowed must remain false/],
     ["lockfile change allowed", { pnpmLockChangeAllowed: true }, /pnpmLockChangeAllowed must remain false/],
@@ -181,14 +181,40 @@ describe("db driver dependency PR template", () => {
   });
 
   it.each([
-    ["multiple added dependencies", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, addedDependencies: ["future-db-driver", "other-driver"] } }, /exactly one/],
+    ["unknown selected driver", { selectedDriver: "future-db-driver" }, /selected driver must be pg or postgres/],
+    ["unknown future-db-driver dependency", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, addedDependencies: ["future-db-driver"] } }, /selected driver must be pg or postgres/],
+    ["package name mismatch", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, packageName: "postgres" } }, /must match approval records/],
+    ["added dependency mismatch", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, addedDependencies: ["postgres"] } }, /must match approval records/],
+    ["multiple added dependencies", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, addedDependencies: ["pg", "postgres"] } }, /exactly one/],
+    ["unrelated dependency", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, addedDependencies: ["@scope/unknown-db-driver"] } }, /selected driver must be pg or postgres/],
+    ["dev dependency section", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, dependencySection: "devDependencies" } }, /under dependencies/],
+    ["no dependency section", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, dependencySection: "none" } }, /under dependencies/],
+    ["latest version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "latest" } }, /exact semver/],
+    ["star version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "*" } }, /exact semver/],
+    ["caret version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "^1.2.3" } }, /exact semver/],
+    ["tilde version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "~1.2.3" } }, /exact semver/],
+    ["workspace version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "workspace:*" } }, /exact semver/],
+    ["file version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "file:../pg" } }, /exact semver/],
+    ["git version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "git+ssh://example.invalid/pg" } }, /unsafe DB driver dependency PR template evidence rejected|exact semver/],
+    ["https version spec", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, versionSpec: "https://example.invalid/pg.tgz" } }, /unsafe DB driver dependency PR template evidence rejected|exact semver/],
     ["changed scripts", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, changedScripts: ["postinstall"] } }, /must not change package scripts/],
     ["unrelated package dependency changes", { packageDiffEvidence: { ...futureCompleteFixture().packageDiffEvidence!, unrelatedDependencyChanges: true } }, /unrelated dependency changes/],
     ["unrelated lockfile changes", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, unrelatedDependencyChanges: true } }, /lockfile evidence must not include unrelated/],
+    ["negative transitive count", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, transitiveDependencyCount: -1 } }, /0 through 100/],
+    ["non-integer transitive count", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, transitiveDependencyCount: 1.5 } }, /0 through 100/],
+    ["too large transitive count", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, transitiveDependencyCount: 101 } }, /0 through 100/],
+    ["native modules not reviewed", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, nativeModulesReviewed: false } }, /native modules/],
+    ["postinstall scripts not reviewed", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, postinstallScriptsReviewed: false } }, /postinstall scripts/],
+    ["integrity entries not reviewed", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, integrityEntriesReviewed: false } }, /integrity entries/],
+    ["optional dependencies not reviewed", { lockfileEvidence: { ...futureCompleteFixture().lockfileEvidence!, optionalDependenciesReviewed: false } }, /optional dependencies/],
     ["legal compliance claim", { licenseReviewEvidence: { ...futureCompleteFixture().licenseReviewEvidence!, legalComplianceClaim: true } }, /must not claim legal compliance/],
+    ["legal compliant summary", { licenseReviewEvidence: { ...futureCompleteFixture().licenseReviewEvidence!, safeSummary: "Package is legal compliant." } }, /safeSummary must not claim/],
+    ["legally approved summary", { licenseReviewEvidence: { ...futureCompleteFixture().licenseReviewEvidence!, safeSummary: "Package is legally approved." } }, /safeSummary must not claim/],
+    ["approved version range", { versionPinningEvidence: { ...futureCompleteFixture().versionPinningEvidence!, versionPolicy: "approved_range" } }, /exact version policy/],
+    ["non-exact approved version", { versionPinningEvidence: { ...futureCompleteFixture().versionPinningEvidence!, approvedVersion: "^1.2.3" } }, /exact semver/],
     ["raw logs in security evidence", { securityAdvisoryEvidence: { ...futureCompleteFixture().securityAdvisoryEvidence!, safeSummary: "raw GitHub logs include advisory output" } }, /unsafe DB driver dependency PR template evidence rejected/],
     ["raw connection string", { secretBoundaryEvidence: { ...futureCompleteFixture().secretBoundaryEvidence!, rawConnectionStringPresent: true } }, /secret boundary evidence/]
-  ])("rejects future dependency evidence with %s", (_label, patch, expected) => {
+  ] as Array<[string, Partial<DbDriverDependencyPrTemplateRecord>, RegExp]>)("rejects future dependency evidence with %s", (_label, patch, expected) => {
     expect(() => validateFutureDbDriverDependencyPrEvidence(futureCompleteFixture(patch))).toThrow(expected);
   });
 
@@ -199,7 +225,11 @@ describe("db driver dependency PR template", () => {
     ["token-like value", "Bearer abc.def.ghi"],
     ["raw provider response", "raw provider response: omitted"],
     ["unsafe key apiKey", { apiKey: "safe-looking" }],
-    ["unsafe key connectionString", { connectionString: "safe-looking" }]
+    ["unsafe key connectionString", { connectionString: "safe-looking" }],
+    ["unsafe key password", { password: "safe-looking" }],
+    ["unsafe key clientSecret", { clientSecret: "safe-looking" }],
+    ["unsafe key refreshToken", { refreshToken: "safe-looking" }],
+    ["unsafe key rawProviderResponse", { rawProviderResponse: "safe-looking" }]
   ] as const)("rejects unsafe %s evidence", (_label, unsafe) => {
     if (typeof unsafe === "string") {
       expect(() => assertNoUnsafeDbDriverDependencyTemplateEvidence({ safeSummary: unsafe })).toThrow(/unsafe DB driver dependency PR template evidence rejected/);
@@ -213,6 +243,32 @@ describe("db driver dependency PR template", () => {
 
     expect(validateFutureDbDriverDependencyPrEvidence(record)).toBe(record);
     expect(() => validateCurrentDbDriverDependencyPrTemplateRecord(record)).toThrow(/must not select a driver/);
+  });
+
+  it("accepts postgres as the alternate allowed future DB driver", () => {
+    const record = futureCompleteFixture({
+      selectedDriver: "postgres",
+      packageDiffEvidence: {
+        ...futureCompleteFixture().packageDiffEvidence!,
+        selectedDriver: "postgres",
+        packageName: "postgres",
+        addedDependencies: ["postgres"]
+      },
+      lockfileEvidence: {
+        ...futureCompleteFixture().lockfileEvidence!,
+        selectedDriver: "postgres"
+      }
+    });
+
+    expect(validateFutureDbDriverDependencyPrEvidence(record)).toBe(record);
+  });
+
+  it.each([
+    ["targetCommitSha placeholder", { targetCommitSha: "current_pr_head" }, /40-character SHA/],
+    ["baseCommitSha placeholder", { baseCommitSha: "current_pr_base" }, /40-character SHA/],
+    ["target equals base", { targetCommitSha: context.baseCommitSha }, /must differ from baseCommitSha/]
+  ])("rejects committed evidence with %s", (_label, patch, expected) => {
+    expect(() => validateCurrentDbDriverDependencyPrTemplateRecord(template(patch))).toThrow(expected);
   });
 
   it("does not commit the future complete fixture as machine-readable evidence", () => {

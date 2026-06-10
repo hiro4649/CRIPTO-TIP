@@ -1,84 +1,118 @@
 # Summary
 
-Add the v1.1.7 prep DB driver dependency PR template and evidence contract. This PR does not select a driver, add a dependency, edit package/lockfile files, connect to a DB, execute migrations, run live DB tests, apply provider SDK actions, or claim readiness.
+Prepare the future DB driver dependency PR template and evidence contract for v1.1.7 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.
+
+PR profile: product_r3
+Task mode: feature
 
 ## Task Contract
 
-Goal: keep current evidence `template_ready`: `selectedDriver: null`, owner approval `not_approved`, final gate `blocked`, package/lockfile evidence missing, and all dependency permission flags false.
+Goal: Prepare the future DB driver dependency PR template and evidence contract for v1.1.7 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.
 
-Task mode: feature. Risk level: R3.
+Allowed scope: db_driver_dependency_pr_template, future_dependency_evidence_contract, owner_approval_attachment_rules, final_approval_gate_attachment_rules, package_diff_evidence_schema, lockfile_review_evidence_schema, license_review_attachment_rules, supply_chain_review_attachment_rules, security_advisory_attachment_rules, version_pinning_attachment_rules, secret_boundary_attachment_rules, tests, docs, .codex evidence.
 
-Affected entrypoints: `apps/api/src/db-driver-dependency-pr-template.ts`, its test, `.codex/db-driver-dependency-pr-template.json`, DB driver evidence docs, and quality evidence docs.
+Forbidden scope: real DB connection, DB driver dependency, package.json change, pnpm-lock change, migration change, migration execution, live DB integration test execution, real provider SDK apply, actual production deployment apply, secret manager real SDK integration, live YouTube operation, wallet/RPC/deploy changes, YouTube connector changes, Chain Listener changes, durable events runtime changes, token sale, token exchange, cash-out, custody, internal balance, investment wording, speculative reward, YouTube scraping, runtime readiness claim, production readiness claim, legal compliance claim, YouTube policy compliance claim, raw GitHub log reading, quality-gate weakening, committed approved owner record, selected DB driver in committed evidence, approved final gate in committed evidence, DB driver selected in current PR.
 
-Allowed scope: offline dependency PR template, future package/lockfile evidence contract, review attachment rules, docs, tests, and `.codex` evidence.
+Runtime readiness claim: no.
 
-Forbidden scope: DB driver dependency, package/lockfile change, real DB connection, migration change/execution, live DB test execution, provider SDK apply, production deployment, runtime/production/legal/YouTube readiness claim, raw GitHub log reading, quality-gate weakening, selected driver, approved owner record, or approved final gate.
+Product code changed: yes.
 
-Failure paths considered: template mistaken for approval, missing package/lockfile evidence, unsafe evidence, raw logs, private URLs, DB connection strings, and readiness overclaim.
-
-Human confirmation needed: project-owner approval is required in a future PR before driver selection, package/lockfile change, final dependency approval, or readiness claim.
+Done criteria: DB driver dependency PR template record exists; committed template status remains template_ready; selected driver remains null in committed evidence; owner approval remains not_approved in committed evidence; final approval gate remains blocked in committed evidence; package and lockfile evidence remain missing; all permission flags remain false in committed evidence; future complete dependency fixture is test-only and not committed.
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 0bed9e8a1ef5b90fdd6b3644d884053864f340f6
 
-Base SHA: current_pr_base
+Base SHA: 0b975a8d2093464f4e1e520742c7eac5a25e9070
 
-Product CI: awaiting_github_actions_after_pr_creation
+Product CI: success
 
-Quality-gate: awaiting_github_actions_after_pr_creation
+Quality-gate: success
 
-CI run: awaiting_github_actions_after_pr_creation
+CI run: 27273607630
 
-Quality-gate run: awaiting_github_actions_after_pr_creation
+Quality-gate run: 27273796044
 
-Quality-gate artifact: awaiting_github_actions_after_pr_creation
+Quality-gate artifact: 7534659584
 
 Tests: 41 test files, 864 passed, 6 skipped
 
 ## Testing and review
 
-- `corepack pnpm install`: pass
-- `corepack pnpm lint`: pass
-- `corepack pnpm typecheck`: pass
-- `corepack pnpm test`: pass
-- `npm test`: pass
-- `corepack pnpm evidence:ci`: pass
-- `corepack pnpm quality:self-protection`: pass
-- `node scripts/check-evidence-placeholders.mjs`: pass
+- `corepack pnpm install`
+- `corepack pnpm lint`
+- `corepack pnpm typecheck`
+- `corepack pnpm test`
+- `npm test`
+- `node scripts/write-test-summary.mjs`
+- `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-db-driver-dependency-pr-template-v117-prep.md`
+- `node scripts/check-evidence-placeholders.mjs`
 
-Review focus: no-driver evidence, future package/lockfile evidence, unsafe evidence rejection, and no readiness overclaim.
+Product verification:
+
+Repository checks and package verification were run on the current evidence head.
+
+Tests or checks run:
+
+The commands below are the merge-relevant checks for this evidence tooling change.
+
+Product verification commands:
+
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+
+Package verification:
+
+- Package scripts changed: no
+- Runtime dependencies added: no
+- Verification: No package scripts, runtime dependencies, DB driver, package.json, or pnpm-lock changes are introduced.
+
+API Compatibility Summary:
+
+- Public API changed: no
+- Internal runtime API changed: no
+- Compatibility statement: No runtime DB API or public API is changed; this adds an offline dependency PR template validator and tests.
+
+Runtime smoke rationale:
+
+- No runtime readiness is claimed; this PR changes offline dependency-template evidence and tests only.
+
+Review scope and verification:
+
+- Scope: DB driver dependency PR template validator, committed template_ready evidence, docs, and tests.
+- Risk summary: Main risk is mistaking a future dependency PR template for actual dependency approval; committed evidence remains no-driver and no-package-change.
+- Verification oracle: Vitest template coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan.
 
 ## Test Coverage Evidence
 
 Current recorded test summary: 41 files, 864 passed, 6 skipped.
 
-Changed area: offline DB driver dependency PR template validator, committed template evidence, docs, tests, and `.codex` evidence.
-
-Test command: `corepack pnpm test` and `npm test`.
-
-What the test covers: no-driver current evidence, owner/final gate blocked state, package/lockfile permission rejection, future package/lockfile/license/supply-chain/security/version/secret evidence requirements, unsafe value rejection, and readiness-claim rejection.
-
-Edge cases: selected driver, dependency allowance, package/lockfile allowance, real DB connection, migration execution, live DB test, provider SDK apply, production deployment, raw logs, private URLs, DB connection strings, and readiness overclaim.
-
-Risk-To-Test Mapping: `apps/api/src/db-driver-dependency-pr-template.test.ts` covers no-driver current evidence, owner/final gate blocked state, package/lockfile permission rejection, future package/lockfile/license/supply-chain/security/version/secret evidence requirements, unsafe value rejection, and readiness-claim rejection.
-
 ## Security Boundaries
 
-No DB driver dependency, package/lockfile change, real DB connection, migration execution, live DB test, provider SDK apply, production deployment, runtime readiness, production readiness, legal compliance claim, YouTube policy compliance claim, token sale, exchange, cash-out, custody, internal balance, investment wording, speculative reward, or YouTube scraping is introduced.
-
-## Best of N Evidence
-
-Candidate count: 3. Candidates: docs-only checklist; add DB dependency now; offline validator plus template-ready evidence and docs.
-
-Selected candidate: offline validator plus template-ready evidence and docs.
-
-Reason selected: it adds typed future dependency checks while preserving no-driver, no-package-change, no-lockfile-change, and no-readiness boundaries.
+- No DB driver dependency is added.
+- No package.json or pnpm-lock change is introduced.
+- No real DB connection is implemented.
+- No migration is changed or executed.
+- No live DB integration test is executed.
+- No runtime, production, legal, or YouTube policy readiness is claimed.
+- Future package and lockfile evidence remain missing in committed evidence.
 
 ## Residual risks
 
-Template does not authorize a dependency. Future package/lockfile review, owner approval, and readiness remain out of scope.
+- The template does not authorize a dependency.
+- Future package diff may still introduce supply-chain risk.
+- Future owner approval may expire or mismatch target commit.
+- Future lockfile review remains required.
+- Runtime and production readiness remain out of scope.
 
 ## Human Confirmation
 
-Owner approval is `not_approved`; driver choice is `not_selected`; AI review is not human approval. Future DB driver dependency introduction requires a new project-owner-approved PR.
+- Owner approval status is not_approved for this PR.
+- Driver choice status is not_selected for this PR.
+- AI review recommendations are not recorded as human approval.
+- Future DB driver dependency introduction requires a new project-owner-approved PR.

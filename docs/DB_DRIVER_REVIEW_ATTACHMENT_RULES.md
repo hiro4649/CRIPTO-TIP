@@ -16,7 +16,7 @@ Required review attachments:
 
 - package diff evidence
 - lockfile review evidence
-- license review evidence without legal compliance claims
+- license metadata review evidence without legal compliance, legal approval, or legal advice claims
 - supply-chain review evidence
 - security advisory review evidence
 - version pinning evidence
@@ -39,3 +39,5 @@ Attachments must not include:
 - YouTube policy compliance claims
 
 Secret boundary evidence may reference secret manager scope names, but it must not store secret values.
+
+License review is limited to package metadata such as the declared license name and source. It must not state that a package is legally compliant, legally approved, or approved as legal advice. A future project owner may require separate legal counsel outside repository evidence before approving a real dependency PR.

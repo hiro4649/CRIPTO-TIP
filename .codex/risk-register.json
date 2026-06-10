@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 51,
-  "headSha": "current_pr_head",
+  "headSha": "0bed9e8a1ef5b90fdd6b3644d884053864f340f6",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -107,7 +107,7 @@
       "mitigation": "This PR fixes SQL design, retry classification, migration indexes, and safety tests without DB connection or production apply."
     }
   ],
-  "baseSha": "current_pr_base",
+  "baseSha": "0b975a8d2093464f4e1e520742c7eac5a25e9070",
   "status": "pass",
   "title": "feat: add db driver dependency pr template",
   "goal": "Prepare the future DB driver dependency PR template and evidence contract for v1.1.7 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
@@ -189,11 +189,11 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
-  "ciRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateArtifactId": "awaiting_github_actions_after_pr_creation",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27273607630",
+  "qualityGateRunId": "27273796044",
+  "qualityGateArtifactId": "7534659584",
   "testSummary": {
     "testFiles": 41,
     "passed": 864,

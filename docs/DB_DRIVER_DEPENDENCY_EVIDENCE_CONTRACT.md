@@ -19,6 +19,12 @@ Current committed evidence is allowed to be `template_ready` only when:
 
 Future complete dependency evidence may exist only as test data. Copying a complete fixture into `.codex` evidence is forbidden unless a future owner-approved dependency PR regenerates evidence for the exact target commit.
 
+The current committed `.codex/db-driver-dependency-pr-template.json` must not contain `packageDiffEvidence`, `lockfileEvidence`, `licenseReviewEvidence`, `supplyChainReviewEvidence`, `securityAdvisoryEvidence`, `versionPinningEvidence`, or `secretBoundaryEvidence` objects. Those objects are valid only in a future dependency PR after owner approval and final gate approval.
+
+Allowed future driver package names are limited to `pg` and `postgres`. Any placeholder package such as `future-db-driver`, unrelated dependency, package mismatch, non-`dependencies` section, or non-exact version spec is invalid evidence.
+
+Version evidence must use exact semver only. `latest`, `*`, caret ranges, tilde ranges, workspace/file/link/git/http URLs, and other floating or remote specs are not valid dependency evidence.
+
 ## Required Future Sections
 
 Future dependency PR body evidence must include:
@@ -45,3 +51,4 @@ Future dependency PR body evidence must include:
 
 Raw logs, secrets, private URLs, DB connection strings, wallet addresses, raw provider responses, legal compliance claims, and YouTube policy compliance claims are forbidden in evidence.
 
+License review evidence is package license metadata review only. It is not legal advice, legal approval, or a legal compliance claim.

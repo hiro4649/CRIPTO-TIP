@@ -3,8 +3,8 @@
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 51,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "headSha": "0bed9e8a1ef5b90fdd6b3644d884053864f340f6",
+  "baseSha": "0b975a8d2093464f4e1e520742c7eac5a25e9070",
   "productVerificationStatus": "pass",
   "commands": [
     "corepack pnpm test -- apps/api/src/db-driver-final-approval-gate.test.ts",
@@ -40,8 +40,8 @@
     "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
-  "productCiStatus": "awaiting_github_actions_after_pr_creation",
-  "ciRunId": "awaiting_github_actions_after_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27273607630",
   "title": "feat: add db driver dependency pr template",
   "goal": "Prepare the future DB driver dependency PR template and evidence contract for v1.1.7 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "summary": "41 files, 864 passed, 6 skipped",
@@ -129,9 +129,9 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "qualityGateStatus": "awaiting_github_actions_after_pr_creation",
-  "qualityGateRunId": "awaiting_github_actions_after_pr_creation",
-  "qualityGateArtifactId": "awaiting_github_actions_after_pr_creation",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27273796044",
+  "qualityGateArtifactId": "7534659584",
   "testSummary": {
     "testFiles": 41,
     "passed": 864,

@@ -22,6 +22,9 @@ export const dbDriverDependencyRequiredSections = [
 
 export type DbDriverDependencyPrTemplateStatus = "template_ready" | "blocked" | "invalid";
 export type DbDriverDependencyReviewStatus = "missing" | "pass" | "fail";
+export const allowedFutureDbDrivers = ["pg", "postgres"] as const;
+
+type AllowedFutureDbDriver = (typeof allowedFutureDbDrivers)[number];
 
 export type DbDriverDependencyPrTemplateContext = {
   repository: string;
@@ -228,6 +231,7 @@ export function validateFutureDbDriverDependencyPrEvidence(record: DbDriverDepen
   assertBasicTemplateRecord(record);
   assertRequiredSections(record.requiredPrSections);
   if (!record.selectedDriver) throw new Error("future DB driver dependency evidence requires selectedDriver");
+  assertAllowedFutureDbDriver(record.selectedDriver);
   if (record.ownerApprovalRecordStatus !== "approved") throw new Error("future DB driver dependency evidence requires owner approval");
   if (record.finalApprovalGateStatus !== "approved_for_dependency_pr") throw new Error("future DB driver dependency evidence requires approved final gate");
   if (!record.packageJsonChangeAllowed || !record.pnpmLockChangeAllowed || !record.dbDriverDependencyAllowed) {
@@ -252,18 +256,14 @@ function assertBasicTemplateRecord(record: DbDriverDependencyPrTemplateRecord) {
   if (record.repository !== "hiro4649/CRIPTO-TIP") throw new Error("DB driver dependency template repository must be hiro4649/CRIPTO-TIP");
   if (!Number.isInteger(record.prNumber) || record.prNumber <= 0) throw new Error("DB driver dependency template prNumber is required");
   if (!record.targetBranch) throw new Error("DB driver dependency template targetBranch is required");
-  if (!isShaOrCurrentHead(record.targetCommitSha)) throw new Error("DB driver dependency template targetCommitSha must be a 40-character SHA or current_pr_head");
-  if (!isShaOrCurrentBase(record.baseCommitSha)) throw new Error("DB driver dependency template baseCommitSha must be a 40-character SHA or current_pr_base");
+  if (!isSha(record.targetCommitSha)) throw new Error("DB driver dependency template targetCommitSha must be a 40-character SHA");
+  if (!isSha(record.baseCommitSha)) throw new Error("DB driver dependency template baseCommitSha must be a 40-character SHA");
   if (record.targetCommitSha === record.baseCommitSha) throw new Error("DB driver dependency template targetCommitSha must differ from baseCommitSha");
   if (!record.createdAt.endsWith("Z")) throw new Error("DB driver dependency template createdAt must be UTC");
 }
 
-function isShaOrCurrentHead(value: string) {
-  return value === "current_pr_head" || /^[0-9a-f]{40}$/i.test(value);
-}
-
-function isShaOrCurrentBase(value: string) {
-  return value === "current_pr_base" || /^[0-9a-f]{40}$/i.test(value);
+function isSha(value: string) {
+  return /^[0-9a-f]{40}$/i.test(value);
 }
 
 function assertMissingCurrentReviews(record: DbDriverDependencyPrTemplateRecord) {
@@ -327,26 +327,37 @@ function assertRequiredSections(sections: string[]) {
 
 function assertPackageDiffEvidence(evidence: DbDriverPackageDiffEvidence | undefined, selectedDriver: string) {
   if (!evidence) throw new Error("future DB driver dependency evidence requires package diff evidence");
+  assertAllowedFutureDbDriver(selectedDriver);
   if (!evidence.packageJsonChanged || !evidence.pnpmLockChanged) throw new Error("package diff evidence requires package and lockfile changes in the future dependency PR");
   if (evidence.addedDependencies.length !== 1) throw new Error("package diff evidence must add exactly one approved DB driver dependency");
-  if (evidence.addedDependencies[0] !== selectedDriver || evidence.packageName !== selectedDriver || evidence.selectedDriver !== selectedDriver) {
+  const addedDependency = evidence.addedDependencies[0];
+  if (!addedDependency) throw new Error("package diff evidence must add exactly one approved DB driver dependency");
+  assertAllowedFutureDbDriver(addedDependency);
+  if (evidence.dependencySection !== "dependencies") throw new Error("package diff evidence must add the DB driver under dependencies");
+  if (addedDependency !== selectedDriver || evidence.packageName !== selectedDriver || evidence.selectedDriver !== selectedDriver) {
     throw new Error("package diff evidence selected driver must match approval records");
   }
+  assertAllowedFutureDbDriver(evidence.packageName);
+  assertAllowedFutureDbDriver(evidence.selectedDriver);
   if (evidence.removedDependencies.length > 0) throw new Error("package diff evidence must not remove dependencies without a separate justification");
   if (evidence.changedScripts.length > 0) throw new Error("package diff evidence must not change package scripts");
   if (evidence.unrelatedDependencyChanges) throw new Error("package diff evidence must not include unrelated dependency changes");
   if (!evidence.noLifecycleScriptsAdded) throw new Error("package diff evidence must confirm no lifecycle scripts were added");
   if (!evidence.versionSpec) throw new Error("package diff evidence requires a version spec");
+  assertExactSemver(evidence.versionSpec, "package diff evidence versionSpec");
 }
 
 function assertLockfileEvidence(evidence: DbDriverLockfileEvidence | undefined, selectedDriver: string) {
   if (!evidence) throw new Error("future DB driver dependency evidence requires lockfile evidence");
   if (!evidence.pnpmLockChanged || evidence.selectedDriver !== selectedDriver) throw new Error("lockfile evidence must bind to the selected driver");
-  if (!Number.isInteger(evidence.transitiveDependencyCount) || evidence.transitiveDependencyCount < 0) throw new Error("lockfile evidence transitive dependency count must be finite");
-  if (evidence.unrelatedDependencyChanges) throw new Error("lockfile evidence must not include unrelated dependency changes");
-  if (!evidence.integrityEntriesReviewed || !evidence.optionalDependenciesReviewed || !evidence.nativeModulesReviewed || !evidence.postinstallScriptsReviewed) {
-    throw new Error("lockfile evidence must review integrity, optional dependencies, native modules, and postinstall scripts");
+  if (!Number.isInteger(evidence.transitiveDependencyCount) || evidence.transitiveDependencyCount < 0 || evidence.transitiveDependencyCount > 100) {
+    throw new Error("lockfile evidence transitive dependency count must be an integer from 0 through 100");
   }
+  if (evidence.unrelatedDependencyChanges) throw new Error("lockfile evidence must not include unrelated dependency changes");
+  if (!evidence.integrityEntriesReviewed) throw new Error("lockfile evidence must review integrity entries");
+  if (!evidence.optionalDependenciesReviewed) throw new Error("lockfile evidence must review optional dependencies");
+  if (!evidence.nativeModulesReviewed) throw new Error("lockfile evidence must review native modules");
+  if (!evidence.postinstallScriptsReviewed) throw new Error("lockfile evidence must review postinstall scripts");
 }
 
 function assertLicenseReviewEvidence(evidence: DbDriverLicenseReviewEvidence | undefined) {
@@ -354,6 +365,9 @@ function assertLicenseReviewEvidence(evidence: DbDriverLicenseReviewEvidence | u
   if (evidence.licenseReviewStatus !== "pass") throw new Error("license review evidence must pass");
   if (!evidence.licenseName || !evidence.licenseSource) throw new Error("license review evidence requires license name and source");
   if (evidence.legalComplianceClaim || !evidence.noLegalAdviceClaim) throw new Error("license review evidence must not claim legal compliance or legal advice");
+  if (/\blegal(?:ly)?\s+(?:compliant|approved)\b|\blegal\s+compliance\b|\blegal\s+advice\b/i.test(evidence.safeSummary)) {
+    throw new Error("license review evidence safeSummary must not claim legal compliance or legal advice");
+  }
 }
 
 function assertSupplyChainReviewEvidence(evidence: DbDriverSupplyChainReviewEvidence | undefined) {
@@ -373,6 +387,8 @@ function assertSecurityAdvisoryEvidence(evidence: DbDriverSecurityAdvisoryEviden
 function assertVersionPinningEvidence(evidence: DbDriverVersionPinningEvidence | undefined) {
   if (!evidence) throw new Error("future DB driver dependency evidence requires version pinning evidence");
   if (!evidence.approvedVersion || !evidence.updatePolicy) throw new Error("version pinning evidence requires approved version and update policy");
+  if (evidence.versionPolicy !== "exact") throw new Error("version pinning evidence requires exact version policy");
+  assertExactSemver(evidence.approvedVersion, "version pinning evidence approvedVersion");
   if (!evidence.noCaretUnlessOwnerApproved || !evidence.noTildeUnlessOwnerApproved) throw new Error("version pinning evidence must reject caret and tilde ranges unless owner approved");
 }
 
@@ -440,5 +456,17 @@ function assertSafeString(value: string, path: string) {
   }
   for (const pattern of unsafePatterns) {
     if (pattern.test(value)) throw new Error(`unsafe DB driver dependency PR template evidence rejected at ${path}`);
+  }
+}
+
+function assertAllowedFutureDbDriver(value: string | null) {
+  if (!value || !(allowedFutureDbDrivers as readonly string[]).includes(value)) {
+    throw new Error("future DB driver dependency evidence selected driver must be pg or postgres");
+  }
+}
+
+function assertExactSemver(value: string, label: string) {
+  if (!/^\d+\.\d+\.\d+(?:[-+][0-9A-Za-z.-]+)?$/.test(value)) {
+    throw new Error(`${label} must be an exact semver version`);
   }
 }
