@@ -30,3 +30,10 @@ A future dependency PR must attach a comparison that covers:
 
 The outcome is `not_ready`. The matrix is not an approval record and cannot be
 used as final selection evidence.
+
+## Freshness Boundary
+
+The freshness gate adds expiry and refresh requirements for this matrix. It does
+not rank `pg` or `postgres`. Both candidates remain `candidate` entries with
+freshness status `not_ready` until future review evidence is supplied and
+approved in a separate dependency PR.

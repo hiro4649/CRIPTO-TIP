@@ -2,15 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 53,
-  "headSha": "cbde064f86d4906e206ba679dffa306b090fd0c8",
-  "baseSha": "62bbe12522e51b82b422a364271f8553ad2eed49",
-  "goal": "Prepare the v1.1.7 DB driver candidate review pack without selecting a driver, adding a dependency, changing package files, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
+  "prNumber": 54,
+  "headSha": "32cb94b9bb82cab5ecc5666edcabe5d90b6bd843",
+  "baseSha": "775119a5e5ed8fe9fadf6056075aa3b117f01118",
+  "goal": "Prepare candidate review freshness and evidence-refresh enforcement for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
   "allowedScope": [
-    "db_driver_candidate_review_pack",
-    "candidate_driver_review_matrix",
-    "candidate_review_failure_reasons",
-    "candidate_review_machine_evidence",
+    "db_driver_candidate_review_freshness",
+    "candidate_review_expiry_policy",
+    "candidate_review_refresh_policy",
+    "stale_evidence_rejection",
+    "review_placeholder_freshness",
     "tests",
     "docs",
     ".codex evidence"
@@ -48,17 +49,19 @@
     "committed approved owner record",
     "selected DB driver in committed evidence",
     "approved final gate in committed evidence",
+    "fresh review evidence in committed current evidence",
     "DB driver selected in current PR"
   ],
   "doneCriteria": [
-    "DB driver candidate review pack record exists",
-    "committed review pack status remains not_ready",
+    "DB driver candidate freshness record exists",
+    "committed freshness status remains not_ready",
+    "review pack status remains not_ready",
     "driver choice status remains not_selected",
     "selected driver remains null in committed evidence",
     "candidate drivers remain exactly pg and postgres",
-    "candidate reviews remain candidate-only and not approved",
-    "owner approval remains not_approved in committed evidence",
-    "final approval gate remains blocked in committed evidence",
+    "candidate freshness entries remain not_ready and refreshRequired",
+    "license, supply-chain, advisory, package metadata, and secret-boundary reviews remain not_reviewed",
+    "version policy remains not_selected",
     "package and lockfile evidence remain missing",
     "all permission flags remain false in committed evidence"
   ],
@@ -70,10 +73,10 @@
   "productCodeChanged": true,
   "prProfile": "product_r3",
   "status": "pass",
-  "title": "feat: add db driver candidate review pack",
+  "title": "feat: add db driver candidate review freshness",
   "changedFiles": [
     ".codex/change-classification.json",
-    ".codex/db-driver-candidate-review-pack.json",
+    ".codex/db-driver-candidate-review-freshness.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
     ".codex/quality-gate-evidence.json",
@@ -82,35 +85,38 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-candidate-review-pack.ts",
+    "apps/api/src/db-driver-candidate-review-freshness.ts",
+    "apps/api/src/db-driver-candidate-review-freshness.test.ts",
     "apps/api/src/db-driver-candidate-review-pack.test.ts",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_FRESHNESS.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_REFRESH_POLICY.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_EXPIRY_POLICY.md",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_STALE_EVIDENCE.md",
     "docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md",
     "docs/DB_DRIVER_CANDIDATE_REVIEW_MATRIX.md",
     "docs/DB_DRIVER_CANDIDATE_REVIEW_EVIDENCE.md",
     "docs/DB_DRIVER_CANDIDATE_REVIEW_FAILURE_REASONS.md",
-    "docs/DB_DRIVER_DEPENDENCY_PR_TEMPLATE.md",
-    "docs/DB_DRIVER_DEPENDENCY_EVIDENCE_CONTRACT.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-candidate-review-pack-v117-prep.md"
+    "docs/pr-db-driver-candidate-review-freshness-v118-prep.md"
   ],
   "productCiStatus": "success",
   "qualityGateStatus": "success",
-  "ciRunId": "27310036429",
-  "qualityGateRunId": "27310615842",
-  "qualityGateArtifactId": "7550011884",
+  "ciRunId": "27315221063",
+  "qualityGateRunId": "27315660174",
+  "qualityGateArtifactId": "7551913556",
   "testSummary": {
-    "testFiles": 42,
-    "passed": 1004,
+    "testFiles": 43,
+    "passed": 1020,
     "skipped": 6
   },
-  "testFiles": 42,
-  "passed": 1004,
+  "testFiles": 43,
+  "passed": 1020,
   "skipped": 6,
-  "prBodyPath": "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
+  "prBodyPath": "docs/pr-db-driver-candidate-review-freshness-v118-prep.md",
   "productVerificationCommands": [
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -128,20 +134,20 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "No runtime DB API or public API is changed; this adds an offline candidate review pack validator and tests."
+    "statement": "No runtime DB API or public API is changed; this adds an offline candidate freshness validator and tests."
   },
   "reviewScope": {
-    "scope": "DB driver candidate review pack validator, committed not-ready candidate evidence, docs, and tests.",
-    "riskSummary": "Main risk is mistaking candidate listing for actual DB driver selection; committed evidence remains no-driver and no-package-change.",
-    "verificationOracle": "Vitest candidate review coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan."
+    "scope": "DB driver candidate review freshness validator, committed not-ready freshness evidence, stale evidence docs, and tests.",
+    "riskSummary": "Main risk is mistaking freshness tracking for actual DB driver selection; committed evidence remains no-driver and no-package-change.",
+    "verificationOracle": "Vitest freshness coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan."
   },
   "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline candidate-review evidence and tests only.",
   "verificationSurface": [
-    "apps/api/src/db-driver-candidate-review-pack.test.ts",
-    "apps/api/src/db-driver-candidate-review-pack.ts",
-    ".codex/db-driver-candidate-review-pack.json",
-    "docs/DB_DRIVER_CANDIDATE_REVIEW_PACK.md",
-    "docs/pr-db-driver-candidate-review-pack-v117-prep.md",
+    "apps/api/src/db-driver-candidate-review-freshness.test.ts",
+    "apps/api/src/db-driver-candidate-review-freshness.ts",
+    ".codex/db-driver-candidate-review-freshness.json",
+    "docs/DB_DRIVER_CANDIDATE_REVIEW_FRESHNESS.md",
+    "docs/pr-db-driver-candidate-review-freshness-v118-prep.md",
     "corepack pnpm lint",
     "corepack pnpm typecheck",
     "corepack pnpm test",
@@ -165,7 +171,7 @@
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
-  "testsPassed": 1004,
+  "testsPassed": 1020,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "securityBoundaries": [
@@ -176,12 +182,12 @@
     "No live DB integration test is executed.",
     "No provider SDK apply or production deployment is introduced.",
     "No runtime, production, legal, or YouTube policy readiness is claimed.",
-    "Candidate review evidence rejects unsafe run-output copies, provider output copy, token-like values, wallet addresses, private URLs, and DB connection strings."
+    "Freshness evidence rejects stale review reuse, unsafe run-output copies, provider response copies, token-like values, wallet addresses, private URLs, and DB connection strings."
   ],
   "residualRisks": [
-    "The candidate review pack does not authorize a dependency.",
-    "Future package diff may still introduce supply-chain risk.",
-    "Future license, advisory, version, package, lockfile, and secret-boundary reviews remain required.",
+    "The freshness gate does not select a driver.",
+    "Review placeholders remain not_reviewed, not_selected, or missing until a future refresh.",
+    "Future advisory, license, package metadata, package diff, lockfile, and secret-boundary reviews remain required.",
     "Future owner approval may expire or mismatch target commit.",
     "Runtime and production readiness remain out of scope."
   ],
@@ -191,20 +197,20 @@
     "AI review recommendations are not recorded as human approval.",
     "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
-  "summary": "42 files, 1004 passed, 6 skipped",
   "testCoverageEvidence": [
-    "Changed area: DB driver candidate review pack validator, committed not-ready candidate evidence, candidate review docs, and .codex evidence.",
-    "Test command: corepack pnpm test and npm test cover the candidate review pack together with repository tests.",
-    "What the test covers: default not-ready evidence, exact pg/postgres candidates, candidate review completeness, selected/ready/pass/approved rejection, permission flag rejection, unsafe evidence rejection, required sections, blocker vocabulary, and committed machine-readable evidence remaining not-ready.",
-    "Edge cases: missing, extra, duplicate, or mismatched candidates; selected candidate status; readiness or compliance wording; private URLs; DB connection strings; wallet addresses; token-like values; unsafe run-output copies; provider response copies; console stream and trace copies; and secret-like keys are rejected."
+    "Changed area: DB driver candidate review freshness validator, stale evidence policy docs, committed not-ready freshness evidence, and .codex evidence.",
+    "Test command: corepack pnpm test and npm test cover the freshness validator together with existing repository tests.",
+    "What the test covers: default not-ready freshness evidence, exact pg/postgres candidate freshness entries, missing review reasons, expiry policy, selected/fresh rejection, permission flag rejection, unsafe evidence rejection, future fresh fixture isolation, and committed machine-readable evidence remaining not-ready.",
+    "Edge cases: selected driver, selected driverChoiceStatus, fresh current evidence, candidate timestamps, missing/extra/duplicate candidates, forbidden selection wording, private URLs, DB connection strings, wallet addresses, token-like values, unsafe run-output references, and provider response copies are rejected."
   ],
   "bestOfN": {
     "selected": "Candidate B",
     "candidates": [
-      "Candidate A: choose a DB driver and update package files now.",
-      "Candidate B: add candidate review pack, matrix, safety validation, docs, and not-ready evidence without package changes.",
-      "Candidate C: write informal candidate notes only."
+      "Candidate A: select pg because it is common.",
+      "Candidate B: add freshness and stale-evidence enforcement while keeping candidates not_selected.",
+      "Candidate C: skip freshness and rely on manual review."
     ],
-    "reason": "Candidate B creates review structure without crossing the owner approval or dependency boundary."
-  }
+    "reason": "Candidate B prevents stale review evidence reuse without crossing the owner approval or dependency boundary."
+  },
+  "summary": "43 files, 1020 passed, 6 skipped"
 }

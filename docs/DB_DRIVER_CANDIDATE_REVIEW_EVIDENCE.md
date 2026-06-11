@@ -28,6 +28,21 @@ Required current values:
 - `ownerApprovalStatus`: `not_approved`
 - `finalApprovalGateStatus`: `blocked`
 
+Freshness source: `.codex/db-driver-candidate-review-freshness.json`
+
+Required freshness values:
+
+- `freshnessStatus`: `not_ready`
+- `refreshRequired`: `true`
+- `licenseReviewFreshnessStatus`: `not_reviewed`
+- `supplyChainReviewFreshnessStatus`: `not_reviewed`
+- `securityAdvisoryFreshnessStatus`: `not_reviewed`
+- `packageMetadataFreshnessStatus`: `not_reviewed`
+- `versionPolicyFreshnessStatus`: `not_selected`
+- `packageDiffFreshnessStatus`: `missing`
+- `lockfileFreshnessStatus`: `missing`
+- `secretBoundaryFreshnessStatus`: `not_reviewed`
+
 `candidateStatus: candidate` is a review-queue marker only. It does not select a
 driver, allow dependency work, allow package installation, record owner
 approval, or unblock the final gate.

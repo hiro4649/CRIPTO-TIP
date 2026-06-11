@@ -182,3 +182,14 @@ selects a driver, completes license, supply-chain, advisory, version, package,
 lockfile, and secret-boundary reviews, attaches final approval evidence, and
 then separately proves live DB integration. This PR performs none of those
 actions.
+
+## DB Driver Candidate Review Freshness v1.1.8 Prep
+
+The candidate review freshness gate is not a production gate pass. It records
+expiry windows and refresh triggers so stale candidate evidence cannot be used
+later.
+
+The current committed freshness state is `not_ready`; license, supply-chain,
+advisory, package metadata, version policy, package diff, lockfile, and
+secret-boundary evidence still require future refresh. No runtime, production,
+legal, or YouTube policy readiness is claimed.

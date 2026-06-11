@@ -1196,6 +1196,78 @@
       "notes": "Committed not-ready machine evidence for DB driver candidate review pack."
     },
     {
+      "pathPattern": "apps/api/src/db-driver-candidate-review-freshness.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review freshness validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-candidate-review-freshness.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review freshness and stale-evidence tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_FRESHNESS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review freshness documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_REFRESH_POLICY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review refresh policy documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_EXPIRY_POLICY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review expiry policy documentation."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_CANDIDATE_REVIEW_STALE_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver candidate review stale evidence documentation."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-candidate-review-freshness-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Rendered PR evidence for DB driver candidate review freshness."
+    },
+    {
+      "pathPattern": ".codex/db-driver-candidate-review-freshness.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Committed not-ready machine evidence for DB driver candidate review freshness."
+    },
+    {
       "pathPattern": ".gitignore",
       "classification": "repo_config",
       "surface": "repository_hygiene",

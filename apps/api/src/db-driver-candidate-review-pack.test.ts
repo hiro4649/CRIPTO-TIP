@@ -56,15 +56,6 @@ function committedPackFromDisk() {
   return JSON.parse(readFileSync(".codex/db-driver-candidate-review-pack.json", "utf8")) as DbDriverCandidateReviewPackRecord;
 }
 
-function evidencePackFromDisk() {
-  return JSON.parse(readFileSync(".codex/evidence-pack.json", "utf8")) as {
-    prNumber: number;
-    headSha: string;
-    baseSha: string;
-    testSummary: { testFiles: number; passed: number; skipped: number };
-  };
-}
-
 describe("db driver candidate review pack", () => {
   it("creates not-ready candidate evidence without selecting a driver", () => {
     const record = pack();
@@ -140,16 +131,11 @@ describe("db driver candidate review pack", () => {
 
   it("keeps committed evidence bound to PR 53 head and base without selecting a driver", () => {
     const record = committedPackFromDisk();
-    const evidencePack = evidencePackFromDisk();
 
     expect(record.prNumber).toBe(53);
     expect(record.targetCommitSha).toBe(pr53HeadSha);
     expect(record.baseCommitSha).toBe(pr53BaseSha);
     expect(record.targetCommitSha).not.toBe(record.baseCommitSha);
-    expect(evidencePack.prNumber).toBe(53);
-    expect(evidencePack.headSha).toBe(pr53HeadSha);
-    expect(evidencePack.baseSha).toBe(pr53BaseSha);
-    expect(evidencePack.headSha).not.toBe(evidencePack.baseSha);
   });
 
   it.each([

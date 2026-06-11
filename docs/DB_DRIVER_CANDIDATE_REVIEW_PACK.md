@@ -21,6 +21,11 @@ and is validated by `apps/api/src/db-driver-candidate-review-pack.ts`.
 
 The candidate list is a review queue. It is not a dependency decision.
 
+Freshness evidence is tracked separately in
+`docs/DB_DRIVER_CANDIDATE_REVIEW_FRESHNESS.md`. That freshness gate prevents
+stale review data from being reused; it does not select a driver or authorize a
+dependency.
+
 ## Candidate Status Semantics
 
 - `candidateStatus: candidate` means the package is included in the future
@@ -71,3 +76,10 @@ of the following evidence:
 - pass or approved statuses in committed evidence
 - any permission flag set to true
 - unsafe values or keys in evidence
+
+## Freshness Follow-Up
+
+The next gate records expiry windows and refresh triggers for license,
+supply-chain, advisory, package metadata, version policy, package diff,
+lockfile, and secret-boundary evidence. Current committed status remains
+`not_ready`, `not_selected`, `not_reviewed`, or `missing`.
