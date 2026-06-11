@@ -24,9 +24,18 @@ Required current state:
 - `knownBlockersStatus`: `not_reviewed`
 - `knownBlockers`: `null`
 
+`knownBlockers: null` means the advisory source has not been reviewed. It is
+not a claim that no blockers exist. `knownBlockers: []` is not allowed in
+committed current evidence because an empty array can be mistaken for a clean
+advisory result. An empty `knownBlockers` array may appear only in a future
+reviewed fixture or in a separate owner-approved advisory source review PR.
+
+Allowed source categories are future acceptable source types only. They do not
+make `sourcePolicyStatus`, `sourceBindingStatus`, `sourceTimestampStatus`, or
+`sourceFreshnessStatus` reviewed or fresh in this PR.
+
 The current PR must not store reviewed advisory source evidence, advisory pass
 evidence, raw advisory output, raw audit output, OSV raw responses, Snyk raw
 responses, raw dependency trees, terminal output, private URLs, DB connection
 strings, wallet addresses, token-like values, approved owner records, approved
 final gate records, or selected driver state.
-

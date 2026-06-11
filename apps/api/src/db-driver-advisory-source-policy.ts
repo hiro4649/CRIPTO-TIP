@@ -133,6 +133,17 @@ export type DbDriverAdvisorySourcePolicyRecord = {
   forbiddenScopeStatus: "pass" | "fail";
   safeSummary: string;
   createdAt: string;
+  headSha?: string;
+  baseSha?: string;
+  headRefOid?: string;
+  baseRefOid?: string;
+  currentHeadSha?: string;
+  currentBaseSha?: string;
+  productCiStatus?: string;
+  ciRunId?: string;
+  qualityGateStatus?: string;
+  qualityGateRunId?: string;
+  qualityGateArtifactId?: string;
 };
 
 type ValidationOptions = {
@@ -224,6 +235,7 @@ function validateDbDriverAdvisorySourcePolicyRecord(
   options: ValidationOptions = {}
 ) {
   assertNoUnsafeDbDriverAdvisorySourcePolicyEvidence(record);
+  assertCurrentMetadata(record, options);
   assertCandidateDrivers(record.candidateDrivers);
   assertAllowedSourceCategories(record.allowedSourceCategories);
   assertCandidateSourcePolicies(record.candidateSourcePolicies, options);
@@ -238,6 +250,44 @@ function validateDbDriverAdvisorySourcePolicyRecord(
   if (record.dependencyPrTemplateStatus !== "template_ready") throw new Error("DB driver advisory source policy dependencyPrTemplateStatus must remain template_ready");
   if (record.forbiddenScopeStatus !== "pass") throw new Error("DB driver advisory source policy forbiddenScopeStatus must pass");
   assertCurrentStatuses(record, options);
+}
+
+function assertCurrentMetadata(record: DbDriverAdvisorySourcePolicyRecord, options: ValidationOptions) {
+  if (options.allowFutureReviewedFixture) return;
+  if (record.prNumber > 0) {
+    if (!/^[a-f0-9]{40}$/.test(record.targetCommitSha)) throw new Error("DB driver advisory source targetCommitSha must be a commit SHA");
+    if (!/^[a-f0-9]{40}$/.test(record.baseCommitSha)) throw new Error("DB driver advisory source baseCommitSha must be a commit SHA");
+    if (record.targetCommitSha === record.baseCommitSha) throw new Error("DB driver advisory source targetCommitSha must not equal baseCommitSha after PR creation");
+    for (const [key, value] of [
+      ["headSha", record.headSha],
+      ["currentHeadSha", record.currentHeadSha],
+      ["headRefOid", record.headRefOid]
+    ] as const) {
+      if (value !== undefined && value !== record.targetCommitSha) {
+        throw new Error(`DB driver advisory source ${key} must match targetCommitSha after PR creation`);
+      }
+    }
+    for (const [key, value] of [
+      ["baseSha", record.baseSha],
+      ["currentBaseSha", record.currentBaseSha],
+      ["baseRefOid", record.baseRefOid]
+    ] as const) {
+      if (value !== undefined && value !== record.baseCommitSha) {
+        throw new Error(`DB driver advisory source ${key} must match baseCommitSha after PR creation`);
+      }
+    }
+    for (const [key, value] of [
+      ["productCiStatus", record.productCiStatus],
+      ["ciRunId", record.ciRunId],
+      ["qualityGateStatus", record.qualityGateStatus],
+      ["qualityGateRunId", record.qualityGateRunId],
+      ["qualityGateArtifactId", record.qualityGateArtifactId]
+    ] as const) {
+      if (value === "pending_after_pr_creation" || value === "not_applicable_before_pr_creation") {
+        throw new Error(`DB driver advisory source ${key} must be refreshed after PR creation`);
+      }
+    }
+  }
 }
 
 function assertCandidateDrivers(candidateDrivers: string[]) {
@@ -369,15 +419,26 @@ function assertSafeSummaryDoesNotClaimReview(value: string) {
     /\bno\s+vulnerabilities\b/i,
     /\bsecure\b/i,
     /\bapproved\b/i,
+    /\bapproved\s+source\b/i,
+    /\bclean\s+source\b/i,
+    /\bsource\s+clean\b/i,
     /\bsafe\s+to\s+install\b/i,
     /\bsafe\s+dependency\b/i,
     /\bdependency\s+approved\b/i,
+    /\bsecurity\s+approved\b/i,
+    /\bsecurity\s+clean\b/i,
+    /\baudit\s+clean\b/i,
+    /\bCVE\s+clean\b/i,
+    /\bOSV\s+clean\b/i,
+    /\bregistry\s+clean\b/i,
     /\bproduction\s+ready\b/i,
     /\blegal(?:ly)?\s+compliant\b/i,
+    /\blegally\s+safe\b/i,
     /\bpolicy\s+compliant\b/i,
     /\bpass\b/i,
     /\brecommended\b/i,
     /\bwinner\b/i,
+    /\bbest\s+choice\b/i,
     /\bpreferred\b/i,
     /\bselected\b/i
   ];
@@ -438,6 +499,8 @@ function assertSafeString(value: string, path: string) {
     /^rawAuditOutput$/i,
     /^rawAdvisoryJson$/i,
     /^rawAdvisoryResponse$/i,
+    /^rawOsvResponse$/i,
+    /^rawNpmRegistryMetadata$/i,
     /^rawDependencyTree$/i,
     /^rawTerminalOutput$/i,
     /^stdout$/i,

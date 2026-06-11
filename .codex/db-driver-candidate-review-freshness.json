@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 54,
+  "prNumber": 56,
   "targetBranch": "feat/db-driver-candidate-review-freshness-v118-prep",
   "targetCommitSha": "32cb94b9bb82cab5ecc5666edcabe5d90b6bd843",
   "baseCommitSha": "775119a5e5ed8fe9fadf6056075aa3b117f01118",

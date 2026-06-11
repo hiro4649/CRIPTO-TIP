@@ -21,21 +21,21 @@ Done criteria: DB driver advisory source policy validator exists; committed sour
 
 ## Evidence Integrity
 
-Head SHA: 89c42547329de00c96663ee6deaa8c0255898d1d
+Head SHA: 5794bb75213095e253faad45ad91e930e83a104d
 
 Base SHA: 0dbf5d2a86294d67d7c7d5e1ae198918f157dc24
 
-Product CI: not_applicable_before_pr_creation
+Product CI: success
 
-Quality-gate: not_applicable_before_pr_creation
+Quality-gate: success
 
-CI run: not_applicable_before_pr_creation
+CI run: 27323160883
 
-Quality-gate run: not_applicable_before_pr_creation
+Quality-gate run: 27323480197
 
-Quality-gate artifact: not_applicable_before_pr_creation
+Quality-gate artifact: 7554670955
 
-Tests: 45 test files, 1197 passed, 6 skipped
+Tests: 45 test files, 1240 passed, 6 skipped
 
 ## Testing and review
 
@@ -90,7 +90,15 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 45 files, 1197 passed, 6 skipped.
+Current recorded test summary: 45 files, 1240 passed, 6 skipped.
+
+Changed area: DB driver advisory source policy validator, allowed source categories, source binding rules, timestamp/freshness rules, raw output policy, committed not-reviewed evidence, docs, and .codex evidence.
+
+Test command: corepack pnpm test and npm test, plus targeted Vitest coverage for DB driver advisory source policy and advisory review envelope.
+
+What the test covers: default not_reviewed policy state, exact allowed source categories, pg/postgres candidate source policies, raw output rejection, selected-driver rejection, future reviewed fixture isolation, committed evidence safety defaults, stale machine-readable evidence rejection, pending PR creation evidence rejection, and knownBlockers null semantics.
+
+Edge cases: raw advisory/audit/OSV/npm registry/dependency tree text, terminal output markers, private URLs, DB connection strings, wallet addresses, token-like values, missing/extra/duplicate source categories, missing/extra/duplicate candidates, reviewed/fresh/pass claims, knownBlockers clean proof, permission flags, stale head SHA, stale target commit SHA, and pending CI/quality-gate fields.
 
 ## Security Boundaries
 
@@ -118,6 +126,10 @@ Current recorded test summary: 45 files, 1197 passed, 6 skipped.
 - AI review recommendations are not recorded as human approval.
 - Future DB driver dependency introduction requires a separate project-owner-approved PR.
 
+## Harness Version Scope
+
+This is v1.1.8 prep only. It does not roll out harness v1.1.8. Active harness evidence remains v1.1.7 unless a separate harness rollout PR updates it.
+
 ## Review Independence
 
 - Review role: implementation agent plus safety audit pass.
@@ -127,14 +139,26 @@ Current recorded test summary: 45 files, 1197 passed, 6 skipped.
 
 ## Best of N Evidence
 
-- Local candidate implementation checked against policy, tests, docs, machine-readable evidence, and forbidden-scope scans.
-- Current selected approach keeps this PR pre-dependency and source-policy-only.
-- Rejected alternatives: adding a real DB driver dependency, using raw advisory output, or claiming source review completion in this PR.
+Candidate count: 3.
+
+Candidates:
+
+- Candidate A: source-policy-only validator and docs, no dependency/runtime change.
+- Candidate B: advisory review plus source policy in one PR.
+- Candidate C: dependency introduction with advisory source policy.
+
+Selected candidate: Candidate A.
+
+Reason selected: it is the smallest change that establishes allowed source categories and raw-output rejection without selecting a DB driver, adding package dependencies, claiming advisory review completion, or changing runtime behavior.
+
+Rejected alternatives: Candidate B would mix source policy with actual advisory review; Candidate C would violate the no dependency/package-change boundary for this PR.
 
 ## Advisory Source Policy Evidence
 
 - Advisory source policy status: `not_reviewed`.
 - Allowed source categories: `npm_registry_metadata`, `github_advisory_summary`, `osv_summary`, `npm_audit_safe_summary`, `maintainer_release_notes_summary`.
+- Allowed source categories are future acceptable source types only; they do not mean the source was checked, the package is safe, no advisory exists, or dependency installation is allowed.
 - Raw output categories remain forbidden, including GitHub raw logs, raw audit JSON, raw advisory responses, terminal stdout/stderr, raw dependency trees, provider raw responses, private URLs, and DB connection strings.
 - Driver choice status: `not_selected`.
+- `knownBlockers: null` means not reviewed. `knownBlockers: []` is not committed as clean proof in this PR.
 - Current committed evidence blocks selected driver, reviewed/fresh/pass advisory claims, knownBlockers clean proof, package permission, lockfile permission, real DB permission, migration permission, live DB test permission, provider SDK permission, production deployment permission, and runtime readiness permission.

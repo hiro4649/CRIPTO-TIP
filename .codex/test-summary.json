@@ -3,8 +3,5 @@
   "command": "corepack pnpm test",
   "testFiles": 20,
   "passed": 178,
-  "skipped": 6,
-  "prNumber": 56,
-  "headSha": "89c42547329de00c96663ee6deaa8c0255898d1d",
-  "baseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24"
+  "skipped": 6
 }

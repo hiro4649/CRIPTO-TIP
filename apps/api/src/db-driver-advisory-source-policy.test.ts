@@ -12,11 +12,12 @@ import {
 
 const branchName = "feat/db-driver-advisory-source-policy-v118-prep";
 const baseSha = "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24";
-const targetSha = "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24";
+const targetSha = "5794bb75213095e253faad45ad91e930e83a104d";
+const staleHeadSha = "89c42547329de00c96663ee6deaa8c0255898d1d";
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
-  prNumber: 0,
+  prNumber: 56,
   targetBranch: branchName,
   targetCommitSha: targetSha,
   baseCommitSha: baseSha,
@@ -27,6 +28,17 @@ const context = {
 function record(patch: Partial<DbDriverAdvisorySourcePolicyRecord> = {}) {
   return {
     ...createDefaultDbDriverAdvisorySourcePolicyRecord(context),
+    headSha: targetSha,
+    baseSha,
+    currentHeadSha: targetSha,
+    currentBaseSha: baseSha,
+    headRefOid: targetSha,
+    baseRefOid: baseSha,
+    productCiStatus: "success",
+    ciRunId: "27323160883",
+    qualityGateStatus: "success",
+    qualityGateRunId: "27323480197",
+    qualityGateArtifactId: "7554670955",
     ...patch
   } as DbDriverAdvisorySourcePolicyRecord;
 }
@@ -50,6 +62,12 @@ describe("db driver advisory source policy", () => {
   it("creates not-reviewed source policy evidence without selecting a driver", () => {
     const current = record();
 
+    expect(current.prNumber).toBe(56);
+    expect(current.targetCommitSha).toBe(targetSha);
+    expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
+    expect(current.headSha).toBe(targetSha);
+    expect(current.currentHeadSha).toBe(targetSha);
+    expect(current.headRefOid).toBe(targetSha);
     expect(current.sourcePolicyStatus).toBe("not_reviewed");
     expect(current.driverChoiceStatus).toBe("not_selected");
     expect(current.selectedDriver).toBeNull();
@@ -104,6 +122,17 @@ describe("db driver advisory source policy", () => {
   });
 
   it.each([
+    ["stale targetCommitSha equal to base commit", { targetCommitSha: baseSha }],
+    ["stale headSha", { headSha: staleHeadSha }],
+    ["stale currentHeadSha", { currentHeadSha: staleHeadSha }],
+    ["stale headRefOid", { headRefOid: staleHeadSha }],
+    ["pending product CI", { productCiStatus: "pending_after_pr_creation" }],
+    ["pending CI run", { ciRunId: "pending_after_pr_creation" }],
+    ["pending quality-gate", { qualityGateStatus: "pending_after_pr_creation" }],
+    ["pending quality-gate run", { qualityGateRunId: "pending_after_pr_creation" }],
+    ["pending quality-gate artifact", { qualityGateArtifactId: "pending_after_pr_creation" }],
+    ["before-PR product CI", { productCiStatus: "not_applicable_before_pr_creation" }],
+    ["before-PR quality-gate", { qualityGateStatus: "not_applicable_before_pr_creation" }],
     ["selected driver", { selectedDriver: "pg" }],
     ["selected driverChoiceStatus", { driverChoiceStatus: "selected" }],
     ["policy ready", { sourcePolicyStatus: "policy_ready" }],
@@ -196,20 +225,63 @@ describe("db driver advisory source policy", () => {
   });
 
   it.each([
+    "rawAuditJson",
+    "rawAuditOutput",
+    "rawAdvisoryJson",
+    "rawAdvisoryResponse",
+    "rawOsvResponse",
+    "rawNpmRegistryMetadata",
+    "rawDependencyTree",
+    "rawTerminalOutput",
+    "stdout",
+    "stderr",
+    "stackTrace",
+    "logsUrl",
+    "jobsUrl",
+    "advisoryApiResponse",
+    "npmAuditJson",
+    "githubAdvisoryResponse",
+    "osvRawResponse",
+    "npmRegistryRawMetadata"
+  ])("rejects unsafe raw evidence key: %s", (key) => {
+    expect(() => validateCurrentDbDriverAdvisorySourcePolicyRecord(record({ [key]: "safe-looking" } as Partial<DbDriverAdvisorySourcePolicyRecord>))).toThrow(/unsafe/);
+  });
+
+  it.each([
     "clean",
     "no vulnerabilities",
     "secure",
     "approved",
+    "approved source",
+    "clean source",
+    "source clean",
     "safe to install",
+    "safe dependency",
     "dependency approved",
+    "security approved",
+    "security clean",
+    "audit clean",
+    "CVE clean",
+    "OSV clean",
+    "registry clean",
     "production ready",
     "legal compliant",
+    "legally safe",
     "policy compliant",
     "recommended",
     "winner",
+    "best choice",
     "preferred"
   ])("rejects unsafe safeSummary claim: %s", (summary) => {
     expect(() => validateCurrentDbDriverAdvisorySourcePolicyRecord(record({ safeSummary: summary }))).toThrow(/safeSummary/);
+  });
+
+  it.each(["recommended", "winner"])("rejects candidate safeSummary containing %s", (summary) => {
+    expect(() =>
+      validateCurrentDbDriverAdvisorySourcePolicyRecord(
+        record({ candidateSourcePolicies: [candidateSource("pg", { safeSummary: summary }), candidateSource("postgres")] })
+      )
+    ).toThrow(/safeSummary/);
   });
 
   it("accepts future reviewed source fixture only through the future fixture validator", () => {
@@ -218,6 +290,8 @@ describe("db driver advisory source policy", () => {
       sourceBindingStatus: "reviewed",
       sourceTimestampStatus: "reviewed",
       sourceFreshnessStatus: "fresh",
+      knownBlockersStatus: "reviewed",
+      knownBlockers: [],
       candidateSourcePolicies: [
         candidateSource("pg", {
           sourcePolicyStatus: "policy_ready",
@@ -245,6 +319,16 @@ describe("db driver advisory source policy", () => {
   it("keeps committed .codex source policy evidence not reviewed", () => {
     const current = committedSourcePolicyFromDisk();
 
+    expect(current.prNumber).toBe(56);
+    expect(current.targetCommitSha).toBe(current.headSha);
+    expect(current.targetCommitSha).toBe(current.currentHeadSha);
+    expect(current.targetCommitSha).toBe(current.headRefOid);
+    expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
+    expect(current.headSha).not.toBe(staleHeadSha);
+    expect(current.productCiStatus).not.toBe("pending_after_pr_creation");
+    expect(current.qualityGateStatus).not.toBe("pending_after_pr_creation");
+    expect(current.productCiStatus).not.toBe("not_applicable_before_pr_creation");
+    expect(current.qualityGateStatus).not.toBe("not_applicable_before_pr_creation");
     expect(current.sourcePolicyStatus).toBe("not_reviewed");
     expect(current.driverChoiceStatus).toBe("not_selected");
     expect(current.selectedDriver).toBeNull();

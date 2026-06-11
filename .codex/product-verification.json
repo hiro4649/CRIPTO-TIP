@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 56,
-  "headSha": "89c42547329de00c96663ee6deaa8c0255898d1d",
+  "headSha": "5794bb75213095e253faad45ad91e930e83a104d",
   "baseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
   "productVerificationStatus": "pass",
   "commands": [
@@ -68,8 +68,8 @@
     "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
-  "productCiStatus": "not_applicable_before_pr_creation",
-  "ciRunId": "not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27323160883",
   "title": "feat: add db driver advisory source policy",
   "goal": "Prepare DB driver advisory source policy for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "packageVerification": {
@@ -152,12 +152,12 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "qualityGateStatus": "not_applicable_before_pr_creation",
-  "qualityGateRunId": "not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "not_applicable_before_pr_creation",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27323480197",
+  "qualityGateArtifactId": "7554670955",
   "testSummary": {
     "testFiles": 45,
-    "passed": 1197,
+    "passed": 1240,
     "skipped": 6
   },
   "prBodyPath": "docs/pr-db-driver-advisory-source-policy-v118-prep.md",
@@ -273,11 +273,14 @@
     "statement": "AI review is not human approval. Future advisory source review requires safe source evidence. Current PR does not review or select a driver."
   },
   "schemaVersion": "1.0.0",
-  "headRefOid": "89c42547329de00c96663ee6deaa8c0255898d1d",
+  "headRefOid": "5794bb75213095e253faad45ad91e930e83a104d",
   "baseRefOid": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
-  "currentHeadSha": "89c42547329de00c96663ee6deaa8c0255898d1d",
+  "currentHeadSha": "5794bb75213095e253faad45ad91e930e83a104d",
   "currentBaseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
   "branch": "feat/db-driver-advisory-source-policy-v118-prep",
   "headRefName": "feat/db-driver-advisory-source-policy-v118-prep",
-  "baseRefName": "main"
+  "baseRefName": "main",
+  "targetCommitSha": "5794bb75213095e253faad45ad91e930e83a104d",
+  "baseCommitSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
+  "tests": "45 test files, 1240 passed, 6 skipped"
 }

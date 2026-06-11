@@ -2,7 +2,7 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.1.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 51,
+  "prNumber": 56,
   "targetBranch": "feat/db-driver-dependency-pr-template-v117-prep",
   "targetCommitSha": "0bed9e8a1ef5b90fdd6b3644d884053864f340f6",
   "baseCommitSha": "0b975a8d2093464f4e1e520742c7eac5a25e9070",
