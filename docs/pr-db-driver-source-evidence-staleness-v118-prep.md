@@ -21,27 +21,31 @@ Done criteria: source evidence staleness validator exists; committed stalenessPo
 
 ## Evidence Integrity
 
-Head SHA: 0ed3fbf8814204649c98e8360907db535a29a9ba
+Head SHA: 5bf851ff11ea88c571b0580c50169660a4d8e9da
 
 Base SHA: 0ed3fbf8814204649c98e8360907db535a29a9ba
 
-Product CI: not_applicable_before_pr_creation
+Product CI: success
 
-Quality-gate: not_applicable_before_pr_creation
+Quality-gate: success
 
-CI run: not_applicable_before_pr_creation
+CI run: 27334105174
 
-Quality-gate run: not_applicable_before_pr_creation
+Quality-gate run: 27334494017
 
-Quality-gate artifact: not_applicable_before_pr_creation
+Quality-gate artifact: 7558965059
 
-Tests: 47 test files, 1448 passed, 6 skipped
+Tests: 47 test files, 1482 passed, 6 skipped
 
 ## v1.1.8 Prep-Only Boundary
 
 This PR prepares the source evidence staleness policy for the future DB driver dependency PR. It does not review live source evidence, does not select `pg` or `postgres`, does not add a DB driver dependency, does not modify package or lock files, does not connect to a real DB, does not execute migrations, and does not claim runtime, production, legal, or YouTube policy readiness.
 
 ## Best of N Evidence
+
+Candidate count: 3.
+Selected candidate: Candidate C.
+Reason selected: Candidate C gives the next PR strict expiry and invalidation rules without authorizing any driver or dependency.
 
 - Candidate A: reuse advisory binding dry-run timestamps only. Rejected because it would not separately bind source category, source checked timestamp, expiry window, package version, PR number, target branch, target commit, and base commit.
 - Candidate B: store reviewed/fresh source evidence now. Rejected because this PR is policy-only and must not commit reviewed/fresh source evidence or imply driver approval.
@@ -72,16 +76,16 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 
 Product verification commands:
 
-- corepack pnpm lint: not_applicable_before_pr_creation
-- corepack pnpm typecheck: not_applicable_before_pr_creation
-- corepack pnpm test: not_applicable_before_pr_creation
-- npm test: not_applicable_before_pr_creation
-- corepack pnpm evidence:ci: not_applicable_before_pr_creation
-- corepack pnpm quality:self-protection: not_applicable_before_pr_creation
-- node scripts/check-evidence-placeholders.mjs: not_applicable_before_pr_creation
-- node scripts/validate-evidence-freshness.mjs: not_applicable_before_pr_creation
-- node scripts/check-quality-gate-self-protection.mjs: not_applicable_before_pr_creation
-- node scripts/codex-secret-safety-scan.mjs: not_applicable_before_pr_creation
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
 
 Package verification:
 
@@ -107,7 +111,12 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 47 files, 1448 passed, 6 skipped.
+Changed area: DB driver source evidence staleness validator, committed machine evidence, future-fresh fixture guard, docs, and PR evidence.
+Test command: corepack pnpm test; npm test; targeted vitest for apps/api/src/db-driver-source-evidence-staleness.test.ts.
+What the test covers: policy-ready but not-reviewed current evidence, PR-number/head/base binding, expiry windows, invalidation triggers, target/base/PR/branch/package binding, future fresh fixture constraints, raw output rejection, selected-driver rejection, and forbidden permission flags.
+Edge cases: prNumber 0, target equal to base, stale head, stale placeholder text, stale timestamps, future timestamps, boundary expiry, expiry before checked-at, target commit mismatch, base commit mismatch, PR number mismatch, branch mismatch, package version mismatch, source category mismatch, knownBlockers empty array, unsafe summary wording, token-like values, private URLs, DB connection strings, wallet addresses, raw advisory/audit/OSV/npm registry/dependency tree text, and committed evidence from disk.
+
+Current recorded test summary: 47 files, 1482 passed, 6 skipped.
 
 ## Security Boundaries
 

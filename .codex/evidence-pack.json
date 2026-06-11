@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "prNumber": 58,
+  "headSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,17 +12,17 @@
   "riskLevel": "R3",
   "title": "feat: add db driver source evidence staleness",
   "goal": "Prepare DB driver source evidence staleness policy for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "ciRunId": "not_applicable_before_pr_creation",
-  "qualityGateRunId": "not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "not_applicable_before_pr_creation",
-  "productCiStatus": "not_applicable_before_pr_creation",
-  "qualityGateStatus": "not_applicable_before_pr_creation",
+  "ciRunId": "27334105174",
+  "qualityGateRunId": "27334494017",
+  "qualityGateArtifactId": "7558965059",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       ".codex/change-classification.json",
-      ".codex/db-driver-advisory-binding-dry-run.json",
+      ".codex/db-driver-source-evidence-staleness.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -31,21 +31,22 @@
       ".codex/task-contract.json",
       ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/db-driver-advisory-binding-dry-run.ts",
-      "apps/api/src/db-driver-advisory-binding-dry-run.test.ts",
+      "apps/api/src/db-driver-source-evidence-staleness.ts",
+      "apps/api/src/db-driver-source-evidence-staleness.test.ts",
+      "docs/DB_DRIVER_SOURCE_EVIDENCE_STALENESS.md",
+      "docs/DB_DRIVER_SOURCE_EVIDENCE_REVALIDATION.md",
+      "docs/DB_DRIVER_SOURCE_EVIDENCE_EXPIRY_WINDOWS.md",
+      "docs/DB_DRIVER_SOURCE_EVIDENCE_INVALIDATION_TRIGGERS.md",
       "docs/DB_DRIVER_ADVISORY_BINDING_DRY_RUN.md",
       "docs/DB_DRIVER_ADVISORY_BINDING_EVIDENCE.md",
       "docs/DB_DRIVER_ADVISORY_BINDING_FAILURE_REASONS.md",
       "docs/DB_DRIVER_ADVISORY_BINDING_TIMESTAMP_POLICY.md",
-      "docs/DB_DRIVER_ADVISORY_SOURCE_POLICY.md",
-      "docs/DB_DRIVER_ADVISORY_SOURCE_BINDING.md",
-      "docs/DB_DRIVER_ADVISORY_SAFE_SUMMARY_RULES.md",
       "docs/RISK_REGISTER.md",
       "docs/PRODUCTION_GATES.md",
       "docs/QUALITY_GATE_EVIDENCE.md",
       "docs/TEST_COVERAGE_EVIDENCE.md",
       "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-      "docs/pr-db-driver-advisory-binding-dry-run-v118-prep.md"
+      "docs/pr-db-driver-source-evidence-staleness-v118-prep.md"
     ],
     "allowedPaths": [
       "apps/api/src/db-driver-advisory-binding-dry-run.ts",
@@ -118,53 +119,53 @@
   "commands": [
     {
       "name": "corepack pnpm lint",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "npm test",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "remoteRuns": [],
@@ -248,7 +249,7 @@
   ],
   "testSummary": {
     "testFiles": 47,
-    "passed": 1448,
+    "passed": 1482,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -274,20 +275,20 @@
     "Current PR does not review or select a driver.",
     "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
-  "testsPassed": 1448,
+  "testsPassed": 1482,
   "testsSkipped": 6,
   "testFiles": 47,
   "productVerificationCommands": [
-    "corepack pnpm lint: not_applicable_before_pr_creation",
-    "corepack pnpm typecheck: not_applicable_before_pr_creation",
-    "corepack pnpm test: not_applicable_before_pr_creation",
-    "npm test: not_applicable_before_pr_creation",
-    "corepack pnpm evidence:ci: not_applicable_before_pr_creation",
-    "corepack pnpm quality:self-protection: not_applicable_before_pr_creation",
-    "node scripts/check-evidence-placeholders.mjs: not_applicable_before_pr_creation",
-    "node scripts/validate-evidence-freshness.mjs: not_applicable_before_pr_creation",
-    "node scripts/check-quality-gate-self-protection.mjs: not_applicable_before_pr_creation",
-    "node scripts/codex-secret-safety-scan.mjs: not_applicable_before_pr_creation"
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -321,7 +322,7 @@
     ]
   },
   "prBodyPath": "docs/pr-db-driver-source-evidence-staleness-v118-prep.md",
-  "passed": 1448,
+  "passed": 1482,
   "skipped": 6,
   "changedFiles": [
     ".codex/change-classification.json",
@@ -363,7 +364,7 @@
   },
   "testing": {
     "testFiles": 47,
-    "passed": 1448,
+    "passed": 1482,
     "skipped": 6,
     "commands": [
       "corepack pnpm lint",
@@ -409,16 +410,16 @@
   "codeReviewMonitorStatus": "pass",
   "productionReadinessClaim": "no",
   "runtimeReadinessClaimed": false,
-  "status": "not_applicable_before_pr_creation",
+  "status": "pass",
   "summary": "Adds DB driver source evidence staleness policy while keeping committed evidence policy_ready and not_reviewed without selecting or installing a driver.",
-  "headRefOid": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "headRefOid": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseRefOid": "0ed3fbf8814204649c98e8360907db535a29a9ba",
-  "currentHeadSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "currentHeadSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "currentBaseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "branch": "feat/db-driver-source-evidence-staleness-v118-prep",
   "headRefName": "feat/db-driver-source-evidence-staleness-v118-prep",
   "baseRefName": "main",
-  "targetCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "targetCommitSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
-  "tests": "47 test files, 1448 passed, 6 skipped"
+  "tests": "47 test files, 1482 passed, 6 skipped"
 }

@@ -3,8 +3,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "prNumber": 58,
+  "headSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "classificationStatus": "pass",
   "unknownFiles": [],
@@ -71,7 +71,7 @@
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
     "docs/pr-db-driver-source-evidence-staleness-v118-prep.md"
   ],
-  "status": "not_applicable_before_pr_creation",
+  "status": "pass",
   "changeType": "product_relevant",
   "riskLevel": "R3",
   "productCodeChanged": true,
@@ -152,18 +152,18 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "not_applicable_before_pr_creation",
-  "qualityGateStatus": "not_applicable_before_pr_creation",
-  "ciRunId": "not_applicable_before_pr_creation",
-  "qualityGateRunId": "not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27334105174",
+  "qualityGateRunId": "27334494017",
+  "qualityGateArtifactId": "7558965059",
   "testSummary": {
     "testFiles": 47,
-    "passed": 1448,
+    "passed": 1482,
     "skipped": 6
   },
   "testFiles": 47,
-  "passed": 1448,
+  "passed": 1482,
   "skipped": 6,
   "prBodyPath": "docs/pr-db-driver-source-evidence-staleness-v118-prep.md",
   "doneCriteria": [
@@ -213,7 +213,7 @@
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
-  "testsPassed": 1448,
+  "testsPassed": 1482,
   "testsSkipped": 6,
   "securityBoundaries": [
     "No DB driver dependency is added.",
@@ -270,16 +270,16 @@
   "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline advisory source policy evidence and tests only.",
   "productionReadinessClaim": "no",
   "productVerificationCommands": [
-    "corepack pnpm lint: not_applicable_before_pr_creation",
-    "corepack pnpm typecheck: not_applicable_before_pr_creation",
-    "corepack pnpm test: not_applicable_before_pr_creation",
-    "npm test: not_applicable_before_pr_creation",
-    "corepack pnpm evidence:ci: not_applicable_before_pr_creation",
-    "corepack pnpm quality:self-protection: not_applicable_before_pr_creation",
-    "node scripts/check-evidence-placeholders.mjs: not_applicable_before_pr_creation",
-    "node scripts/validate-evidence-freshness.mjs: not_applicable_before_pr_creation",
-    "node scripts/check-quality-gate-self-protection.mjs: not_applicable_before_pr_creation",
-    "node scripts/codex-secret-safety-scan.mjs: not_applicable_before_pr_creation"
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -296,68 +296,68 @@
   "commands": [
     {
       "name": "corepack pnpm lint",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm test",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "npm test",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "corepack pnpm quality:self-protection",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     },
     {
       "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "not_applicable_before_pr_creation",
-      "status": "not_applicable_before_pr_creation"
+      "result": "pass",
+      "status": "pass"
     }
   ],
-  "headRefOid": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "headRefOid": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseRefOid": "0ed3fbf8814204649c98e8360907db535a29a9ba",
-  "currentHeadSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "currentHeadSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "currentBaseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "branch": "feat/db-driver-source-evidence-staleness-v118-prep",
   "headRefName": "feat/db-driver-source-evidence-staleness-v118-prep",
   "baseRefName": "main",
-  "tests": "47 test files, 1448 passed, 6 skipped",
-  "targetCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "tests": "47 test files, 1482 passed, 6 skipped",
+  "targetCommitSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "testing": {
     "testFiles": 47,
-    "passed": 1448,
+    "passed": 1482,
     "skipped": 6,
     "commands": [
       "corepack pnpm lint",

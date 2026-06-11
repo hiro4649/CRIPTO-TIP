@@ -27,3 +27,7 @@ Revalidation must use safe summaries only. Raw advisory output, raw audit
 output, OSV raw response, Snyk raw response, npm registry raw metadata, raw
 dependency tree, terminal output, logs, stack traces, private URLs, DB
 connection strings, wallet addresses, and token-like values are rejected.
+
+The future fresh fixture is non-operational test data. It is not advisory
+review approval, owner approval, DB driver selection, or dependency approval.
+Fresh source evidence must be regenerated in the actual dependency PR.

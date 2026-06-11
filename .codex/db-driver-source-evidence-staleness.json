@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
+  "prNumber": 58,
   "targetBranch": "feat/db-driver-source-evidence-staleness-v118-prep",
-  "targetCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "targetCommitSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "stalenessPolicyStatus": "policy_ready",
   "bindingDryRunStatus": "not_reviewed",
@@ -12,7 +12,10 @@
   "advisoryEnvelopeStatus": "not_reviewed",
   "driverChoiceStatus": "not_selected",
   "selectedDriver": null,
-  "candidateDrivers": ["pg", "postgres"],
+  "candidateDrivers": [
+    "pg",
+    "postgres"
+  ],
   "candidateStaleness": [
     {
       "driverName": "pg",
@@ -27,7 +30,9 @@
       "prNumber": null,
       "targetBranch": null,
       "revalidationRequired": true,
-      "revalidationReasons": ["source_evidence_not_reviewed"],
+      "revalidationReasons": [
+        "source_evidence_not_reviewed"
+      ],
       "safeSummary": "pg source evidence is not reviewed. Future source evidence must be rebound to the target PR, commit, package version, source category, and expiry window."
     },
     {
@@ -43,7 +48,9 @@
       "prNumber": null,
       "targetBranch": null,
       "revalidationRequired": true,
-      "revalidationReasons": ["source_evidence_not_reviewed"],
+      "revalidationReasons": [
+        "source_evidence_not_reviewed"
+      ],
       "safeSummary": "postgres source evidence is not reviewed. Future source evidence must be rebound to the target PR, commit, package version, source category, and expiry window."
     }
   ],
@@ -113,6 +120,6 @@
   "forbiddenScopeStatus": "pass",
   "safeSummary": "DB driver source evidence staleness policy is ready, but source evidence is not reviewed. It requires revalidation before any driver, dependency, package, lockfile, real DB, runtime, production, legal, or YouTube policy action.",
   "createdAt": "2026-06-11T00:00:00Z",
-  "headSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "headSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba"
 }

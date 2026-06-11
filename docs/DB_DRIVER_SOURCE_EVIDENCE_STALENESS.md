@@ -9,6 +9,11 @@ Committed evidence for this PR must remain `policy_ready` and `not_reviewed`.
 The policy only defines when future source evidence becomes stale and must be
 revalidated.
 
+`policy_ready` means the staleness policy exists. It does not mean source
+evidence is reviewed. It does not mean a driver can be selected. It does not
+approve package or lockfile changes. In this PR, `sourceEvidenceStatus` must
+remain `not_reviewed`.
+
 The current PR keeps:
 
 - `driverChoiceStatus: not_selected`

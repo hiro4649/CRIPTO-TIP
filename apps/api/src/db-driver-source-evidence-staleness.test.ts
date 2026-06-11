@@ -13,11 +13,11 @@ import {
 
 const branchName = "feat/db-driver-source-evidence-staleness-v118-prep";
 const baseSha = "0ed3fbf8814204649c98e8360907db535a29a9ba";
-const targetSha = "1111111111111111111111111111111111111111";
+const targetSha = "5bf851ff11ea88c571b0580c50169660a4d8e9da";
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
-  prNumber: 0,
+  prNumber: 58,
   targetBranch: branchName,
   targetCommitSha: targetSha,
   baseCommitSha: baseSha,
@@ -118,6 +118,16 @@ describe("db driver source evidence staleness", () => {
     expect(validateCurrentDbDriverSourceEvidenceStalenessRecord(current)).toBe(current);
   });
 
+  it.each([
+    ["prNumber 0 after PR creation", { prNumber: 0 }],
+    ["target commit equal to base commit", { targetCommitSha: baseSha }],
+    ["headSha equal to previous main SHA", { headSha: baseSha }],
+    ["baseSha not equal to base commit", { baseSha: targetSha }],
+    ["not_applicable placeholder", { safeSummary: ["not_applicable", "before_pr_creation"].join("_") }]
+  ])("rejects stale machine evidence after PR creation: %s", (_label, patch) => {
+    expect(() => validateCurrentDbDriverSourceEvidenceStalenessRecord(record(patch as Partial<DbDriverSourceEvidenceStalenessRecord>))).toThrow();
+  });
+
   it("defines exact expiry windows and invalidation triggers", () => {
     const current = record();
 
@@ -197,6 +207,16 @@ describe("db driver source evidence staleness", () => {
   });
 
   it.each([
+    ["policy_ready with fresh source evidence", { stalenessPolicyStatus: "policy_ready", sourceEvidenceStatus: "fresh" }],
+    ["policy_ready with selectedDriver", { stalenessPolicyStatus: "policy_ready", selectedDriver: "pg" }],
+    ["policy_ready with dependency allowed", { stalenessPolicyStatus: "policy_ready", dbDriverDependencyAllowed: true }],
+    ["policy_ready with packageJson allowed", { stalenessPolicyStatus: "policy_ready", packageJsonChangeAllowed: true }],
+    ["policy_ready with knownBlockers empty array", { stalenessPolicyStatus: "policy_ready", knownBlockers: [] }]
+  ])("policy_ready does not permit approval-like state: %s", (_label, patch) => {
+    expect(() => validateCurrentDbDriverSourceEvidenceStalenessRecord(record(patch as Partial<DbDriverSourceEvidenceStalenessRecord>))).toThrow();
+  });
+
+  it.each([
     ["missing source_evidence_not_reviewed", ["source_timestamp_missing", "package_version_not_bound", "target_commit_not_bound"]],
     ["missing source_timestamp_missing", ["source_evidence_not_reviewed", "package_version_not_bound", "target_commit_not_bound"]],
     ["missing package_version_not_bound", ["source_evidence_not_reviewed", "source_timestamp_missing", "target_commit_not_bound"]],
@@ -232,6 +252,18 @@ describe("db driver source evidence staleness", () => {
   });
 
   it.each([
+    ["copied future fresh fixture", futureFreshFixture()],
+    ["candidate sourceCheckedAt set", record({ candidateStaleness: [candidate("pg", { sourceCheckedAt: "2026-06-10T00:00:00Z" }), candidate("postgres")] })],
+    ["candidate sourceExpiresAt set", record({ candidateStaleness: [candidate("pg", { sourceExpiresAt: "2026-06-16T00:00:00Z" }), candidate("postgres")] })],
+    ["candidate packageVersion set", record({ candidateStaleness: [candidate("pg", { packageVersion: "8.16.0" }), candidate("postgres")] })],
+    ["candidate targetCommitSha set", record({ candidateStaleness: [candidate("pg", { targetCommitSha: targetSha }), candidate("postgres")] })],
+    ["candidate baseCommitSha set", record({ candidateStaleness: [candidate("pg", { baseCommitSha: baseSha }), candidate("postgres")] })],
+    ["candidate prNumber set", record({ candidateStaleness: [candidate("pg", { prNumber: 58 }), candidate("postgres")] })]
+  ])("committed source evidence staleness rejects %s", (_label, current) => {
+    expect(() => validateCurrentDbDriverSourceEvidenceStalenessRecord(current)).toThrow();
+  });
+
+  it.each([
     ["expired timestamp", { sourceExpiresAt: "2026-06-10T00:00:00Z" }],
     ["future checked timestamp", { sourceCheckedAt: "2026-06-12T00:00:00Z" }],
     ["expiry before checked", { sourceCheckedAt: "2026-06-10T00:00:00Z", sourceExpiresAt: "2026-06-09T00:00:00Z" }],
@@ -246,6 +278,73 @@ describe("db driver source evidence staleness", () => {
     expect(() =>
       validateFutureFreshDbDriverSourceEvidenceFixture(futureFreshFixture({}, patch as Partial<DbDriverSourceEvidenceCandidateStaleness>), fixtureContext)
     ).toThrow();
+  });
+
+  it("future fresh fixture accepts source checked exactly at now minus allowed window boundary", () => {
+    const fixture = futureFreshFixture(
+      {},
+      {
+        sourceCheckedAt: "2026-06-04T00:00:00Z",
+        sourceExpiresAt: "2026-06-11T00:00:00Z"
+      }
+    );
+
+    expect(validateFutureFreshDbDriverSourceEvidenceFixture(fixture, fixtureContext)).toBe(fixture);
+  });
+
+  it("future fresh fixture rejects source checked one second older than allowed window", () => {
+    expect(() =>
+      validateFutureFreshDbDriverSourceEvidenceFixture(
+        futureFreshFixture(
+          {},
+          {
+            sourceCheckedAt: "2026-06-03T23:59:59Z",
+            sourceExpiresAt: "2026-06-10T23:59:59Z"
+          }
+        ),
+        fixtureContext
+      )
+    ).toThrow();
+  });
+
+  it("future fresh fixture rejects sourceExpiresAt exactly equal sourceCheckedAt", () => {
+    expect(() =>
+      validateFutureFreshDbDriverSourceEvidenceFixture(
+        futureFreshFixture(
+          {},
+          {
+            sourceCheckedAt: "2026-06-10T00:00:00Z",
+            sourceExpiresAt: "2026-06-10T00:00:00Z"
+          }
+        ),
+        fixtureContext
+      )
+    ).toThrow();
+  });
+
+  it("future fresh fixture accepts sourceExpiresAt after sourceCheckedAt within allowed window", () => {
+    const fixture = futureFreshFixture(
+      {},
+      {
+        sourceCheckedAt: "2026-06-10T00:00:00Z",
+        sourceExpiresAt: "2026-06-11T00:00:00Z"
+      }
+    );
+
+    expect(validateFutureFreshDbDriverSourceEvidenceFixture(fixture, fixtureContext)).toBe(fixture);
+  });
+
+  it("future fresh fixture rejects unknown source category", () => {
+    expect(() =>
+      validateFutureFreshDbDriverSourceEvidenceFixture(
+        futureFreshFixture({}, { sourceCategory: "unknown_source" as any }),
+        { ...fixtureContext, sourceCategory: "unknown_source" as any }
+      )
+    ).toThrow();
+  });
+
+  it("future fresh fixture rejects missing expiry window for source category", () => {
+    expect(() => validateCurrentDbDriverSourceEvidenceStalenessRecord(record({ expiryWindows: { github_advisory_summary: 7 } as any }))).toThrow();
   });
 
   it.each([
@@ -273,17 +372,46 @@ describe("db driver source evidence staleness", () => {
     }
   );
 
-  it.each(["no vulnerabilities", "clean", "ready for dependency", "approved", "pass", "fresh source", "reviewed source", "no blockers"])(
+  it.each([
+    "no vulnerabilities",
+    "clean",
+    "ready for dependency",
+    "approved",
+    "pass",
+    "fresh source",
+    "reviewed source",
+    "no blockers",
+    "fresh enough",
+    "valid for selection",
+    "review complete",
+    "approved source",
+    "source approved",
+    "no known blockers",
+    "dependency ready",
+    "install ready",
+    "policy safe"
+  ])(
     "rejects unsafe safeSummary claim: %s",
     (summary) => {
       expect(() => validateCurrentDbDriverSourceEvidenceStalenessRecord(record({ safeSummary: summary }))).toThrow(/safeSummary/);
     }
   );
 
+  it.each(["dependency ready", "install ready"])("rejects unsafe candidate safeSummary claim: %s", (summary) => {
+    expect(() =>
+      validateCurrentDbDriverSourceEvidenceStalenessRecord(record({ candidateStaleness: [candidate("pg", { safeSummary: summary }), candidate("postgres")] }))
+    ).toThrow(/safeSummary/);
+  });
+
   it("keeps committed .codex staleness evidence policy-ready but not reviewed", () => {
     const current = committedStalenessFromDisk();
 
     expect(current.stalenessPolicyStatus).toBe("policy_ready");
+    expect(current.prNumber).toBe(58);
+    expect(current.targetCommitSha).toBe(targetSha);
+    expect(current.baseCommitSha).toBe(baseSha);
+    expect(current.headSha).toBe(targetSha);
+    expect(current.baseSha).toBe(baseSha);
     expect(current.bindingDryRunStatus).toBe("not_reviewed");
     expect(current.sourcePolicyStatus).toBe("not_reviewed");
     expect(current.advisoryEnvelopeStatus).toBe("not_reviewed");

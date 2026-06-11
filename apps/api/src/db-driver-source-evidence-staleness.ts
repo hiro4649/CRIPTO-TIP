@@ -292,10 +292,13 @@ function validateDbDriverSourceEvidenceStalenessRecord(record: DbDriverSourceEvi
 
 function assertBasicRecord(record: DbDriverSourceEvidenceStalenessRecord) {
   if (record.repository !== "hiro4649/CRIPTO-TIP") throw new Error("DB driver source evidence staleness repository must be hiro4649/CRIPTO-TIP");
-  if (!Number.isInteger(record.prNumber) || record.prNumber < 0) throw new Error("DB driver source evidence staleness prNumber must be non-negative");
+  if (!Number.isInteger(record.prNumber) || record.prNumber <= 0) throw new Error("DB driver source evidence staleness prNumber must be bound to the current PR");
   if (!record.targetBranch) throw new Error("DB driver source evidence staleness targetBranch is required");
   if (!isSha(record.targetCommitSha)) throw new Error("DB driver source evidence staleness targetCommitSha must be a 40-character SHA");
   if (!isSha(record.baseCommitSha)) throw new Error("DB driver source evidence staleness baseCommitSha must be a 40-character SHA");
+  if (record.targetCommitSha === record.baseCommitSha) throw new Error("DB driver source evidence staleness targetCommitSha must not equal baseCommitSha");
+  if (record.headSha !== undefined && record.headSha !== record.targetCommitSha) throw new Error("DB driver source evidence staleness headSha must match targetCommitSha");
+  if (record.baseSha !== undefined && record.baseSha !== record.baseCommitSha) throw new Error("DB driver source evidence staleness baseSha must match baseCommitSha");
   if (!record.createdAt.endsWith("Z")) throw new Error("DB driver source evidence staleness createdAt must be UTC");
 }
 
@@ -429,8 +432,9 @@ function assertTimestampPair(checkedAt: string | null, expiresAt: string | null,
   const now = parseIsoUtc(context.now, "now");
   if (checked > now) throw new Error("future source evidence fixture source_timestamp_future");
   if (expires <= checked) throw new Error("future source evidence fixture source_expiry_before_checked");
-  if (expires <= now) throw new Error("future source evidence fixture source_timestamp_expired");
+  if (expires < now) throw new Error("future source evidence fixture source_timestamp_expired");
   const maxMs = dbDriverSourceEvidenceExpiryWindows[context.sourceCategory] * 24 * 60 * 60 * 1000;
+  if (now - checked > maxMs) throw new Error("future source evidence fixture source_timestamp_expired");
   if (expires - checked > maxMs) throw new Error("future source evidence fixture source_category_policy_changed");
 }
 
@@ -474,12 +478,26 @@ function assertSafeSummaryDoesNotClaimReview(value: string) {
     /\bno\s+vulnerabilities\b/i,
     /\bready\s+for\s+dependency\b/i,
     /\bdependency\s+ready\b/i,
+    /\bfresh\s+enough\b/i,
+    /\bfresh\s+enough\s+to\s+select\b/i,
+    /\bvalid\s+for\s+selection\b/i,
+    /\bselection\s+ready\b/i,
+    /\breview\s+complete\b/i,
     /\bapproved\b/i,
+    /\bapproved\s+source\b/i,
+    /\bsource\s+approved\b/i,
+    /\badvisory\s+clean\b/i,
+    /\bno\s+advisory\b/i,
     /\bpass\b/i,
     /\bfresh\s+source\b/i,
     /\breviewed\s+source\b/i,
+    /\bsafe\s+dependency\b/i,
     /\bselected\b/i,
+    /\bdriver\s+ready\b/i,
+    /\binstall\s+ready\b/i,
     /\bproduction\s+ready\b/i,
+    /\bproduction\s+safe\b/i,
+    /\bpolicy\s+safe\b/i,
     /\blegally\s+safe\b/i,
     /\bpolicy\s+compliant\b/i,
     /\bno\s+known\s+blockers\b/i,
@@ -544,7 +562,12 @@ function assertSafeString(value: string, path: string) {
     /provider[_ -]?response/i,
     /secret\s*[:=]/i,
     /token\s*[:=]/i,
-    /api[_-]?key\s*[:=]/i
+    /api[_-]?key\s*[:=]/i,
+    /not_applicable_before_pr_creation/i,
+    /HEAD_SHA_PLACEHOLDER|BASE_SHA_PLACEHOLDER/i,
+    /current_pr_head|current_pr_base/i,
+    /recorded in GitHub PR body after push/i,
+    /local evidence collected before push/i
   ];
   const unsafeKeyPatterns = [
     /password/i,
