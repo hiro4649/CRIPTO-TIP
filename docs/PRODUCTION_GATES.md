@@ -222,3 +222,9 @@ The current committed binding state is `not_reviewed`; `knownBlockers` remains
 `null`, not an empty clean list. No driver is selected, no package or lockfile
 change is authorized, no real DB connection is added, and no runtime,
 production, legal, or YouTube policy readiness is claimed.
+## DB Driver Source Evidence Staleness
+
+DB driver source evidence staleness is a future dependency-review guardrail. It
+does not select a driver, approve a dependency, approve package or lockfile
+changes, authorize a real DB connection, or claim runtime or production
+readiness.

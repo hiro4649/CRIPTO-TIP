@@ -444,3 +444,13 @@ quality-gate weakening is introduced.
 - Committed evidence keeps `sourcePolicyStatus: not_reviewed`, `advisoryEnvelopeStatus: not_reviewed`, `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers `[pg, postgres]`, binding/timestamp/freshness/package/commit/PR/branch/safe-summary statuses `not_reviewed`, `knownBlockersStatus: not_reviewed`, and `knownBlockers: null`.
 - `apps/api/src/db-driver-advisory-binding-dry-run.test.ts` verifies default not-reviewed evidence, selected/pass/reviewed rejection, candidate binding rejection, raw output rejection, future reviewed fixture isolation, timestamp/freshness validation, target commit binding, PR number binding, branch binding, package name/version binding, source category binding, and committed machine-readable evidence safe defaults.
 - This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.
+## DB Driver Source Evidence Staleness
+
+- Status: policy-ready only; not advisory review approval.
+- Machine-readable evidence: `.codex/db-driver-source-evidence-staleness.json`.
+- Validator: `apps/api/src/db-driver-source-evidence-staleness.ts`.
+- Tests: `apps/api/src/db-driver-source-evidence-staleness.test.ts`.
+- Safety boundary: no DB driver dependency, no package or lockfile change, no
+  real DB connection, no migration execution, no provider SDK apply, no
+  production apply, and no runtime/production/legal/YouTube policy readiness
+  claim.

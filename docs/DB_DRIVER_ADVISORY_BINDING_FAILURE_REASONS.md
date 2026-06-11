@@ -5,6 +5,11 @@ dependency work cannot treat incomplete advisory evidence as approval.
 
 Blocking reasons include:
 
+Source evidence staleness failures include stale target commit, stale base
+commit, stale PR number, stale branch, stale package version, stale source
+category policy, missing source timestamp, expired source timestamp, and raw
+source output.
+
 - `binding_not_reviewed`
 - `source_policy_not_reviewed`
 - `advisory_envelope_not_reviewed`

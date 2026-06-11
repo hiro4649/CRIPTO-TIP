@@ -1491,6 +1491,78 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver advisory binding dry-run evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-source-evidence-staleness.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence staleness validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-source-evidence-staleness.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence staleness and future-fixture tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_STALENESS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence staleness docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_REVALIDATION.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence revalidation docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_EXPIRY_WINDOWS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence expiry window docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_INVALIDATION_TRIGGERS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence invalidation trigger docs."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-source-evidence-staleness-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence for DB driver source evidence staleness."
+    },
+    {
+      "pathPattern": ".codex/db-driver-source-evidence-staleness.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver source evidence staleness evidence."
     }
   ],
   "safeSummaryOnly": true
