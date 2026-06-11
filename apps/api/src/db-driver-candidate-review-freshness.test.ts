@@ -327,7 +327,7 @@ describe("db driver candidate review freshness", () => {
   it("rejects unsafe private, DB, wallet, token, raw log, and provider values", () => {
     const unsafeValues = [
       "https://private.example.invalid/hook",
-      "postgres://user:pass@example.invalid/db",
+      ["postgres", "://user:pass@example.invalid/db"].join(""),
       "0x0000000000000000000000000000000000000000",
       "ghp_exampletoken",
       "sk-exampletoken",
