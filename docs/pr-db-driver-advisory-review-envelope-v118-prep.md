@@ -21,19 +21,19 @@ Done criteria: DB driver advisory review envelope exists; committed advisoryEnve
 
 ## Evidence Integrity
 
-Head SHA: 4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a
+Head SHA: 21c810ff928c451fac5e512aee3bf4c05bab57ac
 
 Base SHA: 4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a
 
-Product CI: not_applicable_before_pr_creation
+Product CI: success
 
-Quality-gate: not_applicable_before_pr_creation
+Quality-gate: not_applicable_before_current_head_success
 
-CI run: not_applicable_before_pr_creation
+CI run: 27319425693
 
-Quality-gate run: not_applicable_before_pr_creation
+Quality-gate run: not_applicable_before_current_head_success
 
-Quality-gate artifact: not_applicable_before_pr_creation
+Quality-gate artifact: not_applicable_before_current_head_success
 
 Tests: 44 test files, 1078 passed, 6 skipped
 
@@ -147,3 +147,15 @@ Known blockers value: null.
 Raw output policy: safe_summary_only.
 
 No advisory reviewed evidence is committed in this PR.
+
+Failure paths: current evidence rejects reviewed/pass advisory state, selected driver state, empty known-blockers clean result claims, unsafe raw advisory output, raw audit output, dependency tree output, terminal output, private URLs, DB connection strings, wallet addresses, and token-like values.
+
+Test Coverage Evidence details:
+
+Changed area: DB driver advisory review envelope validator, committed advisory envelope evidence, candidate review freshness test compatibility, and advisory review docs.
+
+Test command: `corepack pnpm vitest run apps/api/src/db-driver-advisory-review-envelope.test.ts apps/api/src/db-driver-candidate-review-freshness.test.ts`; `corepack pnpm test`; `npm test`.
+
+What the test covers: default not_reviewed advisory state, candidate advisory review shape, driver not_selected state, selected driver rejection, permission flag rejection, future reviewed fixture isolation, raw output rejection, unsafe value rejection, and committed evidence validation.
+
+Failure paths: current evidence rejects reviewed/pass advisory state, selected driver state, empty known-blockers clean result claims, unsafe raw advisory output, raw audit output, dependency tree output, terminal output, private URLs, DB connection strings, wallet addresses, and token-like values.

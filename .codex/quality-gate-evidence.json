@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a",
+  "prNumber": 55,
+  "headSha": "21c810ff928c451fac5e512aee3bf4c05bab57ac",
   "baseSha": "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "not_applicable_before_pr_creation",
+  "qualityGateStatus": "not_applicable_before_current_head_success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "not_applicable_before_pr_creation",
+  "qualityGateRunId": "not_applicable_before_current_head_success",
+  "qualityGateArtifactId": "not_applicable_before_current_head_success",
   "title": "feat: add db driver advisory review envelope",
   "goal": "Prepare DB driver advisory review envelope for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
@@ -136,8 +136,8 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "not_applicable_before_pr_creation",
-  "ciRunId": "not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27319425693",
   "testSummary": {
     "testFiles": 44,
     "passed": 1078,
