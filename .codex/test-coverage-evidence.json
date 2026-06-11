@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 56,
-  "headSha": "5794bb75213095e253faad45ad91e930e83a104d",
-  "baseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
+  "prNumber": 0,
+  "headSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
+  "baseSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
-    "testFiles": 45,
-    "passed": 1240,
+    "testFiles": 46,
+    "passed": 1342,
     "skipped": 6
   },
   "coverage": [
@@ -19,8 +19,8 @@
     "Context mismatch across PR, branch, head, and base inputs is rejected."
   ],
   "status": "pass",
-  "testFiles": 45,
-  "passed": 1197,
+  "testFiles": 46,
+  "passed": 1342,
   "skipped": 6,
   "coverageNotes": [
     "DB driver owner approval record default not_approved state covered.",
@@ -28,12 +28,13 @@
     "Owner role and AI/bot actor rejection covered.",
     "Unsafe evidence rejection and forbidden capability denial covered."
   ],
-  "testsPassed": 1197,
+  "testsPassed": 1342,
   "testsSkipped": 6,
-  "title": "feat: add db driver advisory source policy",
-  "goal": "Prepare DB driver advisory source policy for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "title": "feat: add db driver advisory binding dry run",
+  "goal": "Prepare DB driver advisory source binding dry-run for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "changedFiles": [
     ".codex/change-classification.json",
+    ".codex/db-driver-advisory-binding-dry-run.json",
     ".codex/db-driver-advisory-source-policy.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
@@ -43,10 +44,13 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-advisory-source-policy.ts",
-    "apps/api/src/db-driver-advisory-source-policy.test.ts",
+    "apps/api/src/db-driver-advisory-binding-dry-run.ts",
+    "apps/api/src/db-driver-advisory-binding-dry-run.test.ts",
+    "docs/DB_DRIVER_ADVISORY_BINDING_DRY_RUN.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_EVIDENCE.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_FAILURE_REASONS.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_TIMESTAMP_POLICY.md",
     "docs/DB_DRIVER_ADVISORY_SOURCE_POLICY.md",
-    "docs/DB_DRIVER_ADVISORY_SOURCE_CATEGORIES.md",
     "docs/DB_DRIVER_ADVISORY_SOURCE_BINDING.md",
     "docs/DB_DRIVER_ADVISORY_SAFE_SUMMARY_RULES.md",
     "docs/RISK_REGISTER.md",
@@ -54,15 +58,18 @@
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-advisory-source-policy-v118-prep.md"
+    "docs/pr-db-driver-advisory-binding-dry-run-v118-prep.md"
   ],
   "allowedScope": [
-    "db_driver_advisory_source_policy",
-    "allowed_source_categories",
-    "source_binding_rules",
-    "source_timestamp_rules",
-    "safe_summary_rules",
-    "raw_output_forbidden_policy",
+    "db_driver_advisory_binding_dry_run",
+    "future_source_binding_fixture",
+    "source_timestamp_validation",
+    "target_commit_binding",
+    "pr_number_binding",
+    "branch_binding",
+    "package_version_binding",
+    "safe_summary_binding",
+    "raw_output_rejection",
     "tests",
     "docs",
     ".codex evidence"
@@ -106,11 +113,11 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
-  "ciRunId": "27323160883",
-  "qualityGateRunId": "27323480197",
-  "qualityGateArtifactId": "7554670955",
+  "productCiStatus": "local_verification_before_pr",
+  "qualityGateStatus": "local_verification_before_pr",
+  "ciRunId": "not_applicable_before_pr_creation",
+  "qualityGateRunId": "not_applicable_before_pr_creation",
+  "qualityGateArtifactId": "not_applicable_before_pr_creation",
   "prBodyPath": "docs/pr-db-driver-advisory-source-policy-v118-prep.md",
   "doneCriteria": [
     "DB driver advisory source policy validator exists",
@@ -138,7 +145,10 @@
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass"
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "verificationSurface": [
     "apps/api/src/db-driver-candidate-review-freshness.test.ts",
@@ -194,14 +204,14 @@
     "Future DB driver dependency introduction requires a separate project-owner-approved PR."
   ],
   "testCoverageEvidence": {
-    "changedArea": "DB driver advisory source policy validator, allowed source categories, source binding rules, timestamp/freshness rules, raw output policy, docs, and .codex evidence.",
-    "testCommand": "corepack pnpm test and npm test cover the advisory source policy validator together with existing repository tests.",
+    "changedArea": "DB driver advisory binding dry-run validator, future source binding fixture, timestamp/freshness checks, package version binding, target commit/PR/branch binding, raw output rejection, docs, and .codex evidence.",
+    "testCommand": "corepack pnpm test and npm test cover the advisory binding dry-run validator together with existing repository tests.",
     "coverage": [
-      "Default source policy remains not_reviewed.",
-      "Allowed source categories are exact expected set.",
-      "Candidate source policies remain not_reviewed for pg and postgres.",
-      "Raw advisory, raw audit, OSV raw, npm registry raw, raw dependency tree, unsafe run-output copies, private URLs, DB connection strings, wallet addresses, and token-like values are rejected.",
-      "Future reviewed source fixture is accepted only through the future fixture validator."
+      "Default binding dry-run evidence remains not_reviewed.",
+      "Candidate bindings remain not_reviewed for pg and postgres.",
+      "Future reviewed binding fixture is accepted only through the future fixture validator.",
+      "Timestamp, target commit, PR number, branch, package name, package version, and source category mismatches are rejected.",
+      "Raw advisory, raw audit, OSV raw, npm registry raw, raw dependency tree, unsafe run-output copies, private URLs, DB connection strings, wallet addresses, and token-like values are rejected."
     ]
   },
   "reviewScope": {
@@ -274,6 +284,21 @@
       "name": "node scripts/check-evidence-placeholders.mjs",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "headRefOid": "5794bb75213095e253faad45ad91e930e83a104d",
@@ -285,5 +310,5 @@
   "baseRefName": "main",
   "targetCommitSha": "5794bb75213095e253faad45ad91e930e83a104d",
   "baseCommitSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
-  "tests": "45 test files, 1240 passed, 6 skipped"
+  "tests": "46 test files, 1342 passed, 6 skipped"
 }

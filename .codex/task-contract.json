@@ -2,17 +2,20 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 56,
-  "headSha": "5794bb75213095e253faad45ad91e930e83a104d",
-  "baseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
-  "goal": "Prepare DB driver advisory source policy for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "prNumber": 0,
+  "headSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
+  "baseSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
+  "goal": "Prepare DB driver advisory source binding dry-run for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "allowedScope": [
-    "db_driver_advisory_source_policy",
-    "allowed_source_categories",
-    "source_binding_rules",
-    "source_timestamp_rules",
-    "safe_summary_rules",
-    "raw_output_forbidden_policy",
+    "db_driver_advisory_binding_dry_run",
+    "future_source_binding_fixture",
+    "source_timestamp_validation",
+    "target_commit_binding",
+    "pr_number_binding",
+    "branch_binding",
+    "package_version_binding",
+    "safe_summary_binding",
+    "raw_output_rejection",
     "tests",
     "docs",
     ".codex evidence"
@@ -79,9 +82,10 @@
   "productCodeChanged": true,
   "prProfile": "product_r3",
   "status": "pass",
-  "title": "feat: add db driver advisory source policy",
+  "title": "feat: add db driver advisory binding dry run",
   "changedFiles": [
     ".codex/change-classification.json",
+    ".codex/db-driver-advisory-binding-dry-run.json",
     ".codex/db-driver-advisory-source-policy.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
@@ -91,10 +95,13 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
-    "apps/api/src/db-driver-advisory-source-policy.ts",
-    "apps/api/src/db-driver-advisory-source-policy.test.ts",
+    "apps/api/src/db-driver-advisory-binding-dry-run.ts",
+    "apps/api/src/db-driver-advisory-binding-dry-run.test.ts",
+    "docs/DB_DRIVER_ADVISORY_BINDING_DRY_RUN.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_EVIDENCE.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_FAILURE_REASONS.md",
+    "docs/DB_DRIVER_ADVISORY_BINDING_TIMESTAMP_POLICY.md",
     "docs/DB_DRIVER_ADVISORY_SOURCE_POLICY.md",
-    "docs/DB_DRIVER_ADVISORY_SOURCE_CATEGORIES.md",
     "docs/DB_DRIVER_ADVISORY_SOURCE_BINDING.md",
     "docs/DB_DRIVER_ADVISORY_SAFE_SUMMARY_RULES.md",
     "docs/RISK_REGISTER.md",
@@ -102,20 +109,20 @@
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-advisory-source-policy-v118-prep.md"
+    "docs/pr-db-driver-advisory-binding-dry-run-v118-prep.md"
   ],
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
-  "ciRunId": "27323160883",
-  "qualityGateRunId": "27323480197",
-  "qualityGateArtifactId": "7554670955",
+  "productCiStatus": "local_verification_before_pr",
+  "qualityGateStatus": "local_verification_before_pr",
+  "ciRunId": "not_applicable_before_pr_creation",
+  "qualityGateRunId": "not_applicable_before_pr_creation",
+  "qualityGateArtifactId": "not_applicable_before_pr_creation",
   "testSummary": {
-    "testFiles": 45,
-    "passed": 1240,
+    "testFiles": 46,
+    "passed": 1342,
     "skipped": 6
   },
-  "testFiles": 45,
-  "passed": 1197,
+  "testFiles": 46,
+  "passed": 1342,
   "skipped": 6,
   "prBodyPath": "docs/pr-db-driver-advisory-source-policy-v118-prep.md",
   "productVerificationCommands": [
@@ -125,7 +132,10 @@
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass"
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -172,7 +182,7 @@
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
-  "testsPassed": 1197,
+  "testsPassed": 1342,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "securityBoundaries": [
@@ -261,6 +271,21 @@
       "name": "node scripts/check-evidence-placeholders.mjs",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "headRefOid": "5794bb75213095e253faad45ad91e930e83a104d",
@@ -272,5 +297,5 @@
   "baseRefName": "main",
   "targetCommitSha": "5794bb75213095e253faad45ad91e930e83a104d",
   "baseCommitSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
-  "tests": "45 test files, 1240 passed, 6 skipped"
+  "tests": "46 test files, 1342 passed, 6 skipped"
 }

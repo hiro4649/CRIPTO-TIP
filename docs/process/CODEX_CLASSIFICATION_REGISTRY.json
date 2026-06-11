@@ -1419,6 +1419,78 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver advisory source policy evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-binding-dry-run.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory binding dry-run validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-binding-dry-run.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory binding dry-run and future-fixture tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_BINDING_DRY_RUN.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory binding dry-run docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_BINDING_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Future DB driver advisory binding evidence docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_BINDING_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory binding failure reason docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_BINDING_TIMESTAMP_POLICY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory binding timestamp policy docs."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-advisory-binding-dry-run-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence for DB driver advisory binding dry-run."
+    },
+    {
+      "pathPattern": ".codex/db-driver-advisory-binding-dry-run.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver advisory binding dry-run evidence."
     }
   ],
   "safeSummaryOnly": true

@@ -210,3 +210,15 @@ The current committed advisory state is `not_reviewed`; `knownBlockers` remains
 `null`, not an empty clean list. No driver is selected, no package or lockfile
 change is authorized, no real DB connection is added, and no runtime,
 production, legal, or YouTube policy readiness is claimed.
+
+## DB Driver Advisory Binding Dry-Run v1.1.8 Prep
+
+The advisory binding dry-run is not an advisory review and is not a production
+gate pass. It defines future source binding validation for target commit, PR
+number, branch, package name, exact package version, source category, timestamp,
+freshness, and safe-summary evidence.
+
+The current committed binding state is `not_reviewed`; `knownBlockers` remains
+`null`, not an empty clean list. No driver is selected, no package or lockfile
+change is authorized, no real DB connection is added, and no runtime,
+production, legal, or YouTube policy readiness is claimed.
