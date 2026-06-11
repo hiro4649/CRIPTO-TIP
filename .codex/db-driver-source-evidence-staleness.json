@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 58,
-  "targetBranch": "feat/db-driver-source-evidence-staleness-v118-prep",
+  "targetBranch": "feat/db-driver-source-evidence-safe-summary-v118-prep",
   "targetCommitSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "baseCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "stalenessPolicyStatus": "policy_ready",

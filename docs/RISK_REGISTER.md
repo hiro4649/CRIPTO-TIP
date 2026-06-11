@@ -287,3 +287,13 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future DB driver package version must match the dependency PR. | Backend owner | Future DB driver dependency PR | Reject package version mismatch and require exact semver binding in future source evidence. |
 | Medium | Future DB driver owner approval can expire or mismatch target. | Project owner | Future owner approval PR | Keep owner approval separate from AI review and bind approval to target commit and environment. |
 | Medium | Runtime and production DB readiness remain out of scope. | Backend owner | Future runtime DB integration PR | Do not claim runtime or production readiness until real DB integration, migration, rollback, and operations evidence exist. |
+
+## DB Driver Source Evidence Safe Summary Residual Risks
+
+| Severity | Risk | Owner | Next Review | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Safe-summary contract could be mistaken for advisory review. | Security owner | Future DB driver dependency PR | Keep committed source evidence `not_reviewed`; require future source review in the dependency PR. |
+| Medium | Future safe summaries can mislead if they are not source-bound. | Security owner | Future DB driver dependency PR | Bind target commit, PR, branch, package name, package version, source category, checked timestamp, and expiry timestamp. |
+| Medium | Future package version can differ from the dependency PR. | Backend owner | Future DB driver dependency PR | Reject package version mismatch before package or lockfile changes. |
+| Medium | Future owner approval can expire or mismatch target. | Project owner | Future owner approval PR | Revalidate target commit, environment, approval role, and expiry before final gate. |
+| Medium | Runtime and production readiness remain out of scope. | Release owner | Future runtime DB integration PR | Keep readiness claims blocked until real DB, migration, rollback, and operations evidence exist. |

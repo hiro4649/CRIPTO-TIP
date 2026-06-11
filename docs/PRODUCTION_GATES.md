@@ -228,3 +228,14 @@ DB driver source evidence staleness is a future dependency-review guardrail. It
 does not select a driver, approve a dependency, approve package or lockfile
 changes, authorize a real DB connection, or claim runtime or production
 readiness.
+
+## DB Driver Source Evidence Safe Summary
+
+The source evidence safe-summary contract is a future dependency-review
+guardrail. `contract_ready` is not source review approval, owner approval, final
+gate approval, dependency approval, runtime readiness, production readiness,
+legal compliance, or YouTube policy compliance.
+
+Future DB driver dependency work must provide a raw-payload-free safe summary
+bound to target commit, PR, branch, package name, package version, source
+category, checked timestamp, and expiry timestamp.
