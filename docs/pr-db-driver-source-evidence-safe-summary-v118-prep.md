@@ -17,11 +17,11 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: source evidence safe-summary validator exists; committed safeSummaryContractStatus is contract_ready; committed sourceEvidenceStatus remains not_reviewed; safeSummaryBindingStatus remains not_reviewed; rawPayloadStatus remains raw_payload_absent; driverChoiceStatus remains not_selected; selectedDriver remains null; candidate drivers remain exactly pg and postgres; candidate safe summaries remain not_reviewed; knownBlockersStatus remains not_reviewed; knownBlockers remains null; all permission flags remain false; future reviewed safe-summary fixture exists only in tests; no package or lockfile change is introduced.
+Done criteria: source evidence safe-summary validator exists; committed stalenessPolicyStatus is policy_ready; committed sourceEvidenceStatus remains not_reviewed; bindingDryRunStatus remains not_reviewed; sourcePolicyStatus remains not_reviewed; advisoryEnvelopeStatus remains not_reviewed; driverChoiceStatus remains not_selected; selectedDriver remains null; candidate drivers remain exactly pg and postgres; revalidationRequired remains true; knownBlockers remains null; all permission flags remain false; future fresh fixture exists only in tests; no package or lockfile change is introduced.
 
 ## Evidence Integrity
 
-Head SHA: 1111111111111111111111111111111111111111
+Head SHA: c9e19b852640ae28b3aa77190c1368873b1fb2d2
 
 Base SHA: 7e4d561ab0335ac8f143a367d8433ca6e6baba74
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27376594699
+CI run: 27379749943
 
-Quality-gate run: 27376463230
+Quality-gate run: 27379749965
 
-Quality-gate artifact: 7576381515
+Quality-gate artifact: 7577783685
 
 Tests: 48 test files, 1539 passed, 6 skipped
 
@@ -94,56 +94,6 @@ Review scope and verification:
 ## Test Coverage Evidence
 
 Current recorded test summary: 48 files, 1539 passed, 6 skipped.
-
-Changed area:
-
-- DB driver source evidence safe-summary schema.
-- Allowed count and status fields.
-- Forbidden raw fields and forbidden wording.
-- Current committed not-reviewed machine evidence.
-- Future reviewed safe-summary fixture isolation.
-
-Test command:
-
-- `corepack pnpm exec vitest run apps/api/src/db-driver-source-evidence-safe-summary.test.ts`
-
-What the test covers:
-
-- Default `contract_ready` and `not_reviewed` state.
-- Exact `pg` and `postgres` candidates.
-- Null selected driver.
-- `driverChoiceStatus: not_selected`.
-- Raw payload absence.
-- `knownBlockers: null`.
-- Permission flags false.
-- Recursive raw field rejection.
-- Private URL, DB connection string, wallet address, token-like, GHSA, CVE,
-  OSV raw, npm registry raw, dependency tree, and npm audit JSON rejection.
-- Clean, no vulnerabilities, approved, secure, policy compliant, runtime ready,
-  production ready, and dependency approved wording rejection.
-
-Edge cases:
-
-- `knownBlockers: []` is rejected in current committed evidence.
-- Future reviewed fixture may include counts and statuses only in tests.
-- Future reviewed fixture rejects raw payload and missing commit/package binding.
-
-## Best of N Evidence
-
-Candidate A: Allow raw audit/advisory snippets for future reviewer convenience.
-Rejected because raw payloads cause leakage, token bloat, and unsafe evidence.
-
-Candidate B: Define a strict safe-summary schema with allowed counts/statuses
-and forbidden raw fields. Adopted.
-
-Candidate C: Skip safe-summary contract and rely on source policy. Rejected
-because source policy alone does not prevent misleading summaries.
-
-## Review Independence
-
-- AI review is not human approval.
-- Future source evidence requires safe source review.
-- Current PR does not review or select a driver.
 
 ## Security Boundaries
 
