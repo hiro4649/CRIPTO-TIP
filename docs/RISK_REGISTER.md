@@ -256,6 +256,14 @@ flag updates, and context-aware lock timeout retry actions.
 | --- | --- | --- | --- | --- |
 | Medium | Freshness evidence could be mistaken for driver selection. | Storage owner | Future owner-approved dependency PR | Committed freshness evidence remains `not_ready`, `driverChoiceStatus: not_selected`, and `selectedDriver: null`. |
 | Medium | Candidate review placeholders may become stale before a future dependency PR. | Storage owner | Future advisory/license/package metadata refresh PR | Freshness evidence records expiry windows and `refreshRequired: true` until all review sources are refreshed. |
+
+## DB Driver Source-Summary Canonical Model v1.1.8 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Canonical evidence model could be mistaken for source evidence review. | Storage owner | Future DB driver source review PR | Committed evidence remains `not_reviewed`, `driverChoiceStatus: not_selected`, and `selectedDriver: null`. |
+| Medium | Previous-head committed evidence could be mistaken for merge-ready current-head evidence. | Quality owner | Same-head evidence refresh | Model requires PR body, required checks, quality-gate, and safe artifact evidence for the current head. |
+| Medium | PR body edits could create quality-gate churn. | Quality owner | Evidence automation hardening | Artifact loop stop rule treats a later same-head body-check pass as final report evidence. |
 | Medium | Future advisory or package metadata changes could invalidate review assumptions. | Security owner | Future dependency PR | Advisory review expires after 7 days; package metadata review expires after 14 days; package and lockfile evidence invalidate on package file changes. |
 | Medium | Future owner approval could expire or mismatch target commit. | Project owner | Future owner approval PR | Freshness evidence never infers owner approval and keeps approval status `not_approved`. |
 | Medium | Runtime and production readiness could be inferred from freshness docs. | Backend owner | Future runtime PR | Docs and machine evidence state that freshness is stale-evidence prevention only and does not claim runtime or production readiness. |

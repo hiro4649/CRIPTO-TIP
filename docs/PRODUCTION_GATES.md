@@ -211,6 +211,14 @@ The current committed advisory state is `not_reviewed`; `knownBlockers` remains
 change is authorized, no real DB connection is added, and no runtime,
 production, legal, or YouTube policy readiness is claimed.
 
+## DB Driver Source-Summary Canonical Model v1.1.8 Prep
+
+The canonical model is not a production gate pass. It only defines how previous-head committed evidence and current-head PR body/check/artifact evidence are reconciled.
+
+Production and runtime gates remain blocked until a later owner-approved PR selects a driver, introduces exactly one approved dependency, completes package and lockfile review, proves secret boundary safety, and separately validates real DB behavior.
+
+This PR performs none of those actions.
+
 ## DB Driver Advisory Binding Dry-Run v1.1.8 Prep
 
 The advisory binding dry-run is not an advisory review and is not a production
