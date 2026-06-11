@@ -21,4 +21,3 @@ not be reused as merge evidence for a later dependency PR.
 
 Raw output remains forbidden even when a future source is reviewed. Operators
 must record only safe summaries and bounded metadata.
-
