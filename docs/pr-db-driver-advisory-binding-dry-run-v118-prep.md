@@ -21,7 +21,7 @@ Done criteria: DB driver advisory binding dry-run validator exists; committed bi
 
 ## Evidence Integrity
 
-Head SHA: aca9e1ee5dede115c8bde9f484524a988ab8bb95
+Head SHA: 9c37fecd9d63219851dcf3d3d90b76f551c489f6
 
 Base SHA: 92c15bb1041ea716354a9bf4e4d78038583d9fc6
 
@@ -29,9 +29,9 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27327304130
+CI run: 27327689120
 
-Quality-gate run: 27327304064
+Quality-gate run: 27327689102
 
 Quality-gate artifact: 7500000000
 
@@ -91,9 +91,27 @@ Review scope and verification:
 - Risk summary: Main risk is mistaking binding dry-run for actual advisory review; committed evidence remains not-reviewed, no-driver, and no-package-change.
 - Verification oracle: Vitest binding dry-run coverage, typecheck, lint, evidence checks, quality self-protection, secret scan, and no-scraping scan.
 
+## Best of N Evidence
+
+Candidate count: 3.
+
+Selected candidate: Candidate B - binding dry-run with test-only future fixture and committed not_reviewed evidence.
+
+Reason selected: It proves future binding constraints without selecting or installing a driver.
+
+Rejected alternatives: Candidate A would create real advisory source binding now without a dependency PR, selected driver, or owner approval. Candidate C would skip binding dry-run and leave future advisory evidence vulnerable to target or package-version mismatch.
+
 ## Test Coverage Evidence
 
 Current recorded test summary: 46 files, 1342 passed, 6 skipped.
+
+Changed area: DB driver advisory binding dry-run validator, future source binding fixture, timestamp/freshness checks, package version binding, target commit/PR/branch binding, raw output rejection, docs, and .codex evidence.
+
+Test command: `corepack pnpm test` and `npm test`.
+
+What the test covers: default committed evidence remains not_reviewed, candidate bindings remain not_reviewed for pg and postgres, future reviewed binding fixture is accepted only through the future fixture validator, timestamp/target/PR/branch/package/source mismatches are rejected, and unsafe raw output values are rejected.
+
+Edge cases: future timestamps, expired timestamps, expiry before checked timestamp, stale source category, wrong target commit, wrong PR number, wrong branch, wrong package name, non-exact package version, unsafe safe-summary wording, secret-like labels, private URLs, wallet addresses, and token-like strings.
 
 ## Security Boundaries
 
