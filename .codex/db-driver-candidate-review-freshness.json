@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.1.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 54,
+  "targetBranch": "feat/db-driver-candidate-review-freshness-v118-prep",
+  "targetCommitSha": "3bf9de81e87a3187219846afa331b5d8a96ed474",
+  "baseCommitSha": "775119a5e5ed8fe9fadf6056075aa3b117f01118",
+  "freshnessStatus": "not_ready",
+  "reviewPackStatus": "not_ready",
+  "driverChoiceStatus": "not_selected",
+  "selectedDriver": null,
+  "candidateDrivers": [
+    "pg",
+    "postgres"
+  ],
+  "candidateFreshness": [
+    {
+      "driverName": "pg",
+      "packageName": "pg",
+      "candidateStatus": "candidate",
+      "lastReviewedAt": null,
+      "expiresAt": null,
+      "freshnessStatus": "not_ready",
+      "refreshRequired": true,
+      "refreshReasons": [
+        "license_review_missing",
+        "supply_chain_review_missing",
+        "security_advisory_review_missing",
+        "package_metadata_not_reviewed",
+        "version_policy_not_selected",
+        "package_diff_missing",
+        "lockfile_review_missing",
+        "secret_boundary_not_reviewed"
+      ],
+      "safeSummary": "pg freshness evidence is not ready. Review evidence must be refreshed before any future dependency review."
+    },
+    {
+      "driverName": "postgres",
+      "packageName": "postgres",
+      "candidateStatus": "candidate",
+      "lastReviewedAt": null,
+      "expiresAt": null,
+      "freshnessStatus": "not_ready",
+      "refreshRequired": true,
+      "refreshReasons": [
+        "license_review_missing",
+        "supply_chain_review_missing",
+        "security_advisory_review_missing",
+        "package_metadata_not_reviewed",
+        "version_policy_not_selected",
+        "package_diff_missing",
+        "lockfile_review_missing",
+        "secret_boundary_not_reviewed"
+      ],
+      "safeSummary": "postgres freshness evidence is not ready. Review evidence must be refreshed before any future dependency review."
+    }
+  ],
+  "licenseReviewFreshnessStatus": "not_reviewed",
+  "supplyChainReviewFreshnessStatus": "not_reviewed",
+  "securityAdvisoryFreshnessStatus": "not_reviewed",
+  "packageMetadataFreshnessStatus": "not_reviewed",
+  "versionPolicyFreshnessStatus": "not_selected",
+  "packageDiffFreshnessStatus": "missing",
+  "lockfileFreshnessStatus": "missing",
+  "secretBoundaryFreshnessStatus": "not_reviewed",
+  "ownerApprovalStatus": "not_approved",
+  "finalApprovalGateStatus": "blocked",
+  "dependencyPrTemplateStatus": "template_ready",
+  "refreshRequired": true,
+  "refreshReasons": [
+    "license_review_missing",
+    "supply_chain_review_missing",
+    "security_advisory_review_missing",
+    "package_metadata_not_reviewed",
+    "version_policy_not_selected",
+    "package_diff_missing",
+    "lockfile_review_missing",
+    "secret_boundary_not_reviewed"
+  ],
+  "expiryPolicy": {
+    "licenseReviewExpiresAfterDays": 30,
+    "supplyChainReviewExpiresAfterDays": 30,
+    "securityAdvisoryReviewExpiresAfterDays": 7,
+    "packageMetadataReviewExpiresAfterDays": 14,
+    "versionPolicyReviewExpiresAfterDays": 30,
+    "packageAndLockfileEvidenceInvalidatesOnPackageFileChange": true,
+    "ownerApprovalNeverInferred": true
+  },
+  "staleEvidencePolicy": {
+    "staleEvidenceCannotSelectDriver": true,
+    "staleEvidenceCannotApproveOwnerReview": true,
+    "staleEvidenceCannotAuthorizeDependency": true,
+    "rawLogsRemainForbidden": true,
+    "safeArtifactsAndMachineEvidenceOnly": true
+  },
+  "packageJsonChangeAllowed": false,
+  "pnpmLockChangeAllowed": false,
+  "dbDriverDependencyAllowed": false,
+  "realDbConnectionAllowed": false,
+  "migrationExecutionAllowed": false,
+  "liveDbIntegrationTestAllowed": false,
+  "providerSdkApplyAllowed": false,
+  "actualProductionDeploymentAllowed": false,
+  "runtimeReadinessClaimAllowed": false,
+  "productionReadinessClaimAllowed": false,
+  "legalComplianceClaimAllowed": false,
+  "youtubePolicyComplianceClaimAllowed": false,
+  "forbiddenScopeStatus": "pass",
+  "safeSummary": "DB driver candidate freshness evidence is not ready. Candidate package reviews must be refreshed before any future dependency review; no package, lockfile, runtime, production, legal, or YouTube policy action is authorized.",
+  "createdAt": "2026-06-11T00:00:00Z"
+}

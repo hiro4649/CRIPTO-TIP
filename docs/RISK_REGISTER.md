@@ -248,3 +248,13 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future review could skip license, supply-chain, advisory, version, package, lockfile, or secret checks. | Storage owner | Future dependency PR | Candidate pack blocks on explicit `not_reviewed`, `not_selected`, and `missing` statuses for every review dimension. |
 | Medium | Package or lockfile changes could be bundled with review-pack prep. | Storage owner | Future dependency PR | This PR does not edit `package.json` or `pnpm-lock.yaml`; package, lockfile, and dependency permission flags remain false. |
 | Medium | Unsafe operational details could leak through review evidence. | Security owner | Future secret-boundary PR | Validator rejects raw logs, raw provider output, DB connection strings, token-like values, wallet addresses, private URLs, and unsafe secret-looking keys. |
+
+## DB Driver Candidate Review Freshness v1.1.8 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Freshness evidence could be mistaken for driver selection. | Storage owner | Future owner-approved dependency PR | Committed freshness evidence remains `not_ready`, `driverChoiceStatus: not_selected`, and `selectedDriver: null`. |
+| Medium | Candidate review placeholders may become stale before a future dependency PR. | Storage owner | Future advisory/license/package metadata refresh PR | Freshness evidence records expiry windows and `refreshRequired: true` until all review sources are refreshed. |
+| Medium | Future advisory or package metadata changes could invalidate review assumptions. | Security owner | Future dependency PR | Advisory review expires after 7 days; package metadata review expires after 14 days; package and lockfile evidence invalidate on package file changes. |
+| Medium | Future owner approval could expire or mismatch target commit. | Project owner | Future owner approval PR | Freshness evidence never infers owner approval and keeps approval status `not_approved`. |
+| Medium | Runtime and production readiness could be inferred from freshness docs. | Backend owner | Future runtime PR | Docs and machine evidence state that freshness is stale-evidence prevention only and does not claim runtime or production readiness. |

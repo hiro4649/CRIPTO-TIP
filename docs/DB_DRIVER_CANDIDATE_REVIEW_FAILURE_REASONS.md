@@ -1,5 +1,23 @@
 # DB Driver Candidate Review Failure Reasons
 
+## Freshness Reasons
+
+- `candidate_review_not_ready`
+- `license_review_missing`
+- `supply_chain_review_missing`
+- `security_advisory_review_missing`
+- `package_metadata_not_reviewed`
+- `version_policy_not_selected`
+- `package_diff_missing`
+- `lockfile_review_missing`
+- `secret_boundary_not_reviewed`
+- `candidate_evidence_stale`
+- `candidate_review_expired`
+- `candidate_selection_wording_forbidden`
+
+These reasons block stale evidence reuse. They do not authorize a driver
+selection or dependency introduction.
+
 The current review pack is invalid if any of these conditions are present:
 
 - `selectedDriver` is not `null`.
@@ -17,4 +35,3 @@ The current review pack is invalid if any of these conditions are present:
   wallet addresses, private URLs, or DB connection strings.
 
 These failures are merge blockers for this review-pack PR.
-
