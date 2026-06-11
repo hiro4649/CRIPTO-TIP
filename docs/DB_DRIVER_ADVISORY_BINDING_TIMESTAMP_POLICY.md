@@ -13,3 +13,7 @@ Rules:
 
 Current committed evidence has null source timestamps because no advisory
 source has been reviewed in this PR.
+For future source evidence, the freshness window is category-specific. The
+current staleness policy sets 7-day windows for advisory summaries and audit
+summaries, 14 days for npm registry metadata summaries, and 30 days for
+maintainer release notes summaries.

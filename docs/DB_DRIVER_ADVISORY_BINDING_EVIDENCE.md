@@ -5,6 +5,13 @@ payloads are not evidence in this repository.
 
 Required future binding fields:
 
+## Staleness Requirement
+
+Future source review evidence must also pass staleness checks for target commit,
+base commit, PR number, branch, package name, package version, source category,
+checked timestamp, and expiry timestamp before it can be considered by a future
+owner-approved dependency PR.
+
 - source category from the allowed category set
 - source checked timestamp
 - source expiry timestamp

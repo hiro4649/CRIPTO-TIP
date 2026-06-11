@@ -429,3 +429,13 @@ not reviewed with no selected driver or dependency allowance.
 
 - `apps/api/src/db-driver-advisory-binding-dry-run.test.ts` covers default `not_reviewed` binding dry-run evidence, exact `pg`/`postgres` candidate bindings, null selected driver, `driverChoiceStatus: not_selected`, binding/timestamp/freshness/package/commit/PR/branch/safe-summary status defaults, `knownBlockersStatus: not_reviewed`, `knownBlockers: null`, `rawOutputPolicyStatus: raw_output_forbidden`, permission flag rejection, reviewed/pass/current evidence rejection, raw advisory/audit/OSV/npm registry/dependency/log output rejection, unsafe value rejection, future reviewed fixture isolation, timestamp freshness validation, target commit binding, PR number binding, branch binding, package name binding, exact semver version binding, and committed machine-readable evidence remaining not-reviewed.
 - Risk-to-test mapping: binding dry-run mistaken for approval is covered by pass/reviewed rejection tests; stale future source evidence is covered by timestamp, target commit, PR number, branch, package name, and package version mismatch tests; raw output leakage is covered by raw advisory, raw audit, raw OSV, raw npm registry, raw dependency tree, terminal output, raw log, private URL, DB connection string, wallet address, and token-like value rejection tests.
+## DB Driver Source Evidence Staleness
+
+- Test file: `apps/api/src/db-driver-source-evidence-staleness.test.ts`.
+- Coverage: default committed evidence remains `policy_ready` and
+  `not_reviewed`; candidates remain `not_reviewed`; expiry windows and
+  invalidation triggers are fixed; future fresh fixtures are accepted only in
+  tests; expired timestamps, future timestamps, target/base/PR/branch/package
+  mismatches, source category mismatches, raw outputs, private URLs, DB
+  connection strings, wallet addresses, token-like values, and unsafe
+  safe-summary claims are rejected.

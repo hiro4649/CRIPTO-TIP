@@ -14,6 +14,12 @@ Committed evidence must remain `not_reviewed`.
 
 The test-only future fixture proves the validator can require:
 
+## Source Evidence Staleness Link
+
+Source evidence staleness policy is tracked separately in
+`docs/DB_DRIVER_SOURCE_EVIDENCE_STALENESS.md`. That policy can make future
+source evidence stale, but it does not review or approve the current binding.
+
 - exact target commit binding
 - exact PR number binding
 - exact target branch binding

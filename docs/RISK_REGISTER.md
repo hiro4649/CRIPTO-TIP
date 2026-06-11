@@ -278,3 +278,12 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future source binding could become stale or mismatch the dependency PR. | Storage owner | Future dependency PR | Validator requires exact target commit, PR number, branch, package name, exact package version, source category, timestamps, and freshness. |
 | Medium | Raw advisory or registry output could be copied into evidence. | Security owner | Future advisory binding review PR | Validator rejects raw advisory, raw audit, raw OSV, raw npm registry, raw dependency tree, terminal output, private URLs, wallet addresses, and token-like values. |
 | Medium | Runtime and production readiness could be inferred from binding docs. | Backend owner | Future runtime PR | Docs and evidence state that the binding dry-run is validation-shape only and does not claim runtime, production, legal, or YouTube policy readiness. |
+## DB Driver Source Evidence Staleness Residual Risks
+
+| Severity | Risk | Owner | Next Review | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | DB driver source evidence staleness policy is not an advisory review. | Backend owner | Future DB driver dependency PR | Keep committed evidence `not_reviewed`; require future safe source review, exact target binding, and owner approval before driver selection. |
+| Medium | Future DB driver source evidence can become stale if not rebound. | Backend owner | Future DB driver dependency PR | Revalidate on target commit, base commit, PR number, branch, package name, package version, source category, and timestamp expiry changes. |
+| Medium | Future DB driver package version must match the dependency PR. | Backend owner | Future DB driver dependency PR | Reject package version mismatch and require exact semver binding in future source evidence. |
+| Medium | Future DB driver owner approval can expire or mismatch target. | Project owner | Future owner approval PR | Keep owner approval separate from AI review and bind approval to target commit and environment. |
+| Medium | Runtime and production DB readiness remain out of scope. | Backend owner | Future runtime DB integration PR | Do not claim runtime or production readiness until real DB integration, migration, rollback, and operations evidence exist. |
