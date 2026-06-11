@@ -2,6 +2,9 @@
 
 Prepare DB driver advisory source binding dry-run for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.
 
+This is v1.1.8 prep only. It does not roll out harness v1.1.8. Active harness
+evidence remains v1.1.7 unless a separate harness rollout PR updates it.
+
 PR profile: product_r3
 Task mode: feature
 
@@ -21,7 +24,7 @@ Done criteria: DB driver advisory binding dry-run validator exists; committed bi
 
 ## Evidence Integrity
 
-Head SHA: 9c37fecd9d63219851dcf3d3d90b76f551c489f6
+Head SHA: 2b06f91dfa0547c42be9addaf88fa0d357a900c9
 
 Base SHA: 92c15bb1041ea716354a9bf4e4d78038583d9fc6
 
@@ -29,13 +32,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27327689120
+CI run: 27328165083
 
-Quality-gate run: 27327689102
+Quality-gate run: 27328574284
 
-Quality-gate artifact: 7500000000
+Quality-gate artifact: 7556543374
 
-Tests: 46 test files, 1342 passed, 6 skipped
+Tests: 46 test files, 1358 passed, 6 skipped
 
 ## Testing and review
 
@@ -95,23 +98,39 @@ Review scope and verification:
 
 Candidate count: 3.
 
-Selected candidate: Candidate B - binding dry-run with test-only future fixture and committed not_reviewed evidence.
+Selected candidate: Candidate B - binding dry-run with test-only future fixture
+and committed not_reviewed evidence.
 
-Reason selected: It proves future binding constraints without selecting or installing a driver.
+Reason selected: It proves future binding constraints without selecting or
+installing a driver.
 
-Rejected alternatives: Candidate A would create real advisory source binding now without a dependency PR, selected driver, or owner approval. Candidate C would skip binding dry-run and leave future advisory evidence vulnerable to target or package-version mismatch.
+Rejected alternatives: Candidate A would create real advisory source binding
+now without a dependency PR, selected driver, or owner approval. Candidate C
+would skip binding dry-run and leave future advisory evidence vulnerable to
+target or package-version mismatch.
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 46 files, 1342 passed, 6 skipped.
+Current recorded test summary: 46 files, 1358 passed, 6 skipped.
 
-Changed area: DB driver advisory binding dry-run validator, future source binding fixture, timestamp/freshness checks, package version binding, target commit/PR/branch binding, raw output rejection, docs, and .codex evidence.
+Changed area: DB driver advisory binding dry-run validator, future source
+binding fixture, timestamp/freshness checks, package version binding, target
+commit/PR/branch binding, raw output rejection, docs, and .codex evidence.
 
 Test command: `corepack pnpm test` and `npm test`.
 
-What the test covers: default committed evidence remains not_reviewed, candidate bindings remain not_reviewed for pg and postgres, future reviewed binding fixture is accepted only through the future fixture validator, timestamp/target/PR/branch/package/source mismatches are rejected, and unsafe raw output values are rejected.
+What the test covers: default committed evidence remains not_reviewed,
+candidate bindings remain not_reviewed for pg and postgres, future reviewed
+binding fixture is accepted only through the future fixture validator,
+timestamp/target/PR/branch/package/source mismatches are rejected, unsafe raw
+output values are rejected, stale machine evidence is rejected, and misleading
+approval/readiness/no-blocker safeSummary wording is rejected.
 
-Edge cases: future timestamps, expired timestamps, expiry before checked timestamp, stale source category, wrong target commit, wrong PR number, wrong branch, wrong package name, non-exact package version, unsafe safe-summary wording, secret-like labels, private URLs, wallet addresses, and token-like strings.
+Edge cases: future timestamps, expired timestamps, expiry before checked
+timestamp, stale source category, wrong target commit, wrong PR number, wrong
+branch, wrong package name, non-exact package version, unsafe safe-summary
+wording, secret-like labels, private URLs, wallet addresses, token-like
+strings, stale head SHA, stale doc head SHA, and fake artifact ID.
 
 ## Security Boundaries
 

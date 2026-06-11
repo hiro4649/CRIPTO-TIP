@@ -475,7 +475,22 @@ function assertSafeSummaryDoesNotClaimReview(value: string) {
     /\bselected\b/i,
     /\bproduction\s+ready\b/i,
     /\blegally\s+safe\b/i,
-    /\bpolicy\s+compliant\b/i
+    /\bpolicy\s+compliant\b/i,
+    /\bapproved\s+binding\b/i,
+    /\bbinding\s+approved\b/i,
+    /\bsource\s+approved\b/i,
+    /\badvisory\s+approved\b/i,
+    /\bdependency\s+ready\b/i,
+    /\bdriver\s+ready\b/i,
+    /\bsafe\s+driver\b/i,
+    /\binstall\s+approved\b/i,
+    /\bclean\s+source\b/i,
+    /\bclean\s+advisory\b/i,
+    /\bno\s+advisory\b/i,
+    /\bno\s+blockers\b/i,
+    /\bno\s+known\s+blockers\b/i,
+    /\bproduction\s+safe\b/i,
+    /\bpolicy\s+safe\b/i
   ];
   for (const pattern of forbiddenSummaryPatterns) {
     if (pattern.test(value)) throw new Error("DB driver advisory binding dry-run safeSummary must not claim review pass, selection, approval, readiness, or compliance");

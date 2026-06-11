@@ -8,6 +8,10 @@ production readiness.
 Current committed evidence remains `not_reviewed`. The dry-run validator only
 defines the evidence shape and rejects unsafe or stale binding claims.
 
+Future binding fixture is non-operational test data. It is not advisory review
+approval, owner approval, DB driver selection, or dependency approval.
+Committed evidence must remain `not_reviewed`.
+
 The test-only future fixture proves the validator can require:
 
 - exact target commit binding

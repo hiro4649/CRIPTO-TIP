@@ -4,7 +4,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 57,
   "targetBranch": "feat/db-driver-advisory-binding-dry-run-v118-prep",
-  "targetCommitSha": "aca9e1ee5dede115c8bde9f484524a988ab8bb95",
+  "targetCommitSha": "2b06f91dfa0547c42be9addaf88fa0d357a900c9",
   "baseCommitSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
   "bindingDryRunStatus": "not_reviewed",
   "sourcePolicyStatus": "not_reviewed",
@@ -84,6 +84,11 @@
   "forbiddenScopeStatus": "pass",
   "safeSummary": "DB driver advisory binding dry run is not reviewed. It defines future binding validation only; no driver, dependency, package, lockfile, real DB, runtime, production, legal, or YouTube policy action is authorized.",
   "createdAt": "2026-06-11T00:00:00Z",
-  "headSha": "aca9e1ee5dede115c8bde9f484524a988ab8bb95",
-  "baseSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6"
+  "headSha": "2b06f91dfa0547c42be9addaf88fa0d357a900c9",
+  "baseSha": "92c15bb1041ea716354a9bf4e4d78038583d9fc6",
+  "ciRunId": "27328165083",
+  "qualityGateRunId": "27328574284",
+  "qualityGateArtifactId": "7556543374",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success"
 }

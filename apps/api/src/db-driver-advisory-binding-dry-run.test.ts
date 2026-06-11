@@ -11,8 +11,11 @@ import {
 
 const branchName = "feat/db-driver-advisory-binding-dry-run-v118-prep";
 const baseSha = "92c15bb1041ea716354a9bf4e4d78038583d9fc6";
-const targetSha = "92c15bb1041ea716354a9bf4e4d78038583d9fc6";
+const targetSha = "2b06f91dfa0547c42be9addaf88fa0d357a900c9";
 const futureTargetSha = "1111111111111111111111111111111111111111";
+const staleHeadSha = "aca9e1ee5dede115c8bde9f484524a988ab8bb95";
+const staleDocHeadSha = "9c37fecd9d63219851dcf3d3d90b76f551c489f6";
+const placeholderArtifactId = "7500000000";
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
@@ -267,10 +270,43 @@ describe("db driver advisory binding dry run", () => {
     expect(() => validateCurrentDbDriverAdvisoryBindingDryRunRecord(record({ [key]: "safe-looking" } as Partial<DbDriverAdvisoryBindingDryRunRecord>))).toThrow(/unsafe/);
   });
 
-  it.each(["clean", "no vulnerabilities", "safe to install", "approved", "pass", "recommended", "winner", "best choice", "selected"])(
+  it.each([
+    "clean",
+    "no vulnerabilities",
+    "safe to install",
+    "approved",
+    "pass",
+    "recommended",
+    "winner",
+    "best choice",
+    "selected",
+    "approved binding",
+    "binding approved",
+    "source approved",
+    "advisory approved",
+    "dependency ready",
+    "driver ready",
+    "safe driver",
+    "install approved",
+    "no blockers",
+    "no known blockers",
+    "production safe",
+    "policy safe"
+  ])(
     "rejects unsafe safeSummary claim: %s",
     (summary) => {
       expect(() => validateCurrentDbDriverAdvisoryBindingDryRunRecord(record({ safeSummary: summary }))).toThrow(/safeSummary/);
+    }
+  );
+
+  it.each(["clean source", "clean advisory", "no advisory"])(
+    "rejects unsafe candidate safeSummary claim: %s",
+    (summary) => {
+      expect(() =>
+        validateCurrentDbDriverAdvisoryBindingDryRunRecord(
+          record({ candidateBindings: [candidateBinding("pg", { safeSummary: summary }), candidateBinding("postgres")] })
+        )
+      ).toThrow(/safeSummary/);
     }
   );
 
@@ -304,6 +340,11 @@ describe("db driver advisory binding dry run", () => {
   it("keeps committed .codex binding dry-run evidence not reviewed", () => {
     const current = committedBindingFromDisk();
 
+    expect(current.prNumber).toBe(57);
+    expect(current.headSha).not.toBe(staleHeadSha);
+    expect(current.targetCommitSha).not.toBe(staleHeadSha);
+    expect(current.targetCommitSha).not.toBe(baseSha);
+    expect(current.baseCommitSha).toBe(baseSha);
     expect(current.bindingDryRunStatus).toBe("not_reviewed");
     expect(current.sourcePolicyStatus).toBe("not_reviewed");
     expect(current.advisoryEnvelopeStatus).toBe("not_reviewed");
@@ -327,5 +368,16 @@ describe("db driver advisory binding dry run", () => {
     expect(current.dbDriverDependencyAllowed).toBe(false);
     expect(current.realDbConnectionAllowed).toBe(false);
     expect(validateCurrentDbDriverAdvisoryBindingDryRunRecord(current)).toBe(current);
+  });
+
+  it("keeps committed .codex binding dry-run evidence free of stale heads and fake artifact values", () => {
+    const machineEvidence = readFileSync(".codex/db-driver-advisory-binding-dry-run.json", "utf8");
+    const evidencePack = readFileSync(".codex/evidence-pack.json", "utf8");
+    const prDoc = readFileSync("docs/pr-db-driver-advisory-binding-dry-run-v118-prep.md", "utf8");
+    const combined = [machineEvidence, evidencePack, prDoc].join("\n");
+
+    expect(combined).not.toContain(staleHeadSha);
+    expect(combined).not.toContain(staleDocHeadSha);
+    expect(combined).not.toContain(placeholderArtifactId);
   });
 });
