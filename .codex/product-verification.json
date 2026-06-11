@@ -1,10 +1,10 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
-  "harnessVersion": "1.1.7",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.8",
+  "harnessVersion": "1.1.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 58,
-  "headSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
-  "baseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "prNumber": 60,
+  "headSha": "1ec848b325b97ceec20cdcff290f7094985c2f02",
+  "baseSha": "7e4d561ab0335ac8f143a367d8433ca6e6baba74",
   "productVerificationStatus": "pass",
   "commands": [
     {
@@ -69,8 +69,8 @@
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "status": "pass",
-  "testFiles": 47,
-  "passed": 1482,
+  "testFiles": 48,
+  "passed": 1598,
   "skipped": 6,
   "testsPassed": 1482,
   "testsSkipped": 6,
@@ -87,9 +87,9 @@
     "node scripts/codex-secret-safety-scan.mjs: pass"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27334105174",
-  "title": "feat: add db driver source evidence staleness",
-  "goal": "Prepare DB driver source evidence staleness policy for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "ciRunId": "27380080422",
+  "title": "feat: add db driver source evidence safe summary",
+  "goal": "Prepare DB driver source evidence safe-summary contract for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -98,6 +98,7 @@
   "runtimeReadinessClaim": "no",
   "changedFiles": [
     ".codex/change-classification.json",
+    ".codex/db-driver-source-evidence-safe-summary.json",
     ".codex/db-driver-source-evidence-staleness.json",
     ".codex/evidence-pack.json",
     ".codex/product-verification.json",
@@ -107,31 +108,33 @@
     ".codex/task-contract.json",
     ".codex/test-coverage-evidence.json",
     ".codex/test-summary.json",
+    "apps/api/src/db-driver-source-evidence-safe-summary.ts",
+    "apps/api/src/db-driver-source-evidence-safe-summary.test.ts",
     "apps/api/src/db-driver-source-evidence-staleness.ts",
     "apps/api/src/db-driver-source-evidence-staleness.test.ts",
+    "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY.md",
+    "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_SCHEMA.md",
+    "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_FORBIDDEN_FIELDS.md",
+    "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_FAILURE_REASONS.md",
     "docs/DB_DRIVER_SOURCE_EVIDENCE_STALENESS.md",
     "docs/DB_DRIVER_SOURCE_EVIDENCE_REVALIDATION.md",
     "docs/DB_DRIVER_SOURCE_EVIDENCE_EXPIRY_WINDOWS.md",
     "docs/DB_DRIVER_SOURCE_EVIDENCE_INVALIDATION_TRIGGERS.md",
-    "docs/DB_DRIVER_ADVISORY_BINDING_DRY_RUN.md",
-    "docs/DB_DRIVER_ADVISORY_BINDING_EVIDENCE.md",
-    "docs/DB_DRIVER_ADVISORY_BINDING_FAILURE_REASONS.md",
-    "docs/DB_DRIVER_ADVISORY_BINDING_TIMESTAMP_POLICY.md",
     "docs/RISK_REGISTER.md",
     "docs/PRODUCTION_GATES.md",
     "docs/QUALITY_GATE_EVIDENCE.md",
     "docs/TEST_COVERAGE_EVIDENCE.md",
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
-    "docs/pr-db-driver-source-evidence-staleness-v118-prep.md"
+    "docs/pr-db-driver-source-evidence-safe-summary-v118-prep.md"
   ],
   "allowedScope": [
-    "db_driver_source_evidence_staleness",
-    "source_expiry_windows",
-    "source_revalidation_triggers",
-    "target_commit_invalidation",
-    "package_version_invalidation",
-    "stale_evidence_rejection",
-    "future_fresh_fixture",
+    "db_driver_source_evidence_safe_summary",
+    "safe_summary_schema",
+    "allowed_count_fields",
+    "allowed_status_fields",
+    "forbidden_raw_fields",
+    "forbidden_wording",
+    "future_reviewed_safe_summary_fixture",
     "tests",
     "docs",
     ".codex evidence"
@@ -176,16 +179,18 @@
     "DB driver selected in current PR"
   ],
   "qualityGateStatus": "success",
-  "qualityGateRunId": "27334494017",
-  "qualityGateArtifactId": "7558965059",
+  "qualityGateRunId": "27380431086",
+  "qualityGateArtifactId": "7578046819",
   "testSummary": {
-    "testFiles": 47,
-    "passed": 1482,
-    "skipped": 6
+    "testFiles": 48,
+    "passed": 1598,
+    "skipped": 6,
+    "files": 48,
+    "totalFiles": 48
   },
-  "prBodyPath": "docs/pr-db-driver-source-evidence-staleness-v118-prep.md",
+  "prBodyPath": "docs/pr-db-driver-source-evidence-safe-summary-v118-prep.md",
   "doneCriteria": [
-    "source evidence staleness validator exists",
+    "source evidence safe-summary validator exists",
     "committed stalenessPolicyStatus is policy_ready",
     "committed sourceEvidenceStatus remains not_reviewed",
     "bindingDryRunStatus remains not_reviewed",
@@ -208,7 +213,7 @@
     "apps/api/src/db-driver-source-evidence-staleness.ts",
     ".codex/db-driver-source-evidence-staleness.json",
     "docs/DB_DRIVER_SOURCE_EVIDENCE_STALENESS.md",
-    "docs/pr-db-driver-source-evidence-staleness-v118-prep.md",
+    "docs/pr-db-driver-source-evidence-safe-summary-v118-prep.md",
     "corepack pnpm lint",
     "corepack pnpm typecheck",
     "corepack pnpm test",
@@ -277,7 +282,7 @@
     "selectedCandidate": "Candidate B - create staleness and revalidation policy while keeping committed evidence not_reviewed.",
     "reasonSelected": "It prevents future stale source evidence from supporting driver selection without selecting or installing a driver now.",
     "rejectedAlternatives": [
-      "Candidate A treats current binding dry-run as enough for dependency selection, but source evidence can become stale and no owner approval exists.",
+      "Candidate A allows raw audit/advisory snippets for reviewer convenience, but raw payloads cause leakage, token bloat, and unsafe evidence.",
       "Candidate C skips staleness and relies on manual checks, leaving target commit and package version mismatch risk."
     ]
   },
@@ -300,15 +305,15 @@
   "baseRefOid": "0ed3fbf8814204649c98e8360907db535a29a9ba",
   "currentHeadSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
   "currentBaseSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
-  "branch": "feat/db-driver-source-evidence-staleness-v118-prep",
-  "headRefName": "feat/db-driver-source-evidence-staleness-v118-prep",
+  "branch": "feat/db-driver-source-evidence-safe-summary-v118-prep",
+  "headRefName": "feat/db-driver-source-evidence-safe-summary-v118-prep",
   "baseRefName": "main",
-  "targetCommitSha": "5bf851ff11ea88c571b0580c50169660a4d8e9da",
-  "baseCommitSha": "0ed3fbf8814204649c98e8360907db535a29a9ba",
+  "targetCommitSha": "1ec848b325b97ceec20cdcff290f7094985c2f02",
+  "baseCommitSha": "7e4d561ab0335ac8f143a367d8433ca6e6baba74",
   "tests": "47 test files, 1482 passed, 6 skipped",
   "testing": {
-    "testFiles": 47,
-    "passed": 1482,
+    "testFiles": 48,
+    "passed": 1598,
     "skipped": 6,
     "commands": [
       "corepack pnpm lint",
@@ -321,6 +326,8 @@
       "node scripts/validate-evidence-freshness.mjs",
       "node scripts/check-quality-gate-self-protection.mjs",
       "node scripts/codex-secret-safety-scan.mjs"
-    ]
+    ],
+    "files": 48,
+    "totalFiles": 48
   }
 }

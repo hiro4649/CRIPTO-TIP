@@ -29,3 +29,7 @@ Stale or missing source evidence cannot support driver selection. Future DB
 driver dependency work must bind fresh safe summaries to the exact PR number,
 target branch, target commit, base commit, package name, package version, source
 category, checked timestamp, and expiry timestamp.
+
+The safe-summary contract is a companion guardrail. It limits future source
+evidence to allowed summary, count, and status fields, but it is still not
+review approval and does not make stale evidence fresh.

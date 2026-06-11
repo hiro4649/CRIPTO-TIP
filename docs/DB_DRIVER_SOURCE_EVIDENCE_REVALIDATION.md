@@ -31,3 +31,9 @@ connection strings, wallet addresses, and token-like values are rejected.
 The future fresh fixture is non-operational test data. It is not advisory
 review approval, owner approval, DB driver selection, or dependency approval.
 Fresh source evidence must be regenerated in the actual dependency PR.
+
+Future reviewed safe summaries must be regenerated with the same target commit,
+PR number, branch, package name, package version, source category, checked
+timestamp, and expiry timestamp. Raw audit, advisory, OSV, registry, dependency
+tree, stdout, stderr, and stack trace material must remain outside committed
+evidence.

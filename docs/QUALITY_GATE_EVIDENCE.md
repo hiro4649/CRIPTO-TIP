@@ -454,3 +454,16 @@ quality-gate weakening is introduced.
   real DB connection, no migration execution, no provider SDK apply, no
   production apply, and no runtime/production/legal/YouTube policy readiness
   claim.
+
+## DB Driver Source Evidence Safe Summary
+
+- Contract evidence: `.codex/db-driver-source-evidence-safe-summary.json`.
+- Validator: `apps/api/src/db-driver-source-evidence-safe-summary.ts`.
+- Tests: `apps/api/src/db-driver-source-evidence-safe-summary.test.ts`.
+- Current committed evidence remains `contract_ready` plus `not_reviewed`, with
+  `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers
+  `[pg, postgres]`, raw payload status absent, `knownBlockers: null`, and all
+  package/dependency/DB/runtime/production permission flags false.
+- Safe-summary evidence rejects raw advisory, audit, OSV, npm registry,
+  dependency tree, terminal output, private URL, DB connection string, wallet
+  address, token-like values, and clean/approved/secure/readiness wording.

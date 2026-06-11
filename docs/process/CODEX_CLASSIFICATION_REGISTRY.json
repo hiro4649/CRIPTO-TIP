@@ -1563,6 +1563,78 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver source evidence staleness evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-source-evidence-safe-summary.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary validator only; no dependency or runtime DB behavior."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-source-evidence-safe-summary.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary contract tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_SCHEMA.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary schema docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_FORBIDDEN_FIELDS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary forbidden fields docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_SOURCE_EVIDENCE_SAFE_SUMMARY_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver source evidence safe-summary failure reason docs."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-source-evidence-safe-summary-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence for DB driver source evidence safe-summary."
+    },
+    {
+      "pathPattern": ".codex/db-driver-source-evidence-safe-summary.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver source evidence safe-summary evidence."
     }
   ],
   "safeSummaryOnly": true

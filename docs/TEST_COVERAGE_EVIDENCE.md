@@ -439,3 +439,18 @@ not reviewed with no selected driver or dependency allowance.
   mismatches, source category mismatches, raw outputs, private URLs, DB
   connection strings, wallet addresses, token-like values, and unsafe
   safe-summary claims are rejected.
+
+## DB Driver Source Evidence Safe Summary
+
+- Test file: `apps/api/src/db-driver-source-evidence-safe-summary.test.ts`.
+- Changed area: safe-summary schema, allowed count fields, allowed status
+  fields, forbidden raw fields, forbidden wording, current committed evidence,
+  and future reviewed safe-summary fixture behavior.
+- Test command: `corepack pnpm test -- apps/api/src/db-driver-source-evidence-safe-summary.test.ts`.
+- What the test covers: no selected driver, no dependency permission, no package
+  or lockfile permission, no real DB permission, no raw payload fields, no raw
+  payload-like values, no clean/no-vulnerabilities/approved/secure wording, and
+  future reviewed fixture constraints.
+- Edge cases: `knownBlockers: []` rejected in current evidence, raw fields
+  rejected recursively, and future fixture must bind target commit and package
+  version.
