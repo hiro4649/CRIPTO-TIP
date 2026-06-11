@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.7",
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
+  "prNumber": 56,
+  "headSha": "89c42547329de00c96663ee6deaa8c0255898d1d",
   "baseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
   "productVerificationStatus": "pass",
   "commands": [
@@ -272,5 +272,12 @@
     "currentPrSelectsDriver": false,
     "statement": "AI review is not human approval. Future advisory source review requires safe source evidence. Current PR does not review or select a driver."
   },
-  "schemaVersion": "1.0.0"
+  "schemaVersion": "1.0.0",
+  "headRefOid": "89c42547329de00c96663ee6deaa8c0255898d1d",
+  "baseRefOid": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
+  "currentHeadSha": "89c42547329de00c96663ee6deaa8c0255898d1d",
+  "currentBaseSha": "0dbf5d2a86294d67d7c7d5e1ae198918f157dc24",
+  "branch": "feat/db-driver-advisory-source-policy-v118-prep",
+  "headRefName": "feat/db-driver-advisory-source-policy-v118-prep",
+  "baseRefName": "main"
 }

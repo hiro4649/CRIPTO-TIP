@@ -21,7 +21,7 @@ Done criteria: DB driver advisory source policy validator exists; committed sour
 
 ## Evidence Integrity
 
-Head SHA: 0dbf5d2a86294d67d7c7d5e1ae198918f157dc24
+Head SHA: 89c42547329de00c96663ee6deaa8c0255898d1d
 
 Base SHA: 0dbf5d2a86294d67d7c7d5e1ae198918f157dc24
 
@@ -120,36 +120,21 @@ Current recorded test summary: 45 files, 1197 passed, 6 skipped.
 
 ## Review Independence
 
-AI review is not human approval.
-
-Future advisory source review requires safe source evidence.
-
-Current PR does not review or select a driver.
+- Review role: implementation agent plus safety audit pass.
+- Independent reviewer status: pending human review after PR creation.
+- AI-only approval: not claimed.
+- Owner approval: not granted.
 
 ## Best of N Evidence
 
-Candidate A: run advisory checks now and mark pg/postgres clean. Rejected because raw/source review is not in scope and no owner-approved dependency PR exists.
-
-Candidate B: define advisory source policy and source binding rules while keeping committed status not_reviewed. Adopted.
-
-Candidate C: skip source policy and rely on freeform future docs. Rejected because future evidence would be inconsistent and raw-output prone.
+- Local candidate implementation checked against policy, tests, docs, machine-readable evidence, and forbidden-scope scans.
+- Current selected approach keeps this PR pre-dependency and source-policy-only.
+- Rejected alternatives: adding a real DB driver dependency, using raw advisory output, or claiming source review completion in this PR.
 
 ## Advisory Source Policy Evidence
 
-Committed source policy status: not_reviewed.
-
-Allowed source categories: npm_registry_metadata, github_advisory_summary, osv_summary, npm_audit_safe_summary, maintainer_release_notes_summary.
-
-Source binding status: not_reviewed.
-
-Source timestamp status: not_reviewed.
-
-Source freshness status: not_reviewed.
-
-Raw output policy: raw_output_forbidden.
-
-Known blockers status: not_reviewed.
-
-Known blockers value: null.
-
-This is v1.1.8 prep only. It does not roll out harness v1.1.8. Active harness evidence remains v1.1.7 unless a separate harness rollout PR updates it.
+- Advisory source policy status: `not_reviewed`.
+- Allowed source categories: `npm_registry_metadata`, `github_advisory_summary`, `osv_summary`, `npm_audit_safe_summary`, `maintainer_release_notes_summary`.
+- Raw output categories remain forbidden, including GitHub raw logs, raw audit JSON, raw advisory responses, terminal stdout/stderr, raw dependency trees, provider raw responses, private URLs, and DB connection strings.
+- Driver choice status: `not_selected`.
+- Current committed evidence blocks selected driver, reviewed/fresh/pass advisory claims, knownBlockers clean proof, package permission, lockfile permission, real DB permission, migration permission, live DB test permission, provider SDK permission, production deployment permission, and runtime readiness permission.
