@@ -258,3 +258,13 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Future advisory or package metadata changes could invalidate review assumptions. | Security owner | Future dependency PR | Advisory review expires after 7 days; package metadata review expires after 14 days; package and lockfile evidence invalidate on package file changes. |
 | Medium | Future owner approval could expire or mismatch target commit. | Project owner | Future owner approval PR | Freshness evidence never infers owner approval and keeps approval status `not_approved`. |
 | Medium | Runtime and production readiness could be inferred from freshness docs. | Backend owner | Future runtime PR | Docs and machine evidence state that freshness is stale-evidence prevention only and does not claim runtime or production readiness. |
+
+## DB Driver Advisory Review Envelope v1.1.8 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Advisory envelope could be mistaken for advisory review completion. | Security owner | Future advisory review PR | Committed envelope evidence remains `not_reviewed` and does not claim CVE, package audit, or security advisory pass. |
+| Medium | Empty known blockers could be treated as proof of no blockers. | Security owner | Future advisory review PR | Current committed evidence requires `knownBlockersStatus: not_reviewed` and `knownBlockers: null`; empty arrays are future reviewed evidence only. |
+| Medium | Raw advisory or audit output could leak unsafe data. | Security owner | Future advisory review PR | Validator rejects raw advisory output, raw audit output, raw dependency tree, raw terminal output, raw logs, private URLs, DB connection strings, wallet addresses, and token-like values. |
+| Medium | Future dependency introduction still requires owner approval. | Project owner | Future dependency PR | Driver choice remains `not_selected`, selected driver remains null, owner approval remains `not_approved`, and final gate remains `blocked`. |
+| Medium | Runtime and production readiness could be inferred from advisory docs. | Backend owner | Future runtime PR | Docs and evidence state that the envelope is review-shape only and does not claim runtime, production, legal, or YouTube policy readiness. |

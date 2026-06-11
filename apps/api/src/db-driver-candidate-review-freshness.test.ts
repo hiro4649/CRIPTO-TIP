@@ -117,26 +117,23 @@ describe("db driver candidate review freshness", () => {
     ).toBe(current);
   });
 
-  it("keeps current PR evidence pack bound to freshness work", () => {
-    const evidencePack = evidencePackFromDisk();
+  it("keeps committed freshness evidence bound to PR 54 freshness work", () => {
+    const current = committedFreshnessFromDisk();
 
-    expect(evidencePack.prNumber).toBe(54);
-    expect(evidencePack.headSha).toBe(reviewTargetSha);
-    expect(evidencePack.baseSha).toBe(baseSha);
-    expect(evidencePack.headSha).not.toBe(evidencePack.baseSha);
-    expect(evidencePack.headSha).not.toBe(staleTargetSha);
-    expect(evidencePack.title).toBe("feat: add db driver candidate review freshness");
+    expect(current.prNumber).toBe(54);
+    expect(current.targetCommitSha).toBe(reviewTargetSha);
+    expect(current.baseCommitSha).toBe(baseSha);
+    expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
+    expect(current.targetCommitSha).not.toBe(staleTargetSha);
+    expect(current.targetBranch).toBe(branchName);
   });
 
-  it("rejects stale targetCommitSha and stale evidence-pack headSha", () => {
+  it("rejects stale targetCommitSha in committed freshness evidence", () => {
     const current = committedFreshnessFromDisk();
-    const evidencePack = evidencePackFromDisk();
 
     expect(current.targetCommitSha).toBe(reviewTargetSha);
     expect(current.targetCommitSha).not.toBe(staleTargetSha);
     expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
-    expect(evidencePack.headSha).toBe(reviewTargetSha);
-    expect(evidencePack.headSha).not.toBe(staleTargetSha);
   });
 
   it("matches the candidate review pack without selecting a driver", () => {

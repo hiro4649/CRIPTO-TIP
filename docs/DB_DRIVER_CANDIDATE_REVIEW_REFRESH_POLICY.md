@@ -39,3 +39,7 @@ The current evidence keeps `refreshRequired: true` and records these reasons:
 
 These reasons are blockers. They are not a selection checklist and do not grant
 permission to install a DB driver.
+
+## Advisory Envelope Refresh Boundary
+
+Advisory envelope evidence with CVE, security advisory, package audit, or known blockers status `not_reviewed` remains missing review evidence. It must be refreshed in a future safe-summary advisory review before dependency work can proceed.
