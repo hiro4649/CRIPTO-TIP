@@ -20,6 +20,10 @@ The envelope contains:
 Current committed values remain `not_reviewed`, `not_ready`, or
 `safe_summary_only`. They do not authorize dependency installation.
 
+Candidate advisory review statuses must remain `not_reviewed` in this PR.
+`lastReviewedAt` and `expiresAt` must remain `null` in current evidence.
+Future reviewed timestamps require safe-source evidence and a separate PR.
+
 ## Safe Summary Boundary
 
 Safe summaries may say that review is missing, pending, blocked, expired, or

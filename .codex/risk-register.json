@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 55,
-  "headSha": "bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2",
+  "headSha": "f8b858e0a4cec311d75e89d74cd6830fd0486be6",
   "risks": [
     {
       "id": "db-driver-owner-approval-1",
@@ -197,18 +197,18 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "not_applicable_before_current_head_ci_success",
-  "qualityGateStatus": "not_applicable_before_current_head_success",
-  "ciRunId": "not_applicable_before_current_head_ci_success",
-  "qualityGateRunId": "not_applicable_before_current_head_success",
-  "qualityGateArtifactId": "not_applicable_before_current_head_success",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27319936009",
+  "qualityGateRunId": "27320145751",
+  "qualityGateArtifactId": "7553503250",
   "testSummary": {
     "testFiles": 44,
-    "passed": 1078,
+    "passed": 1121,
     "skipped": 6
   },
   "testFiles": 44,
-  "passed": 1078,
+  "passed": 1121,
   "skipped": 6,
   "verificationSurface": [
     "apps/api/src/db-driver-candidate-review-freshness.test.ts",

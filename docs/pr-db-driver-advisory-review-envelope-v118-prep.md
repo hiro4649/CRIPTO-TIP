@@ -21,21 +21,21 @@ Done criteria: DB driver advisory review envelope exists; committed advisoryEnve
 
 ## Evidence Integrity
 
-Head SHA: bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2
+Head SHA: f8b858e0a4cec311d75e89d74cd6830fd0486be6
 
 Base SHA: 4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a
 
-Product CI: not_applicable_before_current_head_ci_success
+Product CI: success
 
-Quality-gate: not_applicable_before_current_head_success
+Quality-gate: success
 
-CI run: not_applicable_before_current_head_ci_success
+CI run: 27319936009
 
-Quality-gate run: not_applicable_before_current_head_success
+Quality-gate run: 27320145751
 
-Quality-gate artifact: not_applicable_before_current_head_success
+Quality-gate artifact: 7553503250
 
-Tests: 44 test files, 1078 passed, 6 skipped
+Tests: 44 test files, 1121 passed, 6 skipped
 
 ## Testing and review
 
@@ -90,7 +90,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 44 files, 1078 passed, 6 skipped.
+Current recorded test summary: 44 files, 1121 passed, 6 skipped.
 
 ## Security Boundaries
 
@@ -148,12 +148,14 @@ Raw output policy: safe_summary_only.
 
 No advisory reviewed evidence is committed in this PR.
 
+This is v1.1.8 prep only. It does not roll out harness v1.1.8. Active harness evidence remains v1.1.7 unless a separate harness rollout PR updates it.
+
 Test Coverage Evidence details:
 
 Changed area: DB driver advisory review envelope validator, committed advisory envelope evidence, candidate review freshness test compatibility, and advisory review docs.
 
 Test command: `corepack pnpm vitest run apps/api/src/db-driver-advisory-review-envelope.test.ts apps/api/src/db-driver-candidate-review-freshness.test.ts`; `corepack pnpm test`; `npm test`.
 
-What the test covers: default not_reviewed advisory state, candidate advisory review shape, driver not_selected state, selected driver rejection, permission flag rejection, future reviewed fixture isolation, raw output rejection, unsafe value rejection, and committed evidence validation.
+What the test covers: default not_reviewed advisory state, candidate advisory review shape, driver not_selected state, selected driver rejection, permission flag rejection, future reviewed fixture isolation, raw output rejection, unsafe value rejection, committed evidence validation, knownBlockers null semantics, stale evidence rejection, and safe-summary claim rejection.
 
-Failure paths: current evidence rejects reviewed/pass advisory state, selected driver state, empty known-blockers clean result claims, unsafe raw advisory output, raw audit output, dependency tree output, terminal output, private URLs, DB connection strings, wallet addresses, and token-like values.
+Failure paths: current evidence rejects reviewed/pass advisory state, selected driver state, empty known-blockers clean result claims, unsafe raw advisory output, raw audit output, dependency tree output, terminal output, private URLs, DB connection strings, wallet addresses, token-like values, stale head evidence, and driver-selection wording.

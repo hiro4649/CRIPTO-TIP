@@ -12,6 +12,7 @@ import {
 const branchName = "feat/db-driver-advisory-review-envelope-v118-prep";
 const baseSha = "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a";
 const targetSha = "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a";
+const staleEvidenceSha = ["bd2fd3a0ac8ccdfb65b512", "0131424ba291dc17f2"].join("");
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
@@ -43,6 +44,19 @@ function candidateAdvisory(driverName: "pg" | "postgres", patch: Partial<DbDrive
 
 function committedEnvelopeFromDisk() {
   return JSON.parse(readFileSync(".codex/db-driver-advisory-review-envelope.json", "utf8")) as DbDriverAdvisoryReviewEnvelopeRecord;
+}
+
+function evidencePackFromDisk() {
+  return JSON.parse(readFileSync(".codex/evidence-pack.json", "utf8")) as {
+    prNumber: number;
+    headSha: string;
+    baseSha: string;
+    productCiStatus: string;
+    qualityGateStatus: string;
+    ciRunId: string;
+    qualityGateRunId: string;
+    qualityGateArtifactId: string;
+  };
 }
 
 describe("db driver advisory review envelope", () => {
@@ -107,6 +121,7 @@ describe("db driver advisory review envelope", () => {
     ["package audit pass", { packageAuditReviewStatus: "pass" }],
     ["known blockers empty array", { knownBlockers: [] }],
     ["known blockers reviewed", { knownBlockersStatus: "reviewed" }],
+    ["known blockers pass", { knownBlockersStatus: "pass" }],
     ["advisory source reviewed", { advisorySourcePolicyStatus: "reviewed" }],
     ["freshness fresh", { freshnessStatus: "fresh" }],
     ["owner approved", { ownerApprovalStatus: "approved" }],
@@ -133,6 +148,7 @@ describe("db driver advisory review envelope", () => {
     ["candidate package audit pass", { packageAuditReviewStatus: "pass" }],
     ["candidate known blockers empty array", { knownBlockers: [] }],
     ["candidate known blockers reviewed", { knownBlockersStatus: "reviewed" }],
+    ["candidate raw output allowed", { rawOutputPolicyStatus: "raw_allowed" }],
     ["candidate lastReviewedAt", { lastReviewedAt: "2026-06-11T00:00:00Z" }],
     ["candidate expiresAt", { expiresAt: "2026-06-18T00:00:00Z" }],
     ["candidate refreshRequired false", { refreshRequired: false }]
@@ -151,9 +167,17 @@ describe("db driver advisory review envelope", () => {
     ["token-like value", "ghp_exampletoken"],
     ["bearer token", ["Bearer", "token"].join(" ")],
     ["raw npm audit JSON", ["npm audit --", "json"].join("")],
+    ["audit report version field", "auditReportVersion"],
+    ["vulnerabilities raw field", "vulnerabilities"],
     ["raw GitHub advisory response", "GitHub advisory API response"],
+    ["GitHub Advisory Database raw", "GitHub Advisory Database raw"],
+    ["GHSA advisory id", "GHSA-xxxx-yyyy-zzzz"],
+    ["CVE id", "CVE-2026-1234"],
     ["raw dependency tree", "dependency tree"],
+    ["raw dependency tree exact", "raw dependency tree"],
     ["raw terminal output", "stdout stderr"],
+    ["logs url field", "logs_url"],
+    ["jobs url field", "jobs_url"],
     ["raw logs", "raw logs"],
     ["stack trace", "stack_trace"],
     ["file contents", "file_contents"]
@@ -161,12 +185,67 @@ describe("db driver advisory review envelope", () => {
     expect(() => validateCurrentDbDriverAdvisoryReviewEnvelopeRecord(record({ safeSummary: unsafeValue }))).toThrow(/unsafe|safeSummary/);
   });
 
-  it.each(["no blockers", "no CVEs", "audit clean", "pass", "selected", "approved", "recommended", "production ready"])(
+  it.each([
+    "no blockers",
+    "no CVEs",
+    "no vulnerabilities",
+    "audit clean",
+    "security approved",
+    "safe to install",
+    "dependency approved",
+    "best choice",
+    "winner",
+    "preferred",
+    "pass",
+    "selected",
+    "approved",
+    "recommended",
+    "production ready",
+    "policy compliant",
+    "legally safe"
+  ])(
     "rejects summary claim: %s",
     (summary) => {
       expect(() => validateCurrentDbDriverAdvisoryReviewEnvelopeRecord(record({ safeSummary: summary }))).toThrow(/safeSummary/);
     }
   );
+
+  it.each([
+    "no vulnerabilities",
+    "audit clean",
+    "security approved",
+    "safe to install",
+    "dependency approved",
+    "recommended",
+    "winner"
+  ])("rejects candidate safeSummary claim: %s", (summary) => {
+    expect(() =>
+      validateCurrentDbDriverAdvisoryReviewEnvelopeRecord(
+        record({ candidateAdvisoryReviews: [candidateAdvisory("pg", { safeSummary: summary }), candidateAdvisory("postgres")] })
+      )
+    ).toThrow(/safeSummary/);
+  });
+
+  it.each([
+    "rawAuditJson",
+    "rawAuditOutput",
+    "rawAdvisoryJson",
+    "rawAdvisoryResponse",
+    "rawDependencyTree",
+    "rawTerminalOutput",
+    "stdout",
+    "stderr",
+    "stackTrace",
+    "logsUrl",
+    "jobsUrl",
+    "advisoryApiResponse",
+    "npmAuditJson",
+    "githubAdvisoryResponse"
+  ])("rejects unsafe raw advisory key: %s", (key) => {
+    expect(() => validateCurrentDbDriverAdvisoryReviewEnvelopeRecord(record({ [key]: "safe-looking" } as Partial<DbDriverAdvisoryReviewEnvelopeRecord>))).toThrow(
+      /unsafe/
+    );
+  });
 
   it("accepts future reviewed fixture only through the future fixture validator", () => {
     const fixture = record({
@@ -222,6 +301,40 @@ describe("db driver advisory review envelope", () => {
     expect(current.dbDriverDependencyAllowed).toBe(false);
     expect(current.realDbConnectionAllowed).toBe(false);
     expect(validateCurrentDbDriverAdvisoryReviewEnvelopeRecord(current)).toBe(current);
+  });
+
+  it("rejects stale advisory envelope target commit from prior PR head", () => {
+    expect(() =>
+      validateCommittedDbDriverAdvisoryReviewEnvelopeEvidence(
+        { ...committedEnvelopeFromDisk(), targetCommitSha: staleEvidenceSha },
+        {
+          repository: "hiro4649/CRIPTO-TIP",
+          prNumber: 55,
+          targetBranch: branchName,
+          targetCommitSha: "f8b858e0a4cec311d75e89d74cd6830fd0486be6",
+          baseCommitSha: baseSha
+        }
+      )
+    ).toThrow(/targetCommitSha/);
+  });
+
+  it("keeps committed advisory envelope target commit distinct from base commit", () => {
+    const current = committedEnvelopeFromDisk();
+
+    expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
+  });
+
+  it("rejects stale headSha in committed evidence pack", () => {
+    const evidencePack = evidencePackFromDisk();
+
+    expect(evidencePack.prNumber).toBe(55);
+    expect(evidencePack.headSha).not.toBe(staleEvidenceSha);
+    expect(evidencePack.headSha).not.toBe(evidencePack.baseSha);
+    expect(evidencePack.productCiStatus).not.toMatch(/not_applicable_before_current_head/);
+    expect(evidencePack.qualityGateStatus).not.toMatch(/not_applicable_before_current_head/);
+    expect(evidencePack.ciRunId).not.toMatch(/not_applicable_before_current_head/);
+    expect(evidencePack.qualityGateRunId).not.toMatch(/not_applicable_before_current_head/);
+    expect(evidencePack.qualityGateArtifactId).not.toMatch(/not_applicable_before_current_head/);
   });
 
   it("validates committed advisory evidence context", () => {

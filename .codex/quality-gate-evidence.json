@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 55,
-  "headSha": "bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2",
+  "headSha": "f8b858e0a4cec311d75e89d74cd6830fd0486be6",
   "baseSha": "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "not_applicable_before_current_head_success",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "not_applicable_before_current_head_success",
-  "qualityGateArtifactId": "not_applicable_before_current_head_success",
+  "qualityGateRunId": "27320145751",
+  "qualityGateArtifactId": "7553503250",
   "title": "feat: add db driver advisory review envelope",
   "goal": "Prepare DB driver advisory review envelope for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
@@ -136,15 +136,15 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "not_applicable_before_current_head_ci_success",
-  "ciRunId": "not_applicable_before_current_head_ci_success",
+  "productCiStatus": "success",
+  "ciRunId": "27319936009",
   "testSummary": {
     "testFiles": 44,
-    "passed": 1078,
+    "passed": 1121,
     "skipped": 6
   },
   "testFiles": 44,
-  "passed": 1078,
+  "passed": 1121,
   "skipped": 6,
   "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",

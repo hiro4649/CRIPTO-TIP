@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 55,
-  "headSha": "bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2",
+  "headSha": "f8b858e0a4cec311d75e89d74cd6830fd0486be6",
   "baseSha": "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a",
   "productVerificationStatus": "pass",
   "commands": [
@@ -27,7 +27,7 @@
   "productionReadinessClaimed": false,
   "status": "pass",
   "testFiles": 44,
-  "passed": 1078,
+  "passed": 1121,
   "skipped": 6,
   "testsPassed": 1078,
   "testsSkipped": 6,
@@ -40,8 +40,8 @@
     "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass"
   ],
-  "productCiStatus": "not_applicable_before_current_head_ci_success",
-  "ciRunId": "not_applicable_before_current_head_ci_success",
+  "productCiStatus": "success",
+  "ciRunId": "27319936009",
   "title": "feat: add db driver advisory review envelope",
   "goal": "Prepare DB driver advisory review envelope for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "packageVerification": {
@@ -120,12 +120,12 @@
     "approved final gate in committed evidence",
     "DB driver selected in current PR"
   ],
-  "qualityGateStatus": "not_applicable_before_current_head_success",
-  "qualityGateRunId": "not_applicable_before_current_head_success",
-  "qualityGateArtifactId": "not_applicable_before_current_head_success",
+  "qualityGateStatus": "success",
+  "qualityGateRunId": "27320145751",
+  "qualityGateArtifactId": "7553503250",
   "testSummary": {
     "testFiles": 44,
-    "passed": 1078,
+    "passed": 1121,
     "skipped": 6
   },
   "prBodyPath": "docs/pr-db-driver-advisory-review-envelope-v118-prep.md",
