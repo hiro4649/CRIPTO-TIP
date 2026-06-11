@@ -48,6 +48,12 @@ Production-like apply is not authorized by `manualApproval: true` alone. Dashboa
 
 Evidence single source of truth is a review automation boundary. It does not claim production runtime readiness and does not authorize provider apply, live YouTube operation, token sale, exchange, cash-out, custody, or internal balance behavior.
 
+DB driver advisory source policy is a pre-dependency review envelope only. It
+does not authorize a DB driver dependency, package or lockfile change, real DB
+connection, migration execution, live DB integration test, provider SDK apply,
+production deployment, runtime readiness, legal compliance, or YouTube policy
+compliance claim.
+
 DB driver owner approval record preparation is also a release-gate boundary. It
 does not authorize a DB driver, package change, lockfile change, real DB
 connection, live DB test execution, migration apply, provider SDK apply,

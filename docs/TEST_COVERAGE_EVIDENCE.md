@@ -235,6 +235,12 @@ rejection.
 ## PR #25 v1.0.8 Rollout Tests
 
 Latest local test evidence for the required/advisory split: 21 test files, 209 passed, and 6 skipped. Added coverage verifies that legacy self-test advisory status does not become `workflow_required_status_failure` for target rollout, while required target quality failure remains blocking. Existing same-head required-check tests still reject mixed-head, missing, and failed required checks.
+
+DB driver advisory source policy coverage adds tests for the not-reviewed source
+policy envelope, exact allowed and forbidden source categories, source binding,
+timestamp and freshness status, raw output rejection, permission flag rejection,
+future reviewed fixture isolation, and committed `.codex` evidence remaining
+not reviewed with no selected driver or dependency allowance.
 ## Safe pnpm Test Failure Repair PR
 
 - Scope: targeted repair for `apps/api/src/evidence-rendering.test.ts`.
