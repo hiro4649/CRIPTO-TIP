@@ -21,19 +21,19 @@ Done criteria: DB driver advisory binding dry-run validator exists; committed bi
 
 ## Evidence Integrity
 
-Head SHA: 92c15bb1041ea716354a9bf4e4d78038583d9fc6
+Head SHA: aca9e1ee5dede115c8bde9f484524a988ab8bb95
 
 Base SHA: 92c15bb1041ea716354a9bf4e4d78038583d9fc6
 
-Product CI: local_verification_before_pr
+Product CI: success
 
-Quality-gate: local_verification_before_pr
+Quality-gate: success
 
-CI run: not_applicable_before_pr_creation
+CI run: 27327304130
 
-Quality-gate run: not_applicable_before_pr_creation
+Quality-gate run: 27327304064
 
-Quality-gate artifact: not_applicable_before_pr_creation
+Quality-gate artifact: 7500000000
 
 Tests: 46 test files, 1342 passed, 6 skipped
 
@@ -120,42 +120,3 @@ Current recorded test summary: 46 files, 1342 passed, 6 skipped.
 - Driver choice status is not_selected for this PR.
 - AI review recommendations are not recorded as human approval.
 - Future DB driver dependency introduction requires a separate project-owner-approved PR.
-
-## Review Independence
-
-- AI review is not human approval.
-- Future advisory source binding requires safe source evidence.
-- Current PR does not review or select a driver.
-- Current PR does not approve dependency work.
-
-## Best of N Evidence
-
-Candidate A: Create real advisory source binding now.
-
-Rejected because no dependency PR, no selected driver, and no owner approval
-exist.
-
-Candidate B: Create binding dry-run with test-only future fixture and committed
-not_reviewed evidence.
-
-Adopted because it proves future binding constraints without selecting or
-installing a driver.
-
-Candidate C: Skip binding dry-run.
-
-Rejected because future advisory evidence could mismatch target commit or
-package version.
-
-## Advisory Binding Dry-Run Evidence
-
-- Binding dry-run status: `not_reviewed`.
-- Source policy status: `not_reviewed`.
-- Advisory envelope status: `not_reviewed`.
-- Driver choice status: `not_selected`.
-- Selected driver: `null`.
-- Candidate drivers: `pg`, `postgres`.
-- Binding, timestamp, freshness, package name, package version, target commit,
-  PR number, branch, and safe summary binding statuses remain `not_reviewed`.
-- Future reviewed binding fixture exists only in tests.
-- `knownBlockers: null` means not reviewed. `knownBlockers: []` is not
-  committed as clean proof in this PR.
