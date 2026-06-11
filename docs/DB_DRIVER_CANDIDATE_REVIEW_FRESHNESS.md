@@ -68,3 +68,7 @@ The freshness gate blocks stale evidence use. It does not make a driver
 available for dependency work. Future driver selection still requires separate
 project-owner approval, package diff review, lockfile review, and final approval
 gate evidence.
+
+## Advisory Envelope Link
+
+The DB driver advisory review envelope is also not review completion. Its current status remains `not_reviewed`; `knownBlockers: null` means not reviewed, not no blockers.

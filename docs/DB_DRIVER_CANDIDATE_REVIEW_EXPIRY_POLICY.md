@@ -28,3 +28,7 @@ window at 7 days.
 The current PR does not include fresh review evidence. It records the expiry
 policy and keeps all current review statuses at `not_reviewed`, `not_selected`,
 or `missing`.
+
+## Advisory Envelope Expiry Boundary
+
+The advisory review envelope does not start the advisory expiry window. Expiry begins only after a future safe-summary advisory review records reviewed source evidence.

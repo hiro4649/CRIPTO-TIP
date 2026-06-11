@@ -20,3 +20,7 @@ strings, token-like values, wallet addresses, and private URLs remain forbidden.
 The current freshness record is deliberately `not_ready`. It records that
 reviews are missing and must be refreshed later. It does not approve a candidate
 and does not change the DB runtime surface.
+
+## Advisory Envelope Boundary
+
+Advisory envelope evidence with `not_reviewed` status is missing review evidence, not stale reviewed evidence. It cannot authorize driver selection or dependency introduction.

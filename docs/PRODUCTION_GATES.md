@@ -193,3 +193,14 @@ The current committed freshness state is `not_ready`; license, supply-chain,
 advisory, package metadata, version policy, package diff, lockfile, and
 secret-boundary evidence still require future refresh. No runtime, production,
 legal, or YouTube policy readiness is claimed.
+
+## DB Driver Advisory Review Envelope v1.1.8 Prep
+
+The advisory review envelope is not an advisory review and is not a production
+gate pass. It defines the future evidence shape for CVE, security advisory,
+package audit, known blocker, source policy, and raw-output policy review.
+
+The current committed advisory state is `not_reviewed`; `knownBlockers` remains
+`null`, not an empty clean list. No driver is selected, no package or lockfile
+change is authorized, no real DB connection is added, and no runtime,
+production, legal, or YouTube policy readiness is claimed.

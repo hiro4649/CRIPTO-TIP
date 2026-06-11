@@ -423,3 +423,10 @@ quality-gate weakening is introduced.
 - Committed evidence keeps `reviewPackStatus: not_ready`, `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers `[pg, postgres]`, and `refreshRequired: true`.
 - `apps/api/src/db-driver-candidate-review-freshness.test.ts` verifies stale-evidence prevention, refresh reasons, expiry policy, safe summary wording, permission flag rejection, future fresh fixture isolation, and committed machine-readable evidence safe defaults.
 - This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.
+
+## DB Driver Advisory Review Envelope v1.1.8 Prep
+
+- `.codex/db-driver-advisory-review-envelope.json` records `advisoryEnvelopeStatus: not_reviewed`.
+- Committed evidence keeps `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers `[pg, postgres]`, CVE/security advisory/package audit status `not_reviewed`, `knownBlockersStatus: not_reviewed`, `knownBlockers: null`, and `rawOutputPolicyStatus: safe_summary_only`.
+- `apps/api/src/db-driver-advisory-review-envelope.test.ts` verifies not-reviewed defaults, known-blocker semantics, permission flag rejection, raw advisory/audit/dependency/log output rejection, unsafe value rejection, future reviewed fixture isolation, and committed machine-readable evidence safe defaults.
+- This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.

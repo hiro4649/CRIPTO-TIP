@@ -1275,6 +1275,78 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Ignores generated temporary safe-artifact download directories."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-review-envelope.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review envelope validator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-review-envelope.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review envelope tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_REVIEW_ENVELOPE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review envelope docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_REVIEW_EVIDENCE.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review evidence shape docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_REVIEW_FAILURE_REASONS.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review failure reason docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_REVIEW_RAW_OUTPUT_POLICY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory review raw output policy docs."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-advisory-review-envelope-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence for DB driver advisory review envelope."
+    },
+    {
+      "pathPattern": ".codex/db-driver-advisory-review-envelope.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver advisory review envelope evidence."
     }
   ],
   "safeSummaryOnly": true
