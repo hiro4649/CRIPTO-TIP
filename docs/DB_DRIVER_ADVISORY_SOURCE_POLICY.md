@@ -39,3 +39,7 @@ evidence, raw advisory output, raw audit output, OSV raw responses, Snyk raw
 responses, raw dependency trees, terminal output, private URLs, DB connection
 strings, wallet addresses, token-like values, approved owner records, approved
 final gate records, or selected driver state.
+
+Binding dry-run evidence is separate validation-shape evidence. It can prove
+future fixture validation in tests, but committed evidence must remain
+`not_reviewed` until a separate owner-approved advisory review scope exists.

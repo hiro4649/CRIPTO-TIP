@@ -437,3 +437,10 @@ quality-gate weakening is introduced.
 - Committed evidence keeps `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers `[pg, postgres]`, CVE/security advisory/package audit status `not_reviewed`, `knownBlockersStatus: not_reviewed`, `knownBlockers: null`, and `rawOutputPolicyStatus: safe_summary_only`.
 - `apps/api/src/db-driver-advisory-review-envelope.test.ts` verifies not-reviewed defaults, known-blocker semantics, permission flag rejection, raw advisory/audit/dependency/log output rejection, unsafe value rejection, future reviewed fixture isolation, and committed machine-readable evidence safe defaults.
 - This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.
+
+## DB Driver Advisory Binding Dry-Run v1.1.8 Prep
+
+- `.codex/db-driver-advisory-binding-dry-run.json` records `bindingDryRunStatus: not_reviewed`.
+- Committed evidence keeps `sourcePolicyStatus: not_reviewed`, `advisoryEnvelopeStatus: not_reviewed`, `driverChoiceStatus: not_selected`, `selectedDriver: null`, candidate drivers `[pg, postgres]`, binding/timestamp/freshness/package/commit/PR/branch/safe-summary statuses `not_reviewed`, `knownBlockersStatus: not_reviewed`, and `knownBlockers: null`.
+- `apps/api/src/db-driver-advisory-binding-dry-run.test.ts` verifies default not-reviewed evidence, selected/pass/reviewed rejection, candidate binding rejection, raw output rejection, future reviewed fixture isolation, timestamp/freshness validation, target commit binding, PR number binding, branch binding, package name/version binding, source category binding, and committed machine-readable evidence safe defaults.
+- This PR does not change `package.json`, `pnpm-lock.yaml`, migrations, runtime DB code, provider SDK code, or production deployment paths.

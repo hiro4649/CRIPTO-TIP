@@ -21,3 +21,8 @@ not be reused as merge evidence for a later dependency PR.
 
 Raw output remains forbidden even when a future source is reviewed. Operators
 must record only safe summaries and bounded metadata.
+
+The binding dry-run validator adds test-only future fixture coverage for exact
+target commit, PR number, branch, package name, package version, source
+category, timestamp, freshness, and safe summary binding. Current committed
+evidence remains `not_reviewed`.

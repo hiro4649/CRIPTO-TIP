@@ -269,3 +269,12 @@ flag updates, and context-aware lock timeout retry actions.
 | Medium | Raw advisory or audit output could leak unsafe data. | Security owner | Future advisory review PR | Validator rejects raw advisory output, raw audit output, raw dependency tree, raw terminal output, raw logs, private URLs, DB connection strings, wallet addresses, and token-like values. |
 | Medium | Future dependency introduction still requires owner approval. | Project owner | Future dependency PR | Driver choice remains `not_selected`, selected driver remains null, owner approval remains `not_approved`, and final gate remains `blocked`. |
 | Medium | Runtime and production readiness could be inferred from advisory docs. | Backend owner | Future runtime PR | Docs and evidence state that the envelope is review-shape only and does not claim runtime, production, legal, or YouTube policy readiness. |
+
+## DB Driver Advisory Binding Dry-Run v1.1.8 Prep
+
+| Severity | Risk | Owner | Next step | Mitigation |
+| --- | --- | --- | --- | --- |
+| Medium | Binding dry-run could be mistaken for advisory review completion. | Security owner | Future advisory binding review PR | Committed binding evidence remains `not_reviewed` and future reviewed bindings exist only in tests. |
+| Medium | Future source binding could become stale or mismatch the dependency PR. | Storage owner | Future dependency PR | Validator requires exact target commit, PR number, branch, package name, exact package version, source category, timestamps, and freshness. |
+| Medium | Raw advisory or registry output could be copied into evidence. | Security owner | Future advisory binding review PR | Validator rejects raw advisory, raw audit, raw OSV, raw npm registry, raw dependency tree, terminal output, private URLs, wallet addresses, and token-like values. |
+| Medium | Runtime and production readiness could be inferred from binding docs. | Backend owner | Future runtime PR | Docs and evidence state that the binding dry-run is validation-shape only and does not claim runtime, production, legal, or YouTube policy readiness. |

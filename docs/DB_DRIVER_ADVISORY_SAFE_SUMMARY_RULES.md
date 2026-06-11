@@ -31,3 +31,7 @@ selection.
 
 Future reviewed fixtures may appear only in tests. Committed current evidence
 must remain `not_reviewed`.
+
+Future binding dry-run summaries must also avoid approval, selection,
+readiness, compliance, `clean`, `pass`, `recommended`, `winner`, and similar
+decision words.
