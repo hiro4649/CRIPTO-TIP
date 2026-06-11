@@ -4,7 +4,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 55,
   "targetBranch": "feat/db-driver-advisory-review-envelope-v118-prep",
-  "targetCommitSha": "21c810ff928c451fac5e512aee3bf4c05bab57ac",
+  "targetCommitSha": "bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2",
   "baseCommitSha": "4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a",
   "advisoryEnvelopeStatus": "not_reviewed",
   "driverChoiceStatus": "not_selected",

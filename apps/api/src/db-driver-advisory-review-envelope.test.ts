@@ -225,15 +225,16 @@ describe("db driver advisory review envelope", () => {
   });
 
   it("validates committed advisory evidence context", () => {
+    const committed = committedEnvelopeFromDisk();
     const current = {
-      ...committedEnvelopeFromDisk(),
+      ...committed,
       targetCommitSha: "1111111111111111111111111111111111111111",
       baseCommitSha: baseSha
     };
     const validationContext = {
-      repository: "hiro4649/CRIPTO-TIP",
-      prNumber: 0,
-      targetBranch: branchName,
+      repository: committed.repository,
+      prNumber: committed.prNumber,
+      targetBranch: committed.targetBranch,
       targetCommitSha: "1111111111111111111111111111111111111111",
       baseCommitSha: baseSha
     };

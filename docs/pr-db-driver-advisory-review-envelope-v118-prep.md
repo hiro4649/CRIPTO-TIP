@@ -21,15 +21,15 @@ Done criteria: DB driver advisory review envelope exists; committed advisoryEnve
 
 ## Evidence Integrity
 
-Head SHA: 21c810ff928c451fac5e512aee3bf4c05bab57ac
+Head SHA: bd2fd3a0ac8ccdfb65b5120131424ba291dc17f2
 
 Base SHA: 4eb244b5a522a0eb1eaf08e9a878b2d2e87fb23a
 
-Product CI: success
+Product CI: not_applicable_before_current_head_ci_success
 
 Quality-gate: not_applicable_before_current_head_success
 
-CI run: 27319425693
+CI run: not_applicable_before_current_head_ci_success
 
 Quality-gate run: not_applicable_before_current_head_success
 
@@ -147,8 +147,6 @@ Known blockers value: null.
 Raw output policy: safe_summary_only.
 
 No advisory reviewed evidence is committed in this PR.
-
-Failure paths: current evidence rejects reviewed/pass advisory state, selected driver state, empty known-blockers clean result claims, unsafe raw advisory output, raw audit output, dependency tree output, terminal output, private URLs, DB connection strings, wallet addresses, and token-like values.
 
 Test Coverage Evidence details:
 
