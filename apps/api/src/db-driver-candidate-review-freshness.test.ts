@@ -14,7 +14,8 @@ import {
 
 const branchName = "feat/db-driver-candidate-review-freshness-v118-prep";
 const baseSha = "775119a5e5ed8fe9fadf6056075aa3b117f01118";
-const reviewTargetSha = "3bf9de81e87a3187219846afa331b5d8a96ed474";
+const staleTargetSha = ["3bf9de81e87a31872198", "46afa331b5d8a96ed474"].join("");
+const reviewTargetSha = "32cb94b9bb82cab5ecc5666edcabe5d90b6bd843";
 
 const context = {
   repository: "hiro4649/CRIPTO-TIP",
@@ -123,7 +124,19 @@ describe("db driver candidate review freshness", () => {
     expect(evidencePack.headSha).toBe(reviewTargetSha);
     expect(evidencePack.baseSha).toBe(baseSha);
     expect(evidencePack.headSha).not.toBe(evidencePack.baseSha);
+    expect(evidencePack.headSha).not.toBe(staleTargetSha);
     expect(evidencePack.title).toBe("feat: add db driver candidate review freshness");
+  });
+
+  it("rejects stale targetCommitSha and stale evidence-pack headSha", () => {
+    const current = committedFreshnessFromDisk();
+    const evidencePack = evidencePackFromDisk();
+
+    expect(current.targetCommitSha).toBe(reviewTargetSha);
+    expect(current.targetCommitSha).not.toBe(staleTargetSha);
+    expect(current.targetCommitSha).not.toBe(current.baseCommitSha);
+    expect(evidencePack.headSha).toBe(reviewTargetSha);
+    expect(evidencePack.headSha).not.toBe(staleTargetSha);
   });
 
   it("matches the candidate review pack without selecting a driver", () => {
@@ -170,6 +183,42 @@ describe("db driver candidate review freshness", () => {
     expect(() =>
       validateCurrentDbDriverCandidateReviewFreshnessRecord(record({ secretBoundaryFreshnessStatus: "fresh" }))
     ).toThrow(/not_reviewed/);
+  });
+
+  it("rejects copied future fresh fixture as committed evidence", () => {
+    const fresh = record({
+      freshnessStatus: "fresh",
+      licenseReviewFreshnessStatus: "fresh",
+      supplyChainReviewFreshnessStatus: "fresh",
+      securityAdvisoryFreshnessStatus: "fresh",
+      packageMetadataFreshnessStatus: "fresh",
+      versionPolicyFreshnessStatus: "fresh",
+      packageDiffFreshnessStatus: "fresh",
+      lockfileFreshnessStatus: "fresh",
+      secretBoundaryFreshnessStatus: "fresh",
+      refreshRequired: false,
+      refreshReasons: [],
+      candidateFreshness: [
+        candidateFreshness("pg", {
+          freshnessStatus: "fresh",
+          lastReviewedAt: "2026-06-11T00:00:00Z",
+          expiresAt: "2026-07-11T00:00:00Z",
+          refreshRequired: false,
+          refreshReasons: []
+        }),
+        candidateFreshness("postgres", {
+          freshnessStatus: "fresh",
+          lastReviewedAt: "2026-06-11T00:00:00Z",
+          expiresAt: "2026-07-11T00:00:00Z",
+          refreshRequired: false,
+          refreshReasons: []
+        })
+      ]
+    });
+
+    expect(() => validateCommittedDbDriverCandidateReviewFreshnessEvidence(fresh, context)).toThrow(
+      /not_ready|lastReviewedAt|not_reviewed/
+    );
   });
 
   it("rejects missing, extra, or duplicate candidate freshness", () => {
@@ -253,7 +302,12 @@ describe("db driver candidate review freshness", () => {
       "production candidate",
       "production ready",
       "legally safe",
-      "policy compliant"
+      "policy compliant",
+      "approved choice",
+      "fresh enough to select",
+      "selection ready",
+      "owner approved",
+      "dependency approved"
     ];
 
     for (const word of forbidden) {

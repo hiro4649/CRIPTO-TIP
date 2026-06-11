@@ -21,21 +21,21 @@ Done criteria: DB driver candidate freshness record exists; committed freshness 
 
 ## Evidence Integrity
 
-Head SHA: 3bf9de81e87a3187219846afa331b5d8a96ed474
+Head SHA: 32cb94b9bb82cab5ecc5666edcabe5d90b6bd843
 
 Base SHA: 775119a5e5ed8fe9fadf6056075aa3b117f01118
 
-Product CI: local_not_applicable_before_pr_creation
+Product CI: success
 
-Quality-gate: local_not_applicable_before_pr_creation
+Quality-gate: success
 
-CI run: local_not_applicable_before_pr_creation
+CI run: 27315221063
 
-Quality-gate run: local_not_applicable_before_pr_creation
+Quality-gate run: 27315660174
 
-Quality-gate artifact: local_not_applicable_before_pr_creation
+Quality-gate artifact: 7551913556
 
-Tests: 43 test files, 1018 passed, 6 skipped
+Tests: 43 test files, 1020 passed, 6 skipped
 
 ## Testing and review
 
@@ -58,13 +58,13 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 
 Product verification commands:
 
-- corepack pnpm lint: local_not_run_after_change
-- corepack pnpm typecheck: local_not_run_after_change
-- corepack pnpm test: local_not_run_after_change
-- npm test: local_not_run_after_change
-- corepack pnpm evidence:ci: local_not_run_after_change
-- corepack pnpm quality:self-protection: local_not_run_after_change
-- node scripts/check-evidence-placeholders.mjs: local_not_run_after_change
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/check-evidence-placeholders.mjs: pass
 
 Package verification:
 
@@ -90,7 +90,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 43 files, 1018 passed, 6 skipped.
+Current recorded test summary: 43 files, 1020 passed, 6 skipped.
 
 Changed area: DB driver candidate review freshness validator, stale evidence
 policy docs, committed not-ready freshness evidence, and .codex evidence.
@@ -99,16 +99,16 @@ Test command: corepack pnpm test and npm test cover the freshness validator
 together with existing repository tests.
 
 What the test covers: default not-ready freshness evidence, exact pg/postgres
-candidate freshness entries, missing review reasons, expiry policy, selected or
-fresh current evidence rejection, permission flag rejection, unsafe evidence
-rejection, future fresh fixture isolation, and committed machine-readable
-evidence remaining not-ready.
+candidate freshness entries, stale head/target evidence rejection, missing
+review reasons, expiry policy, selected or fresh current evidence rejection,
+permission flag rejection, unsafe evidence rejection, future fresh fixture
+isolation, and committed machine-readable evidence remaining not-ready.
 
-Edge cases: selected driver, selected driverChoiceStatus, fresh current
-evidence, candidate timestamps, missing/extra/duplicate candidates, forbidden
-selection wording, private URLs, DB connection strings, wallet addresses,
-token-like values, unsafe run-output references, and provider response copies
-are rejected.
+Edge cases: selected driver, selected driverChoiceStatus, copied future fresh
+fixture, fresh current evidence, candidate timestamps, missing/extra/duplicate
+candidates, forbidden selection wording, private URLs, DB connection strings,
+wallet addresses, token-like values, unsafe run-output references, and provider
+response copies are rejected.
 
 ## Review Independence
 
@@ -116,7 +116,7 @@ AI review is not human approval.
 
 Future driver selection requires project-owner approval.
 
-Current PR does not select a driver.
+This DB driver freshness PR does not select a driver.
 
 ## Best of N Evidence
 

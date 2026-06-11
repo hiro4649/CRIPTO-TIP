@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 54,
-  "headSha": "3bf9de81e87a3187219846afa331b5d8a96ed474",
+  "headSha": "32cb94b9bb82cab5ecc5666edcabe5d90b6bd843",
   "baseSha": "775119a5e5ed8fe9fadf6056075aa3b117f01118",
   "schemaVersion": "1.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
@@ -53,14 +53,14 @@
     "no_scraping_scan"
   ],
   "status": "pass",
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
+  "qualityGateStatus": "success",
   "evidenceNotes": [
     "DB driver owner approval record remains not_approved.",
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
+  "qualityGateRunId": "27315660174",
+  "qualityGateArtifactId": "7551913556",
   "title": "feat: add db driver candidate review freshness",
   "goal": "Prepare candidate review freshness and evidence-refresh enforcement for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
   "evidenceStatus": "current_head_refresh_requested",
@@ -141,15 +141,15 @@
     "fresh review evidence in committed current evidence",
     "DB driver selected in current PR"
   ],
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "ciRunId": "local_not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "ciRunId": "27315221063",
   "testSummary": {
     "testFiles": 43,
-    "passed": 1018,
+    "passed": 1020,
     "skipped": 6
   },
   "testFiles": 43,
-  "passed": 1018,
+  "passed": 1020,
   "skipped": 6,
   "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
@@ -198,7 +198,7 @@
   ],
   "storageOracle": "Committed candidate review evidence remains not_ready, driverChoiceStatus not_selected, selectedDriver null, candidateDrivers pg/postgres, owner approval not_approved, final gate blocked, package and lockfile evidence missing, all permission flags false.",
   "releaseGateOracle": "GitHub typescript/contracts/quality-gate required checks on the current PR head plus evidence:ci and quality:self-protection.",
-  "testsPassed": 1018,
+  "testsPassed": 1020,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "riskLevel": "R3",
@@ -254,18 +254,18 @@
   "productionReadinessClaim": false,
   "runtimeReadinessClaimed": false,
   "productVerificationCommands": [
-    "corepack pnpm lint: local_not_run_after_change",
-    "corepack pnpm typecheck: local_not_run_after_change",
-    "corepack pnpm test: local_not_run_after_change",
-    "npm test: local_not_run_after_change",
-    "corepack pnpm evidence:ci: local_not_run_after_change",
-    "corepack pnpm quality:self-protection: local_not_run_after_change",
-    "node scripts/check-evidence-placeholders.mjs: local_not_run_after_change"
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
     "verification": "No package scripts, runtime dependencies, DB driver dependency, package.json, or pnpm-lock changes are introduced by this PR."
   },
-  "summary": "43 files, 1018 passed, 6 skipped"
+  "summary": "43 files, 1020 passed, 6 skipped"
 }

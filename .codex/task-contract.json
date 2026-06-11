@@ -3,7 +3,7 @@
   "harnessVersion": "1.1.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 54,
-  "headSha": "3bf9de81e87a3187219846afa331b5d8a96ed474",
+  "headSha": "32cb94b9bb82cab5ecc5666edcabe5d90b6bd843",
   "baseSha": "775119a5e5ed8fe9fadf6056075aa3b117f01118",
   "goal": "Prepare candidate review freshness and evidence-refresh enforcement for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime, production, legal, or YouTube policy readiness.",
   "allowedScope": [
@@ -103,28 +103,28 @@
     "docs/process/CODEX_CLASSIFICATION_REGISTRY.json",
     "docs/pr-db-driver-candidate-review-freshness-v118-prep.md"
   ],
-  "productCiStatus": "local_not_applicable_before_pr_creation",
-  "qualityGateStatus": "local_not_applicable_before_pr_creation",
-  "ciRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateRunId": "local_not_applicable_before_pr_creation",
-  "qualityGateArtifactId": "local_not_applicable_before_pr_creation",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "ciRunId": "27315221063",
+  "qualityGateRunId": "27315660174",
+  "qualityGateArtifactId": "7551913556",
   "testSummary": {
     "testFiles": 43,
-    "passed": 1018,
+    "passed": 1020,
     "skipped": 6
   },
   "testFiles": 43,
-  "passed": 1018,
+  "passed": 1020,
   "skipped": 6,
   "prBodyPath": "docs/pr-db-driver-candidate-review-freshness-v118-prep.md",
   "productVerificationCommands": [
-    "corepack pnpm lint: local_not_run_after_change",
-    "corepack pnpm typecheck: local_not_run_after_change",
-    "corepack pnpm test: local_not_run_after_change",
-    "npm test: local_not_run_after_change",
-    "corepack pnpm evidence:ci: local_not_run_after_change",
-    "corepack pnpm quality:self-protection: local_not_run_after_change",
-    "node scripts/check-evidence-placeholders.mjs: local_not_run_after_change"
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -171,7 +171,7 @@
   "contractGovernanceStatus": "pass",
   "reviewIndependenceStatus": "pass",
   "codeReviewMonitorStatus": "pass",
-  "testsPassed": 1018,
+  "testsPassed": 1020,
   "testsSkipped": 6,
   "changeType": "product_relevant",
   "securityBoundaries": [
@@ -212,5 +212,5 @@
     ],
     "reason": "Candidate B prevents stale review evidence reuse without crossing the owner approval or dependency boundary."
   },
-  "summary": "43 files, 1018 passed, 6 skipped"
+  "summary": "43 files, 1020 passed, 6 skipped"
 }

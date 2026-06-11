@@ -8,6 +8,7 @@ can no longer be trusted for a future dependency decision.
 - target commit changes
 - candidate package version changes
 - package metadata changes
+- security advisory changes
 - maintainer ownership changes
 - transitive dependency changes
 - install script changes
@@ -15,8 +16,10 @@ can no longer be trusted for a future dependency decision.
 - dependency graph changes
 - package.json changes
 - lockfile changes
+- pnpm-lock changes
 - review evidence older than the expiry window
 - owner approval target mismatch
+- selected or recommended wording in committed evidence
 - selection wording in committed evidence
 - runtime, production, legal, or YouTube policy readiness wording in committed
   evidence

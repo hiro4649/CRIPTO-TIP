@@ -536,6 +536,10 @@ function assertCandidateSummaryDoesNotClaimSelection(value: string) {
     /\bproduction\s+ready\b/i,
     /\blegally\s+safe\b/i,
     /\bpolicy\s+compliant\b/i,
+    /\bfresh\s+enough\s+to\s+select\b/i,
+    /\bselection\s+ready\b/i,
+    /\bowner\s+approved\b/i,
+    /\bdependency\s+approved\b/i,
     /runtime[_ -]?ready/i,
     /legal[_ -]?compliant/i,
     /youtube[_ -]?policy[_ -]?compliant/i

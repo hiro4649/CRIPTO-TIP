@@ -31,6 +31,19 @@ Machine-readable evidence lives in
 review can use it. It is not an approval record and does not authorize package
 or lockfile changes.
 
+Review freshness status meanings:
+
+- `not_reviewed`: the review has not been performed.
+- `not_ready`: the candidate review cannot be used for selection.
+- `fresh`: verified evidence for a future owner-approved dependency PR only.
+- `stale`: expired or invalidated evidence; selection remains forbidden.
+- `invalid`: malformed or unsafe evidence; selection remains forbidden.
+
+The current PR must not commit `fresh`, `stale`, or `invalid` review evidence.
+Future fresh fixtures are non-operational test data only. Copying a future
+fresh fixture into `.codex` evidence is forbidden. Committed evidence must
+remain `not_ready` until a separate owner-approved DB driver dependency PR.
+
 ## Candidate Freshness
 
 Each candidate has a freshness entry:
