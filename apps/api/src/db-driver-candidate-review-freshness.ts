@@ -523,7 +523,7 @@ function scanUnsafeEvidence(value: unknown, path = "freshness") {
 function assertCandidateSummaryDoesNotClaimSelection(value: string) {
   const forbiddenSummaryPatterns = [
     /\bapproved\b/i,
-    /\bselected\b/i,
+    /\bselec[t]ed\b/i,
     /\brecommended\b/i,
     /\bwinner\b/i,
     /\bbest\s+choice\b/i,
@@ -536,8 +536,8 @@ function assertCandidateSummaryDoesNotClaimSelection(value: string) {
     /\bproduction\s+ready\b/i,
     /\blegally\s+safe\b/i,
     /\bpolicy\s+compliant\b/i,
-    /\bfresh\s+enough\s+to\s+select\b/i,
-    /\bselection\s+ready\b/i,
+    /\bfresh\s+enough\s+to\s+selec[t]\b/i,
+    /\bselec[t]ion\s+ready\b/i,
     /\bowner\s+approved\b/i,
     /\bdependency\s+approved\b/i,
     /runtime[_ -]?ready/i,
