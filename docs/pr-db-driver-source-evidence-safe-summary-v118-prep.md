@@ -21,7 +21,7 @@ Done criteria: source evidence safe-summary validator exists; committed stalenes
 
 ## Evidence Integrity
 
-Head SHA: c9e19b852640ae28b3aa77190c1368873b1fb2d2
+Head SHA: 1ec848b325b97ceec20cdcff290f7094985c2f02
 
 Base SHA: 7e4d561ab0335ac8f143a367d8433ca6e6baba74
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27379749943
+CI run: 27380080422
 
-Quality-gate run: 27379749965
+Quality-gate run: 27380431086
 
-Quality-gate artifact: 7577783685
+Quality-gate artifact: 7578046819
 
-Tests: 48 test files, 1539 passed, 6 skipped
+Tests: 48 test files, 1598 passed, 6 skipped
 
 ## Testing and review
 
@@ -93,7 +93,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 48 files, 1539 passed, 6 skipped.
+Current recorded test summary: 48 files, 1598 passed, 6 skipped.
 
 ## Security Boundaries
 
@@ -105,6 +105,11 @@ Current recorded test summary: 48 files, 1539 passed, 6 skipped.
 - No provider SDK apply or production deployment is introduced.
 - No runtime, production, legal, or YouTube policy readiness is claimed.
 - Raw advisory output, raw audit output, raw OSV response, raw npm registry metadata, raw dependency trees, terminal output, private URLs, DB connection strings, wallet addresses, and token-like values are rejected.
+- This PR provides a safe-summary contract only.
+- It does not review source evidence.
+- It does not select `pg` or `postgres`.
+- It does not approve DB driver dependency introduction.
+- PR body and GitHub safe artifacts provide current-head merge evidence; committed `.codex` evidence is bound to PR #60 and must not retain PR #59 values.
 
 ## Residual risks
 

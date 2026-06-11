@@ -40,3 +40,9 @@ exist. Current evidence remains `not_reviewed`.
 Safe summaries must avoid overclaim wording such as clean, no vulnerabilities,
 no advisories, approved, security clean, safe to install, runtime ready,
 production ready, legally safe, or policy compliant.
+
+They also reject `no issues`, `no risk`, `risk free`, `safe for production`,
+`approved for production`, `ready to install`, `installation approved`,
+`dependency allowed`, `package allowed`, `source approved`, `summary approved`,
+`reviewed and safe`, `security passed`, `audit passed`, `advisory passed`,
+`all clear`, and `green light`.

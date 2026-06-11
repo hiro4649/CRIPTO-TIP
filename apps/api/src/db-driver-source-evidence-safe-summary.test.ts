@@ -15,11 +15,11 @@ import {
 
 const branchName = "feat/db-driver-source-evidence-safe-summary-v118-prep";
 const baseSha = "7e4d561ab0335ac8f143a367d8433ca6e6baba74";
-const targetSha = "1111111111111111111111111111111111111111";
+const targetSha = "1ec848b325b97ceec20cdcff290f7094985c2f02";
 
 const context = {
   harnessVersion: "1.1.8",
-  prNumber: 59,
+  prNumber: 60,
   targetBranch: branchName,
   targetCommitSha: targetSha,
   baseCommitSha: baseSha,
@@ -55,7 +55,7 @@ function futureReviewedFixture(candidatePatch: Partial<DbDriverSourceEvidenceCan
           packageVersion: "8.16.0",
           candidateDriver: "pg",
           targetCommitSha: "2222222222222222222222222222222222222222",
-          prNumber: 59,
+          prNumber: 60,
           targetBranch: branchName,
           reviewStatus: "pass",
           summaryStatus: "pass",
@@ -86,7 +86,7 @@ function futureReviewedFixture(candidatePatch: Partial<DbDriverSourceEvidenceCan
         sourceCategory: "github_advisory_summary",
         packageVersion: "8.16.0",
         targetCommitSha: "2222222222222222222222222222222222222222",
-        prNumber: 59,
+        prNumber: 60,
         targetBranch: branchName,
         counts: {
           advisoryCount: 0,
@@ -116,6 +116,12 @@ function futureReviewedFixture(candidatePatch: Partial<DbDriverSourceEvidenceCan
       candidate("postgres")
     ]
   });
+}
+
+function futureReviewedCandidate() {
+  const item = futureReviewedFixture().candidateSafeSummaries[0];
+  if (!item) throw new Error("missing future reviewed candidate");
+  return item;
 }
 
 describe("DB driver source evidence safe-summary contract", () => {
@@ -168,6 +174,48 @@ describe("DB driver source evidence safe-summary contract", () => {
   });
 
   it.each([
+    ["PR #59 stale prNumber", { prNumber: 59 }],
+    ["stale target SHA", { targetCommitSha: "c9e19b852640ae28b3aa77190c1368873b1fb2d2" }],
+    ["target is base commit", { targetCommitSha: baseSha }]
+  ] as const)("rejects %s in machine-readable safe-summary evidence", (_name, patch) => {
+    expect(() => validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(record(patch))).toThrow();
+  });
+
+  it("rejects stale quality-gate run and artifact values in machine-readable evidence", () => {
+    expect(() =>
+      validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(
+        record({
+          safeSummary:
+            "DB driver source evidence safe-summary contract references 27379749965 and 7577783685 as stale evidence."
+        })
+      )
+    ).toThrow(/stale evidence value/);
+  });
+
+  it.each([
+    ["reviewed status", { sourceEvidenceStatus: "reviewed" }],
+    ["selected driver", { selectedDriver: "pg" }],
+    ["dependency allowed", { dbDriverDependencyAllowed: true }],
+    ["package json allowed", { packageJsonChangeAllowed: true }],
+    ["knownBlockers empty array", { knownBlockers: [] as string[] }]
+  ] as const)("contract_ready does not permit %s", (_name, patch) => {
+    expect(() => validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(record(patch))).toThrow();
+  });
+
+  it.each([
+    ["copied future reviewed fixture", [...futureReviewedFixture().candidateSafeSummaries]],
+    ["candidate allowedSummary object", [candidate("pg", { allowedSummary: { sourceName: "summary" } }), candidate("postgres")]],
+    ["candidate counts object", [candidate("pg", { counts: futureReviewedCandidate().counts }), candidate("postgres")]],
+    ["candidate statuses object", [candidate("pg", { statuses: futureReviewedCandidate().statuses }), candidate("postgres")]],
+    ["candidate reviewStatus pass", [candidate("pg", { reviewStatus: "pass" }), candidate("postgres")]],
+    ["candidate summaryStatus pass", [candidate("pg", { summaryStatus: "pass" }), candidate("postgres")]]
+  ] as const)("rejects %s in committed safe-summary evidence", (_name, candidateSafeSummaries) => {
+    expect(() =>
+      validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(record({ candidateSafeSummaries: [...candidateSafeSummaries] }))
+    ).toThrow();
+  });
+
+  it.each([
     "rawAuditJson",
     "rawAdvisoryResponse",
     "rawOsvResponse",
@@ -176,7 +224,14 @@ describe("DB driver source evidence safe-summary contract", () => {
     "stdout",
     "stderr",
     "logsUrl",
-    "fileContents"
+    "fileContents",
+    "databaseUrl",
+    "connectionString",
+    "privateKey",
+    "clientSecret",
+    "apiKey",
+    "accessToken",
+    "refreshToken"
   ])("rejects forbidden raw field %s recursively", (field) => {
     expect(() =>
       validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(
@@ -192,11 +247,21 @@ describe("DB driver source evidence safe-summary contract", () => {
     ["OSV raw value", "OSV raw response body"],
     ["npm registry raw value", "npm registry raw metadata"],
     ["dependency tree value", "full dependency tree"],
+    ["stdout value", "stdout from command"],
+    ["stderr value", "stderr from command"],
+    ["stack trace value", "stack trace frame"],
+    ["logs_url value", "logs_url reference"],
+    ["jobs_url value", "jobs_url reference"],
     ["private URL", "https://private.example.test/report"],
     ["DB connection string", "postgres://user:pass@example.test/db"],
+    ["postgresql connection string", "postgresql://user:pass@example.test/db"],
+    ["DATABASE_URL value", "DATABASE_URL=postgres://user:pass@example.test/db"],
+    ["PRIVATE KEY value", "BEGIN PRIVATE KEY"],
     ["wallet address", "0x1111111111111111111111111111111111111111"],
     ["token-like value", "ghp_exampletoken"],
-    ["API token-like value", "sk-exampletoken"]
+    ["API token-like value", "sk-exampletoken"],
+    ["Slack token-like value", "xoxb-exampletoken"],
+    ["AWS key-like value", `AK${"IA"}1234567890ABCDEF`]
   ])("rejects %s", (_name, unsafeValue) => {
     expect(() =>
       validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(
@@ -215,13 +280,30 @@ describe("DB driver source evidence safe-summary contract", () => {
     "legally safe",
     "policy compliant",
     "production ready",
-    "dependency approved"
+    "dependency approved",
+    "no issues",
+    "no risk",
+    "risk free",
+    "safe for production",
+    "approved for production",
+    "ready to install",
+    "installation approved",
+    "dependency allowed",
+    "package allowed",
+    "source approved",
+    "summary approved",
+    "reviewed and safe",
+    "security passed",
+    "audit passed",
+    "advisory passed",
+    "all clear",
+    "green light"
   ])("rejects forbidden wording in safe summary: %s", (wording) => {
     expect(() =>
       validateCurrentDbDriverSourceEvidenceSafeSummaryRecord(
         record({ candidateSafeSummaries: [candidate("pg", { safeSummary: `This dependency is ${wording}.` }), candidate("postgres")] })
       )
-    ).toThrow(/forbidden wording/);
+    ).toThrow(/forbidden wording|unsafe evidence/);
   });
 
   it("accepts future reviewed safe-summary fixture only in tests", () => {
@@ -240,7 +322,7 @@ describe("DB driver source evidence safe-summary contract", () => {
   it.each(["clean", "no vulnerabilities", "approved"])("rejects future reviewed fixture wording: %s", (wording) => {
     expect(() =>
       validateFutureReviewedDbDriverSourceEvidenceSafeSummaryFixture(futureReviewedFixture({ safeSummary: wording }), "pg")
-    ).toThrow(/forbidden wording/);
+    ).toThrow(/forbidden wording|unsafe evidence/);
   });
 
   it("rejects future reviewed fixture missing target commit", () => {
@@ -253,6 +335,40 @@ describe("DB driver source evidence safe-summary contract", () => {
     expect(() =>
       validateFutureReviewedDbDriverSourceEvidenceSafeSummaryFixture(futureReviewedFixture({ packageName: "postgres" }), "pg")
     ).toThrow(/package version mismatch/);
+  });
+
+  it.each([
+    ["negative count", { advisoryCount: -1 }],
+    ["non-integer count", { advisoryCount: 0.5 }],
+    ["advisoryCount mismatch", { advisoryCount: 2 }],
+    ["sourceCount 0", { sourceCount: 0 }],
+    ["transitiveDependencyCount over cap", { transitiveDependencyCount: 1001 }]
+  ] as const)("rejects future reviewed fixture with %s", (_name, countPatch) => {
+    const baseCounts = futureReviewedCandidate().counts;
+    if (!baseCounts) throw new Error("missing counts");
+    expect(() =>
+      validateFutureReviewedDbDriverSourceEvidenceSafeSummaryFixture(
+        futureReviewedFixture({ counts: { ...baseCounts, ...countPatch } }),
+        "pg"
+      )
+    ).toThrow();
+  });
+
+  it.each([
+    ["unknown status field", { customStatus: "pass" }],
+    ["legalComplianceStatus", { legalComplianceStatus: "pass" }],
+    ["youtubePolicyComplianceStatus", { youtubePolicyComplianceStatus: "pass" }],
+    ["raw payload present", { rawPayloadStatus: "raw_present" }],
+    ["stale freshness", { freshnessStatus: "stale" }]
+  ] as const)("rejects future reviewed fixture with %s", (_name, statusPatch) => {
+    const baseStatuses = futureReviewedCandidate().statuses;
+    if (!baseStatuses) throw new Error("missing statuses");
+    expect(() =>
+      validateFutureReviewedDbDriverSourceEvidenceSafeSummaryFixture(
+        futureReviewedFixture({ statuses: { ...baseStatuses, ...statusPatch } as never }),
+        "pg"
+      )
+    ).toThrow();
   });
 
   it("committed .codex evidence remains no-driver, no-package, no-lockfile, no-real-DB", () => {

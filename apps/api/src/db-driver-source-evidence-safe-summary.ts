@@ -67,7 +67,14 @@ export const dbDriverSourceEvidenceForbiddenRawFields = [
   "fullDependencyTree",
   "rawPackageMetadata",
   "rawProviderResponse",
-  "fileContents"
+  "fileContents",
+  "databaseUrl",
+  "connectionString",
+  "privateKey",
+  "clientSecret",
+  "apiKey",
+  "accessToken",
+  "refreshToken"
 ] as const;
 
 export const dbDriverSourceEvidenceForbiddenWording = [
@@ -95,7 +102,32 @@ export const dbDriverSourceEvidenceForbiddenWording = [
   "dependency approved",
   "driver ready",
   "selection ready",
-  "fresh enough to select"
+  "fresh enough to select",
+  "no issues",
+  "no risk",
+  "risk free",
+  "safe for production",
+  "approved for production",
+  "ready to install",
+  "installation approved",
+  "dependency allowed",
+  "package allowed",
+  "source approved",
+  "summary approved",
+  "reviewed and safe",
+  "security passed",
+  "audit passed",
+  "advisory passed",
+  "all clear",
+  "green light"
+] as const;
+
+const currentPrNumber = 60;
+const stalePrNumbers = [59] as const;
+const staleEvidenceValues = [
+  "c9e19b852640ae28b3aa77190c1368873b1fb2d2",
+  "27379749965",
+  "7577783685"
 ] as const;
 
 export const dbDriverSourceEvidenceSafeSummaryBlockers = [
@@ -339,8 +371,8 @@ export function validateFutureReviewedDbDriverSourceEvidenceSafeSummaryFixture(
   }
   if (candidate.packageName !== driverName) throw new Error("future fixture package version mismatch");
   assertAllowedObjectKeys(candidate.allowedSummary, dbDriverSourceEvidenceAllowedSummaryFields, "allowedSummary");
-  assertAllowedObjectKeys(candidate.counts as unknown as Record<string, unknown>, dbDriverSourceEvidenceAllowedCountFields, "counts");
-  assertAllowedObjectKeys(candidate.statuses as unknown as Record<string, unknown>, dbDriverSourceEvidenceAllowedStatusFields, "statuses");
+  assertFutureCounts(candidate.counts);
+  assertFutureStatuses(candidate.statuses);
   return record;
 }
 
@@ -349,6 +381,7 @@ function assertBasicRecord(record: DbDriverSourceEvidenceSafeSummaryRecord) {
   if (record.harnessVersion !== "1.1.8") throw new Error("harnessVersion must be 1.1.8");
   if (record.repository !== "hiro4649/CRIPTO-TIP") throw new Error("repository mismatch");
   if (!Number.isInteger(record.prNumber) || record.prNumber <= 0) throw new Error("prNumber must be current PR number");
+  if (stalePrNumbers.includes(record.prNumber as (typeof stalePrNumbers)[number])) throw new Error("stale prNumber rejected");
   if (!/^[0-9a-f]{40}$/i.test(record.targetCommitSha)) throw new Error("targetCommitSha must be 40-char SHA");
   if (!/^[0-9a-f]{40}$/i.test(record.baseCommitSha)) throw new Error("baseCommitSha must be 40-char SHA");
   if (record.targetCommitSha === record.baseCommitSha) throw new Error("targetCommitSha must differ from baseCommitSha");
@@ -357,6 +390,7 @@ function assertBasicRecord(record: DbDriverSourceEvidenceSafeSummaryRecord) {
 
 function assertCurrentNotReviewed(record: DbDriverSourceEvidenceSafeSummaryRecord) {
   if (record.safeSummaryContractStatus !== "contract_ready") throw new Error("safeSummaryContractStatus must be contract_ready");
+  if (record.prNumber !== currentPrNumber) throw new Error("current safe-summary evidence must bind PR #60");
   if (record.stalenessPolicyStatus !== "policy_ready") throw new Error("stalenessPolicyStatus must be policy_ready");
   if (record.sourceEvidenceStatus !== "not_reviewed") throw new Error("sourceEvidenceStatus must remain not_reviewed");
   if (record.driverChoiceStatus !== "not_selected") throw new Error("driverChoiceStatus must remain not_selected");
@@ -446,13 +480,20 @@ function assertSafeKey(key: string, path: string) {
 function assertSafeText(text: string, path: string, checkForbiddenWording: boolean) {
   const unsafePatterns = [
     /npm audit\s*\{/i,
+    /npm audit --json/i,
     /auditReportVersion/i,
     /"vulnerabilities"\s*:/i,
+    /\bvulnerabilities\b/i,
     /\bGHSA-[a-z0-9-]+/i,
     /\bCVE-20\d{2}-\d{4,}\b/i,
     /OSV raw/i,
     /npm registry raw/i,
     /dependency tree/i,
+    /\bstdout\b/i,
+    /\bstderr\b/i,
+    /stack trace/i,
+    /logs_url/i,
+    /jobs_url/i,
     /https?:\/\/\S+/i,
     /postgres(?:ql)?:\/\/\S+/i,
     /DATABASE_URL|POSTGRES_URL|connectionString|databaseUrl|postgresUrl/i,
@@ -461,9 +502,13 @@ function assertSafeText(text: string, path: string, checkForbiddenWording: boole
     /sk-[a-z0-9_-]+/i,
     /xoxb-[a-z0-9-]+/i,
     /AKIA[0-9A-Z]+/i,
+    /PRIVATE KEY/i,
     /BEGIN .*PRIVATE/i,
     /not_applicable_before_pr_creation|HEAD_SHA_PLACEHOLDER|BASE_SHA_PLACEHOLDER|current_pr_head|current_pr_base/i
   ];
+  for (const staleValue of staleEvidenceValues) {
+    if (text.includes(staleValue)) throw new Error(`stale evidence value rejected at ${path}`);
+  }
   if (unsafePatterns.some((pattern) => pattern.test(text))) throw new Error(`unsafe evidence rejected at ${path}`);
   if (checkForbiddenWording) {
     const lower = text.toLowerCase();
@@ -484,4 +529,26 @@ function assertAllowedObjectKeys(value: Record<string, unknown>, allowed: readon
   for (const key of Object.keys(value)) {
     if (!allowed.includes(key)) throw new Error(`${name} contains forbidden key ${key}`);
   }
+}
+
+function assertFutureCounts(counts: DbDriverSourceEvidenceCounts) {
+  assertAllowedObjectKeys(counts as unknown as Record<string, unknown>, dbDriverSourceEvidenceAllowedCountFields, "counts");
+  for (const [key, value] of Object.entries(counts)) {
+    if (!Number.isInteger(value)) throw new Error(`count ${key} must be integer`);
+    if (value < 0) throw new Error(`count ${key} must be non-negative`);
+  }
+  if (counts.transitiveDependencyCount > 1000) throw new Error("transitiveDependencyCount over cap");
+  if (counts.sourceCount < 1) throw new Error("sourceCount must be at least 1");
+  const severityTotal =
+    counts.criticalCount + counts.highCount + counts.moderateCount + counts.lowCount + counts.unknownSeverityCount;
+  if (counts.advisoryCount !== severityTotal) throw new Error("advisoryCount mismatch");
+}
+
+function assertFutureStatuses(statuses: DbDriverSourceEvidenceStatuses) {
+  assertAllowedObjectKeys(statuses as unknown as Record<string, unknown>, dbDriverSourceEvidenceAllowedStatusFields, "statuses");
+  if (statuses.reviewStatus !== "pass") throw new Error("future reviewStatus must be pass");
+  if (statuses.summaryStatus !== "pass") throw new Error("future summaryStatus must be pass");
+  if (statuses.rawPayloadStatus !== "raw_payload_absent") throw new Error("future rawPayloadStatus must be raw_payload_absent");
+  if (statuses.knownBlockersStatus !== "reviewed") throw new Error("future knownBlockersStatus must be reviewed");
+  if (statuses.freshnessStatus !== "fresh") throw new Error("future freshnessStatus must be fresh");
 }
