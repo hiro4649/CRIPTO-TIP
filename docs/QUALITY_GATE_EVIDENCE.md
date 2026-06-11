@@ -72,6 +72,13 @@ PR #4 live Postgres evidence added:
 | `bestOfNEvidenceStatus` | Added current-head evidence docs and explicit residual risk tracking. | `docs/QUALITY_GATE_EVIDENCE.md`, `docs/RISK_REGISTER.md`. |
 | `testCoverageEvidenceStatus` | Added exact test count and risk-to-test mapping. | `docs/TEST_COVERAGE_EVIDENCE.md`. |
 | `targetQualityScoreStatus` | This evidence set addresses blocking documentation/evidence gaps without weakening checks. | This file and linked evidence docs. |
+
+DB driver advisory source policy evidence:
+
+- Source policy status remains `not_reviewed`.
+- Allowed source categories are declared for future safe review only.
+- Raw advisory, audit, OSV, Snyk, npm registry, dependency tree, terminal, private URL, DB URL, wallet, and token-like values remain forbidden.
+- Driver choice remains `not_selected`; no DB driver dependency, package, lockfile, migration, or real DB change is introduced.
 | `remoteProductBaselineStatus` | Manual confirmation required: baseline product CI is currently pass for TypeScript and contracts. | GitHub CI run `26860944234`. |
 | `remoteNpmDiagnosticStatus` | Manual confirmation required: remote npm artifact was inspected; npm entry remains real tests and Node 20 compatibility was repaired. | quality-gate runs `26859916066`, `26860961085`, `26861097867`, `package.json`, `apps/api/src/server.test.ts`. |
 | `v085StabilityStatus` | Manual confirmation required: PR profile is product durable MVP evidence repair, not production readiness. | `docs/PRODUCTION_GATES.md`, `docs/TASK_CONTRACT.md`. |

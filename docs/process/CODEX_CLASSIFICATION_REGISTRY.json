@@ -1347,6 +1347,78 @@
       "requiresProductVerification": true,
       "allowsFastPath": false,
       "notes": "Machine-readable DB driver advisory review envelope evidence."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-source-policy.ts",
+      "classification": "product_source",
+      "surface": "release_gate",
+      "risk": "R3",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory source policy validator."
+    },
+    {
+      "pathPattern": "apps/api/src/db-driver-advisory-source-policy.test.ts",
+      "classification": "test",
+      "surface": "test",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory source policy tests."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_SOURCE_POLICY.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory source policy docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_SOURCE_CATEGORIES.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory source category docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_SOURCE_BINDING.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory source binding docs."
+    },
+    {
+      "pathPattern": "docs/DB_DRIVER_ADVISORY_SAFE_SUMMARY_RULES.md",
+      "classification": "docs",
+      "surface": "product_docs",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "DB driver advisory safe summary docs."
+    },
+    {
+      "pathPattern": "docs/pr-db-driver-advisory-source-policy-v118-prep.md",
+      "classification": "docs",
+      "surface": "pr_evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "PR evidence for DB driver advisory source policy."
+    },
+    {
+      "pathPattern": ".codex/db-driver-advisory-source-policy.json",
+      "classification": "verification_relevant",
+      "surface": "evidence",
+      "risk": "R2",
+      "requiresProductVerification": true,
+      "allowsFastPath": false,
+      "notes": "Machine-readable DB driver advisory source policy evidence."
     }
   ],
   "safeSummaryOnly": true

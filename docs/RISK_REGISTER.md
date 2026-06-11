@@ -30,6 +30,7 @@
 | Medium | Production YouTube credential provider wiring remains deferred. | Backend/operations | deployment integration PR | Production config rejects official connector mode unless credential source is `secret_manager`. |
 | Medium | Live YouTube API soak and dashboard alert routing remain deferred. | Operations | production observability PR | Deterministic mock soak and metrics name contract are covered now. |
 | Low | `liveChatId` acquisition still depends on upstream live session population. | YouTube integration owner | live session acquisition PR if needed | The connector boundary refuses missing `liveChatId` and does not scrape. |
+| Medium | DB driver advisory source policy is not an advisory review and can become stale before dependency introduction. | DB/storage owner | future DB driver dependency PR | Rebind source category, timestamp, package version, target commit, PR number, and safe summary before any dependency PR. |
 
 ## PR youtube-prod-observability
 
