@@ -2,115 +2,35 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.8",
   "harnessVersion": "1.1.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 60,
-  "headSha": "1ec848b325b97ceec20cdcff290f7094985c2f02",
+  "prNumber": 62,
+  "headSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
   "risks": [
     {
-      "id": "db-driver-owner-approval-1",
+      "id": "db-driver-canonical-model-1",
       "severity": "Medium",
       "status": "open",
-      "risk": "Real DB driver approval remains future human-owner work.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-2",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Approval record does not itself grant runtime readiness.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-3",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Fingerprint prevents accidental replay but does not replace code review.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-4",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Real DB integration tests remain future work.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-5",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Secret manager setup remains future work.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-6",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Migration execution remains future work.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-7",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Provider SDK apply remains future work.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "id": "db-driver-owner-approval-8",
-      "severity": "Medium",
-      "status": "open",
-      "risk": "Production deployment remains out of scope.",
-      "mitigation": "Bounded by not_approved evidence, target binding, fingerprint validation, and future project-owner approval requirement."
-    },
-    {
-      "severity": "Medium",
-      "risk": "DB driver preflight could be mistaken for driver approval.",
+      "risk": "Canonical evidence model could be mistaken for DB driver approval.",
       "owner": "Storage owner",
-      "nextPr": "Owner-approved DB driver selection PR",
-      "mitigation": "Driver choice remains not_selected and selected driver requires approved owner approval status."
+      "nextPr": "Owner-approved DB driver source review PR",
+      "mitigation": "Driver choice remains not_selected, selectedDriver remains null, and final approval remains blocked."
     },
     {
+      "id": "db-driver-canonical-model-2",
       "severity": "Medium",
-      "risk": "Package or lockfile changes could happen before preflight review closes.",
-      "owner": "Storage owner",
-      "nextPr": "Future dependency PR",
-      "mitigation": "Package and lockfile flags remain false and package files are unchanged."
+      "status": "open",
+      "risk": "Previous-head committed evidence could be mistaken for merge-ready current-head evidence.",
+      "owner": "Quality owner",
+      "nextPr": "Current-head evidence refresh PR body step",
+      "mitigation": "Model requires PR body, same-head checks, quality-gate pass, and safe artifact evidence for merge readiness."
     },
     {
+      "id": "db-driver-canonical-model-3",
       "severity": "Medium",
-      "risk": "Final approval gate could be mistaken for current dependency approval.",
-      "owner": "Storage owner",
-      "nextPr": "Future owner-approved DB driver dependency PR",
-      "mitigation": "Committed final gate evidence remains blocked, selected driver is null, owner approval is not_approved, and all permission flags are false."
-    },
-    {
-      "severity": "Medium",
-      "risk": "Test-only future approval fixture could be copied into committed machine evidence.",
-      "owner": "Storage owner",
-      "nextPr": "Future dependency PR review checklist",
-      "mitigation": "Committed validation rejects approved, selected, or ready states and tests prove the future fixture is not committed."
-    },
-    {
-      "severity": "Medium",
-      "risk": "Unsafe DB or provider details could leak through final approval evidence.",
-      "owner": "Security owner",
-      "nextPr": "Future secret-boundary PR",
-      "mitigation": "Final gate recursively rejects connection strings, private URLs, wallet addresses, token-like values, provider response copies, and unsafe GitHub Actions trace references."
-    },
-    {
-      "id": "db-driver-candidate-review-pack-1",
-      "severity": "Medium",
-      "risk": "Candidate listing could be mistaken for DB driver selection.",
-      "owner": "Storage owner",
-      "nextPr": "Future owner-approved dependency PR",
-      "mitigation": "Committed evidence keeps driverChoiceStatus not_selected, selectedDriver null, owner approval not_approved, and final gate blocked."
-    },
-    {
-      "id": "db-driver-candidate-review-pack-2",
-      "severity": "Medium",
-      "risk": "Future package or lockfile review could be skipped.",
-      "owner": "Storage owner",
-      "nextPr": "Future dependency PR",
-      "mitigation": "Candidate review pack records package diff missing, lockfile review missing, and review blockers for both candidates."
+      "status": "open",
+      "risk": "PR body edit loop could create quality-gate churn.",
+      "owner": "Quality owner",
+      "nextPr": "Evidence automation hardening",
+      "mitigation": "Artifact loop stop rule uses same-head body-check pass as final report evidence."
     }
   ],
   "entries": [
@@ -125,8 +45,8 @@
   ],
   "baseSha": "7e4d561ab0335ac8f143a367d8433ca6e6baba74",
   "status": "pass",
-  "title": "feat: add db driver source evidence safe summary",
-  "goal": "Prepare DB driver source evidence safe-summary contract for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
+  "title": "feat: add db driver source summary canonical model",
+  "goal": "Prepare DB driver source-summary canonical evidence model for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
   "changedFiles": [
     ".codex/change-classification.json",
     ".codex/db-driver-source-evidence-safe-summary.json",

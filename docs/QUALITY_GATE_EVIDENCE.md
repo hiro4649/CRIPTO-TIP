@@ -449,6 +449,13 @@ quality-gate weakening is introduced.
 - Status: policy-ready only; not advisory review approval.
 - Machine-readable evidence: `.codex/db-driver-source-evidence-staleness.json`.
 - Validator: `apps/api/src/db-driver-source-evidence-staleness.ts`.
+
+## DB Driver Source-Summary Canonical Model v1.1.8 Prep
+
+- `.codex/db-driver-source-summary-canonical-model.json` records `canonicalModelStatus: model_ready`.
+- Evidence mode is `previous_head_committed_plus_current_head_artifact`; committed `.codex` evidence is previous-head safe evidence, while merge evidence must come from PR body, same-head required checks, quality-gate, and safe artifact evidence.
+- `apps/api/src/db-driver-source-summary-canonical-model.test.ts` verifies current-head PR body/check/artifact requirements, fake artifact rejection, unsafe value rejection, self-referential SHA policy, and artifact loop stop policy.
+- Source evidence remains `not_reviewed`, driver choice remains `not_selected`, `selectedDriver` remains `null`, and all package/runtime/provider/deployment permission flags remain false.
 - Tests: `apps/api/src/db-driver-source-evidence-staleness.test.ts`.
 - Safety boundary: no DB driver dependency, no package or lockfile change, no
   real DB connection, no migration execution, no provider SDK apply, no

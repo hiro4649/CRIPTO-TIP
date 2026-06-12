@@ -440,6 +440,12 @@ not reviewed with no selected driver or dependency allowance.
   connection strings, wallet addresses, token-like values, and unsafe
   safe-summary claims are rejected.
 
+## DB Driver Source-Summary Canonical Model v1.1.8 Prep
+
+- Test file: `apps/api/src/db-driver-source-summary-canonical-model.test.ts`.
+- Coverage: canonical model defaults; previous-head committed evidence plus current-head artifact mode; required PR body, checks, quality-gate run, artifact, and head SHA fields; fake artifact rejection; unsafe placeholder-like value rejection; no-driver/no-package/no-runtime/no-provider-apply boundary; test-only current-head committed fixture isolation; artifact loop stop rule; and self-referential SHA exception policy.
+- Current recorded summary for this PR body: 21 files, 233 passed, 6 skipped. This value is refreshed by the evidence pipeline after full test execution.
+
 ## DB Driver Source Evidence Safe Summary
 
 - Test file: `apps/api/src/db-driver-source-evidence-safe-summary.test.ts`.
