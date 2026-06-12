@@ -1,5 +1,23 @@
 # AGENTS.md
 
+## CRIPTO-TIP Working Guide
+
+CRIPTO-TIP is a crypto-tip and YouTube-facing application workspace. Normal work
+must stay inside the owner-approved repo scope and should prefer small,
+reviewable changes with current-head evidence.
+
+Default commands:
+- Install: `corepack enable && corepack pnpm install`
+- Lint: `corepack pnpm -r --workspace-concurrency=1 lint`
+- Typecheck: `corepack pnpm -r --workspace-concurrency=1 typecheck`
+- Test: `vitest run packages/shared apps/api apps/overlay apps/web`
+- Evidence or CI changes: use the relevant `evidence:*` or `ci:*` script.
+
+Crypto custody, wallet/RPC access, investment advice, YouTube policy compliance,
+legal compliance, production, deployment, and readiness claims require explicit
+owner scope and evidence. Done means the smallest relevant verification was run
+or honestly reported unavailable, with no raw logs or secret-like output.
+
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
 CODEX_QUALITY_HARNESS_FILE v1.1.8
 
