@@ -19,7 +19,7 @@ owner scope and evidence. Done means the smallest relevant verification was run
 or honestly reported unavailable, with no raw logs or secret-like output.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.1.8
+CODEX_QUALITY_HARNESS_FILE v1.1.9
 
 ## Prime Directive
 
