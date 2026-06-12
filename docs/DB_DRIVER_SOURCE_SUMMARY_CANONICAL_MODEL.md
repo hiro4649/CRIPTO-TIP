@@ -23,6 +23,16 @@ Required roles:
 - `currentHeadEvidenceRole`: `pr_body_github_checks_safe_artifact`
 - `evidenceMode`: `previous_head_committed_plus_current_head_artifact`
 
+The model separates ambiguous SHA fields:
+
+- `committedEvidenceHeadSha`: the head where committed machine-readable evidence was produced
+- `committedEvidenceBaseSha`: the base paired with committed machine-readable evidence
+- `currentHeadEvidence.headSha`: the active PR head proven by PR body, checks, and safe artifact
+- `currentHeadEvidence.baseSha`: the active PR base
+- `currentHeadEvidence.prNumber`: the active PR number
+
+Synthetic fixture values are never valid final merge evidence and must not appear in committed `.codex` evidence.
+
 ## Forbidden Scope
 
 This model forbids package changes, lockfile changes, DB driver dependency selection, real DB connections, migration execution, live DB tests, provider SDK apply, production deployment, and runtime, production, legal, or YouTube policy readiness claims.

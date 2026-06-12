@@ -1,7 +1,10 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   createDefaultDbDriverSourceSummaryCanonicalModelRecord,
   dbDriverSourceSummaryCanonicalCandidateDrivers,
+  dbDriverSourceSummaryCanonicalPrNumber,
+  dbDriverSourceSummaryRejectedSyntheticHeadSha,
   dbDriverSourceSummaryVerificationProfile,
   validateCurrentDbDriverSourceSummaryCanonicalModelRecord,
   validateCurrentHeadCommittedRequiredFixture,
@@ -10,16 +13,17 @@ import {
 } from "./db-driver-source-summary-canonical-model.js";
 
 const baseSha = "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b";
-const currentHeadSha = "1111111111111111111111111111111111111111";
-const futureHeadSha = "2222222222222222222222222222222222222222";
+const pr62HeadSha = "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e";
+const fixtureCurrentHeadSha = "3333333333333333333333333333333333333333";
+const fixtureFutureHeadSha = "2222222222222222222222222222222222222222";
 const branchName = "feat/db-driver-source-summary-canonical-model-v118-prep";
 
 function record(patch: Partial<DbDriverSourceSummaryCanonicalModelRecord> = {}) {
   return {
     ...createDefaultDbDriverSourceSummaryCanonicalModelRecord({
-      prNumber: 61,
+      prNumber: dbDriverSourceSummaryCanonicalPrNumber,
       targetBranch: branchName,
-      targetCommitSha: baseSha,
+      targetCommitSha: pr62HeadSha,
       baseCommitSha: baseSha,
       createdAt: "2026-06-12T00:00:00Z"
     }),
@@ -27,10 +31,13 @@ function record(patch: Partial<DbDriverSourceSummaryCanonicalModelRecord> = {}) 
       prBodyStatus: "current_head_recorded",
       githubChecksStatus: "same_head_pass",
       qualityGateArtifactStatus: "same_head_artifact_present",
-      headSha: currentHeadSha,
-      ciRunId: "27382334854",
-      qualityGateRunId: "27382242932",
-      qualityGateArtifactId: "7578755317"
+      prNumber: dbDriverSourceSummaryCanonicalPrNumber,
+      headSha: pr62HeadSha,
+      baseSha,
+      ciRunId: "27384710953",
+      qualityGateRunId: "27384898010",
+      qualityGateArtifactId: "7579705811",
+      evidenceSource: "pr_body_github_checks_safe_artifact"
     },
     ...patch
   } as DbDriverSourceSummaryCanonicalModelRecord;
@@ -38,8 +45,12 @@ function record(patch: Partial<DbDriverSourceSummaryCanonicalModelRecord> = {}) 
 
 function currentHeadFixture(patch: Partial<DbDriverSourceSummaryCanonicalModelRecord> = {}) {
   return record({
-    targetCommitSha: futureHeadSha,
+    targetCommitSha: fixtureFutureHeadSha,
     baseCommitSha: baseSha,
+    currentHeadEvidence: {
+      ...record().currentHeadEvidence,
+      headSha: fixtureFutureHeadSha
+    },
     evidenceMode: "current_head_committed_required",
     committedEvidenceRole: "current_head_committed_evidence",
     committedEvidenceStatus: "current_head_required",
@@ -61,7 +72,14 @@ describe("DB driver source-summary canonical evidence model", () => {
     expect(current.selfReferentialShaPolicy).toBe("exception_allowed_with_current_head_artifact");
     expect(current.artifactLoopStopPolicy).toBe("stop_after_same_head_pass");
     expect(current.safeSummaryVerificationProfile).toBe(dbDriverSourceSummaryVerificationProfile);
-    expect(current.currentHeadEvidence.headSha).toBe(currentHeadSha);
+    expect(current.prNumber).toBe(62);
+    expect(current.targetCommitSha).toBe(pr62HeadSha);
+    expect(current.baseCommitSha).toBe(baseSha);
+    expect(current.currentHeadEvidence.prNumber).toBe(62);
+    expect(current.currentHeadEvidence.headSha).toBe(pr62HeadSha);
+    expect(current.currentHeadEvidence.baseSha).toBe(baseSha);
+    expect(current.currentHeadEvidence.qualityGateRunId).toBe("27384898010");
+    expect(current.currentHeadEvidence.qualityGateArtifactId).toBe("7579705811");
   });
 
   it("keeps DB driver selection, dependency, runtime, and compliance readiness out of scope", () => {
@@ -96,11 +114,21 @@ describe("DB driver source-summary canonical evidence model", () => {
     ["missing quality-gate artifact", { qualityGateArtifactStatus: "missing" }],
     ["fake quality-gate artifact status", { qualityGateArtifactStatus: "fake" }],
     ["stale quality-gate artifact", { qualityGateArtifactStatus: "stale" }],
+    ["missing current-head PR number", { prNumber: null }],
+    ["stale current-head PR number", { prNumber: 61 }],
     ["missing current-head SHA", { headSha: null }],
+    ["synthetic current-head SHA", { headSha: dbDriverSourceSummaryRejectedSyntheticHeadSha }],
+    ["base commit as current-head SHA", { headSha: baseSha }],
+    ["missing current-head base SHA", { baseSha: null }],
+    ["wrong current-head base SHA", { baseSha: fixtureCurrentHeadSha }],
     ["missing CI run", { ciRunId: null }],
+    ["stale CI run", { ciRunId: "27382334854" }],
     ["missing quality-gate run", { qualityGateRunId: null }],
+    ["stale quality-gate run", { qualityGateRunId: "27382242932" }],
     ["missing quality-gate artifact ID", { qualityGateArtifactId: null }],
-    ["known fake artifact ID", { qualityGateArtifactId: "7500000000" }]
+    ["stale quality-gate artifact ID", { qualityGateArtifactId: "7578755317" }],
+    ["known fake artifact ID", { qualityGateArtifactId: "7500000000" }],
+    ["missing evidence source", { evidenceSource: "missing" }]
   ])("rejects %s", (_label, patch) => {
     const evidencePatch = patch as Partial<DbDriverSourceSummaryCurrentHeadEvidence>;
     expect(() =>
@@ -117,6 +145,9 @@ describe("DB driver source-summary canonical evidence model", () => {
 
   it.each([
     ["zero PR number", { prNumber: 0 }],
+    ["stale PR number", { prNumber: 61 }],
+    ["synthetic target SHA", { targetCommitSha: dbDriverSourceSummaryRejectedSyntheticHeadSha }],
+    ["target SHA equal to base", { targetCommitSha: baseSha }],
     ["invalid evidence mode", { evidenceMode: "invalid" }],
     ["wrong committed role", { committedEvidenceRole: "current_head_committed_evidence" }],
     ["missing self-referential policy", { selfReferentialShaPolicy: "not_handled" }],
@@ -195,6 +226,25 @@ describe("DB driver source-summary canonical evidence model", () => {
     expect(fixture.targetCommitSha).not.toBe(fixture.baseCommitSha);
   });
 
+  it("accepts explicitly separated previous-head committed evidence with current-head artifact evidence", () => {
+    const current = validateCurrentDbDriverSourceSummaryCanonicalModelRecord(
+      record({
+        committedEvidenceHeadSha: baseSha,
+        committedEvidenceBaseSha: baseSha,
+        targetCommitSha: pr62HeadSha,
+        currentHeadEvidence: {
+          ...record().currentHeadEvidence,
+          headSha: pr62HeadSha,
+          baseSha,
+          prNumber: 62
+        }
+      })
+    );
+
+    expect(current.committedEvidenceHeadSha).toBe(baseSha);
+    expect(current.currentHeadEvidence.headSha).toBe(pr62HeadSha);
+  });
+
   it("rejects a current-head fixture that reuses the previous-head target SHA", () => {
     expect(() =>
       validateCurrentHeadCommittedRequiredFixture(
@@ -202,6 +252,14 @@ describe("DB driver source-summary canonical evidence model", () => {
           targetCommitSha: baseSha
         })
       )
-    ).toThrow(/current-head fixture targetCommitSha/);
+    ).toThrow(/targetCommitSha must differ from baseCommitSha/);
+  });
+
+  it("keeps fixture values out of committed machine-readable evidence", () => {
+    const committedEvidence = readFileSync(".codex/db-driver-source-summary-canonical-model.json", "utf8");
+
+    expect(committedEvidence).not.toContain('"prNumber": 61');
+    expect(committedEvidence).not.toContain(dbDriverSourceSummaryRejectedSyntheticHeadSha);
+    expect(committedEvidence).toContain('"prNumber": 62');
   });
 });

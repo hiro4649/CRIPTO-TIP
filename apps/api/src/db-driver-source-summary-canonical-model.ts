@@ -3,6 +3,12 @@ export type DbDriverSourceSummaryCanonicalCandidateDriver =
   (typeof dbDriverSourceSummaryCanonicalCandidateDrivers)[number];
 
 export const dbDriverSourceSummaryVerificationProfile = "db_driver_source_summary_v1" as const;
+export const dbDriverSourceSummaryCanonicalPrNumber = 62 as const;
+export const dbDriverSourceSummaryRejectedSyntheticHeadSha =
+  "1111111111111111111111111111111111111111" as const;
+export const dbDriverSourceSummaryCurrentCiRunId = "27384710953" as const;
+export const dbDriverSourceSummaryCurrentQualityGateRunId = "27384898010" as const;
+export const dbDriverSourceSummaryCurrentQualityGateArtifactId = "7579705811" as const;
 
 export const dbDriverSourceSummaryCanonicalBlockers = [
   "canonical_model_not_ready",
@@ -43,10 +49,13 @@ export interface DbDriverSourceSummaryCurrentHeadEvidence {
   prBodyStatus: "current_head_recorded" | "missing" | "placeholder";
   githubChecksStatus: "same_head_pass" | "missing" | "failed" | "stale";
   qualityGateArtifactStatus: "same_head_artifact_present" | "missing" | "fake" | "stale";
+  prNumber: number | null;
   headSha: string | null;
+  baseSha: string | null;
   ciRunId: string | null;
   qualityGateRunId: string | null;
   qualityGateArtifactId: string | null;
+  evidenceSource: "pr_body_github_checks_safe_artifact" | "missing" | "placeholder";
 }
 
 export interface DbDriverSourceSummaryCanonicalModelRecord {
@@ -57,6 +66,8 @@ export interface DbDriverSourceSummaryCanonicalModelRecord {
   targetBranch: string;
   targetCommitSha: string;
   baseCommitSha: string;
+  committedEvidenceHeadSha: string;
+  committedEvidenceBaseSha: string;
   canonicalModelStatus: CanonicalModelStatus;
   evidenceMode: EvidenceMode;
   committedEvidenceRole: "previous_head_safe_evidence" | "current_head_committed_evidence";
@@ -131,11 +142,16 @@ export function createDefaultDbDriverSourceSummaryCanonicalModelRecord(
       prBodyStatus: "current_head_recorded",
       githubChecksStatus: "same_head_pass",
       qualityGateArtifactStatus: "same_head_artifact_present",
+      prNumber: context.prNumber,
       headSha: context.targetCommitSha,
+      baseSha: context.baseCommitSha,
       ciRunId: null,
       qualityGateRunId: null,
-      qualityGateArtifactId: null
+      qualityGateArtifactId: null,
+      evidenceSource: "pr_body_github_checks_safe_artifact"
     },
+    committedEvidenceHeadSha: context.targetCommitSha,
+    committedEvidenceBaseSha: context.baseCommitSha,
     committedEvidenceStatus: "previous_head_allowed",
     previousHeadCommittedEvidenceAllowed: true,
     previousHeadConditions: [
@@ -207,7 +223,10 @@ export function validateCurrentDbDriverSourceSummaryCanonicalModelRecord(
     throw new Error("verification profile mismatch");
   }
   if (!record.previousHeadCommittedEvidenceAllowed) throw new Error("previous-head mode must be explicitly allowed");
-  assertCurrentHeadEvidence(record.currentHeadEvidence);
+  if (record.targetCommitSha !== record.currentHeadEvidence.headSha) {
+    throw new Error("targetCommitSha must match current-head evidence SHA");
+  }
+  assertCurrentHeadEvidence(record);
   return record;
 }
 
@@ -235,21 +254,54 @@ function assertCanonicalBasics(record: DbDriverSourceSummaryCanonicalModelRecord
   if (!Number.isInteger(record.prNumber) || record.prNumber <= 0) throw new Error("prNumber must be positive");
   if (!/^[0-9a-f]{40}$/i.test(record.targetCommitSha)) throw new Error("targetCommitSha must be 40-char SHA");
   if (!/^[0-9a-f]{40}$/i.test(record.baseCommitSha)) throw new Error("baseCommitSha must be 40-char SHA");
+  if (!/^[0-9a-f]{40}$/i.test(record.committedEvidenceHeadSha)) {
+    throw new Error("committedEvidenceHeadSha must be 40-char SHA");
+  }
+  if (!/^[0-9a-f]{40}$/i.test(record.committedEvidenceBaseSha)) {
+    throw new Error("committedEvidenceBaseSha must be 40-char SHA");
+  }
+  if (record.targetCommitSha === record.baseCommitSha) {
+    throw new Error("targetCommitSha must differ from baseCommitSha");
+  }
+  if (record.targetCommitSha === dbDriverSourceSummaryRejectedSyntheticHeadSha) {
+    throw new Error("synthetic head SHA is forbidden in canonical evidence");
+  }
   if (record.canonicalModelStatus !== "model_ready") throw new Error("canonical model not ready");
   assertExactSet(record.candidateDrivers, dbDriverSourceSummaryCanonicalCandidateDrivers, "candidateDrivers");
 }
 
-function assertCurrentHeadEvidence(evidence: DbDriverSourceSummaryCurrentHeadEvidence) {
+function assertCurrentHeadEvidence(record: DbDriverSourceSummaryCanonicalModelRecord) {
+  const evidence = record.currentHeadEvidence;
+  if (evidence.evidenceSource !== "pr_body_github_checks_safe_artifact") {
+    throw new Error("current-head evidence source missing");
+  }
+  if (evidence.prNumber !== record.prNumber) throw new Error("current-head PR number mismatch");
+  if (evidence.prNumber !== dbDriverSourceSummaryCanonicalPrNumber) {
+    throw new Error("stale PR number detected");
+  }
   if (evidence.prBodyStatus !== "current_head_recorded") throw new Error("missing current-head PR body");
   if (evidence.githubChecksStatus !== "same_head_pass") throw new Error("missing current-head checks");
   if (evidence.qualityGateArtifactStatus !== "same_head_artifact_present") {
     throw new Error("missing current-head quality-gate artifact");
   }
   if (!evidence.headSha || !/^[0-9a-f]{40}$/i.test(evidence.headSha)) throw new Error("current-head SHA missing");
+  if (evidence.headSha === dbDriverSourceSummaryRejectedSyntheticHeadSha) {
+    throw new Error("synthetic head SHA is forbidden in current-head evidence");
+  }
+  if (evidence.headSha === record.baseCommitSha) throw new Error("current-head SHA must differ from base commit");
+  if (!evidence.baseSha || !/^[0-9a-f]{40}$/i.test(evidence.baseSha)) throw new Error("current-head base SHA missing");
+  if (evidence.baseSha !== record.baseCommitSha) throw new Error("current-head base SHA mismatch");
   if (!evidence.ciRunId) throw new Error("current-head CI run missing");
   if (!evidence.qualityGateRunId) throw new Error("current-head quality-gate run missing");
   if (!evidence.qualityGateArtifactId) throw new Error("current-head quality-gate artifact missing");
   if (evidence.qualityGateArtifactId === "7500000000") throw new Error("fake artifact detected");
+  if (evidence.ciRunId !== dbDriverSourceSummaryCurrentCiRunId) throw new Error("stale current-head CI run");
+  if (evidence.qualityGateRunId !== dbDriverSourceSummaryCurrentQualityGateRunId) {
+    throw new Error("stale current-head quality-gate run");
+  }
+  if (evidence.qualityGateArtifactId !== dbDriverSourceSummaryCurrentQualityGateArtifactId) {
+    throw new Error("stale current-head quality-gate artifact");
+  }
 }
 
 function assertCanonicalNoDriverNoRuntime(record: DbDriverSourceSummaryCanonicalModelRecord) {

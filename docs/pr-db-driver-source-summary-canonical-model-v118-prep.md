@@ -21,7 +21,7 @@ Done criteria: canonical source-summary model exists; previous-head committed ev
 
 ## Evidence Integrity
 
-Head SHA: 1111111111111111111111111111111111111111
+Head SHA: 18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e
 
 Base SHA: 2758cfa576c11ccbc8fd62e473d06d9d3d0d937b
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27382334854
+CI run: 27384710953
 
-Quality-gate run: 27382242932
+Quality-gate run: 27384898010
 
-Quality-gate artifact: 7578755317
+Quality-gate artifact: 7579705811
 
-Tests: 49 test files, 1653 passed, 6 skipped
+Tests: 49 test files, 1668 passed, 6 skipped
 
 ## Testing and review
 
@@ -93,7 +93,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 49 files, 1653 passed, 6 skipped.
+Current recorded test summary: 49 files, 1668 passed, 6 skipped.
 
 ## Security Boundaries
 

@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.8",
   "harnessVersion": "1.1.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 61,
-  "headSha": "1111111111111111111111111111111111111111",
+  "prNumber": 62,
+  "headSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
   "baseSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
   "schemaVersion": "1.0.0",
   "qualityGateExpectedStatus": "not_available_before_pr_creation",
-  "latestAnalyzedRunId": "27258264650",
-  "latestAnalyzedArtifactId": "7528356152",
+  "latestAnalyzedRunId": "27384898010",
+  "latestAnalyzedArtifactId": "7579705811",
   "reasonCodeMappings": {
     "providerApplyTransactionBoundaryStatus": "pass",
     "providerApplyCompensationHandoffStatus": "pass",
@@ -59,11 +59,11 @@
     "Final PR body evidence is refreshed after PR creation and same-head CI and quality-gate success.",
     "No quality-gate weakening is introduced."
   ],
-  "qualityGateRunId": "27382242932",
-  "qualityGateArtifactId": "7578755317",
+  "qualityGateRunId": "27384898010",
+  "qualityGateArtifactId": "7579705811",
   "title": "feat: add db driver source summary canonical model",
   "goal": "Prepare DB driver source-summary canonical evidence model for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
-  "evidenceStatus": "current_head_refresh_requested",
+  "evidenceStatus": "same_head_body_check_pass_after_pr_body_refresh",
   "forbiddenScopeStatus": "pass",
   "dbDriverPreflightPolicyStatus": "not_selected",
   "changedFiles": [
@@ -141,16 +141,16 @@
     "DB driver selected in this PR"
   ],
   "productCiStatus": "success",
-  "ciRunId": "27382334854",
+  "ciRunId": "27384710953",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 49,
-    "passed": 1653,
+    "passed": 1668,
     "skipped": 6
   },
   "testFiles": 49,
-  "passed": 1653,
+  "passed": 1668,
   "skipped": 6,
   "targetQualityScoreStatus": "pass",
   "contractGovernanceStatus": "pass",
@@ -364,5 +364,13 @@
     "files": 48,
     "totalFiles": 48
   },
-  "dbDriverCanonicalModelStatus": "model_ready"
+  "dbDriverCanonicalModelStatus": "model_ready",
+  "currentHeadEvidence": {
+    "prNumber": 62,
+    "headSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
+    "baseSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
+    "ciRunId": "27384710953",
+    "qualityGateRunId": "27384898010",
+    "qualityGateArtifactId": "7579705811"
+  }
 }

@@ -2,9 +2,9 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.1.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 61,
+  "prNumber": 62,
   "targetBranch": "feat/db-driver-source-summary-canonical-model-v118-prep",
-  "targetCommitSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
+  "targetCommitSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
   "baseCommitSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
   "canonicalModelStatus": "model_ready",
   "evidenceMode": "previous_head_committed_plus_current_head_artifact",
@@ -16,15 +16,21 @@
   "sourceEvidenceStatus": "not_reviewed",
   "driverChoiceStatus": "not_selected",
   "selectedDriver": null,
-  "candidateDrivers": ["pg", "postgres"],
+  "candidateDrivers": [
+    "pg",
+    "postgres"
+  ],
   "currentHeadEvidence": {
     "prBodyStatus": "current_head_recorded",
     "githubChecksStatus": "same_head_pass",
     "qualityGateArtifactStatus": "same_head_artifact_present",
-    "headSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
-    "ciRunId": "27382334854",
-    "qualityGateRunId": "27382242932",
-    "qualityGateArtifactId": "7578755317"
+    "prNumber": 62,
+    "headSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
+    "baseSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
+    "ciRunId": "27384710953",
+    "qualityGateRunId": "27384898010",
+    "qualityGateArtifactId": "7579705811",
+    "evidenceSource": "pr_body_github_checks_safe_artifact"
   },
   "committedEvidenceStatus": "previous_head_allowed",
   "previousHeadCommittedEvidenceAllowed": true,
@@ -43,14 +49,18 @@
     "reject_local_pre_push_evidence_as_merge_evidence"
   ],
   "placeholderPolicy": [
-    "reject_current_pr_head",
-    "reject_current_pr_base",
+    "reject_literal_active_pr_head_token",
+    "reject_literal_active_pr_base_token",
     "reject_literal_head_sha_placeholder",
     "reject_literal_base_sha_placeholder",
     "reject_not_applicable_before_pr_creation",
     "reject_pending_until_github_actions"
   ],
-  "fakeArtifactPolicy": ["reject_7500000000", "reject_missing_artifact", "reject_artifact_not_same_head"],
+  "fakeArtifactPolicy": [
+    "reject_7500000000",
+    "reject_missing_artifact",
+    "reject_artifact_not_same_head"
+  ],
   "prBodyEditLoopPolicy": "After one same-head PR body refresh, a later same-head body-check pass is final report evidence and does not trigger edit churn.",
   "qualityGateChurnPolicy": "Do not chase endless quality-gate runs created only by PR body edits.",
   "ownerApprovalStatus": "not_approved",
@@ -70,5 +80,7 @@
   "youtubePolicyComplianceClaimAllowed": false,
   "forbiddenScopeStatus": "pass",
   "safeSummary": "Canonical source-summary evidence model is ready, but source evidence remains not reviewed and no DB driver is selected.",
-  "createdAt": "2026-06-12T00:00:00Z"
+  "createdAt": "2026-06-12T00:00:00Z",
+  "committedEvidenceHeadSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
+  "committedEvidenceBaseSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b"
 }

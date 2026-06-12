@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.1.8",
   "harnessVersion": "1.1.8",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 61,
-  "headSha": "1111111111111111111111111111111111111111",
+  "prNumber": 62,
+  "headSha": "18ace6bbe9b41e572dc2b8310d6d6c0d3598f30e",
   "baseSha": "2758cfa576c11ccbc8fd62e473d06d9d3d0d937b",
   "testCoverageEvidenceStatus": "pass",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 49,
-    "passed": 1653,
+    "passed": 1668,
     "skipped": 6
   },
   "coverage": [
@@ -22,7 +22,7 @@
   ],
   "status": "pass",
   "testFiles": 49,
-  "passed": 1653,
+  "passed": 1668,
   "skipped": 6,
   "coverageNotes": [
     "DB driver owner approval record default not_approved state covered.",
@@ -30,7 +30,7 @@
     "Owner role and AI/bot actor rejection covered.",
     "Unsafe evidence rejection and forbidden capability denial covered."
   ],
-  "testsPassed": 1653,
+  "testsPassed": 1668,
   "testsSkipped": 6,
   "title": "feat: add db driver source summary canonical model",
   "goal": "Prepare DB driver source-summary canonical evidence model for v1.1.8 without selecting a driver, adding a DB driver dependency, changing package.json or pnpm-lock, connecting to a real DB, executing migrations, running live DB integration tests, applying provider SDK actions, or claiming runtime/production/legal/YouTube policy readiness.",
@@ -110,9 +110,9 @@
   ],
   "productCiStatus": "success",
   "qualityGateStatus": "success",
-  "ciRunId": "27382334854",
-  "qualityGateRunId": "27382242932",
-  "qualityGateArtifactId": "7578755317",
+  "ciRunId": "27384710953",
+  "qualityGateRunId": "27384898010",
+  "qualityGateArtifactId": "7579705811",
   "prBodyPath": "docs/pr-db-driver-source-evidence-safe-summary-v118-prep.md",
   "doneCriteria": [
     "canonical source-summary model exists",
