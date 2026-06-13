@@ -12,11 +12,13 @@ import {
   createPublicId,
   moderateTipMessage,
   normalizeTokenTipToSupportReceived,
+  normalizeYouTubeSuperChatToSupportReceived,
   sanitizeDisplayName,
   sanitizeMessage,
   sha256Bytes32Hex,
   stableId,
   TipIntentSchema,
+  YouTubeSuperChatInputSchema,
   type LiveSession,
   type OverlayTipAlert,
   type SupportReceived,
@@ -52,6 +54,44 @@ function emitOverlay(alert: OverlayTipAlert) {
 
 export function isOverlayTokenValid(token: string | undefined): boolean {
   return token === OVERLAY_TOKEN;
+}
+
+async function applySupportReceivedSideEffects(repo: CriptoTipRepository, support: SupportReceived) {
+  const createdSupport = await repo.createSupportEventIfAbsent(support);
+  if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
+
+  if (canApplyAffinity(support.support.message_moderation_status) && support.viewer.iris_user_id) {
+    await repo.applyAffinityIfAbsent({
+      id: createPublicId("aff"),
+      source_event_id: support.source_event_id,
+      iris_user_id: support.viewer.iris_user_id,
+      character_id: support.character_id,
+      previous_affinity: support.relationship.previous_affinity,
+      affinity_delta: support.relationship.affinity_delta,
+      new_affinity: support.relationship.new_affinity,
+      reason: "support.received",
+      created_at: new Date().toISOString()
+    });
+  }
+
+  const overlay = canEmitOverlay(support.support.message_moderation_status) ? buildOverlayTipAlert(support) : undefined;
+  if (overlay) {
+    await repo.createOverlayEventIfAbsent(support.source_event_id, support.stream_id, overlay);
+    await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
+    emitOverlay(overlay);
+  }
+
+  const reactionRequest = canRequestAiReaction(support.support.message_moderation_status) ? buildCharacterReactionRequest(support) : undefined;
+  if (reactionRequest) {
+    await repo.createReactionRequestIfAbsent(support.source_event_id, support.character_id, reactionRequest);
+    await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
+  }
+
+  return {
+    support_event: support,
+    character_reaction_request: reactionRequest,
+    overlay
+  };
 }
 
 const TipIntentRequestSchema = z.object({
@@ -173,37 +213,25 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       moderation_status: intent.moderation_status,
       created_at: new Date().toISOString()
     }, { previous: affinity.previous, delta: affinity.delta, next: affinity.next });
-    const createdSupport = await repo.createSupportEventIfAbsent(support);
-    if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
-    if (canApplyAffinity(intent.moderation_status)) {
-      await repo.applyAffinityIfAbsent({
-        id: createPublicId("aff"),
-        source_event_id: support.source_event_id,
-        iris_user_id: intent.iris_user_id,
-        character_id: intent.character_id,
-        previous_affinity: affinity.previous,
-        affinity_delta: affinity.delta,
-        new_affinity: affinity.next,
-        reason: "support.received",
-        created_at: new Date().toISOString()
-      });
-    }
-    const overlay = canEmitOverlay(intent.moderation_status) ? buildOverlayTipAlert(support) : undefined;
-    if (overlay) {
-      await repo.createOverlayEventIfAbsent(support.source_event_id, support.stream_id, overlay);
-      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
-      emitOverlay(overlay);
-    }
-    const reactionRequest = canRequestAiReaction(intent.moderation_status) ? buildCharacterReactionRequest(support) : undefined;
-    if (reactionRequest) {
-      await repo.createReactionRequestIfAbsent(support.source_event_id, support.character_id, reactionRequest);
-      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
-    }
-    return {
-      support_event: support,
-      character_reaction_request: reactionRequest,
-      overlay
+    return applySupportReceivedSideEffects(repo, support);
+  });
+
+  app.post("/internal/youtube/super-chat-fixtures", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const input = YouTubeSuperChatInputSchema.parse(req.body);
+    const irisUserId = stableId("ytusr", input.author_channel_id);
+    const existing = await repo.getSupportEventBySource("youtube_super_chat", input.live_chat_message_id);
+    if (existing) return { support_event: existing, duplicate: true };
+    const moderation = moderateTipMessage({ displayName: input.author_display_name, message: input.user_comment, amountRaw: input.amount_micros });
+    const previous = await repo.getCurrentAffinity(irisUserId, input.character_id);
+    const tier = input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small";
+    const affinity = canApplyAffinity(moderation.status) ? calculateAffinityDelta({ tier, previous, dailyUsed: 0, streamUsed: 0 }) : { previous, delta: 0, next: previous };
+    const normalized = normalizeYouTubeSuperChatToSupportReceived(input, { previous: affinity.previous, delta: affinity.delta, next: affinity.next });
+    const support: SupportReceived = {
+      ...normalized,
+      viewer: { ...normalized.viewer, iris_user_id: irisUserId }
     };
+    return applySupportReceivedSideEffects(repo, support);
   });
 
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {

@@ -2,20 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 62,
-  "headSha": "872541557dbc8f480b78cd941b1b50268a0c759b",
-  "baseSha": "301c66b6560e4e1a7cd66bdd08a51a74f288da58",
-  "reviewIndependenceStatus": "pass",
-  "writerEvidenceOnly": true,
-  "aiReviewIsNotHumanApproval": true,
-  "humanConfirmationRequired": true,
-  "humanOwnerConfirmationRequired": true,
-  "status": "pass",
-  "ownerApprovalStatus": "not_approved",
-  "reviewIndependence": {
-    "aiReviewIsHumanApproval": false,
-    "futureOwnerApprovalRequired": true,
-    "currentPrSelectsDriver": false,
-    "statement": "AI review is not human approval. High-tier repair planning is not owner approval, GitHub approval review, or merge authority."
-  }
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "status": "updated_for_p0_vertical_slice",
+  "aiReviewIsHumanApproval": false,
+  "githubApprovalReviewCreated": false,
+  "ownerApprovalCreated": false,
+  "mergeAuthorityCreated": false
 }

@@ -2,27 +2,27 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 62,
-  "headSha": "872541557dbc8f480b78cd941b1b50268a0c759b",
-  "baseSha": "301c66b6560e4e1a7cd66bdd08a51a74f288da58",
-  "testCoverageEvidenceStatus": "pass",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "status": "pass",
+  "coverage": [
+    "P0 Super Chat fixture creates support.received",
+    "support.received is idempotent by source/source_event_id",
+    "approved fixture applies affinity once",
+    "approved fixture enqueues reaction request once",
+    "approved fixture enqueues overlay event once",
+    "approved fixture enqueues outbox events",
+    "admin tips list includes support event",
+    "moderation hold does not enqueue reaction or overlay",
+    "no package or lockfile change",
+    "no real YouTube API or DB use"
+  ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 50,
-    "passed": 1692,
+    "testFiles": 51,
+    "passed": 1695,
     "skipped": 6
-  },
-  "coverage": [
-    "Default v1.2.0 adaptive review-pool profile is valid.",
-    "Unknown model-tier, typed blocker, review-pool, escalation hysteresis, and high-tier repair planning profiles are rejected.",
-    "Stale source-of-record state is rejected.",
-    "Safety reduction, quality-gate weakening, owner approval, GitHub approval review, and merge authority creation are rejected.",
-    "Forbidden package, lockfile, DB driver, real DB, readiness, compliance, raw log, and raw advisory flags are rejected.",
-    "Committed evidence remains no-driver, no-package, no-lockfile, and no-real-DB."
-  ],
-  "status": "pass",
-  "testFiles": 50,
-  "passed": 1692,
-  "skipped": 6
+  }
 }

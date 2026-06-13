@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 62,
-  "headSha": "872541557dbc8f480b78cd941b1b50268a0c759b",
-  "baseSha": "301c66b6560e4e1a7cd66bdd08a51a74f288da58",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
@@ -30,10 +30,6 @@
       "status": "pass"
     },
     {
-      "name": "corepack pnpm evidence:ci",
-      "status": "pass"
-    },
-    {
       "name": "corepack pnpm quality:self-protection",
       "status": "pass"
     },
@@ -43,13 +39,13 @@
     }
   ],
   "coverage": [
-    "v1.2.0 adaptive review-pool default profile validity.",
-    "Unknown profile rejection.",
-    "Forbidden authority, package, lockfile, DB, runtime, readiness, compliance, raw log, and raw advisory flags rejected.",
-    "AGENTS v1.2.0 source boundary alignment."
+    "P0 approved Super Chat fixture vertical slice.",
+    "P0 idempotency by source/source_event_id.",
+    "P0 moderation hold blocks reaction and overlay.",
+    "Unsafe display name and unsafe message handling."
   ],
   "status": "pass",
-  "testFiles": 50,
-  "passed": 1692,
+  "testFiles": 51,
+  "passed": 1695,
   "skipped": 6
 }
