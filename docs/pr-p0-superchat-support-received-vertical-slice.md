@@ -21,21 +21,21 @@ Done criteria: P0 Super Chat fixture creates support.received; support.received 
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 824f8f940d253acb8185eea192a9726336b4c3a5
 
 Base SHA: d7229c7988a17ba3ddd446ee17326411e2faaa8f
 
-Product CI: not_available_before_pr_creation
+Product CI: success
 
-Quality-gate: not_available_before_pr_creation
+Quality-gate: success
 
-CI run: not_available_before_pr_creation
+CI run: 27481295202
 
-Quality-gate run: not_available_before_pr_creation
+Quality-gate run: 27481335174
 
-Quality-gate artifact: not_available_before_pr_creation
+Quality-gate artifact: 7615176475
 
-Tests: 51 test files, 1695 passed, 6 skipped
+Tests: 51 test files, 1696 passed, 6 skipped
 
 ## Testing and review
 
@@ -95,7 +95,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 51 files, 1695 passed, 6 skipped.
+Current recorded test summary: 51 files, 1696 passed, 6 skipped.
 
 ## Security Boundaries
 

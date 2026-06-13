@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 66,
+  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
   "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 superchat support received vertical slice",
   "goal": "Add a local YouTube Super Chat fixture vertical slice from support.received through affinity, reaction request, overlay event, outbox enqueue, and admin tips list without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, migrations, contracts changes, or readiness/compliance claims.",
-  "ciRunId": "not_available_before_pr_creation",
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation",
-  "productCiStatus": "not_available_before_pr_creation",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "ciRunId": "27481295202",
+  "qualityGateRunId": "27481335174",
+  "qualityGateArtifactId": "7615176475",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -76,7 +76,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27481295202",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27481335174",
+      "result": "success",
+      "artifactId": "7615176475"
+    }
+  ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, token sale, exchange, cash-out, custody, internal balance, investment claims, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -140,7 +152,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 51,
-    "passed": 1695,
+    "passed": 1696,
     "skipped": 6
   },
   "securityBoundaries": [
