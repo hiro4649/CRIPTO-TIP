@@ -28,7 +28,7 @@ truth, trust, security, or maintainability.
 
 ## Source Harness Boundary
 
-This repository is a downstream project consuming Codex Harness v1.1.8. Work here must stay within the explicitly authorized repo and task scope. Do not edit Source HARNESS from target repo work. Product/runtime/package/workflow changes require separate owner scope.
+This repository is a downstream project aligned to active Codex Harness v1.2.0 while preserving v1.1.8 Final Decision authority and v1.1.9 orchestration/status compatibility. Work here must stay within the explicitly authorized repo and task scope. Do not edit Source HARNESS from target repo work. Product/runtime/package/workflow changes require separate owner scope.
 Use `docs/process/CODEX_OPENAI_CODEX_METHOD_POLICY.md` and
 `docs/process/code_review.md` as the stable method references.
 For v1.0.1 through v1.0.3 outcome, recovery, fixture isolation, clean-main,
