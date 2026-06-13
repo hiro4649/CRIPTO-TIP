@@ -21,19 +21,19 @@ Done criteria: internal/events support.received approved event applies affinity 
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 58279c5c864399def4de559422eab7a57429bb3f
 
 Base SHA: dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0
 
-Product CI: not_available_before_pr_creation
+Product CI: success
 
-Quality-gate: not_available_before_pr_creation
+Quality-gate: success
 
-CI run: not_available_before_pr_creation
+CI run: 27482130735
 
-Quality-gate run: not_available_before_pr_creation
+Quality-gate run: 27482130733
 
-Quality-gate artifact: not_available_before_pr_creation
+Quality-gate artifact: 7615410756
 
 Tests: 52 test files, 1699 passed, 6 skipped
 
@@ -59,6 +59,17 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 Product verification commands:
 
 - corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
+- forge test: nonblocking unavailable locally
 
 Package verification:
 

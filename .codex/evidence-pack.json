@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 67,
+  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
   "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: harden p0 support event pipeline",
   "goal": "Harden the local P0 support.received event pipeline so the Super Chat fixture endpoint and internal support.received input use the same downstream side-effect path without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, contracts changes, migrations, or readiness/compliance claims.",
-  "ciRunId": "not_available_before_pr_creation",
-  "qualityGateRunId": "not_available_before_pr_creation",
-  "qualityGateArtifactId": "not_available_before_pr_creation",
-  "productCiStatus": "not_available_before_pr_creation",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "ciRunId": "27482130735",
+  "qualityGateRunId": "27482130733",
+  "qualityGateArtifactId": "7615410756",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -59,9 +59,51 @@
       "name": "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass",
+      "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27482130735",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27482130733",
+      "result": "success",
+      "artifactId": "7615410756"
+    }
+  ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -147,7 +189,18 @@
     "This PR must not be merged until same-head required checks pass after PR creation."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass"
+    "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "forge test: nonblocking unavailable locally"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,

@@ -2,39 +2,39 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 67,
+  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
   "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "schemaVersion": "1.0.0",
-  "qualityGateExpectedStatus": "not_available_before_pr_creation",
-  "latestAnalyzedRunId": "not_available_before_pr_creation",
-  "latestAnalyzedArtifactId": "not_available_before_pr_creation",
-  "qualityGateEvidenceStatus": "not_available_before_pr_creation",
+  "qualityGateExpectedStatus": "success",
+  "latestAnalyzedRunId": "27482130733",
+  "latestAnalyzedArtifactId": "7615410756",
+  "qualityGateEvidenceStatus": "success",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "not_available_before_pr_creation",
+      "status": "pass",
       "blocking": true
     }
   ],
   "safeArtifactOnly": true,
   "rawLogsRead": false,
-  "status": "not_available_before_pr_creation",
-  "qualityGateStatus": "not_available_before_pr_creation",
+  "status": "success",
+  "qualityGateStatus": "success",
   "title": "feat: harden p0 support event pipeline",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and quality-gate artifact evidence must be refreshed after PR creation.",
+    "Same-head GitHub checks and quality-gate artifact evidence were refreshed for PR #67.",
     "No quality-gate weakening is introduced.",
     "No readiness or compliance claim is introduced."
   ]
