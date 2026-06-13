@@ -19,7 +19,7 @@ owner scope and evidence. Done means the smallest relevant verification was run
 or honestly reported unavailable, with no raw logs or secret-like output.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.1.9
+CODEX_QUALITY_HARNESS_FILE v1.2.0
 
 ## Prime Directive
 
@@ -100,6 +100,7 @@ failures through safe artifacts only. Keep operator-visible statuses within the
 budget and keep target rollout out of Source body tasks.
 For v1.1.8 Final Decision Kernel, Evidence Capsule, Mode-Aware Artifact Contract, and Convergence Gate, use `docs/process/CODEX_V118_SPEC.md`. Preserve Final Decision authority, Evidence Capsule freshness boundaries, artifact consistency, safe failure reading, token budget enforcement, scope boundaries, same-head required checks, raw-log prohibition, 8-session default fail, and target rollout separation.
 
+For v1.2.0 Adaptive Intelligence Escalation and Review Pool, use `docs/process/CODEX_V120_SPEC.md`. v1.2.0 adds only token-aware model-tier routing, typed blockers, review-pool policy, escalation hysteresis, and high-tier repair planning inside the existing v1.1.9 P0 artifacts. Preserve v1.1.8 Final Decision authority and v1.1.9 orchestration/status compatibility. v1.2.0 must not create owner approval, GitHub approval review, release, deploy, wallet/RPC, BscScan, readiness, legal compliance, YouTube policy compliance, new P0 artifacts, scheduler behavior, external verifier runtime, memory routing, target rollout, or merge authority.
 ## Plan-First Rule
 
 Use plan-first for R3, ambiguous, security-sensitive, migration, release,
