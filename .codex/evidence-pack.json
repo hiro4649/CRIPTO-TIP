@@ -2,67 +2,64 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 62,
-  "headSha": "872541557dbc8f480b78cd941b1b50268a0c759b",
-  "baseSha": "301c66b6560e4e1a7cd66bdd08a51a74f288da58",
+  "prNumber": 66,
+  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
+  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_relevant",
+  "changeType": "product_vertical_slice",
   "riskLevel": "R3",
-  "title": "feat: align harness v120 adaptive review pool",
-  "goal": "Align CRIPTO-TIP harness source-of-record with v1.2.0 and add adaptive review-pool profiles without weakening safety, changing product runtime behavior, adding a DB driver dependency, changing package.json or pnpm-lock, or creating owner approval, GitHub approval review, merge authority, runtime readiness, production readiness, legal compliance, or YouTube policy compliance.",
-  "ciRunId": "27384710953",
-  "qualityGateRunId": "27384898010",
-  "qualityGateArtifactId": "7579705811",
+  "title": "feat: add p0 superchat support received vertical slice",
+  "goal": "Add a local YouTube Super Chat fixture vertical slice from support.received through affinity, reaction request, overlay event, outbox enqueue, and admin tips list without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, migrations, contracts changes, or readiness/compliance claims.",
+  "ciRunId": "27481295202",
+  "qualityGateRunId": "27481335174",
+  "qualityGateArtifactId": "7615176475",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
-      "AGENTS.md",
+      "apps/api/src/server.ts",
+      "apps/api/src/p0-superchat-support-received-vertical-slice.test.ts",
+      "docs/P0_VERTICAL_SLICE.md",
+      "docs/pr-p0-superchat-support-received-vertical-slice.md",
+      ".codex/p0-superchat-support-received-vertical-slice.json",
       ".codex/evidence-pack.json",
-      ".codex/harness-v120-adaptive-review-pool.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
-      ".codex/review-independence.json",
-      ".codex/risk-register.json",
-      ".codex/task-contract.json",
-      ".codex/test-coverage-evidence.json",
       ".codex/test-summary.json",
-      "apps/api/src/harness-v120-adaptive-review-pool.ts",
-      "apps/api/src/harness-v120-adaptive-review-pool.test.ts",
-      "docs/HARNESS_V120_ADAPTIVE_REVIEW_POOL.md",
-      "docs/HARNESS_V120_MODEL_TIER_ROUTING.md",
-      "docs/HARNESS_V120_TYPED_BLOCKERS.md",
-      "docs/HARNESS_V120_ESCALATION_HYSTERESIS.md",
-      "docs/HARNESS_V120_HIGH_TIER_REPAIR_PLANNING.md",
-      "docs/pr-harness-v120-adaptive-review-pool-prep.md"
+      ".codex/test-coverage-evidence.json",
+      ".codex/task-contract.json",
+      ".codex/risk-register.json",
+      ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "AGENTS.md",
-      "apps/api/src/harness-v120-adaptive-review-pool.ts",
-      "apps/api/src/harness-v120-adaptive-review-pool.test.ts",
-      "docs/**",
+      "apps/api/src/server.ts",
+      "apps/api/src/*.test.ts",
+      "docs/P0_VERTICAL_SLICE.md",
+      "docs/pr-p0-superchat-support-received-vertical-slice.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
-      ".github/workflows/**",
-      "scripts/**",
       "package.json",
       "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
-      "apps/api/src/server.ts",
-      "apps/api/src/chain/**",
-      "apps/api/src/iris/**",
+      ".github/workflows/**",
+      "scripts/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
     ]
   },
   "commands": [
+    {
+      "name": "corepack pnpm install",
+      "result": "pass",
+      "status": "pass"
+    },
     {
       "name": "corepack pnpm lint",
       "result": "pass",
@@ -77,27 +74,22 @@
       "name": "corepack pnpm test",
       "result": "pass",
       "status": "pass"
-    },
-    {
-      "name": "npm test",
-      "result": "pass",
-      "status": "pass"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27384710953",
+      "runId": "27481295202",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27384898010",
+      "runId": "27481335174",
       "result": "success",
-      "artifactId": "7579705811"
+      "artifactId": "7615176475"
     }
   ],
-  "rollbackOrStopCondition": "Stop if this PR weakens safety, weakens quality-gate, creates owner approval, creates GitHub approval review, creates merge authority, adds a DB driver dependency, changes package.json or pnpm-lock, connects to a real DB, changes migrations, changes product runtime behavior, or claims runtime, production, legal, or YouTube policy readiness.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, token sale, exchange, cash-out, custody, internal balance, investment claims, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -109,28 +101,27 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "harness_v120_source_of_record_alignment",
-    "token_aware_model_tier_routing_profile",
-    "typed_blocker_profile",
-    "review_pool_policy_profile",
-    "escalation_hysteresis_profile",
-    "high_tier_repair_planning_profile",
-    "tests",
+    "local Super Chat fixture",
+    "support.received normalization",
+    "affinity update",
+    "reaction request",
+    "overlay event",
+    "outbox enqueue",
+    "admin tips list",
+    "idempotency tests",
+    "moderation hold tests",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "product runtime implementation",
+    "real YouTube API",
+    "real OAuth token",
     "real DB connection",
     "DB driver dependency",
     "package.json change",
     "pnpm-lock change",
-    "migration change",
-    "migration execution",
-    "live DB integration test execution",
-    "real provider SDK apply",
-    "actual production deployment apply",
-    "real YouTube OAuth",
+    "contracts change",
+    "migrations change",
     "real RPC",
     "wallet/RPC/deploy changes",
     "token sale",
@@ -140,59 +131,46 @@
     "internal balance",
     "investment wording",
     "speculative reward",
-    "YouTube scraping",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
-    "YouTube policy compliance claim",
-    "owner approval generation",
-    "GitHub approval review generation",
-    "merge authority generation",
-    "quality-gate weakening"
+    "YouTube policy compliance claim"
   ],
   "doneCriteria": [
-    "machine-readable v1.2.0 adaptive review-pool profile exists",
-    "sourceOfRecordStatus is aligned",
-    "modelTierRoutingStatus is policy_ready",
-    "typedBlockerStatus is policy_ready",
-    "reviewPoolPolicyStatus is policy_ready",
-    "escalationHysteresisStatus is policy_ready",
-    "highTierRepairPlanningStatus is policy_ready",
-    "safetyReduction is false",
-    "qualityGateWeakening is false",
-    "mergeAuthorityCreated is false",
-    "ownerApprovalCreated is false",
-    "githubApprovalReviewCreated is false",
-    "selectedDriver remains null",
-    "no package or lockfile change is introduced"
+    "P0 Super Chat fixture creates support.received",
+    "support.received is idempotent by source/source_event_id",
+    "approved fixture applies affinity once",
+    "approved fixture enqueues reaction request once",
+    "approved fixture enqueues overlay event once",
+    "approved fixture enqueues outbox events",
+    "admin tips list includes support event",
+    "moderation hold does not enqueue reaction or overlay",
+    "no package or lockfile change",
+    "no real YouTube API or DB use"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 50,
-    "passed": 1692,
+    "testFiles": 51,
+    "passed": 1696,
     "skipped": 6
   },
   "securityBoundaries": [
+    "No package.json or pnpm-lock change.",
     "No DB driver dependency is added.",
-    "No package.json or pnpm-lock change is introduced.",
-    "No real DB connection is implemented.",
-    "No migration is changed or executed.",
-    "No provider SDK apply or production deployment is introduced.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed.",
-    "No owner approval, GitHub approval review, or merge authority is created.",
-    "Raw GitHub logs and raw advisory output remain forbidden."
+    "No real DB connection is used.",
+    "No real YouTube API or OAuth token is used.",
+    "No RPC, wallet, deploy, contracts, or migrations changes.",
+    "No token sale, exchange, cash-out, custody, internal balance, investment wording, or speculative reward is introduced.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "Current-head GitHub run and artifact evidence must be refreshed after PR creation.",
-    "v1.2.0 profile readiness does not advance the P0 product vertical slice.",
-    "High-tier repair planning can be mistaken for approval unless the no-authority rule is preserved."
+    "This is a local fixture vertical slice only.",
+    "Live YouTube API operation and production DB durability remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
-    "High-tier repair planning is not owner approval.",
-    "Profile readiness is not merge readiness.",
-    "This PR must not be merged until same-head required checks pass."
+    "This PR must not be merged until same-head required checks pass after PR creation."
   ],
   "productVerificationCommands": [
     "corepack pnpm install: pass",
@@ -211,17 +189,17 @@
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, package.json, or pnpm-lock changes are introduced by this PR."
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "No product runtime API contract is changed by this v1.2.0 profile alignment PR."
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds an internal bearer-protected local fixture endpoint for P0 Super Chat vertical-slice testing."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR changes offline harness profile evidence and tests only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; the fixture endpoint is internal and local-test scoped.",
   "reviewScope": {
-    "scope": "AGENTS v1.2.0 source boundary, adaptive review-pool profile definitions, validator, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is mistaking high-tier repair planning for owner approval or merge authority; validators reject those authority flags.",
-    "verificationOracle": "Vitest profile coverage, typecheck, lint, repository test suite, evidence checks, quality self-protection, and GitHub same-head required checks after PR creation."
+    "scope": "P0 Super Chat fixture to support.received vertical slice, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is confusing local fixture coverage with live YouTube or production readiness; evidence and docs explicitly reject those claims.",
+    "verificationOracle": "P0 fixture tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
   }
 }
