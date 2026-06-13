@@ -18,6 +18,7 @@ import {
   sha256Bytes32Hex,
   stableId,
   TipIntentSchema,
+  SupportReceivedSchema,
   YouTubeSuperChatInputSchema,
   type LiveSession,
   type OverlayTipAlert,
@@ -178,6 +179,11 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
   app.post("/internal/events", async (req, reply) => {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const rawBody = z.record(z.string(), z.unknown()).parse(req.body);
+    if (rawBody.event_type === "support.received") {
+      const support = SupportReceivedSchema.parse(rawBody);
+      return applySupportReceivedSideEffects(repo, support);
+    }
     const body = z.object({ tip_intent_id: z.string(), tx_hash: z.string().default("0xmock"), log_index: z.number().int().default(0) }).parse(req.body);
     const intent = await repo.getTipIntentInternal(body.tip_intent_id);
     if (!intent) return reply.code(404).send({ error: "tip_intent_not_found" });

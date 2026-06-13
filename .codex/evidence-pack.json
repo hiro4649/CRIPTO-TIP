@@ -2,30 +2,30 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 66,
-  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
-  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice",
+  "changeType": "product_vertical_slice_hardening",
   "riskLevel": "R3",
-  "title": "feat: add p0 superchat support received vertical slice",
-  "goal": "Add a local YouTube Super Chat fixture vertical slice from support.received through affinity, reaction request, overlay event, outbox enqueue, and admin tips list without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, migrations, contracts changes, or readiness/compliance claims.",
-  "ciRunId": "27481295202",
-  "qualityGateRunId": "27481335174",
-  "qualityGateArtifactId": "7615176475",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: harden p0 support event pipeline",
+  "goal": "Harden the local P0 support.received event pipeline so the Super Chat fixture endpoint and internal support.received input use the same downstream side-effect path without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, contracts changes, migrations, or readiness/compliance claims.",
+  "ciRunId": "not_available_before_pr_creation",
+  "qualityGateRunId": "not_available_before_pr_creation",
+  "qualityGateArtifactId": "not_available_before_pr_creation",
+  "productCiStatus": "not_available_before_pr_creation",
+  "qualityGateStatus": "not_available_before_pr_creation",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-superchat-support-received-vertical-slice.test.ts",
-      "docs/P0_VERTICAL_SLICE.md",
-      "docs/pr-p0-superchat-support-received-vertical-slice.md",
-      ".codex/p0-superchat-support-received-vertical-slice.json",
+      "apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
+      "docs/P0_EVENT_PIPELINE_HARDENING.md",
+      "docs/pr-p0-superchat-event-pipeline-hardening.md",
+      ".codex/p0-superchat-event-pipeline-hardening.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -38,8 +38,8 @@
     "allowedPaths": [
       "apps/api/src/server.ts",
       "apps/api/src/*.test.ts",
-      "docs/P0_VERTICAL_SLICE.md",
-      "docs/pr-p0-superchat-support-received-vertical-slice.md",
+      "docs/P0_EVENT_PIPELINE_HARDENING.md",
+      "docs/pr-p0-superchat-event-pipeline-hardening.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -56,40 +56,13 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
+      "name": "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
       "result": "pass",
       "status": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27481295202",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27481335174",
-      "result": "success",
-      "artifactId": "7615176475"
-    }
-  ],
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, token sale, exchange, cash-out, custody, internal balance, investment claims, or readiness/compliance claims are introduced.",
+  "remoteRuns": [],
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -101,8 +74,8 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local Super Chat fixture",
-    "support.received normalization",
+    "internal support.received event pipeline",
+    "Super Chat fixture endpoint preservation",
     "affinity update",
     "reaction request",
     "overlay event",
@@ -137,22 +110,23 @@
     "YouTube policy compliance claim"
   ],
   "doneCriteria": [
-    "P0 Super Chat fixture creates support.received",
-    "support.received is idempotent by source/source_event_id",
-    "approved fixture applies affinity once",
-    "approved fixture enqueues reaction request once",
-    "approved fixture enqueues overlay event once",
-    "approved fixture enqueues outbox events",
-    "admin tips list includes support event",
-    "moderation hold does not enqueue reaction or overlay",
+    "internal/events support.received approved event applies affinity once",
+    "internal/events support.received approved event enqueues reaction once",
+    "internal/events support.received approved event enqueues overlay once",
+    "internal/events support.received approved event enqueues outbox jobs once",
+    "internal/events duplicate support.received does not double-apply affinity",
+    "internal/events duplicate support.received does not double-enqueue reaction",
+    "internal/events moderation hold does not enqueue reaction or overlay",
+    "Super Chat fixture endpoint still passes existing P0 tests",
+    "admin tips list includes events from internal event path",
     "no package or lockfile change",
     "no real YouTube API or DB use"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 51,
-    "passed": 1696,
+    "testFiles": 52,
+    "passed": 1699,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -165,7 +139,7 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is a local fixture vertical slice only.",
+    "This is local/internal pipeline hardening only.",
     "Live YouTube API operation and production DB durability remain future scoped work."
   ],
   "humanConfirmation": [
@@ -173,18 +147,7 @@
     "This PR must not be merged until same-head required checks pass after PR creation."
   ],
   "productVerificationCommands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass",
-    "forge test: nonblocking unavailable locally"
+    "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -194,12 +157,12 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds an internal bearer-protected local fixture endpoint for P0 Super Chat vertical-slice testing."
+    "statement": "Extends the internal bearer-protected /internal/events path to accept support.received input for local pipeline hardening."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; the fixture endpoint is internal and local-test scoped.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal pipeline hardening.",
   "reviewScope": {
-    "scope": "P0 Super Chat fixture to support.received vertical slice, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is confusing local fixture coverage with live YouTube or production readiness; evidence and docs explicitly reject those claims.",
-    "verificationOracle": "P0 fixture tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
+    "scope": "P0 support.received event pipeline hardening, fixture endpoint preservation, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is confusing local/internal pipeline coverage with live YouTube or production readiness; evidence and docs explicitly reject those claims.",
+    "verificationOracle": "P0 internal event pipeline tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
   }
 }
