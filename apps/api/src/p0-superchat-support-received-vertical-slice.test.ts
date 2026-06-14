@@ -139,14 +139,6 @@ describe("P0 Super Chat support.received vertical slice", () => {
 
   it("committed P0 evidence has PR 66 current-head values without pre-PR placeholders", () => {
     const files = [
-      ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/review-independence.json",
-      ".codex/risk-register.json",
-      ".codex/task-contract.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/test-summary.json",
       ".codex/p0-superchat-support-received-vertical-slice.json",
       "docs/pr-p0-superchat-support-received-vertical-slice.md"
     ];
@@ -157,14 +149,13 @@ describe("P0 Super Chat support.received vertical slice", () => {
       expect(text).not.toContain('"prNumber": 0');
     }
 
-    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
     const p0 = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-superchat-support-received-vertical-slice.json"), "utf8"));
-    expect(evidence.prNumber).toBe(66);
-    expect(evidence.headSha).toBe("824f8f940d253acb8185eea192a9726336b4c3a5");
-    expect(evidence.baseSha).toBe("d7229c7988a17ba3ddd446ee17326411e2faaa8f");
-    expect(evidence.ciRunId).toBe("27481295202");
-    expect(evidence.qualityGateRunId).toBe("27481335174");
-    expect(evidence.qualityGateArtifactId).toBe("7615176475");
+    expect(p0.prNumber).toBe(66);
+    expect(p0.headSha).toBe("824f8f940d253acb8185eea192a9726336b4c3a5");
+    expect(p0.baseSha).toBe("d7229c7988a17ba3ddd446ee17326411e2faaa8f");
+    expect(p0.ciRunId).toBe("27481295202");
+    expect(p0.qualityGateRunId).toBe("27481335174");
+    expect(p0.qualityGateArtifactId).toBe("7615176475");
     expect(p0.runtimeReadinessClaimed).toBe(false);
     expect(p0.productionReadinessClaimed).toBe(false);
     expect(p0.legalComplianceClaimed).toBe(false);

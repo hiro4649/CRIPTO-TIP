@@ -2,23 +2,23 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 66,
-  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
-  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "prNumber": 67,
+  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
+  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Local fixture coverage can be mistaken for live YouTube or production readiness.",
+      "risk": "Local/internal support.received pipeline coverage can be mistaken for live YouTube or production readiness.",
       "owner": "repo-owner",
       "nextPr": "future YouTube connector integration",
       "mitigation": "Docs and evidence explicitly state no real YouTube API, OAuth, DB, production, legal, or YouTube policy readiness claim."
     },
     {
       "severity": "medium",
-      "risk": "Internal fixture endpoint must remain bearer-protected and non-production scoped.",
+      "risk": "Internal support.received input must remain bearer-protected and idempotent.",
       "owner": "repo-owner",
-      "nextPr": "P0 vertical slice",
-      "mitigation": "Endpoint requires the existing internal bearer token and is covered by fixture tests."
+      "nextPr": "P0 pipeline hardening",
+      "mitigation": "Endpoint requires the existing internal bearer token and tests cover duplicate source_event_id behavior."
     }
   ]
 }

@@ -2,50 +2,54 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 66,
-  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
-  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "prNumber": 67,
+  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
+  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm install",
+      "name": "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
+      "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm lint",
+      "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
+      "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm test",
+      "result": "pass",
       "status": "pass"
     },
     {
       "name": "npm test",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "P0 approved Super Chat fixture vertical slice.",
-    "P0 idempotency by source/source_event_id.",
-    "P0 moderation hold blocks reaction and overlay.",
-    "Unsafe display name and unsafe message handling."
+    "internal/events support.received approved event applies affinity once",
+    "internal/events support.received approved event enqueues reaction once",
+    "internal/events support.received approved event enqueues overlay once",
+    "internal/events support.received approved event enqueues outbox jobs once",
+    "internal/events duplicate support.received does not double-apply affinity",
+    "internal/events duplicate support.received does not double-enqueue reaction",
+    "internal/events moderation hold does not enqueue reaction or overlay",
+    "Super Chat fixture endpoint still passes existing P0 tests",
+    "admin tips list includes events from internal event path",
+    "no package or lockfile change",
+    "no real YouTube API or DB use"
   ],
   "status": "pass",
-  "testFiles": 51,
-  "passed": 1696,
+  "testFiles": 52,
+  "passed": 1699,
   "skipped": 6
 }

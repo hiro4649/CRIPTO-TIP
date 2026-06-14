@@ -2,14 +2,14 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 66,
-  "headSha": "824f8f940d253acb8185eea192a9726336b4c3a5",
-  "baseSha": "d7229c7988a17ba3ddd446ee17326411e2faaa8f",
+  "prNumber": 67,
+  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
+  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
   "schemaVersion": "1.0.0",
   "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27481335174",
-  "latestAnalyzedArtifactId": "7615176475",
-  "qualityGateEvidenceStatus": "pass",
+  "latestAnalyzedRunId": "27482130733",
+  "latestAnalyzedArtifactId": "7615410756",
+  "qualityGateEvidenceStatus": "success",
   "requiredStatuses": [
     {
       "name": "typescript",
@@ -29,15 +29,13 @@
   ],
   "safeArtifactOnly": true,
   "rawLogsRead": false,
-  "status": "pass",
+  "status": "success",
   "qualityGateStatus": "success",
-  "title": "feat: add p0 superchat support received vertical slice",
+  "title": "feat: harden p0 support event pipeline",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and quality-gate artifact evidence must be refreshed after PR creation.",
+    "Same-head GitHub checks and quality-gate artifact evidence were refreshed for PR #67.",
     "No quality-gate weakening is introduced.",
     "No readiness or compliance claim is introduced."
-  ],
-  "qualityGateRunId": "27481335174",
-  "qualityGateArtifactId": "7615176475"
+  ]
 }
