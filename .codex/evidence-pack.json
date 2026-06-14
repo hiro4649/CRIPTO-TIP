@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 75,
-  "headSha": "093a3e2d23a021bc9e18ea8cf39fc0212840d460",
-  "baseSha": "8173d966416bcf1182556f9f3b4fc056b7c163cd",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "e38c0151e30c9978339c928b0d80afc1d4e059db",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_dlq_rate_limit_boundary",
+  "changeType": "product_vertical_slice_admin_operations_dashboard_api",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin dlq rate limit boundary",
-  "goal": "Add safe local/internal in-memory rate-limit boundaries for admin DLQ list, retry, and audit export endpoints without storing raw admin tokens, IP address, user-agent, secrets, or readiness/compliance claims.",
-  "ciRunId": "27495739527",
-  "qualityGateRunId": "27495947354",
-  "qualityGateArtifactId": "7620077368",
+  "title": "feat: add p0 admin operations summary api",
+  "goal": "Add GET /admin/operations/summary as an API-only safe summary for P0 admin operational state.",
+  "ciRunId": "0",
+  "qualityGateRunId": "0",
+  "qualityGateArtifactId": "0",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,10 +22,10 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
-      "docs/P0_ADMIN_DLQ_RATE_LIMIT_BOUNDARY.md",
-      "docs/pr-p0-admin-dlq-rate-limit-boundary.md",
-      ".codex/p0-admin-dlq-rate-limit-boundary.json",
+      "apps/api/src/p0-admin-operations-dashboard-api.test.ts",
+      "docs/P0_ADMIN_OPERATIONS_DASHBOARD_API.md",
+      "docs/pr-p0-admin-operations-dashboard-api.md",
+      ".codex/p0-admin-operations-dashboard-api.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,8 +40,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_DLQ_RATE_LIMIT_BOUNDARY.md",
-      "docs/pr-p0-admin-dlq-rate-limit-boundary.md",
+      "docs/P0_ADMIN_OPERATIONS_DASHBOARD_API.md",
+      "docs/pr-p0-admin-operations-dashboard-api.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,7 +58,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -111,11 +111,12 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin rate-limit boundary",
-    "admin auth ordering",
-    "safe token fingerprint key",
-    "safe 429 metadata",
-    "internal events unaffected tests",
+    "local/internal admin operations summary API",
+    "admin auth guard",
+    "DLQ count summary",
+    "stream grouping",
+    "audit action counts",
+    "rate-limit safe summary",
     "docs",
     ".codex evidence"
   ],
@@ -136,6 +137,8 @@
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
+    "web UI",
+    "overlay changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -145,26 +148,30 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin DLQ list rate-limits after threshold",
-    "admin DLQ retry rate-limits after threshold",
-    "admin audit export rate-limits after threshold",
-    "429 response excludes secrets and raw token",
-    "rate-limit key does not expose bearer token",
-    "rate-limit state is in-memory only",
-    "rate-limit does not affect internal/events support.received path",
-    "valid request under threshold still succeeds",
-    "missing auth remains 401, not 429",
-    "invalid auth remains 401, not 429",
+    "admin operations summary requires admin bearer token",
+    "missing auth returns 401",
+    "invalid auth returns 401",
+    "response is safe metadata only",
+    "includes DLQ count",
+    "groups by stream_id",
+    "includes audit action counts",
+    "includes rate-limit status without raw key",
+    "excludes unsafe audit bodies",
+    "excludes secrets",
+    "excludes raw token and token fingerprint",
+    "excludes IP and user-agent",
+    "excludes logs_url jobs_url stack stdout stderr",
     "existing admin DLQ visibility tests still pass",
     "existing admin DLQ redrive tests still pass",
-    "existing admin DLQ audit trail tests still pass",
-    "existing admin audit export tests still pass"
+    "existing admin audit export tests still pass",
+    "existing admin rate-limit tests still pass",
+    "internal/events support.received path remains unaffected"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 58,
-    "passed": 1741,
+    "testFiles": 59,
+    "passed": 1746,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -174,20 +181,20 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
-    "Admin rate-limit state is local/in-memory only.",
-    "Raw admin tokens, IP address, and user-agent are not stored.",
+    "Admin operations summary uses safe metadata only.",
+    "Raw admin token, token fingerprint, IP address, and user-agent are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal in-memory admin rate-limit boundary only.",
-    "Production rate-limit readiness, distributed rate limits, durable abuse analytics, real retention policy, and multi-node coordination remain future scoped work."
+    "This is local/internal admin operations summary API only.",
+    "Web Admin Console readiness, production operations readiness, distributed metrics, durable analytics, and real retention policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
     "Merge remains blocked until same-head checks pass after evidence refresh."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -204,13 +211,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal in-memory admin rate-limit boundaries."
+    "statement": "Adds local/internal admin operations summary API."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin rate-limit boundary only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin operations summary API only.",
   "reviewScope": {
-    "scope": "P0 admin DLQ rate-limit boundary, admin auth ordering, safe 429 metadata, safe token fingerprinting, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is leaking admin token material or turning auth failures into 429 responses; tests reject those outcomes.",
-    "verificationOracle": "Admin DLQ rate-limit tests, existing admin DLQ visibility/redrive/audit trail/audit export tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin operations summary API, admin auth, DLQ counts, audit counts, rate-limit summary, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is exposing tokens, secret-like data, raw operational payloads, or implying production operations readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin operations summary tests, existing admin DLQ visibility/redrive/audit export/rate-limit tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-dlq-rate-limit-boundary.md"
+  "prBodyPath": "docs/pr-p0-admin-operations-dashboard-api.md"
 }
