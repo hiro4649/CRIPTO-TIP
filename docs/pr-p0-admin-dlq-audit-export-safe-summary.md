@@ -21,7 +21,7 @@ Done criteria: admin audit list requires admin auth; valid admin receives safe a
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483
 
 Base SHA: fc1e9c60d26b10148c9db0f49f83054c4c64e2e3
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 0
+CI run: 27494660415
 
-Quality-gate run: 0
+Quality-gate run: 27494776613
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7619692727
 
-Tests: 57 test files, 1732 passed, 6 skipped
+Tests: 57 test files, 1733 passed, 6 skipped
 
 ## Testing and review
 
@@ -91,7 +91,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 57 files, 1732 passed, 6 skipped.
+Current recorded test summary: 57 files, 1733 passed, 6 skipped.
 
 ## Security Boundaries
 

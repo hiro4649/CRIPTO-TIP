@@ -300,4 +300,34 @@ describe("P0 admin DLQ audit export safe summary", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed current-head evidence uses PR 74 GitHub run values", () => {
+    const pack = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
+    const qualityGate = JSON.parse(fs.readFileSync(path.join(root, ".codex", "quality-gate-evidence.json"), "utf8"));
+    const product = JSON.parse(fs.readFileSync(path.join(root, ".codex", "product-verification.json"), "utf8"));
+    const coverage = JSON.parse(fs.readFileSync(path.join(root, ".codex", "test-coverage-evidence.json"), "utf8"));
+
+    for (const evidence of [pack, qualityGate, product, coverage]) {
+      expect(evidence.prNumber).toBe(74);
+      expect(evidence.headSha).toBe("cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483");
+      expect(evidence.baseSha).toBe("fc1e9c60d26b10148c9db0f49f83054c4c64e2e3");
+      expect(evidence.headSha).not.toBe("current_pr_head");
+      expect(evidence.headSha).not.toBe("current_pr_base");
+      expect(JSON.stringify(evidence)).not.toContain("not_available_before_pr_creation");
+      expect(JSON.stringify(evidence)).not.toContain("not_created_pre_pr");
+      expect(JSON.stringify(evidence)).not.toContain("pending_after_pr_creation");
+      expect(JSON.stringify(evidence)).not.toContain("HEAD_SHA_PLACEHOLDER");
+      expect(JSON.stringify(evidence)).not.toContain("BASE_SHA_PLACEHOLDER");
+    }
+
+    expect(pack.ciRunId).toBe("27494660415");
+    expect(pack.qualityGateRunId).toBe("27494776613");
+    expect(pack.qualityGateArtifactId).toBe("7619692727");
+    expect(pack.ciRunId).not.toBe("0");
+    expect(pack.qualityGateRunId).not.toBe("0");
+    expect(pack.qualityGateArtifactId).not.toBe("0");
+    expect(qualityGate.qualityGateRunId).toBe("27494776613");
+    expect(qualityGate.qualityGateArtifactId).toBe("7619692727");
+    expect(qualityGate.rawLogsRead).toBe(false);
+  });
 });
