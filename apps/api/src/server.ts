@@ -27,7 +27,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { CriptoTipRepository, JobType } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType } from "./repositories/types.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -128,6 +128,72 @@ function toAdminDlqRetryEntry(
 
 function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
   return { stream_id: streamId, result_count: resultCount };
+}
+
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event"]);
+const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
+  "stream_id",
+  "result_count",
+  "outbox_event_id",
+  "event_id",
+  "source",
+  "source_event_id",
+  "character_id",
+  "reason_code",
+  "retry_status",
+  "target_id"
+]);
+const ADMIN_AUDIT_UNSAFE_KEY_PATTERN = /(raw|payload|secret|token|oauth|database|db_url|wallet|private|stack|stdout|stderr|logs_url|jobs_url|url)/i;
+const ADMIN_AUDIT_UNSAFE_VALUE_PATTERN = /(bearer\s+|postgres:\/\/|redis:\/\/|kafka:\/\/|mongodb:\/\/|mysql:\/\/|https?:\/\/)/i;
+
+function isSafeAuditPrimitive(value: unknown): value is string | number | boolean | null {
+  if (value === null || typeof value === "number" || typeof value === "boolean") return true;
+  return typeof value === "string" && !ADMIN_AUDIT_UNSAFE_VALUE_PATTERN.test(value);
+}
+
+function toSafeAuditMetadata(value: unknown): Record<string, string | number | boolean | null> | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "object" || Array.isArray(value)) return { redacted: true };
+  const input = value as Record<string, unknown>;
+  const output: Record<string, string | number | boolean | null> = {};
+  for (const [key, entry] of Object.entries(input)) {
+    if (ADMIN_AUDIT_UNSAFE_KEY_PATTERN.test(key)) return { redacted: true };
+    if (!ADMIN_AUDIT_SAFE_METADATA_KEYS.has(key)) continue;
+    if (!isSafeAuditPrimitive(entry)) return { redacted: true };
+    output[key] = entry;
+  }
+  return Object.keys(output).length > 0 ? output : undefined;
+}
+
+function toAdminAuditSafeSummary(log: AuditLogInput) {
+  if (!ADMIN_AUDIT_ACTIONS.has(log.action)) return undefined;
+  if (!ADMIN_AUDIT_TARGET_TYPES.has(log.target_type)) return undefined;
+  const before = toSafeAuditMetadata(log.before_json);
+  const after = toSafeAuditMetadata(log.after_json);
+  const summary: {
+    actor_type: string;
+    actor_id?: string;
+    action: string;
+    target_type: string;
+    target_id: string;
+    before_json?: Record<string, string | number | boolean | null>;
+    after_json?: Record<string, string | number | boolean | null>;
+  } = {
+    actor_type: log.actor_type,
+    action: log.action,
+    target_type: log.target_type,
+    target_id: log.target_id
+  };
+  if (log.actor_id && !ADMIN_AUDIT_UNSAFE_VALUE_PATTERN.test(log.actor_id)) summary.actor_id = log.actor_id;
+  if (before) summary.before_json = before;
+  if (after) summary.after_json = after;
+  return summary;
+}
+
+function auditSummaryMatchesStream(summary: ReturnType<typeof toAdminAuditSafeSummary>, streamId: string | undefined) {
+  if (!summary || !streamId) return true;
+  return summary.target_id === streamId || summary.before_json?.stream_id === streamId || summary.after_json?.stream_id === streamId;
 }
 
 async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: SupportReceived, jobType: JobType, reasonCode: SupportPipelineFailureReason) {
@@ -360,6 +426,29 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     await repo.writeAuditLog({ actor_type: "admin", action: "reject_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
     return { status: "rejected", audit_log: "mock-admin-reject" };
+  });
+
+  app.get("/admin/audit-logs", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = z.object({
+      action: z.string().optional(),
+      target_type: z.string().optional(),
+      target_id: z.string().optional(),
+      stream_id: z.string().optional()
+    }).parse(req.query);
+    if (query.action && !ADMIN_AUDIT_ACTIONS.has(query.action)) return reply.code(400).send({ error: "unsupported_audit_action" });
+    if (query.target_type && !ADMIN_AUDIT_TARGET_TYPES.has(query.target_type)) return reply.code(400).send({ error: "unsupported_audit_target_type" });
+    const auditFilter: { action?: string; targetType?: string; targetId?: string } = {};
+    if (query.action) auditFilter.action = query.action;
+    if (query.target_type) auditFilter.targetType = query.target_type;
+    if (query.target_id) auditFilter.targetId = query.target_id;
+    const logs = await repo.listAuditLogs(auditFilter);
+    return {
+      audit_logs: logs
+        .map(toAdminAuditSafeSummary)
+        .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
+        .filter((summary) => auditSummaryMatchesStream(summary, query.stream_id))
+    };
   });
 
   app.get("/admin/live-sessions/:streamId/dlq", async (req, reply) => {

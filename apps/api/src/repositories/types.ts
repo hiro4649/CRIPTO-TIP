@@ -76,6 +76,12 @@ export type AuditLogInput = {
   user_agent?: string;
 };
 
+export type AuditLogListFilter = {
+  action?: string;
+  targetType?: string;
+  targetId?: string;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {
@@ -123,4 +129,5 @@ export interface CriptoTipRepository {
   createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;
   createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
   writeAuditLog(input: AuditLogInput): Promise<void>;
+  listAuditLogs(filter?: AuditLogListFilter): Promise<AuditLogInput[]>;
 }
