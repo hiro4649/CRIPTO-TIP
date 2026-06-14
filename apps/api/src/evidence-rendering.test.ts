@@ -107,8 +107,15 @@ describe("evidence single source of truth scripts", () => {
 
   it("writes test summary from Vitest output", () => {
     const file = path.join(os.tmpdir(), `cripto-tip-vitest-${Date.now()}.txt`);
+    const summaryPath = path.join(root, ".codex", "test-summary.json");
+    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
     fs.writeFileSync(file, "Test Files  20 passed (20)\nTests  178 passed | 6 skipped (184)\n");
-    expect(runScript("write-test-summary.mjs", ["--from", file])).toContain("178 passed");
+    try {
+      expect(runScript("write-test-summary.mjs", ["--from", file])).toContain("178 passed");
+    } finally {
+      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
+      else fs.writeFileSync(summaryPath, previousSummary);
+    }
   });
 
   it("renders risk register and manual gate sections", () => {

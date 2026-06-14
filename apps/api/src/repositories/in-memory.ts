@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -179,6 +179,13 @@ export class InMemoryRepository implements CriptoTipRepository {
     const { locked_at: _lockedAt, locked_by: _lockedBy, ...rest } = event;
     this.outboxEvents.set(id, { ...rest, status: "dead_lettered", last_error: error, updated_at: now.toISOString() });
     return dead;
+  }
+  async listDeadLetters(filter: DeadLetterListFilter = {}) {
+    return [...this.deadLetterEvents.values()].filter((event) => {
+      if (!filter.streamId) return true;
+      const payload = event.payload_json;
+      return typeof payload === "object" && payload !== null && (payload as { stream_id?: unknown }).stream_id === filter.streamId;
+    });
   }
   async retryDeadLetter(deadLetterId: string, actorId: string, now = new Date()) {
     const dead = this.deadLetterEvents.get(deadLetterId);

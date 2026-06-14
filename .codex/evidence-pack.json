@@ -1,20 +1,20 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
-  "harnessVersion": "1.2.1",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
+  "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 68,
-  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
-  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
+  "prNumber": 70,
+  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
+  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_hardening",
+  "changeType": "product_vertical_slice_admin_visibility",
   "riskLevel": "R3",
-  "title": "feat: add p0 event pipeline dlq retry boundary",
-  "goal": "Add a local/internal DLQ and retry failure boundary to the P0 support.received event pipeline without real queue, Redis, Kafka, real DB, DB driver dependency, package or lockfile changes, migrations, contracts changes, or readiness/compliance claims.",
-  "ciRunId": "27487015174",
-  "qualityGateRunId": "27487015173",
-  "qualityGateArtifactId": "7617010153",
+  "title": "feat: add p0 admin dlq visibility",
+  "goal": "Add local/internal admin DLQ visibility for P0 support.received DLQ safe summaries without real DB, Redis, Kafka, real queue, package or lockfile changes, migrations, contracts changes, web or overlay changes, or readiness/compliance claims.",
+  "ciRunId": "27488867674",
+  "qualityGateRunId": "27488923322",
+  "qualityGateArtifactId": "7617615169",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,11 +22,14 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/repositories/postgres.ts",
+      "apps/api/src/p0-admin-dlq-visibility.test.ts",
       "apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
-      "apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
-      "docs/P0_EVENT_PIPELINE_DLQ_RETRY_BOUNDARY.md",
-      "docs/pr-p0-event-pipeline-dlq-retry-boundary.md",
-      ".codex/p0-event-pipeline-dlq-retry-boundary.json",
+      "docs/P0_ADMIN_DLQ_VISIBILITY.md",
+      "docs/pr-p0-admin-dlq-visibility.md",
+      ".codex/p0-admin-dlq-visibility.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -38,9 +41,10 @@
     ],
     "allowedPaths": [
       "apps/api/src/server.ts",
+      "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
-      "docs/P0_EVENT_PIPELINE_DLQ_RETRY_BOUNDARY.md",
-      "docs/pr-p0-event-pipeline-dlq-retry-boundary.md",
+      "docs/P0_ADMIN_DLQ_VISIBILITY.md",
+      "docs/pr-p0-admin-dlq-visibility.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -57,12 +61,22 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm --filter @cripto-tip/api typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm install",
       "result": "pass",
       "status": "pass"
     },
@@ -95,19 +109,44 @@
       "name": "corepack pnpm quality:self-protection",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "forge test",
+      "result": "nonblocking_unavailable",
+      "status": "nonblocking"
     }
   ],
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27487015174",
+      "runId": "27488867674",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27487015173",
+      "runId": "27488923322",
       "result": "success",
-      "artifactId": "7617010153"
+      "artifactId": "7617615169"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
@@ -122,12 +161,11 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal DLQ boundary",
+    "local/internal admin DLQ visibility",
+    "admin bearer protected DLQ list",
     "safe DLQ metadata",
-    "retry idempotency tests",
-    "affinity fail-closed tests",
-    "reaction enqueue failure tests",
-    "overlay enqueue failure tests",
+    "stream_id filtering",
+    "PostgresRepository interface parity only",
     "docs",
     ".codex evidence"
   ],
@@ -157,46 +195,54 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "reaction enqueue failure creates DLQ safe summary",
-    "overlay enqueue failure creates DLQ safe summary",
-    "affinity apply failure fails closed and does not emit reaction or overlay",
-    "retry duplicate does not double-apply affinity",
-    "retry duplicate does not double-enqueue reaction",
-    "retry duplicate does not double-enqueue overlay",
-    "DLQ entry excludes raw payload secrets and connection strings",
-    "DLQ entry includes event_id source source_event_id stream_id character_id safe reason code",
-    "internal/events approved path still passes",
-    "Super Chat fixture endpoint still passes",
-    "moderation hold still does not enqueue reaction or overlay",
-    "repository can list DLQ event"
+    "admin DLQ list requires admin bearer token",
+    "admin DLQ list rejects missing auth",
+    "admin DLQ list rejects invalid auth",
+    "admin DLQ list returns DLQ safe summary",
+    "admin DLQ list filters by stream_id",
+    "admin DLQ list excludes raw payload",
+    "admin DLQ list excludes secrets and connection strings",
+    "admin DLQ list includes reason_code event_id source source_event_id stream_id character_id created_at",
+    "admin DLQ list does not include OAuth token DB URL wallet secret private URL",
+    "DLQ duplicate retry does not duplicate admin DLQ list entry",
+    "moderation hold does not appear in DLQ list",
+    "unsafe non-safe payload does not leak through admin DLQ list",
+    "committed test-summary evidence matches full suite numbers",
+    "existing P0 DLQ retry boundary tests still pass",
+    "fixture endpoint tests still pass",
+    "internal/events tests still pass"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 53,
-    "passed": 1705,
+    "testFiles": 54,
+    "passed": 1710,
     "skipped": 6
   },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
     "No DB driver, Redis, or Kafka dependency is added.",
-    "No real DB connection is used.",
+    "No new DB connection is introduced.",
+    "No migration is changed or executed.",
+    "PostgresRepository change is interface parity only for admin DLQ listing.",
     "No real YouTube API or OAuth token is used.",
-    "No RPC, wallet, deploy, contracts, or migrations changes.",
-    "DLQ stores safe metadata only, not raw secrets or raw external payloads.",
+    "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
+    "Admin DLQ API returns allowlisted safe metadata only, not raw payloads or secrets.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal failure-boundary hardening only.",
-    "Production queue durability and live connector retry semantics remain future scoped work."
+    "This is local/internal admin DLQ visibility only.",
+    "Durable production admin console readiness, real DB persistence validation, and production queue inspection remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
-    "This PR must not be merged until same-head required checks pass after PR creation."
+    "This PR must not be merged until same-head required checks pass after evidence repair."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass",
     "corepack pnpm --filter @cripto-tip/api typecheck: pass",
+    "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
@@ -217,12 +263,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal safe DLQ handling around P0 support.received side-effect failures."
+    "statement": "Adds local/internal admin DLQ visibility and repository interface parity for safe DLQ listing."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal failure-boundary hardening.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin DLQ visibility only.",
   "reviewScope": {
-    "scope": "P0 support.received DLQ/retry failure boundary, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is storing unsafe payload details in DLQ or confusing local failure-boundary coverage with production readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
-  }
+    "scope": "P0 admin DLQ visibility, safe summary response allowlist, repository list interface parity, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is leaking raw payload or confusing interface parity with real DB readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin DLQ visibility tests, P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+  },
+  "prBodyPath": "docs/pr-p0-admin-dlq-visibility.md"
 }

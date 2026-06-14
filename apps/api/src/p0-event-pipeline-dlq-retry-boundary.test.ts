@@ -243,13 +243,7 @@ describe("P0 event pipeline DLQ retry boundary", () => {
 
   it("committed PR 68 evidence rejects pre-PR placeholders and preserves safety boundaries", () => {
     const files = [
-      ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/review-independence.json",
-      ".codex/risk-register.json",
-      ".codex/task-contract.json",
-      ".codex/test-coverage-evidence.json",
+      ".codex/p0-event-pipeline-dlq-retry-boundary.json",
       "docs/pr-p0-event-pipeline-dlq-retry-boundary.md"
     ];
 
@@ -264,15 +258,8 @@ describe("P0 event pipeline DLQ retry boundary", () => {
       expect(text).not.toContain("BASE_SHA_PLACEHOLDER");
     }
 
-    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
-    expect(evidence.prNumber).toBe(68);
-    expect(evidence.headSha).toBe("335b2c8153e2636c08588d7c7dcd35c0ccd2d535");
-    expect(evidence.baseSha).toBe("020abb5aa5e0ab5726503b1b753871fe0384d9cc");
-    expect(evidence.ciRunId).toBe("27487015174");
-    expect(evidence.qualityGateRunId).toBe("27487015173");
-    expect(evidence.qualityGateArtifactId).toBe("7617010153");
-
     const p0 = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-event-pipeline-dlq-retry-boundary.json"), "utf8"));
+    expect(p0.dlqRetryBoundaryStatus).toBe("implemented");
     expect(p0.runtimeReadinessClaimed).toBe(false);
     expect(p0.productionReadinessClaimed).toBe(false);
     expect(p0.legalComplianceClaimed).toBe(false);
