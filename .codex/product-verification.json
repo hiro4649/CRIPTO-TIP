@@ -2,20 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 70,
-  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
-  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
-  "productVerificationStatus": "pass",
+  "prNumber": 0,
+  "headSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "productVerificationStatus": "local_focused_pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-redrive-controls.test.ts apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -48,63 +43,27 @@
       "name": "npm test",
       "result": "pass",
       "status": "pass"
-    },
-    {
-      "name": "corepack pnpm evidence:ci",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "forge test",
-      "result": "nonblocking_unavailable",
-      "status": "nonblocking"
     }
   ],
   "coverage": [
-    "admin DLQ list requires admin bearer token",
-    "admin DLQ list rejects missing auth",
-    "admin DLQ list rejects invalid auth",
-    "admin DLQ list returns DLQ safe summary",
-    "admin DLQ list filters by stream_id",
-    "admin DLQ list excludes raw payload",
-    "admin DLQ list excludes secrets and connection strings",
-    "admin DLQ list includes reason_code event_id source source_event_id stream_id character_id created_at",
-    "admin DLQ list does not include OAuth token DB URL wallet secret private URL",
-    "DLQ duplicate retry does not duplicate admin DLQ list entry",
-    "moderation hold does not appear in DLQ list",
-    "unsafe non-safe payload does not leak through admin DLQ list",
-    "committed test-summary evidence matches full suite numbers",
-    "existing P0 DLQ retry boundary tests still pass",
-    "fixture endpoint tests still pass",
-    "internal/events tests still pass"
+    "admin DLQ retry requires admin bearer token",
+    "admin DLQ retry rejects missing auth",
+    "admin DLQ retry rejects invalid auth",
+    "admin DLQ retry returns 404 for unknown id",
+    "admin DLQ retry fail-closes unsafe payload",
+    "admin DLQ retry response excludes raw payload",
+    "admin DLQ retry response excludes secrets and connection strings",
+    "admin DLQ retry creates one retry candidate outbox job",
+    "admin DLQ retry duplicate does not duplicate outbox job",
+    "admin DLQ retry exposes safe retry status",
+    "admin DLQ retry preserves original safe metadata",
+    "admin DLQ retry rejects unsupported reason_code",
+    "moderation hold is not retryable as DLQ",
+    "existing admin DLQ visibility tests still pass",
+    "existing P0 DLQ retry boundary tests still pass"
   ],
-  "status": "pass",
-  "testFiles": 54,
-  "passed": 1710,
+  "status": "local_focused_pass",
+  "testFiles": 55,
+  "passed": 1717,
   "skipped": 6
 }

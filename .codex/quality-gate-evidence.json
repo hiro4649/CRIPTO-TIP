@@ -2,41 +2,41 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 70,
-  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
-  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
+  "prNumber": 0,
+  "headSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
   "schemaVersion": "1.0.0",
-  "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27488923322",
-  "latestAnalyzedArtifactId": "7617615169",
-  "qualityGateEvidenceStatus": "success",
+  "qualityGateExpectedStatus": "not_created_pre_pr",
+  "latestAnalyzedRunId": "not_created_pre_pr",
+  "latestAnalyzedArtifactId": "not_created_pre_pr",
+  "qualityGateEvidenceStatus": "not_created_pre_pr",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "pass",
+      "status": "not_created_pre_pr",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "pass",
+      "status": "not_created_pre_pr",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "pass",
+      "status": "not_created_pre_pr",
       "blocking": true
     }
   ],
   "safeArtifactOnly": true,
   "rawLogsRead": false,
-  "status": "success",
-  "qualityGateStatus": "success",
-  "title": "feat: add p0 admin dlq visibility",
+  "status": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
+  "title": "feat: add p0 admin dlq redrive controls",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and body-triggered quality-gate artifact evidence were refreshed for PR #70.",
+    "GitHub checks are not created before PR creation.",
     "No quality-gate weakening is introduced.",
     "No readiness or compliance claim is introduced.",
-    "PostgresRepository change is interface parity only and does not introduce DB readiness."
+    "Admin DLQ redrive returns safe metadata only and fail-closes unsafe retry candidates."
   ]
 }

@@ -2,30 +2,30 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 70,
-  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
-  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
+  "prNumber": 0,
+  "headSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Local/internal admin DLQ visibility can be mistaken for production Admin Console readiness.",
+      "risk": "Local/internal admin DLQ redrive controls can be mistaken for production Admin Console readiness.",
       "owner": "repo-owner",
       "nextPr": "future durable admin console boundary",
       "mitigation": "Docs and evidence explicitly state no real DB, Redis, Kafka, production, legal, or YouTube policy readiness claim."
     },
     {
       "severity": "medium",
-      "risk": "Admin DLQ entries must avoid raw external payloads, secrets, tokens, and connection strings.",
+      "risk": "Admin DLQ retry responses must avoid raw external payloads, secrets, tokens, and connection strings.",
       "owner": "repo-owner",
-      "nextPr": "P0 admin DLQ visibility",
-      "mitigation": "Admin DLQ tests assert allowlisted safe metadata only, including unsafe non-safe payload handling."
+      "nextPr": "P0 admin DLQ redrive controls",
+      "mitigation": "Admin DLQ redrive tests assert allowlisted safe metadata only and unsafe payload fail-closed behavior."
     },
     {
       "severity": "low",
-      "risk": "PostgresRepository interface parity could be confused with real DB rollout.",
+      "risk": "Retry controls are local/internal and do not include production rate limits or multi-admin audit policy.",
       "owner": "repo-owner",
-      "nextPr": "future DB persistence validation",
-      "mitigation": "Docs and evidence state this does not add connection, dependency, migration, package change, or real DB readiness."
+      "nextPr": "future admin operations hardening",
+      "mitigation": "Docs and residual risks state rate limits and multi-admin audit policy remain future scoped work."
     }
   ]
 }

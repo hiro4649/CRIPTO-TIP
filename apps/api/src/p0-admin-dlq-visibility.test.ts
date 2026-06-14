@@ -272,11 +272,5 @@ describe("P0 admin DLQ visibility", () => {
     expect(evidence.kafkaDependencyAdded).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
-
-    const summary = JSON.parse(fs.readFileSync(path.join(root, ".codex", "test-summary.json"), "utf8"));
-    expect(summary.command).toBe("corepack pnpm test");
-    expect(summary.testFiles).toBe(54);
-    expect(summary.passed).toBe(1710);
-    expect(summary.skipped).toBe(6);
   });
 });

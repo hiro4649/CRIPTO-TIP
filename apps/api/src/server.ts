@@ -59,6 +59,11 @@ export function isOverlayTokenValid(token: string | undefined): boolean {
 
 type SupportPipelineFailureReason = "affinity_apply_failed" | "reaction_enqueue_failed" | "overlay_enqueue_failed";
 type AdminDlqSafePayload = ReturnType<typeof supportFailureSafeSummary>;
+const RETRYABLE_SUPPORT_PIPELINE_FAILURE_REASONS: ReadonlySet<SupportPipelineFailureReason> = new Set([
+  "affinity_apply_failed",
+  "reaction_enqueue_failed",
+  "overlay_enqueue_failed"
+]);
 
 function isAdminDlqSafePayload(payload: unknown): payload is AdminDlqSafePayload {
   if (typeof payload !== "object" || payload === null) return false;
@@ -93,6 +98,31 @@ function toAdminDlqListEntry(deadLetter: Awaited<ReturnType<CriptoTipRepository[
     stream_id: payload?.stream_id,
     character_id: payload?.character_id,
     reason_code: payload?.reason_code
+  };
+}
+
+function toAdminDlqRetryEntry(
+  deadLetter: Awaited<ReturnType<CriptoTipRepository["listDeadLetters"]>>[number],
+  retriedOutboxEventId: string
+) {
+  const payload = isAdminDlqSafePayload(deadLetter.payload_json) ? deadLetter.payload_json : undefined;
+  if (!payload) return undefined;
+  if (!RETRYABLE_SUPPORT_PIPELINE_FAILURE_REASONS.has(payload.reason_code as SupportPipelineFailureReason)) return undefined;
+  return {
+    id: deadLetter.id,
+    original_event_id: deadLetter.original_event_id,
+    job_type: deadLetter.job_type,
+    retry_count: deadLetter.retry_count,
+    failed_at: deadLetter.failed_at,
+    created_at: deadLetter.created_at,
+    retry_status: "retry_queued",
+    retried_outbox_event_id: retriedOutboxEventId,
+    event_id: payload.event_id,
+    source: payload.source,
+    source_event_id: payload.source_event_id,
+    stream_id: payload.stream_id,
+    character_id: payload.character_id,
+    reason_code: payload.reason_code
   };
 }
 
@@ -339,9 +369,13 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { deadLetterId } = z.object({ deadLetterId: z.string() }).parse(req.params);
     const body = z.object({ actor_id: z.string().default("admin_mock") }).parse(req.body ?? {});
+    const deadLetter = (await repo.listDeadLetters()).find((entry) => entry.id === deadLetterId);
+    if (!deadLetter) return reply.code(404).send({ error: "dead_letter_not_found" });
+    if (!isAdminDlqSafePayload(deadLetter.payload_json)) return reply.code(422).send({ error: "dead_letter_not_retryable" });
+    if (!RETRYABLE_SUPPORT_PIPELINE_FAILURE_REASONS.has(deadLetter.payload_json.reason_code as SupportPipelineFailureReason)) return reply.code(422).send({ error: "dead_letter_not_retryable" });
     const retried = await repo.retryDeadLetter(deadLetterId, body.actor_id);
     if (!retried) return reply.code(404).send({ error: "dead_letter_not_found" });
-    return { status: "retry_queued", outbox_event_id: retried.id };
+    return toAdminDlqRetryEntry(deadLetter, retried.id);
   });
 
   app.get("/overlay/:streamId/ws", { websocket: true }, (socket, req) => {
