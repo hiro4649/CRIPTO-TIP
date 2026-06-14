@@ -1,5 +1,6 @@
 import Fastify, { type FastifyRequest } from "fastify";
 import websocket from "@fastify/websocket";
+import { createHash } from "node:crypto";
 import { z } from "zod";
 import {
   buildCharacterReactionRequest,
@@ -40,11 +41,48 @@ type Store = {
   overlayClients: Map<string, Set<{ send: (payload: string) => void }>>;
 };
 
+type AdminRateLimitBucket = {
+  count: number;
+  resetAt: number;
+};
+
 export const repository = new InMemoryRepository();
 export const store: Store = { overlayClients: new Map() };
 
 function requireBearer(req: FastifyRequest, expected: string): boolean {
   return req.headers.authorization === `Bearer ${expected}`;
+}
+
+function adminTokenFingerprint(req: FastifyRequest): string {
+  return createHash("sha256").update(String(req.headers.authorization ?? "")).digest("hex").slice(0, 16);
+}
+
+function checkAdminRateLimit(
+  buckets: Map<string, AdminRateLimitBucket>,
+  req: FastifyRequest,
+  scope: "dlq_list" | "dlq_retry" | "audit_export",
+  now = Date.now()
+) {
+  const windowMs = 60_000;
+  const limit = 3;
+  const key = `${scope}:${adminTokenFingerprint(req)}`;
+  const current = buckets.get(key);
+  if (!current || current.resetAt <= now) {
+    buckets.set(key, { count: 1, resetAt: now + windowMs });
+    return { allowed: true as const };
+  }
+  if (current.count >= limit) {
+    return {
+      allowed: false as const,
+      response: {
+        error: "rate_limited",
+        scope,
+        retry_after_seconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000))
+      }
+    };
+  }
+  current.count += 1;
+  return { allowed: true as const };
 }
 
 function emitOverlay(alert: OverlayTipAlert) {
@@ -277,6 +315,7 @@ const TipIntentRequestSchema = z.object({
 
 export function buildServer(repo: CriptoTipRepository = repository) {
   const app = Fastify({ logger: false });
+  const adminRateLimitBuckets = new Map<string, AdminRateLimitBucket>();
   app.register(websocket);
 
   app.get("/health", async () => ({ ok: true, service: "cripto-tip-api" }));
@@ -430,6 +469,8 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
   app.get("/admin/audit-logs", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const rateLimit = checkAdminRateLimit(adminRateLimitBuckets, req, "audit_export");
+    if (!rateLimit.allowed) return reply.code(429).send(rateLimit.response);
     const query = z.object({
       action: z.string().optional(),
       target_type: z.string().optional(),
@@ -453,6 +494,8 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
   app.get("/admin/live-sessions/:streamId/dlq", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const rateLimit = checkAdminRateLimit(adminRateLimitBuckets, req, "dlq_list");
+    if (!rateLimit.allowed) return reply.code(429).send(rateLimit.response);
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
     const entries = await repo.listDeadLetters({ streamId });
     await repo.writeAuditLog({
@@ -468,6 +511,8 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
   app.post("/admin/dead-letter/:deadLetterId/retry", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const rateLimit = checkAdminRateLimit(adminRateLimitBuckets, req, "dlq_retry");
+    if (!rateLimit.allowed) return reply.code(429).send(rateLimit.response);
     const { deadLetterId } = z.object({ deadLetterId: z.string() }).parse(req.params);
     const body = z.object({ actor_id: z.string().default("admin_mock") }).parse(req.body ?? {});
     const deadLetter = (await repo.listDeadLetters()).find((entry) => entry.id === deadLetterId);
