@@ -1,10 +1,10 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
-  "harnessVersion": "1.2.1",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
+  "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 70,
-  "headSha": "fcfee007089f360bd8afe863e2debd6b5db6ef92",
-  "baseSha": "659bbcbdf8af60148d876e6ec8a7830137aa6775",
+  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
+  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
   "status": "pass",
   "coverage": [
     "admin DLQ list requires admin bearer token",

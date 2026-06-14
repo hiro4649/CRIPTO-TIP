@@ -21,9 +21,9 @@ Done criteria: admin DLQ list requires admin bearer token; admin DLQ list reject
 
 ## Evidence Integrity
 
-Head SHA: fcfee007089f360bd8afe863e2debd6b5db6ef92
+Head SHA: cb3f39950364181ba723f50303b5cedaad6af213
 
-Base SHA: 659bbcbdf8af60148d876e6ec8a7830137aa6775
+Base SHA: aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4
 
 Product CI: success
 

@@ -1,275 +1,275 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.1",
-    "harnessVersion":  "1.2.1",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  70,
-    "headSha":  "fcfee007089f360bd8afe863e2debd6b5db6ef92",
-    "baseSha":  "659bbcbdf8af60148d876e6ec8a7830137aa6775",
-    "schemaVersion":  "1.0.0",
-    "prProfile":  "product_r3",
-    "taskMode":  "feature",
-    "changeType":  "product_vertical_slice_admin_visibility",
-    "riskLevel":  "R3",
-    "title":  "feat: add p0 admin dlq visibility",
-    "goal":  "Add local/internal admin DLQ visibility for P0 support.received DLQ safe summaries without real DB, Redis, Kafka, real queue, package or lockfile changes, migrations, contracts changes, web or overlay changes, or readiness/compliance claims.",
-    "ciRunId":  "27488867674",
-    "qualityGateRunId":  "27488923322",
-    "qualityGateArtifactId":  "7617615169",
-    "productCiStatus":  "success",
-    "qualityGateStatus":  "success",
-    "runtimeReadinessClaim":  "no",
-    "productCodeChanged":  true,
-    "scope":  {
-                  "changedFiles":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/repositories/types.ts",
-                                       "apps/api/src/repositories/in-memory.ts",
-                                       "apps/api/src/repositories/postgres.ts",
-                                       "apps/api/src/p0-admin-dlq-visibility.test.ts",
-                                       "apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
-                                       "docs/P0_ADMIN_DLQ_VISIBILITY.md",
-                                       "docs/pr-p0-admin-dlq-visibility.md",
-                                       ".codex/p0-admin-dlq-visibility.json",
-                                       ".codex/evidence-pack.json",
-                                       ".codex/product-verification.json",
-                                       ".codex/quality-gate-evidence.json",
-                                       ".codex/test-summary.json",
-                                       ".codex/test-coverage-evidence.json",
-                                       ".codex/task-contract.json",
-                                       ".codex/risk-register.json",
-                                       ".codex/review-independence.json"
-                                   ],
-                  "allowedPaths":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/repositories/**",
-                                       "apps/api/src/*.test.ts",
-                                       "docs/P0_ADMIN_DLQ_VISIBILITY.md",
-                                       "docs/pr-p0-admin-dlq-visibility.md",
-                                       ".codex/**"
-                                   ],
-                  "forbiddenPaths":  [
-                                         "package.json",
-                                         "pnpm-lock.yaml",
-                                         "contracts/**",
-                                         "migrations/**",
-                                         ".github/workflows/**",
-                                         "scripts/**",
-                                         "apps/web/**",
-                                         "apps/overlay/**",
-                                         ".env.example"
-                                     ]
-              },
-    "commands":  [
-                     {
-                         "name":  "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm --filter @cripto-tip/api typecheck",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm install",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm lint",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm typecheck",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm test",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "npm test",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm evidence:ci",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm quality:self-protection",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/check-evidence-placeholders.mjs",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/validate-evidence-freshness.mjs",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/check-quality-gate-self-protection.mjs",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-secret-safety-scan.mjs",
-                         "result":  "pass",
-                         "status":  "pass"
-                     },
-                     {
-                         "name":  "forge test",
-                         "result":  "nonblocking_unavailable",
-                         "status":  "nonblocking"
-                     }
-                 ],
-    "remoteRuns":  [
-                       {
-                           "name":  "ci",
-                           "runId":  "27488867674",
-                           "result":  "success"
-                       },
-                       {
-                           "name":  "quality-gate",
-                           "runId":  "27488923322",
-                           "result":  "success",
-                           "artifactId":  "7617615169"
-                       }
-                   ],
-    "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
-    "safeOutput":  {
-                       "status":  "pass"
-                   },
-    "productionClaims":  {
-                             "runtimeReady":  false,
-                             "productionReady":  false,
-                             "deploymentApplied":  false,
-                             "legalComplianceClaimed":  false,
-                             "youtubePolicyComplianceClaimed":  false
-                         },
-    "allowedScope":  [
-                         "local/internal admin DLQ visibility",
-                         "admin bearer protected DLQ list",
-                         "safe DLQ metadata",
-                         "stream_id filtering",
-                         "PostgresRepository interface parity only",
-                         "docs",
-                         ".codex evidence"
-                     ],
-    "forbiddenScope":  [
-                           "real YouTube API",
-                           "real OAuth token",
-                           "real DB connection",
-                           "DB driver dependency",
-                           "Redis dependency",
-                           "Kafka dependency",
-                           "package.json change",
-                           "pnpm-lock change",
-                           "contracts change",
-                           "migrations change",
-                           "real RPC",
-                           "wallet/RPC/deploy changes",
-                           "runtime readiness claim",
-                           "production readiness claim",
-                           "legal compliance claim",
-                           "YouTube policy compliance claim",
-                           "token sale",
-                           "token exchange",
-                           "cash-out",
-                           "custody",
-                           "internal balance",
-                           "investment wording",
-                           "speculative reward"
-                       ],
-    "doneCriteria":  [
-                         "admin DLQ list requires admin bearer token",
-                         "admin DLQ list rejects missing auth",
-                         "admin DLQ list rejects invalid auth",
-                         "admin DLQ list returns DLQ safe summary",
-                         "admin DLQ list filters by stream_id",
-                         "admin DLQ list excludes raw payload",
-                         "admin DLQ list excludes secrets and connection strings",
-                         "admin DLQ list includes reason_code event_id source source_event_id stream_id character_id created_at",
-                         "admin DLQ list does not include OAuth token DB URL wallet secret private URL",
-                         "DLQ duplicate retry does not duplicate admin DLQ list entry",
-                         "moderation hold does not appear in DLQ list",
-                         "unsafe non-safe payload does not leak through admin DLQ list",
-                         "committed test-summary evidence matches full suite numbers",
-                         "existing P0 DLQ retry boundary tests still pass",
-                         "fixture endpoint tests still pass",
-                         "internal/events tests still pass"
-                     ],
-    "testSummary":  {
-                        "schemaVersion":  "1.0.0",
-                        "command":  "corepack pnpm test",
-                        "testFiles":  54,
-                        "passed":  1710,
-                        "skipped":  6
-                    },
-    "securityBoundaries":  [
-                               "No package.json or pnpm-lock change.",
-                               "No DB driver, Redis, or Kafka dependency is added.",
-                               "No new DB connection is introduced.",
-                               "No migration is changed or executed.",
-                               "PostgresRepository change is interface parity only for admin DLQ listing.",
-                               "No real YouTube API or OAuth token is used.",
-                               "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
-                               "Admin DLQ API returns allowlisted safe metadata only, not raw payloads or secrets.",
-                               "No runtime, production, legal, or YouTube policy readiness is claimed."
-                           ],
-    "residualRisks":  [
-                          "This is local/internal admin DLQ visibility only.",
-                          "Durable production admin console readiness, real DB persistence validation, and production queue inspection remain future scoped work."
-                      ],
-    "humanConfirmation":  [
-                              "AI review is not human approval.",
-                              "This PR must not be merged until same-head required checks pass after evidence repair."
-                          ],
-    "productVerificationCommands":  [
-                                        "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts: pass",
-                                        "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass",
-                                        "corepack pnpm --filter @cripto-tip/api typecheck: pass",
-                                        "corepack pnpm install: pass",
-                                        "corepack pnpm lint: pass",
-                                        "corepack pnpm typecheck: pass",
-                                        "corepack pnpm test: pass",
-                                        "npm test: pass",
-                                        "corepack pnpm evidence:ci: pass",
-                                        "corepack pnpm quality:self-protection: pass",
-                                        "node scripts/check-evidence-placeholders.mjs: pass",
-                                        "node scripts/validate-evidence-freshness.mjs: pass",
-                                        "node scripts/check-quality-gate-self-protection.mjs: pass",
-                                        "node scripts/codex-secret-safety-scan.mjs: pass",
-                                        "forge test: nonblocking unavailable locally"
-                                    ],
-    "packageVerification":  {
-                                "packageScriptsChanged":  false,
-                                "runtimeDependenciesAdded":  false,
-                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
-                            },
-    "apiCompatibilitySummary":  {
-                                    "publicApiChanged":  false,
-                                    "internalRuntimeApiChanged":  true,
-                                    "statement":  "Adds local/internal admin DLQ visibility and repository interface parity for safe DLQ listing."
-                                },
-    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal admin DLQ visibility only.",
-    "reviewScope":  {
-                        "scope":  "P0 admin DLQ visibility, safe summary response allowlist, repository list interface parity, tests, docs, and .codex evidence.",
-                        "riskSummary":  "Main risk is leaking raw payload or confusing interface parity with real DB readiness; tests and docs reject those outcomes.",
-                        "verificationOracle":  "Admin DLQ visibility tests, P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
-                    },
-    "prBodyPath":  "docs/pr-p0-admin-dlq-visibility.md"
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
+  "harnessVersion": "1.2.2",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 70,
+  "headSha": "cb3f39950364181ba723f50303b5cedaad6af213",
+  "baseSha": "aecabd9d8c45b47fedbfaacb1533ecba78bc4bc4",
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "feature",
+  "changeType": "product_vertical_slice_admin_visibility",
+  "riskLevel": "R3",
+  "title": "feat: add p0 admin dlq visibility",
+  "goal": "Add local/internal admin DLQ visibility for P0 support.received DLQ safe summaries without real DB, Redis, Kafka, real queue, package or lockfile changes, migrations, contracts changes, web or overlay changes, or readiness/compliance claims.",
+  "ciRunId": "27488867674",
+  "qualityGateRunId": "27488923322",
+  "qualityGateArtifactId": "7617615169",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "runtimeReadinessClaim": "no",
+  "productCodeChanged": true,
+  "scope": {
+    "changedFiles": [
+      "apps/api/src/server.ts",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/repositories/postgres.ts",
+      "apps/api/src/p0-admin-dlq-visibility.test.ts",
+      "apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
+      "docs/P0_ADMIN_DLQ_VISIBILITY.md",
+      "docs/pr-p0-admin-dlq-visibility.md",
+      ".codex/p0-admin-dlq-visibility.json",
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/test-summary.json",
+      ".codex/test-coverage-evidence.json",
+      ".codex/task-contract.json",
+      ".codex/risk-register.json",
+      ".codex/review-independence.json"
+    ],
+    "allowedPaths": [
+      "apps/api/src/server.ts",
+      "apps/api/src/repositories/**",
+      "apps/api/src/*.test.ts",
+      "docs/P0_ADMIN_DLQ_VISIBILITY.md",
+      "docs/pr-p0-admin-dlq-visibility.md",
+      ".codex/**"
+    ],
+    "forbiddenPaths": [
+      "package.json",
+      "pnpm-lock.yaml",
+      "contracts/**",
+      "migrations/**",
+      ".github/workflows/**",
+      "scripts/**",
+      "apps/web/**",
+      "apps/overlay/**",
+      ".env.example"
+    ]
+  },
+  "commands": [
+    {
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm --filter @cripto-tip/api typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm install",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "forge test",
+      "result": "nonblocking_unavailable",
+      "status": "nonblocking"
+    }
+  ],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27488867674",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27488923322",
+      "result": "success",
+      "artifactId": "7617615169"
+    }
+  ],
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
+  "safeOutput": {
+    "status": "pass"
+  },
+  "productionClaims": {
+    "runtimeReady": false,
+    "productionReady": false,
+    "deploymentApplied": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
+  },
+  "allowedScope": [
+    "local/internal admin DLQ visibility",
+    "admin bearer protected DLQ list",
+    "safe DLQ metadata",
+    "stream_id filtering",
+    "PostgresRepository interface parity only",
+    "docs",
+    ".codex evidence"
+  ],
+  "forbiddenScope": [
+    "real YouTube API",
+    "real OAuth token",
+    "real DB connection",
+    "DB driver dependency",
+    "Redis dependency",
+    "Kafka dependency",
+    "package.json change",
+    "pnpm-lock change",
+    "contracts change",
+    "migrations change",
+    "real RPC",
+    "wallet/RPC/deploy changes",
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "token sale",
+    "token exchange",
+    "cash-out",
+    "custody",
+    "internal balance",
+    "investment wording",
+    "speculative reward"
+  ],
+  "doneCriteria": [
+    "admin DLQ list requires admin bearer token",
+    "admin DLQ list rejects missing auth",
+    "admin DLQ list rejects invalid auth",
+    "admin DLQ list returns DLQ safe summary",
+    "admin DLQ list filters by stream_id",
+    "admin DLQ list excludes raw payload",
+    "admin DLQ list excludes secrets and connection strings",
+    "admin DLQ list includes reason_code event_id source source_event_id stream_id character_id created_at",
+    "admin DLQ list does not include OAuth token DB URL wallet secret private URL",
+    "DLQ duplicate retry does not duplicate admin DLQ list entry",
+    "moderation hold does not appear in DLQ list",
+    "unsafe non-safe payload does not leak through admin DLQ list",
+    "committed test-summary evidence matches full suite numbers",
+    "existing P0 DLQ retry boundary tests still pass",
+    "fixture endpoint tests still pass",
+    "internal/events tests still pass"
+  ],
+  "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 54,
+    "passed": 1710,
+    "skipped": 6
+  },
+  "securityBoundaries": [
+    "No package.json or pnpm-lock change.",
+    "No DB driver, Redis, or Kafka dependency is added.",
+    "No new DB connection is introduced.",
+    "No migration is changed or executed.",
+    "PostgresRepository change is interface parity only for admin DLQ listing.",
+    "No real YouTube API or OAuth token is used.",
+    "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
+    "Admin DLQ API returns allowlisted safe metadata only, not raw payloads or secrets.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
+  ],
+  "residualRisks": [
+    "This is local/internal admin DLQ visibility only.",
+    "Durable production admin console readiness, real DB persistence validation, and production queue inspection remain future scoped work."
+  ],
+  "humanConfirmation": [
+    "AI review is not human approval.",
+    "This PR must not be merged until same-head required checks pass after evidence repair."
+  ],
+  "productVerificationCommands": [
+    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-visibility.test.ts apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass",
+    "corepack pnpm --filter @cripto-tip/api typecheck: pass",
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "forge test: nonblocking unavailable locally"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+  },
+  "apiCompatibilitySummary": {
+    "publicApiChanged": false,
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds local/internal admin DLQ visibility and repository interface parity for safe DLQ listing."
+  },
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin DLQ visibility only.",
+  "reviewScope": {
+    "scope": "P0 admin DLQ visibility, safe summary response allowlist, repository list interface parity, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is leaking raw payload or confusing interface parity with real DB readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin DLQ visibility tests, P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+  },
+  "prBodyPath": "docs/pr-p0-admin-dlq-visibility.md"
 }
