@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
   "harnessVersion": "1.2.1",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 68,
-  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
-  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
+  "prNumber": 70,
+  "headSha": "fcfee007089f360bd8afe863e2debd6b5db6ef92",
+  "baseSha": "659bbcbdf8af60148d876e6ec8a7830137aa6775",
   "schemaVersion": "1.0.0",
   "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27487015173",
-  "latestAnalyzedArtifactId": "7617010153",
+  "latestAnalyzedRunId": "27488923322",
+  "latestAnalyzedArtifactId": "7617615169",
   "qualityGateEvidenceStatus": "success",
   "requiredStatuses": [
     {
@@ -31,11 +31,12 @@
   "rawLogsRead": false,
   "status": "success",
   "qualityGateStatus": "success",
-  "title": "feat: add p0 event pipeline dlq retry boundary",
+  "title": "feat: add p0 admin dlq visibility",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and quality-gate artifact evidence were refreshed for PR #68.",
+    "Same-head GitHub checks and body-triggered quality-gate artifact evidence were refreshed for PR #70.",
     "No quality-gate weakening is introduced.",
-    "No readiness or compliance claim is introduced."
+    "No readiness or compliance claim is introduced.",
+    "PostgresRepository change is interface parity only and does not introduce DB readiness."
   ]
 }

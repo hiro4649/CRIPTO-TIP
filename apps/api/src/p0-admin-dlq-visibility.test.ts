@@ -4,7 +4,7 @@ import path from "node:path";
 import { normalizeYouTubeSuperChatToSupportReceived } from "@cripto-tip/shared";
 import { buildServer } from "./server.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { OutboxEvent } from "./repositories/types.js";
+import type { DeadLetterEvent, OutboxEvent } from "./repositories/types.js";
 
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const adminAuth = `Bearer ${mockValue("admin")}`;
@@ -141,6 +141,49 @@ describe("P0 admin DLQ visibility", () => {
     expect(otherStream.statusCode).toBe(200);
     expect(otherStream.json().dead_letters).toEqual([]);
 
+    repo.deadLetterEvents.set("dlq_unsafe", {
+      id: "dlq_unsafe",
+      original_event_id: "outbox_unsafe",
+      job_type: "reaction.request",
+      payload_json: {
+        stream_id: "str_admin_dlq",
+        raw_payload: "do not return this",
+        oauth_token: "oauth_hidden",
+        database_url: "postgres://hidden",
+        private_url: "https://private.example/internal",
+        stack: "stack trace hidden"
+      },
+      last_error: "hidden error with Bearer token",
+      retry_count: 1,
+      failed_at: "2026-06-14T00:00:00.000Z",
+      created_at: "2026-06-14T00:00:00.000Z"
+    } satisfies DeadLetterEvent);
+    const unsafeResponse = await app.inject({
+      method: "GET",
+      url: "/admin/live-sessions/str_admin_dlq/dlq",
+      headers: { authorization: adminAuth }
+    });
+    expect(unsafeResponse.statusCode).toBe(200);
+    expect(unsafeResponse.json().dead_letters).toHaveLength(2);
+    const entry = (unsafeResponse.json().dead_letters as Record<string, unknown>[]).find((item) => item.id === "dlq_unsafe");
+    expect(entry).toEqual({
+      id: "dlq_unsafe",
+      original_event_id: "outbox_unsafe",
+      job_type: "reaction.request",
+      retry_count: 1,
+      failed_at: "2026-06-14T00:00:00.000Z",
+      created_at: "2026-06-14T00:00:00.000Z",
+      retry_status: "candidate"
+    });
+    const serialized = JSON.stringify(unsafeResponse.json());
+    expect(serialized).not.toContain("raw_payload");
+    expect(serialized).not.toContain("do not return this");
+    expect(serialized).not.toContain("oauth_hidden");
+    expect(serialized).not.toContain("postgres://");
+    expect(serialized).not.toContain("private.example");
+    expect(serialized).not.toContain("stack");
+    expect(serialized).not.toContain("Bearer");
+
     await app.close();
   }, 20_000);
 
@@ -206,7 +249,7 @@ describe("P0 admin DLQ visibility", () => {
     expect(response.json().dead_letters).toEqual([]);
 
     await app.close();
-  }, 20_000);
+  });
 
   it("committed admin DLQ visibility evidence preserves safety boundaries", () => {
     const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-admin-dlq-visibility.json"), "utf8"));
@@ -229,5 +272,11 @@ describe("P0 admin DLQ visibility", () => {
     expect(evidence.kafkaDependencyAdded).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+
+    const summary = JSON.parse(fs.readFileSync(path.join(root, ".codex", "test-summary.json"), "utf8"));
+    expect(summary.command).toBe("corepack pnpm test");
+    expect(summary.testFiles).toBe(54);
+    expect(summary.passed).toBe(1710);
+    expect(summary.skipped).toBe(6);
   });
 });

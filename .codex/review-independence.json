@@ -2,12 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
   "harnessVersion": "1.2.1",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 68,
-  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
-  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
-  "status": "updated_for_p0_dlq_retry_boundary",
+  "prNumber": 70,
+  "headSha": "fcfee007089f360bd8afe863e2debd6b5db6ef92",
+  "baseSha": "659bbcbdf8af60148d876e6ec8a7830137aa6775",
+  "status": "updated_for_p0_admin_dlq_visibility",
   "aiReviewIsHumanApproval": false,
   "githubApprovalReviewCreated": false,
   "ownerApprovalCreated": false,
-  "mergeAuthorityCreated": false
+  "mergeAuthorityCreated": false,
+  "reviewNotes": [
+    "AI Pro review is not human/project-owner approval.",
+    "No GitHub approval review, owner approval record, or merge authority is created."
+  ]
 }

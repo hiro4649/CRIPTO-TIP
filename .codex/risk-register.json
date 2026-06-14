@@ -2,23 +2,30 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
   "harnessVersion": "1.2.1",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 68,
-  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
-  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
+  "prNumber": 70,
+  "headSha": "fcfee007089f360bd8afe863e2debd6b5db6ef92",
+  "baseSha": "659bbcbdf8af60148d876e6ec8a7830137aa6775",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Local/internal DLQ coverage can be mistaken for production retry readiness.",
+      "risk": "Local/internal admin DLQ visibility can be mistaken for production Admin Console readiness.",
       "owner": "repo-owner",
-      "nextPr": "future durable queue boundary",
+      "nextPr": "future durable admin console boundary",
       "mitigation": "Docs and evidence explicitly state no real DB, Redis, Kafka, production, legal, or YouTube policy readiness claim."
     },
     {
       "severity": "medium",
-      "risk": "DLQ entries must avoid raw external payloads, secrets, tokens, and connection strings.",
+      "risk": "Admin DLQ entries must avoid raw external payloads, secrets, tokens, and connection strings.",
       "owner": "repo-owner",
-      "nextPr": "P0 DLQ retry boundary",
-      "mitigation": "DLQ tests assert safe metadata only."
+      "nextPr": "P0 admin DLQ visibility",
+      "mitigation": "Admin DLQ tests assert allowlisted safe metadata only, including unsafe non-safe payload handling."
+    },
+    {
+      "severity": "low",
+      "risk": "PostgresRepository interface parity could be confused with real DB rollout.",
+      "owner": "repo-owner",
+      "nextPr": "future DB persistence validation",
+      "mitigation": "Docs and evidence state this does not add connection, dependency, migration, package change, or real DB readiness."
     }
   ]
 }

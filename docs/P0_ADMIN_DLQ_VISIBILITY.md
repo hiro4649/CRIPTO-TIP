@@ -22,6 +22,20 @@ It does not claim legal compliance.
 
 It does not claim YouTube policy compliance.
 
+The PostgresRepository change only preserves repository interface parity for admin DLQ listing.
+
+This change does not introduce a new DB connection.
+
+This change does not introduce a DB driver dependency.
+
+This change does not change package.json or pnpm-lock.
+
+This change does not execute migrations.
+
+This change does not claim real DB readiness.
+
+The admin DLQ API still returns allowlisted safe metadata only.
+
 ## Endpoint
 
 `GET /admin/live-sessions/:streamId/dlq`
