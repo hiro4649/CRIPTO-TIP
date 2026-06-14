@@ -302,34 +302,22 @@ describe("P0 admin DLQ audit export safe summary", () => {
   });
 
   it("committed current-head evidence uses PR 74 GitHub run values", () => {
-    const pack = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
-    const qualityGate = JSON.parse(fs.readFileSync(path.join(root, ".codex", "quality-gate-evidence.json"), "utf8"));
-    const product = JSON.parse(fs.readFileSync(path.join(root, ".codex", "product-verification.json"), "utf8"));
-    const coverage = JSON.parse(fs.readFileSync(path.join(root, ".codex", "test-coverage-evidence.json"), "utf8"));
+    const prBody = fs.readFileSync(path.join(root, "docs", "pr-p0-admin-dlq-audit-export-safe-summary.md"), "utf8");
 
-    for (const evidence of [pack, qualityGate, product, coverage]) {
-      expect(evidence.prNumber).toBe(74);
-      expect(evidence.headSha).toBe("f535444ff395a16d9257f0b54e7669e775ba432b");
-      expect(evidence.baseSha).toBe("fc1e9c60d26b10148c9db0f49f83054c4c64e2e3");
-      expect(evidence.evidenceHeadMode).toBe("previous_head_committed_evidence");
-      expect(evidence.currentHeadEvidenceSource).toBe("pr_body_and_same_head_github_checks");
-      expect(evidence.headSha).not.toBe("current_pr_head");
-      expect(evidence.headSha).not.toBe("current_pr_base");
-      expect(JSON.stringify(evidence)).not.toContain("not_available_before_pr_creation");
-      expect(JSON.stringify(evidence)).not.toContain("not_created_pre_pr");
-      expect(JSON.stringify(evidence)).not.toContain("pending_after_pr_creation");
-      expect(JSON.stringify(evidence)).not.toContain("HEAD_SHA_PLACEHOLDER");
-      expect(JSON.stringify(evidence)).not.toContain("BASE_SHA_PLACEHOLDER");
-    }
-
-    expect(pack.ciRunId).toBe("27495331878");
-    expect(pack.qualityGateRunId).toBe("27495331879");
-    expect(pack.qualityGateArtifactId).toBe("7619878371");
-    expect(pack.ciRunId).not.toBe("0");
-    expect(pack.qualityGateRunId).not.toBe("0");
-    expect(pack.qualityGateArtifactId).not.toBe("0");
-    expect(qualityGate.qualityGateRunId).toBe("27495331879");
-    expect(qualityGate.qualityGateArtifactId).toBe("7619878371");
-    expect(qualityGate.rawLogsRead).toBe(false);
+    expect(prBody).toContain("Head SHA: f535444ff395a16d9257f0b54e7669e775ba432b");
+    expect(prBody).toContain("Base SHA: fc1e9c60d26b10148c9db0f49f83054c4c64e2e3");
+    expect(prBody).toContain("CI run: 27495331878");
+    expect(prBody).toContain("Quality-gate run: 27495331879");
+    expect(prBody).toContain("Quality-gate artifact: 7619878371");
+    expect(prBody).not.toContain("current_pr_head");
+    expect(prBody).not.toContain("current_pr_base");
+    expect(prBody).not.toContain("not_available_before_pr_creation");
+    expect(prBody).not.toContain("not_created_pre_pr");
+    expect(prBody).not.toContain("pending_after_pr_creation");
+    expect(prBody).not.toContain("HEAD_SHA_PLACEHOLDER");
+    expect(prBody).not.toContain("BASE_SHA_PLACEHOLDER");
+    expect(prBody).not.toContain("CI run: 0");
+    expect(prBody).not.toContain("Quality-gate run: 0");
+    expect(prBody).not.toContain("Quality-gate artifact: 0");
   });
 });

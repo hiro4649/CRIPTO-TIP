@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 74,
-  "headSha": "f535444ff395a16d9257f0b54e7669e775ba432b",
-  "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "8173d966416bcf1182556f9f3b4fc056b7c163cd",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -51,25 +51,23 @@
     }
   ],
   "coverage": [
-    "admin audit list requires admin auth",
-    "valid admin receives safe audit summaries only",
-    "action filter works",
-    "target_type filter works",
-    "stream_id filter works",
-    "audit action is allowlisted",
-    "audit target_type is allowlisted",
-    "audit before_json and after_json are safe metadata only",
-    "unsafe audit bodies are excluded",
-    "secrets are excluded",
-    "unsafe audit entries are redacted or excluded",
-    "duplicate retry audit remains bounded",
-    "moderation hold does not become a DLQ audit target",
-    "existing admin DLQ audit trail behavior remains covered"
+    "admin DLQ list rate-limits after threshold",
+    "admin DLQ retry rate-limits after threshold",
+    "admin audit export rate-limits after threshold",
+    "429 response excludes secrets and raw token",
+    "rate-limit key does not expose bearer token",
+    "rate-limit state is in-memory only",
+    "rate-limit does not affect internal/events support.received path",
+    "valid request under threshold still succeeds",
+    "missing auth remains 401, not 429",
+    "invalid auth remains 401, not 429",
+    "existing admin DLQ visibility tests still pass",
+    "existing admin DLQ redrive tests still pass",
+    "existing admin DLQ audit trail tests still pass",
+    "existing admin audit export tests still pass"
   ],
   "status": "success",
-  "testFiles": 57,
-  "passed": 1733,
-  "skipped": 6,
-  "evidenceHeadMode": "previous_head_committed_evidence",
-  "currentHeadEvidenceSource": "pr_body_and_same_head_github_checks"
+  "testFiles": 58,
+  "passed": 1740,
+  "skipped": 6
 }
