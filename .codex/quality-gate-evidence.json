@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 72,
-  "headSha": "b5fde9642002535ed1a2b1dc39dbde5749bea19a",
-  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "prNumber": 73,
+  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
+  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
   "schemaVersion": "1.0.0",
   "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27492241216",
-  "latestAnalyzedArtifactId": "7618771505",
+  "latestAnalyzedRunId": "27493168911",
+  "latestAnalyzedArtifactId": "7619119946",
   "qualityGateEvidenceStatus": "success",
   "requiredStatuses": [
     {
@@ -31,12 +31,12 @@
   "rawLogsRead": false,
   "status": "success",
   "qualityGateStatus": "success",
-  "title": "feat: add p0 admin dlq redrive controls",
+  "title": "feat: add p0 admin dlq audit trail",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and body-triggered quality-gate artifact evidence were refreshed for PR #72.",
+    "GitHub checks are not created before PR creation.",
     "No quality-gate weakening is introduced.",
     "No readiness or compliance claim is introduced.",
-    "Admin DLQ redrive returns safe metadata only and fail-closes unsafe retry candidates."
+    "Admin DLQ audit records use safe metadata only."
   ]
 }

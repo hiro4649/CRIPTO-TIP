@@ -2,32 +2,59 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 72,
-  "headSha": "b5fde9642002535ed1a2b1dc39dbde5749bea19a",
-  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
-  "status": "pass",
+  "prNumber": 73,
+  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
+  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "status": "success",
   "coverage": [
-    "admin DLQ retry requires admin bearer token",
-    "admin DLQ retry rejects missing auth",
-    "admin DLQ retry rejects invalid auth",
-    "admin DLQ retry returns 404 for unknown id",
-    "admin DLQ retry fail-closes unsafe payload",
-    "admin DLQ retry response excludes raw payload",
-    "admin DLQ retry response excludes secrets and connection strings",
-    "admin DLQ retry creates one retry candidate outbox job",
-    "admin DLQ retry duplicate does not duplicate outbox job",
-    "admin DLQ retry exposes safe retry status",
-    "admin DLQ retry preserves original safe metadata",
-    "admin DLQ retry rejects unsupported reason_code",
-    "moderation hold is not retryable as DLQ",
+    "admin DLQ list writes safe audit log",
+    "admin DLQ retry writes safe audit log",
+    "admin DLQ audit requires admin auth through existing endpoint auth",
+    "audit log excludes raw payload",
+    "audit log excludes secrets and connection strings",
+    "audit log excludes OAuth token DB URL wallet secret private URL",
+    "audit action is allowlisted",
+    "audit target_type is allowlisted",
+    "audit before_json and after_json are safe metadata only",
+    "duplicate retry does not create unbounded audit spam",
+    "unknown DLQ retry failure logs no unsafe audit",
+    "moderation hold does not create DLQ audit entry",
     "existing admin DLQ visibility tests still pass",
+    "existing admin DLQ redrive tests still pass",
     "existing P0 DLQ retry boundary tests still pass"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 55,
-    "passed": 1718,
+    "testFiles": 56,
+    "passed": 1725,
     "skipped": 6
-  }
+  },
+  "commands": [
+    {
+      "name": "corepack pnpm install",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass",
+      "status": "pass"
+    }
+  ]
 }

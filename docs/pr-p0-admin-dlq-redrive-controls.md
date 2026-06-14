@@ -21,7 +21,7 @@ Done criteria: admin DLQ retry requires admin bearer token; admin DLQ retry reje
 
 ## Evidence Integrity
 
-Head SHA: b5fde9642002535ed1a2b1dc39dbde5749bea19a
+Head SHA: ba1d236561849d3f31c5164f8e27249526578519
 
 Base SHA: 29f11ebcfa977cc078ac80c8d7ffec0501dad026
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27492190221
+CI run: 27492541428
 
-Quality-gate run: 27492241216
+Quality-gate run: 27492691522
 
-Quality-gate artifact: 7618771505
+Quality-gate artifact: 7618945058
 
 Tests: 55 test files, 1718 passed, 6 skipped
 

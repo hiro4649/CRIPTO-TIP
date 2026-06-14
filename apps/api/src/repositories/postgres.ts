@@ -438,6 +438,9 @@ export class PostgresRepository implements CriptoTipRepository {
     const deadResult = await this.db.query<Record<string, unknown>>("select * from dead_letter_events where id = $1 limit 1", [deadLetterId]);
     const dead = deadResult.rows[0] ? rowToDeadLetterEvent(deadResult.rows[0]) : undefined;
     if (!dead) return undefined;
+    const current = await this.db.query<Record<string, unknown>>("select * from outbox_events where id = $1 limit 1", [dead.original_event_id]);
+    const original = current.rows[0] ? rowToOutboxEvent(current.rows[0]) : undefined;
+    const alreadyQueued = original?.status === "pending" && original.last_error?.startsWith("DLQ retry requested");
     const result = await this.db.query<Record<string, unknown>>(
       `update outbox_events
        set status = 'pending', retry_count = 0, last_error = $1, next_attempt_at = $2,
@@ -447,7 +450,7 @@ export class PostgresRepository implements CriptoTipRepository {
       [`DLQ retry requested by ${actorId}`, now.toISOString(), dead.original_event_id]
     );
     const retried = result.rows[0] ? rowToOutboxEvent(result.rows[0]) : undefined;
-    if (retried) {
+    if (retried && !alreadyQueued) {
       await this.writeAuditLog({ actor_type: "admin", actor_id: actorId, action: "retry_dead_letter", target_type: "dead_letter_event", target_id: deadLetterId, after_json: { outbox_event_id: retried.id } });
     }
     return retried;

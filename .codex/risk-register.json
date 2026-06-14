@@ -2,30 +2,30 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 72,
-  "headSha": "b5fde9642002535ed1a2b1dc39dbde5749bea19a",
-  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "prNumber": 73,
+  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
+  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Local/internal admin DLQ redrive controls can be mistaken for production Admin Console readiness.",
+      "risk": "Local/internal admin DLQ audit trail can be mistaken for production Admin Console readiness.",
       "owner": "repo-owner",
       "nextPr": "future durable admin console boundary",
       "mitigation": "Docs and evidence explicitly state no real DB, Redis, Kafka, production, legal, or YouTube policy readiness claim."
     },
     {
       "severity": "medium",
-      "risk": "Admin DLQ retry responses must avoid raw external payloads, secrets, tokens, and connection strings.",
+      "risk": "Audit records must avoid raw payloads, secrets, tokens, and connection strings.",
       "owner": "repo-owner",
-      "nextPr": "P0 admin DLQ redrive controls",
-      "mitigation": "Admin DLQ redrive tests assert allowlisted safe metadata only and unsafe payload fail-closed behavior."
+      "nextPr": "P0 admin DLQ audit trail",
+      "mitigation": "Admin DLQ audit tests assert safe metadata only."
     },
     {
       "severity": "low",
-      "risk": "Retry controls are local/internal and do not include production rate limits or multi-admin audit policy.",
+      "risk": "Duplicate retry could create unbounded audit spam.",
       "owner": "repo-owner",
       "nextPr": "future admin operations hardening",
-      "mitigation": "Docs and residual risks state rate limits and multi-admin audit policy remain future scoped work."
+      "mitigation": "Retry audit is bounded for already queued duplicate retry attempts."
     }
   ]
 }
