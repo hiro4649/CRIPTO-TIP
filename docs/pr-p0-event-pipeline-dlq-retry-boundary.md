@@ -21,19 +21,19 @@ Done criteria: reaction enqueue failure creates DLQ safe summary; overlay enqueu
 
 ## Evidence Integrity
 
-Head SHA: 838967d2593704defaf68a228cb3daf8d55477f6
+Head SHA: 335b2c8153e2636c08588d7c7dcd35c0ccd2d535
 
-Base SHA: 98ae84e26d233b55c07b398d01ed7b5f34a97688
+Base SHA: 020abb5aa5e0ab5726503b1b753871fe0384d9cc
 
 Product CI: success
 
 Quality-gate: success
 
-CI run: 27483444876
+CI run: 27487015174
 
-Quality-gate run: 27483600135
+Quality-gate run: 27487015173
 
-Quality-gate artifact: 7615851582
+Quality-gate artifact: 7617010153
 
 Tests: 53 test files, 1705 passed, 6 skipped
 

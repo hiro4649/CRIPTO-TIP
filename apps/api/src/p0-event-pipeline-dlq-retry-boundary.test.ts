@@ -266,11 +266,11 @@ describe("P0 event pipeline DLQ retry boundary", () => {
 
     const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
     expect(evidence.prNumber).toBe(68);
-    expect(evidence.headSha).toBe("838967d2593704defaf68a228cb3daf8d55477f6");
-    expect(evidence.baseSha).toBe("98ae84e26d233b55c07b398d01ed7b5f34a97688");
-    expect(evidence.ciRunId).toBe("27483444876");
-    expect(evidence.qualityGateRunId).toBe("27483600135");
-    expect(evidence.qualityGateArtifactId).toBe("7615851582");
+    expect(evidence.headSha).toBe("335b2c8153e2636c08588d7c7dcd35c0ccd2d535");
+    expect(evidence.baseSha).toBe("020abb5aa5e0ab5726503b1b753871fe0384d9cc");
+    expect(evidence.ciRunId).toBe("27487015174");
+    expect(evidence.qualityGateRunId).toBe("27487015173");
+    expect(evidence.qualityGateArtifactId).toBe("7617010153");
 
     const p0 = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-event-pipeline-dlq-retry-boundary.json"), "utf8"));
     expect(p0.runtimeReadinessClaimed).toBe(false);
