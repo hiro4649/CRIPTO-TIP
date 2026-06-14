@@ -1,5 +1,5 @@
 import { createPublicId, SupportReceivedSchema, type CharacterReactionRequest, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export type QueryClient = {
   query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
@@ -424,6 +424,15 @@ export class PostgresRepository implements CriptoTipRepository {
     const row = dead.rows[0];
     if (!row) throw new Error("dead letter insert did not return a row");
     return rowToDeadLetterEvent(row);
+  }
+  async listDeadLetters(filter: DeadLetterListFilter = {}) {
+    const result = filter.streamId
+      ? await this.db.query<Record<string, unknown>>(
+          "select * from dead_letter_events where payload_json->>'stream_id' = $1 order by created_at desc",
+          [filter.streamId]
+        )
+      : await this.db.query<Record<string, unknown>>("select * from dead_letter_events order by created_at desc");
+    return result.rows.map(rowToDeadLetterEvent);
   }
   async retryDeadLetter(deadLetterId: string, actorId: string, now = new Date()) {
     const deadResult = await this.db.query<Record<string, unknown>>("select * from dead_letter_events where id = $1 limit 1", [deadLetterId]);

@@ -60,6 +60,10 @@ export type DeadLetterEvent = {
   created_at: string;
 };
 
+export type DeadLetterListFilter = {
+  streamId?: string;
+};
+
 export type AuditLogInput = {
   actor_type: string;
   actor_id?: string;
@@ -113,6 +117,7 @@ export interface CriptoTipRepository {
   completeOutboxJob(id: string): Promise<OutboxEvent | undefined>;
   failOutboxJob(id: string, error: string, now?: Date): Promise<OutboxEvent | DeadLetterEvent | undefined>;
   moveToDeadLetter(id: string, error: string, now?: Date): Promise<DeadLetterEvent | undefined>;
+  listDeadLetters(filter?: DeadLetterListFilter): Promise<DeadLetterEvent[]>;
   retryDeadLetter(deadLetterId: string, actorId: string, now?: Date): Promise<OutboxEvent | undefined>;
   updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed"): Promise<SupportReceived | undefined>;
   createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;

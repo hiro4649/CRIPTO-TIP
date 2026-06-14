@@ -58,6 +58,13 @@ export function isOverlayTokenValid(token: string | undefined): boolean {
 }
 
 type SupportPipelineFailureReason = "affinity_apply_failed" | "reaction_enqueue_failed" | "overlay_enqueue_failed";
+type AdminDlqSafePayload = ReturnType<typeof supportFailureSafeSummary>;
+
+function isAdminDlqSafePayload(payload: unknown): payload is AdminDlqSafePayload {
+  if (typeof payload !== "object" || payload === null) return false;
+  const record = payload as Record<string, unknown>;
+  return ["event_id", "source", "source_event_id", "stream_id", "character_id", "reason_code"].every((key) => typeof record[key] === "string");
+}
 
 function supportFailureSafeSummary(support: SupportReceived, reasonCode: SupportPipelineFailureReason) {
   return {
@@ -67,6 +74,25 @@ function supportFailureSafeSummary(support: SupportReceived, reasonCode: Support
     stream_id: support.stream_id,
     character_id: support.character_id,
     reason_code: reasonCode
+  };
+}
+
+function toAdminDlqListEntry(deadLetter: Awaited<ReturnType<CriptoTipRepository["listDeadLetters"]>>[number]) {
+  const payload = isAdminDlqSafePayload(deadLetter.payload_json) ? deadLetter.payload_json : undefined;
+  return {
+    id: deadLetter.id,
+    original_event_id: deadLetter.original_event_id,
+    job_type: deadLetter.job_type,
+    retry_count: deadLetter.retry_count,
+    failed_at: deadLetter.failed_at,
+    created_at: deadLetter.created_at,
+    retry_status: "candidate",
+    event_id: payload?.event_id,
+    source: payload?.source,
+    source_event_id: payload?.source_event_id,
+    stream_id: payload?.stream_id,
+    character_id: payload?.character_id,
+    reason_code: payload?.reason_code
   };
 }
 
@@ -300,6 +326,13 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     await repo.writeAuditLog({ actor_type: "admin", action: "reject_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
     return { status: "rejected", audit_log: "mock-admin-reject" };
+  });
+
+  app.get("/admin/live-sessions/:streamId/dlq", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
+    const entries = await repo.listDeadLetters({ streamId });
+    return { dead_letters: entries.map(toAdminDlqListEntry) };
   });
 
   app.post("/admin/dead-letter/:deadLetterId/retry", async (req, reply) => {
