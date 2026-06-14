@@ -19,7 +19,7 @@ owner scope and evidence. Done means the smallest relevant verification was run
 or honestly reported unavailable, with no raw logs or secret-like output.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.2.0
+CODEX_QUALITY_HARNESS_FILE v1.2.1
 
 ## Prime Directive
 
@@ -100,7 +100,7 @@ failures through safe artifacts only. Keep operator-visible statuses within the
 budget and keep target rollout out of Source body tasks.
 For v1.1.8 Final Decision Kernel, Evidence Capsule, Mode-Aware Artifact Contract, and Convergence Gate, use `docs/process/CODEX_V118_SPEC.md`. Preserve Final Decision authority, Evidence Capsule freshness boundaries, artifact consistency, safe failure reading, token budget enforcement, scope boundaries, same-head required checks, raw-log prohibition, 8-session default fail, and target rollout separation.
 
-For v1.2.0 Adaptive Intelligence Escalation and Review Pool, use `docs/process/CODEX_V120_SPEC.md`. v1.2.0 adds only token-aware model-tier routing, typed blockers, review-pool policy, escalation hysteresis, and high-tier repair planning inside the existing v1.1.9 P0 artifacts. Preserve v1.1.8 Final Decision authority and v1.1.9 orchestration/status compatibility. v1.2.0 must not create owner approval, GitHub approval review, release, deploy, wallet/RPC, BscScan, readiness, legal compliance, YouTube policy compliance, new P0 artifacts, scheduler behavior, external verifier runtime, memory routing, target rollout, or merge authority.
+For v1.2.0 Adaptive Intelligence Escalation and Review Pool, use `docs/process/CODEX_V120_SPEC.md`. Compatibility anchor: CODEX_QUALITY_HARNESS_FILE v1.2.0. v1.2.0 adds only token-aware model-tier routing, typed blockers, review-pool policy, escalation hysteresis, and high-tier repair planning inside the existing v1.1.9 P0 artifacts. Preserve v1.1.8 Final Decision authority and v1.1.9 orchestration/status compatibility. v1.2.0 must not create owner approval, GitHub approval review, release, deploy, wallet/RPC, BscScan, readiness, legal compliance, YouTube policy compliance, new P0 artifacts, scheduler behavior, external verifier runtime, memory routing, target rollout, or merge authority.
 ## Plan-First Rule
 
 Use plan-first for R3, ambiguous, security-sensitive, migration, release,
@@ -149,3 +149,15 @@ Root source harness version and profile template version are separate. In
 must not be required for core quality score.
 
 <!-- CODEX_QUALITY_HARNESS_END -->
+
+For v1.2.1 Adaptive Routing Metrics and Evidence Calibration Guard, use
+`docs/process/CODEX_V121_SPEC.md`. v1.2.1 target installs add only internal
+calibration fields inside the existing v1.1.9 P0 artifacts: adaptive metrics,
+routing calibration, evidence freshness, target score baseline, root-cause loop
+guard, boundary diff classification, claim lint, owner burden metrics, and
+merge decision integrity. Preserve the v1.1.8 Final Decision authority, the
+v1.1.9 artifact set and operator status surface, and the v1.2.0 adaptive
+routing/review pool contracts. v1.2.1 must not add new P0 artifacts,
+top-level statuses, product/package/runtime/workflow changes, raw-log access,
+8-session use, wallet/RPC/deploy access, self approval, GitHub approval review,
+readiness claims, legal compliance claims, or YouTube policy compliance claims.
