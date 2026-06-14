@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -225,4 +225,12 @@ export class InMemoryRepository implements CriptoTipRepository {
     return { created: true };
   }
   async writeAuditLog(input: AuditLogInput) { this.auditLogs.push(input); }
+  async listAuditLogs(filter: AuditLogListFilter = {}) {
+    return this.auditLogs.filter((log) => {
+      if (filter.action && log.action !== filter.action) return false;
+      if (filter.targetType && log.target_type !== filter.targetType) return false;
+      if (filter.targetId && log.target_id !== filter.targetId) return false;
+      return true;
+    });
+  }
 }

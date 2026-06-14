@@ -2,41 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 73,
-  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
-  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
-  "schemaVersion": "1.0.0",
-  "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27493168911",
-  "latestAnalyzedArtifactId": "7619119946",
-  "qualityGateEvidenceStatus": "success",
-  "requiredStatuses": [
-    {
-      "name": "typescript",
-      "status": "pass",
-      "blocking": true
-    },
-    {
-      "name": "contracts",
-      "status": "pass",
-      "blocking": true
-    },
-    {
-      "name": "quality-gate",
-      "status": "pass",
-      "blocking": true
-    }
-  ],
-  "safeArtifactOnly": true,
-  "rawLogsRead": false,
-  "status": "success",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
   "qualityGateStatus": "success",
-  "title": "feat: add p0 admin dlq audit trail",
-  "forbiddenScopeStatus": "pass",
-  "evidenceNotes": [
-    "GitHub checks are not created before PR creation.",
-    "No quality-gate weakening is introduced.",
-    "No readiness or compliance claim is introduced.",
-    "Admin DLQ audit records use safe metadata only."
-  ]
+  "qualityGateRunId": "0",
+  "qualityGateArtifactId": "0",
+  "sameHeadRequired": true,
+  "rawLogsRead": false,
+  "qualityGateWeakening": false
 }

@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 73,
-  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
-  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_dlq_audit_trail",
+  "changeType": "product_vertical_slice_admin_dlq_audit_export_safe_summary",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin dlq audit trail",
-  "goal": "Add safe local/internal audit records for admin DLQ list and retry operations without real DB, Redis, Kafka, real queue, package or lockfile changes, migrations, contracts changes, web or overlay changes, or readiness/compliance claims.",
-  "ciRunId": "27493168900",
-  "qualityGateRunId": "27493168911",
-  "qualityGateArtifactId": "7619119946",
+  "title": "feat: add p0 admin dlq audit safe export",
+  "goal": "Add safe local/internal admin audit log visibility for DLQ list and retry audit records without exposing unsafe audit bodies, secrets, private URLs, raw logs, stack/stdout/stderr, or readiness/compliance claims.",
+  "ciRunId": "0",
+  "qualityGateRunId": "0",
+  "qualityGateArtifactId": "0",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,12 +22,13 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/repositories/types.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/postgres.ts",
-      "apps/api/src/p0-admin-dlq-audit-trail.test.ts",
-      "docs/P0_ADMIN_DLQ_AUDIT_TRAIL.md",
-      "docs/pr-p0-admin-dlq-audit-trail.md",
-      ".codex/p0-admin-dlq-audit-trail.json",
+      "apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts",
+      "docs/P0_ADMIN_DLQ_AUDIT_EXPORT_SAFE_SUMMARY.md",
+      "docs/pr-p0-admin-dlq-audit-export-safe-summary.md",
+      ".codex/p0-admin-dlq-audit-export-safe-summary.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -41,8 +42,9 @@
       "apps/api/src/server.ts",
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
-      "docs/P0_ADMIN_DLQ_AUDIT_TRAIL.md",
-      "docs/pr-p0-admin-dlq-audit-trail.md",
+      "packages/shared/src/index.ts",
+      "docs/P0_ADMIN_DLQ_AUDIT_EXPORT_SAFE_SUMMARY.md",
+      "docs/pr-p0-admin-dlq-audit-export-safe-summary.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -59,7 +61,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-trail.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -87,6 +89,16 @@
       "name": "npm test",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "remoteRuns": [],
@@ -102,13 +114,13 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin DLQ audit trail",
-    "admin DLQ list audit",
-    "admin DLQ retry audit",
+    "local/internal admin audit safe-summary endpoint",
+    "admin auth guard",
+    "audit action filter",
+    "audit target type filter",
+    "stream id filter",
     "safe audit metadata",
-    "audit action allowlist",
-    "audit target allowlist",
-    "duplicate retry audit bounding",
+    "unsafe audit redaction/exclusion",
     "docs",
     ".codex evidence"
   ],
@@ -138,54 +150,55 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin DLQ list writes safe audit log",
-    "admin DLQ retry writes safe audit log",
-    "admin DLQ audit requires admin auth through existing endpoint auth",
-    "audit log excludes raw payload",
-    "audit log excludes secrets and connection strings",
-    "audit log excludes OAuth token DB URL wallet secret private URL",
+    "admin audit list requires admin auth",
+    "valid admin receives safe audit summaries only",
+    "action filter works",
+    "target_type filter works",
+    "stream_id filter works",
     "audit action is allowlisted",
     "audit target_type is allowlisted",
     "audit before_json and after_json are safe metadata only",
-    "duplicate retry does not create unbounded audit spam",
-    "unknown DLQ retry failure logs no unsafe audit",
-    "moderation hold does not create DLQ audit entry",
-    "existing admin DLQ visibility tests still pass",
-    "existing admin DLQ redrive tests still pass",
-    "existing P0 DLQ retry boundary tests still pass"
+    "unsafe audit bodies are excluded",
+    "secrets are excluded",
+    "unsafe audit entries are redacted or excluded",
+    "duplicate retry audit remains bounded",
+    "moderation hold does not become a DLQ audit target",
+    "existing admin DLQ audit trail behavior remains covered"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 56,
-    "passed": 1725,
+    "testFiles": 57,
+    "passed": 1732,
     "skipped": 6
   },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
     "No DB driver, Redis, or Kafka dependency is added.",
-    "No new DB connection is introduced.",
+    "No real DB connection is introduced.",
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
-    "Admin DLQ audit records use allowlisted safe metadata only, not raw payloads or secrets.",
+    "Admin audit export uses allowlisted safe metadata only, not unsafe audit bodies or secrets.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin DLQ audit trail only.",
-    "Durable production admin console readiness, real DB persistence validation, production audit retention, rate limits, and multi-admin audit policy remain future scoped work."
+    "This is local/internal admin audit safe-summary visibility only.",
+    "Durable production admin console readiness, real DB persistence validation, production audit retention, rate limits, export file generation, and multi-admin audit policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
-    "This PR must not be merged until same-head required checks pass after evidence refresh."
+    "Merge remains blocked until same-head checks pass after evidence refresh."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-trail.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
-    "npm test: pass"
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -195,13 +208,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal audit records for admin DLQ list and retry operations."
+    "statement": "Adds a local/internal admin audit safe-summary endpoint for audit visibility."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin DLQ audit trail only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin audit safe-summary visibility only.",
   "reviewScope": {
-    "scope": "P0 admin DLQ audit trail, safe audit metadata, action and target allowlists, duplicate retry audit bounding, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is leaking raw payloads or creating unbounded retry audit spam; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin DLQ audit trail tests, existing admin DLQ visibility tests, redrive tests, P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin DLQ audit export safe summary, admin auth, safe metadata, filters, redaction/exclusion, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is exposing raw audit payloads or secrets; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin DLQ audit export tests, existing admin DLQ audit trail tests, existing admin DLQ visibility/redrive tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-dlq-audit-trail.md"
+  "prBodyPath": "docs/pr-p0-admin-dlq-audit-export-safe-summary.md"
 }

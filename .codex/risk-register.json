@@ -2,30 +2,18 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 73,
-  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
-  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
+  "riskStatus": "open_until_remote_checks",
   "risks": [
-    {
-      "severity": "medium",
-      "risk": "Local/internal admin DLQ audit trail can be mistaken for production Admin Console readiness.",
-      "owner": "repo-owner",
-      "nextPr": "future durable admin console boundary",
-      "mitigation": "Docs and evidence explicitly state no real DB, Redis, Kafka, production, legal, or YouTube policy readiness claim."
-    },
-    {
-      "severity": "medium",
-      "risk": "Audit records must avoid raw payloads, secrets, tokens, and connection strings.",
-      "owner": "repo-owner",
-      "nextPr": "P0 admin DLQ audit trail",
-      "mitigation": "Admin DLQ audit tests assert safe metadata only."
-    },
-    {
-      "severity": "low",
-      "risk": "Duplicate retry could create unbounded audit spam.",
-      "owner": "repo-owner",
-      "nextPr": "future admin operations hardening",
-      "mitigation": "Retry audit is bounded for already queued duplicate retry attempts."
-    }
+    "This is local/internal admin audit safe-summary visibility only.",
+    "Durable production admin console readiness, real DB persistence validation, production audit retention, rate limits, export file generation, and multi-admin audit policy remain future scoped work."
+  ],
+  "mitigations": [
+    "Admin auth is checked before audit export.",
+    "Audit action and target_type allowlists are enforced.",
+    "Unsafe metadata is redacted or unknown unsafe entries are excluded.",
+    "Full test and evidence gates are checked before review recommendation."
   ]
 }

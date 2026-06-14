@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 73,
-  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
-  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-trail.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-dlq-audit-export-safe-summary.test.ts apps/api/src/p0-admin-dlq-audit-trail.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -38,27 +38,36 @@
       "name": "npm test",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass",
+      "status": "pass"
     }
   ],
   "coverage": [
-    "admin DLQ list writes safe audit log",
-    "admin DLQ retry writes safe audit log",
-    "admin DLQ audit requires admin auth through existing endpoint auth",
-    "audit log excludes raw payload",
-    "audit log excludes secrets and connection strings",
-    "audit log excludes OAuth token DB URL wallet secret private URL",
+    "admin audit list requires admin auth",
+    "valid admin receives safe audit summaries only",
+    "action filter works",
+    "target_type filter works",
+    "stream_id filter works",
     "audit action is allowlisted",
     "audit target_type is allowlisted",
     "audit before_json and after_json are safe metadata only",
-    "duplicate retry does not create unbounded audit spam",
-    "unknown DLQ retry failure logs no unsafe audit",
-    "moderation hold does not create DLQ audit entry",
-    "existing admin DLQ visibility tests still pass",
-    "existing admin DLQ redrive tests still pass",
-    "existing P0 DLQ retry boundary tests still pass"
+    "unsafe audit bodies are excluded",
+    "secrets are excluded",
+    "unsafe audit entries are redacted or excluded",
+    "duplicate retry audit remains bounded",
+    "moderation hold does not become a DLQ audit target",
+    "existing admin DLQ audit trail behavior remains covered"
   ],
-  "status": "success",
-  "testFiles": 56,
-  "passed": 1725,
+  "status": "pending",
+  "testFiles": 57,
+  "passed": 1732,
   "skipped": 6
 }

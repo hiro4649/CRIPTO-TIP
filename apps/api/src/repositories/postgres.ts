@@ -1,5 +1,5 @@
 import { createPublicId, SupportReceivedSchema, type CharacterReactionRequest, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
 
 export type QueryClient = {
   query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
@@ -142,6 +142,21 @@ function rowToSupportReceived(row: SupportEventRow): SupportReceived {
     },
     created_at: iso(row.created_at)
   });
+}
+
+function rowToAuditLog(row: Record<string, unknown>): AuditLogInput {
+  const log: AuditLogInput = {
+    actor_type: String(row.actor_type),
+    action: String(row.action),
+    target_type: String(row.target_type),
+    target_id: String(row.target_id)
+  };
+  if (row.actor_id) log.actor_id = String(row.actor_id);
+  if (row.before_json) log.before_json = row.before_json;
+  if (row.after_json) log.after_json = row.after_json;
+  if (row.ip_address) log.ip_address = String(row.ip_address);
+  if (row.user_agent) log.user_agent = String(row.user_agent);
+  return log;
 }
 
 export class PostgresRepository implements CriptoTipRepository {
@@ -491,5 +506,24 @@ export class PostgresRepository implements CriptoTipRepository {
        values ($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9,$10)`,
       [createPublicId("aud"), input.actor_type, input.actor_id, input.action, input.target_type, input.target_id, input.before_json ? JSON.stringify(input.before_json) : null, input.after_json ? JSON.stringify(input.after_json) : null, input.ip_address, input.user_agent]
     );
+  }
+  async listAuditLogs(filter: AuditLogListFilter = {}) {
+    const conditions: string[] = [];
+    const params: string[] = [];
+    if (filter.action) {
+      params.push(filter.action);
+      conditions.push(`action = $${params.length}`);
+    }
+    if (filter.targetType) {
+      params.push(filter.targetType);
+      conditions.push(`target_type = $${params.length}`);
+    }
+    if (filter.targetId) {
+      params.push(filter.targetId);
+      conditions.push(`target_id = $${params.length}`);
+    }
+    const where = conditions.length > 0 ? ` where ${conditions.join(" and ")}` : "";
+    const result = await this.db.query<Record<string, unknown>>(`select * from audit_logs${where} order by id desc limit 100`, params);
+    return result.rows.map(rowToAuditLog);
   }
 }
