@@ -126,6 +126,10 @@ function toAdminDlqRetryEntry(
   };
 }
 
+function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
+  return { stream_id: streamId, result_count: resultCount };
+}
+
 async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: SupportReceived, jobType: JobType, reasonCode: SupportPipelineFailureReason) {
   const dlqJobId = stableId("outbox", `support-pipeline-dlq:${reasonCode}:${support.source}:${support.source_event_id}`);
   const job = await repo.enqueueOutbox({
@@ -362,6 +366,14 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
     const entries = await repo.listDeadLetters({ streamId });
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "list_dead_letters",
+      target_type: "dlq_list",
+      target_id: streamId,
+      after_json: toAdminDlqListAuditMetadata(streamId, entries.length)
+    });
     return { dead_letters: entries.map(toAdminDlqListEntry) };
   });
 

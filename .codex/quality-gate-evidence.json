@@ -2,41 +2,41 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 72,
-  "headSha": "b5fde9642002535ed1a2b1dc39dbde5749bea19a",
-  "baseSha": "29f11ebcfa977cc078ac80c8d7ffec0501dad026",
+  "prNumber": 0,
+  "headSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
   "schemaVersion": "1.0.0",
-  "qualityGateExpectedStatus": "success",
-  "latestAnalyzedRunId": "27492241216",
-  "latestAnalyzedArtifactId": "7618771505",
-  "qualityGateEvidenceStatus": "success",
+  "qualityGateExpectedStatus": "local_before_pr",
+  "latestAnalyzedRunId": "local_before_pr",
+  "latestAnalyzedArtifactId": "local_before_pr",
+  "qualityGateEvidenceStatus": "local_before_pr",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "pass",
+      "status": "local_before_pr",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "pass",
+      "status": "local_before_pr",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "pass",
+      "status": "local_before_pr",
       "blocking": true
     }
   ],
   "safeArtifactOnly": true,
   "rawLogsRead": false,
-  "status": "success",
-  "qualityGateStatus": "success",
-  "title": "feat: add p0 admin dlq redrive controls",
+  "status": "local_before_pr",
+  "qualityGateStatus": "local_before_pr",
+  "title": "feat: add p0 admin dlq audit trail",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
-    "Same-head GitHub checks and body-triggered quality-gate artifact evidence were refreshed for PR #72.",
+    "GitHub checks are not created before PR creation.",
     "No quality-gate weakening is introduced.",
     "No readiness or compliance claim is introduced.",
-    "Admin DLQ redrive returns safe metadata only and fail-closes unsafe retry candidates."
+    "Admin DLQ audit records use safe metadata only."
   ]
 }

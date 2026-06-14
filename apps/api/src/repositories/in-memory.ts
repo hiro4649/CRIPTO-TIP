@@ -192,6 +192,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     if (!dead) return undefined;
     const original = this.outboxEvents.get(dead.original_event_id);
     if (!original) return undefined;
+    const alreadyQueued = original.status === "pending" && original.last_error?.startsWith("DLQ retry requested");
     const { locked_at: _lockedAt, locked_by: _lockedBy, ...rest } = original;
     const updated: OutboxEvent = {
       ...rest,
@@ -202,7 +203,9 @@ export class InMemoryRepository implements CriptoTipRepository {
       updated_at: now.toISOString()
     };
     this.outboxEvents.set(updated.id, updated);
-    await this.writeAuditLog({ actor_type: "admin", actor_id: actorId, action: "retry_dead_letter", target_type: "dead_letter_event", target_id: deadLetterId, after_json: { outbox_event_id: updated.id } });
+    if (!alreadyQueued) {
+      await this.writeAuditLog({ actor_type: "admin", actor_id: actorId, action: "retry_dead_letter", target_type: "dead_letter_event", target_id: deadLetterId, after_json: { outbox_event_id: updated.id } });
+    }
     return updated;
   }
   async updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed") {
