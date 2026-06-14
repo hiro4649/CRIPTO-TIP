@@ -21,19 +21,19 @@ Done criteria: admin DLQ list writes safe audit log; admin DLQ retry writes safe
 
 ## Evidence Integrity
 
-Head SHA: 61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf
+Head SHA: 2c728810cb75a0ffee513003d05d8703476b7426
 
 Base SHA: 61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf
 
-Product CI: local_before_pr
+Product CI: success
 
-Quality-gate: local_before_pr
+Quality-gate: success
 
-CI run: local_before_pr
+CI run: 27493168900
 
-Quality-gate run: local_before_pr
+Quality-gate run: 27493168911
 
-Quality-gate artifact: local_before_pr
+Quality-gate artifact: 7619119946
 
 Tests: 56 test files, 1725 passed, 6 skipped
 

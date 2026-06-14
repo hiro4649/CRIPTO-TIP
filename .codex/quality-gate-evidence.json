@@ -2,35 +2,35 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
+  "prNumber": 73,
+  "headSha": "2c728810cb75a0ffee513003d05d8703476b7426",
   "baseSha": "61b509dc49d6148b4d0cc54c3a239ac0ac5fcabf",
   "schemaVersion": "1.0.0",
-  "qualityGateExpectedStatus": "local_before_pr",
-  "latestAnalyzedRunId": "local_before_pr",
-  "latestAnalyzedArtifactId": "local_before_pr",
-  "qualityGateEvidenceStatus": "local_before_pr",
+  "qualityGateExpectedStatus": "success",
+  "latestAnalyzedRunId": "27493168911",
+  "latestAnalyzedArtifactId": "7619119946",
+  "qualityGateEvidenceStatus": "success",
   "requiredStatuses": [
     {
       "name": "typescript",
-      "status": "local_before_pr",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "contracts",
-      "status": "local_before_pr",
+      "status": "pass",
       "blocking": true
     },
     {
       "name": "quality-gate",
-      "status": "local_before_pr",
+      "status": "pass",
       "blocking": true
     }
   ],
   "safeArtifactOnly": true,
   "rawLogsRead": false,
-  "status": "local_before_pr",
-  "qualityGateStatus": "local_before_pr",
+  "status": "success",
+  "qualityGateStatus": "success",
   "title": "feat: add p0 admin dlq audit trail",
   "forbiddenScopeStatus": "pass",
   "evidenceNotes": [
