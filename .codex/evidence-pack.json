@@ -1,20 +1,20 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
-  "harnessVersion": "1.2.0",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
+  "harnessVersion": "1.2.1",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 67,
-  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
-  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
+  "prNumber": 68,
+  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
+  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
   "changeType": "product_vertical_slice_hardening",
   "riskLevel": "R3",
-  "title": "feat: harden p0 support event pipeline",
-  "goal": "Harden the local P0 support.received event pipeline so the Super Chat fixture endpoint and internal support.received input use the same downstream side-effect path without real YouTube API, real OAuth, real DB, DB driver dependency, package or lockfile changes, contracts changes, migrations, or readiness/compliance claims.",
-  "ciRunId": "27482130735",
-  "qualityGateRunId": "27482130733",
-  "qualityGateArtifactId": "7615410756",
+  "title": "feat: add p0 event pipeline dlq retry boundary",
+  "goal": "Add a local/internal DLQ and retry failure boundary to the P0 support.received event pipeline without real queue, Redis, Kafka, real DB, DB driver dependency, package or lockfile changes, migrations, contracts changes, or readiness/compliance claims.",
+  "ciRunId": "27487015174",
+  "qualityGateRunId": "27487015173",
+  "qualityGateArtifactId": "7617010153",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,10 +22,11 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
       "apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
-      "docs/P0_EVENT_PIPELINE_HARDENING.md",
-      "docs/pr-p0-superchat-event-pipeline-hardening.md",
-      ".codex/p0-superchat-event-pipeline-hardening.json",
+      "docs/P0_EVENT_PIPELINE_DLQ_RETRY_BOUNDARY.md",
+      "docs/pr-p0-event-pipeline-dlq-retry-boundary.md",
+      ".codex/p0-event-pipeline-dlq-retry-boundary.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -38,8 +39,8 @@
     "allowedPaths": [
       "apps/api/src/server.ts",
       "apps/api/src/*.test.ts",
-      "docs/P0_EVENT_PIPELINE_HARDENING.md",
-      "docs/pr-p0-superchat-event-pipeline-hardening.md",
+      "docs/P0_EVENT_PIPELINE_DLQ_RETRY_BOUNDARY.md",
+      "docs/pr-p0-event-pipeline-dlq-retry-boundary.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -56,7 +57,12 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm --filter @cripto-tip/api typecheck",
       "result": "pass",
       "status": "pass"
     },
@@ -94,17 +100,17 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27482130735",
+      "runId": "27487015174",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27482130733",
+      "runId": "27487015173",
       "result": "success",
-      "artifactId": "7615410756"
+      "artifactId": "7617010153"
     }
   ],
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -116,15 +122,12 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "internal support.received event pipeline",
-    "Super Chat fixture endpoint preservation",
-    "affinity update",
-    "reaction request",
-    "overlay event",
-    "outbox enqueue",
-    "admin tips list",
-    "idempotency tests",
-    "moderation hold tests",
+    "local/internal DLQ boundary",
+    "safe DLQ metadata",
+    "retry idempotency tests",
+    "affinity fail-closed tests",
+    "reaction enqueue failure tests",
+    "overlay enqueue failure tests",
     "docs",
     ".codex evidence"
   ],
@@ -133,63 +136,67 @@
     "real OAuth token",
     "real DB connection",
     "DB driver dependency",
+    "Redis dependency",
+    "Kafka dependency",
     "package.json change",
     "pnpm-lock change",
     "contracts change",
     "migrations change",
     "real RPC",
     "wallet/RPC/deploy changes",
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
     "token sale",
     "token exchange",
     "cash-out",
     "custody",
     "internal balance",
     "investment wording",
-    "speculative reward",
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim"
+    "speculative reward"
   ],
   "doneCriteria": [
-    "internal/events support.received approved event applies affinity once",
-    "internal/events support.received approved event enqueues reaction once",
-    "internal/events support.received approved event enqueues overlay once",
-    "internal/events support.received approved event enqueues outbox jobs once",
-    "internal/events duplicate support.received does not double-apply affinity",
-    "internal/events duplicate support.received does not double-enqueue reaction",
-    "internal/events moderation hold does not enqueue reaction or overlay",
-    "Super Chat fixture endpoint still passes existing P0 tests",
-    "admin tips list includes events from internal event path",
-    "no package or lockfile change",
-    "no real YouTube API or DB use"
+    "reaction enqueue failure creates DLQ safe summary",
+    "overlay enqueue failure creates DLQ safe summary",
+    "affinity apply failure fails closed and does not emit reaction or overlay",
+    "retry duplicate does not double-apply affinity",
+    "retry duplicate does not double-enqueue reaction",
+    "retry duplicate does not double-enqueue overlay",
+    "DLQ entry excludes raw payload secrets and connection strings",
+    "DLQ entry includes event_id source source_event_id stream_id character_id safe reason code",
+    "internal/events approved path still passes",
+    "Super Chat fixture endpoint still passes",
+    "moderation hold still does not enqueue reaction or overlay",
+    "repository can list DLQ event"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 52,
-    "passed": 1699,
+    "testFiles": 53,
+    "passed": 1705,
     "skipped": 6
   },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
-    "No DB driver dependency is added.",
+    "No DB driver, Redis, or Kafka dependency is added.",
     "No real DB connection is used.",
     "No real YouTube API or OAuth token is used.",
     "No RPC, wallet, deploy, contracts, or migrations changes.",
-    "No token sale, exchange, cash-out, custody, internal balance, investment wording, or speculative reward is introduced.",
+    "DLQ stores safe metadata only, not raw secrets or raw external payloads.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal pipeline hardening only.",
-    "Live YouTube API operation and production DB durability remain future scoped work."
+    "This is local/internal failure-boundary hardening only.",
+    "Production queue durability and live connector retry semantics remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
     "This PR must not be merged until same-head required checks pass after PR creation."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass",
+    "corepack pnpm --filter @cripto-tip/api typecheck: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
@@ -205,17 +212,17 @@
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Extends the internal bearer-protected /internal/events path to accept support.received input for local pipeline hardening."
+    "statement": "Adds local/internal safe DLQ handling around P0 support.received side-effect failures."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal pipeline hardening.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal failure-boundary hardening.",
   "reviewScope": {
-    "scope": "P0 support.received event pipeline hardening, fixture endpoint preservation, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is confusing local/internal pipeline coverage with live YouTube or production readiness; evidence and docs explicitly reject those claims.",
-    "verificationOracle": "P0 internal event pipeline tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
+    "scope": "P0 support.received DLQ/retry failure boundary, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is storing unsafe payload details in DLQ or confusing local failure-boundary coverage with production readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "P0 DLQ retry boundary tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks after PR creation."
   }
 }

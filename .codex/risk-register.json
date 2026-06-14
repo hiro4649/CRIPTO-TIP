@@ -1,24 +1,24 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
-  "harnessVersion": "1.2.0",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.1",
+  "harnessVersion": "1.2.1",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 67,
-  "headSha": "58279c5c864399def4de559422eab7a57429bb3f",
-  "baseSha": "dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0",
+  "prNumber": 68,
+  "headSha": "335b2c8153e2636c08588d7c7dcd35c0ccd2d535",
+  "baseSha": "020abb5aa5e0ab5726503b1b753871fe0384d9cc",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Local/internal support.received pipeline coverage can be mistaken for live YouTube or production readiness.",
+      "risk": "Local/internal DLQ coverage can be mistaken for production retry readiness.",
       "owner": "repo-owner",
-      "nextPr": "future YouTube connector integration",
-      "mitigation": "Docs and evidence explicitly state no real YouTube API, OAuth, DB, production, legal, or YouTube policy readiness claim."
+      "nextPr": "future durable queue boundary",
+      "mitigation": "Docs and evidence explicitly state no real DB, Redis, Kafka, production, legal, or YouTube policy readiness claim."
     },
     {
       "severity": "medium",
-      "risk": "Internal support.received input must remain bearer-protected and idempotent.",
+      "risk": "DLQ entries must avoid raw external payloads, secrets, tokens, and connection strings.",
       "owner": "repo-owner",
-      "nextPr": "P0 pipeline hardening",
-      "mitigation": "Endpoint requires the existing internal bearer token and tests cover duplicate source_event_id behavior."
+      "nextPr": "P0 DLQ retry boundary",
+      "mitigation": "DLQ tests assert safe metadata only."
     }
   ]
 }

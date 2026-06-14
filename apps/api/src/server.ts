@@ -27,7 +27,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { CriptoTipRepository } from "./repositories/types.js";
+import type { CriptoTipRepository, JobType } from "./repositories/types.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -57,35 +57,79 @@ export function isOverlayTokenValid(token: string | undefined): boolean {
   return token === OVERLAY_TOKEN;
 }
 
+type SupportPipelineFailureReason = "affinity_apply_failed" | "reaction_enqueue_failed" | "overlay_enqueue_failed";
+
+function supportFailureSafeSummary(support: SupportReceived, reasonCode: SupportPipelineFailureReason) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    reason_code: reasonCode
+  };
+}
+
+async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: SupportReceived, jobType: JobType, reasonCode: SupportPipelineFailureReason) {
+  const dlqJobId = stableId("outbox", `support-pipeline-dlq:${reasonCode}:${support.source}:${support.source_event_id}`);
+  const job = await repo.enqueueOutbox({
+    id: dlqJobId,
+    job_type: jobType,
+    aggregate_type: "support_event",
+    aggregate_id: support.event_id,
+    idempotency_key: `support-pipeline-dlq:${reasonCode}:${support.source}:${support.source_event_id}`,
+    payload_json: supportFailureSafeSummary(support, reasonCode),
+    max_retry_count: 1
+  });
+  return repo.failOutboxJob(job.id, reasonCode);
+}
+
 async function applySupportReceivedSideEffects(repo: CriptoTipRepository, support: SupportReceived) {
   const createdSupport = await repo.createSupportEventIfAbsent(support);
   if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
 
   if (canApplyAffinity(support.support.message_moderation_status) && support.viewer.iris_user_id) {
-    await repo.applyAffinityIfAbsent({
-      id: createPublicId("aff"),
-      source_event_id: support.source_event_id,
-      iris_user_id: support.viewer.iris_user_id,
-      character_id: support.character_id,
-      previous_affinity: support.relationship.previous_affinity,
-      affinity_delta: support.relationship.affinity_delta,
-      new_affinity: support.relationship.new_affinity,
-      reason: "support.received",
-      created_at: new Date().toISOString()
-    });
+    try {
+      await repo.applyAffinityIfAbsent({
+        id: createPublicId("aff"),
+        source_event_id: support.source_event_id,
+        iris_user_id: support.viewer.iris_user_id,
+        character_id: support.character_id,
+        previous_affinity: support.relationship.previous_affinity,
+        affinity_delta: support.relationship.affinity_delta,
+        new_affinity: support.relationship.new_affinity,
+        reason: "support.received",
+        created_at: new Date().toISOString()
+      });
+    } catch {
+      const dead_letter_event = await recordSupportPipelineDlq(repo, support, "affinity.apply", "affinity_apply_failed");
+      return {
+        support_event: support,
+        failure: { reason_code: "affinity_apply_failed", mode: "fail_closed" },
+        dead_letter_event
+      };
+    }
   }
 
   const overlay = canEmitOverlay(support.support.message_moderation_status) ? buildOverlayTipAlert(support) : undefined;
   if (overlay) {
     await repo.createOverlayEventIfAbsent(support.source_event_id, support.stream_id, overlay);
-    await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
-    emitOverlay(overlay);
+    try {
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
+      emitOverlay(overlay);
+    } catch {
+      await recordSupportPipelineDlq(repo, support, "overlay.emit", "overlay_enqueue_failed");
+    }
   }
 
   const reactionRequest = canRequestAiReaction(support.support.message_moderation_status) ? buildCharacterReactionRequest(support) : undefined;
   if (reactionRequest) {
     await repo.createReactionRequestIfAbsent(support.source_event_id, support.character_id, reactionRequest);
-    await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
+    try {
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
+    } catch {
+      await recordSupportPipelineDlq(repo, support, "reaction.request", "reaction_enqueue_failed");
+    }
   }
 
   return {
