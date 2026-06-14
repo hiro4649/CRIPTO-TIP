@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 74,
-  "headSha": "cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483",
+  "headSha": "f535444ff395a16d9257f0b54e7669e775ba432b",
   "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
   "riskStatus": "open_until_remote_checks",
   "risks": [
@@ -15,5 +15,7 @@
     "Audit action and target_type allowlists are enforced.",
     "Unsafe metadata is redacted or unknown unsafe entries are excluded.",
     "Full test and evidence gates are checked before review recommendation."
-  ]
+  ],
+  "evidenceHeadMode": "previous_head_committed_evidence",
+  "currentHeadEvidenceSource": "pr_body_and_same_head_github_checks"
 }

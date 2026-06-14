@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.2",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 74,
-  "headSha": "cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483",
+  "headSha": "f535444ff395a16d9257f0b54e7669e775ba432b",
   "baseSha": "fc1e9c60d26b10148c9db0f49f83054c4c64e2e3",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin dlq audit safe export",
   "goal": "Add safe local/internal admin audit log visibility for DLQ list and retry audit records without exposing unsafe audit bodies, secrets, private URLs, raw logs, stack/stdout/stderr, or readiness/compliance claims.",
-  "ciRunId": "27494660415",
-  "qualityGateRunId": "27494776613",
-  "qualityGateArtifactId": "7619692727",
+  "ciRunId": "27495331878",
+  "qualityGateRunId": "27495331879",
+  "qualityGateArtifactId": "7619878371",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -216,5 +216,7 @@
     "riskSummary": "Main risk is exposing raw audit payloads or secrets; tests and docs reject those outcomes.",
     "verificationOracle": "Admin DLQ audit export tests, existing admin DLQ audit trail tests, existing admin DLQ visibility/redrive tests, full repository test suite, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-dlq-audit-export-safe-summary.md"
+  "prBodyPath": "docs/pr-p0-admin-dlq-audit-export-safe-summary.md",
+  "evidenceHeadMode": "previous_head_committed_evidence",
+  "currentHeadEvidenceSource": "pr_body_and_same_head_github_checks"
 }

@@ -309,8 +309,10 @@ describe("P0 admin DLQ audit export safe summary", () => {
 
     for (const evidence of [pack, qualityGate, product, coverage]) {
       expect(evidence.prNumber).toBe(74);
-      expect(evidence.headSha).toBe("cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483");
+      expect(evidence.headSha).toBe("f535444ff395a16d9257f0b54e7669e775ba432b");
       expect(evidence.baseSha).toBe("fc1e9c60d26b10148c9db0f49f83054c4c64e2e3");
+      expect(evidence.evidenceHeadMode).toBe("previous_head_committed_evidence");
+      expect(evidence.currentHeadEvidenceSource).toBe("pr_body_and_same_head_github_checks");
       expect(evidence.headSha).not.toBe("current_pr_head");
       expect(evidence.headSha).not.toBe("current_pr_base");
       expect(JSON.stringify(evidence)).not.toContain("not_available_before_pr_creation");
@@ -320,14 +322,14 @@ describe("P0 admin DLQ audit export safe summary", () => {
       expect(JSON.stringify(evidence)).not.toContain("BASE_SHA_PLACEHOLDER");
     }
 
-    expect(pack.ciRunId).toBe("27494660415");
-    expect(pack.qualityGateRunId).toBe("27494776613");
-    expect(pack.qualityGateArtifactId).toBe("7619692727");
+    expect(pack.ciRunId).toBe("27495331878");
+    expect(pack.qualityGateRunId).toBe("27495331879");
+    expect(pack.qualityGateArtifactId).toBe("7619878371");
     expect(pack.ciRunId).not.toBe("0");
     expect(pack.qualityGateRunId).not.toBe("0");
     expect(pack.qualityGateArtifactId).not.toBe("0");
-    expect(qualityGate.qualityGateRunId).toBe("27494776613");
-    expect(qualityGate.qualityGateArtifactId).toBe("7619692727");
+    expect(qualityGate.qualityGateRunId).toBe("27495331879");
+    expect(qualityGate.qualityGateArtifactId).toBe("7619878371");
     expect(qualityGate.rawLogsRead).toBe(false);
   });
 });

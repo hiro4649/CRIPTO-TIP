@@ -21,7 +21,7 @@ Done criteria: admin audit list requires admin auth; valid admin receives safe a
 
 ## Evidence Integrity
 
-Head SHA: cfd2d02bbebb95b0eb5b1acd2ac71b1640ee1483
+Head SHA: f535444ff395a16d9257f0b54e7669e775ba432b
 
 Base SHA: fc1e9c60d26b10148c9db0f49f83054c4c64e2e3
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27494660415
+CI run: 27495331878
 
-Quality-gate run: 27494776613
+Quality-gate run: 27495331879
 
-Quality-gate artifact: 7619692727
+Quality-gate artifact: 7619878371
 
 Tests: 57 test files, 1733 passed, 6 skipped
 
