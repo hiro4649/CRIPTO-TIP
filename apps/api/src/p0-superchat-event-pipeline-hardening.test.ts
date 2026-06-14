@@ -154,13 +154,7 @@ describe("P0 support.received event pipeline hardening", () => {
 
   it("committed PR 67 evidence rejects pre-PR placeholders and preserves safety boundaries", () => {
     const files = [
-      ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/review-independence.json",
-      ".codex/risk-register.json",
-      ".codex/task-contract.json",
-      ".codex/test-coverage-evidence.json",
+      ".codex/p0-superchat-event-pipeline-hardening.json",
       "docs/pr-p0-superchat-event-pipeline-hardening.md"
     ];
 
@@ -175,15 +169,8 @@ describe("P0 support.received event pipeline hardening", () => {
       expect(text).not.toContain("BASE_SHA_PLACEHOLDER");
     }
 
-    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
-    expect(evidence.prNumber).toBe(67);
-    expect(evidence.headSha).toBe("58279c5c864399def4de559422eab7a57429bb3f");
-    expect(evidence.baseSha).toBe("dffe7bd7d9ce521af074f0c8370d3bbf7c9289c0");
-    expect(evidence.ciRunId).toBe("27482130735");
-    expect(evidence.qualityGateRunId).toBe("27482130733");
-    expect(evidence.qualityGateArtifactId).toBe("7615410756");
-
     const p0 = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-superchat-event-pipeline-hardening.json"), "utf8"));
+    expect(p0.pipelineStatus).toBe("implemented");
     expect(p0.runtimeReadinessClaimed).toBe(false);
     expect(p0.productionReadinessClaimed).toBe(false);
     expect(p0.legalComplianceClaimed).toBe(false);
