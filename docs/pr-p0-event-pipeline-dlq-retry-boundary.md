@@ -21,21 +21,21 @@ Done criteria: reaction enqueue failure creates DLQ safe summary; overlay enqueu
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 838967d2593704defaf68a228cb3daf8d55477f6
 
 Base SHA: 98ae84e26d233b55c07b398d01ed7b5f34a97688
 
-Product CI: not_available_before_pr_creation
+Product CI: success
 
-Quality-gate: not_available_before_pr_creation
+Quality-gate: success
 
-CI run: not_available_before_pr_creation
+CI run: 27483444876
 
-Quality-gate run: not_available_before_pr_creation
+Quality-gate run: 27483600135
 
-Quality-gate artifact: not_available_before_pr_creation
+Quality-gate artifact: 7615851582
 
-Tests: 53 test files, 1704 passed, 6 skipped
+Tests: 53 test files, 1705 passed, 6 skipped
 
 ## Testing and review
 
@@ -60,6 +60,17 @@ Product verification commands:
 
 - corepack pnpm vitest run apps/api/src/p0-event-pipeline-dlq-retry-boundary.test.ts: pass
 - corepack pnpm --filter @cripto-tip/api typecheck: pass
+- corepack pnpm lint: pass
+- corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
+- forge test: nonblocking unavailable locally
 
 Package verification:
 
@@ -85,7 +96,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 53 files, 1704 passed, 6 skipped.
+Current recorded test summary: 53 files, 1705 passed, 6 skipped.
 
 ## Security Boundaries
 

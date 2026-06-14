@@ -2,10 +2,10 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.0",
   "harnessVersion": "1.2.0",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 68,
+  "headSha": "838967d2593704defaf68a228cb3daf8d55477f6",
   "baseSha": "98ae84e26d233b55c07b398d01ed7b5f34a97688",
-  "productVerificationStatus": "local_dlq_boundary_test_pass_full_suite_pending",
+  "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
@@ -16,6 +16,26 @@
     },
     {
       "name": "corepack pnpm --filter @cripto-tip/api typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
       "result": "pass",
       "status": "pass"
     }
@@ -34,8 +54,8 @@
     "moderation hold still does not enqueue reaction or overlay",
     "repository can list DLQ event"
   ],
-  "status": "local_dlq_boundary_test_pass_full_suite_pending",
+  "status": "pass",
   "testFiles": 53,
-  "passed": 1704,
+  "passed": 1705,
   "skipped": 6
 }

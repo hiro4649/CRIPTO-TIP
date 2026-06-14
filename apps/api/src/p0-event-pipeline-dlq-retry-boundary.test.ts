@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import { normalizeYouTubeSuperChatToSupportReceived } from "@cripto-tip/shared";
 import { buildServer } from "./server.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
@@ -6,6 +8,7 @@ import type { AffinityLedgerEntry, OutboxEvent } from "./repositories/types.js";
 
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const internalAuth = `Bearer ${mockValue("internal")}`;
+const root = path.resolve(__dirname, "..", "..", "..");
 
 function supportReceived(overrides: Partial<ReturnType<typeof normalizeYouTubeSuperChatToSupportReceived>> = {}) {
   const normalized = normalizeYouTubeSuperChatToSupportReceived({
@@ -237,4 +240,47 @@ describe("P0 event pipeline DLQ retry boundary", () => {
 
     await app.close();
   }, 20_000);
+
+  it("committed PR 68 evidence rejects pre-PR placeholders and preserves safety boundaries", () => {
+    const files = [
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/review-independence.json",
+      ".codex/risk-register.json",
+      ".codex/task-contract.json",
+      ".codex/test-coverage-evidence.json",
+      "docs/pr-p0-event-pipeline-dlq-retry-boundary.md"
+    ];
+
+    for (const file of files) {
+      const text = fs.readFileSync(path.join(root, file), "utf8");
+      expect(text).not.toContain('"prNumber": 0');
+      expect(text).not.toContain("current_pr_head");
+      expect(text).not.toContain("current_pr_base");
+      expect(text).not.toContain("not_available_before_pr_creation");
+      expect(text).not.toContain("pending_after_pr_creation");
+      expect(text).not.toContain("HEAD_SHA_PLACEHOLDER");
+      expect(text).not.toContain("BASE_SHA_PLACEHOLDER");
+    }
+
+    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
+    expect(evidence.prNumber).toBe(68);
+    expect(evidence.headSha).toBe("838967d2593704defaf68a228cb3daf8d55477f6");
+    expect(evidence.baseSha).toBe("98ae84e26d233b55c07b398d01ed7b5f34a97688");
+    expect(evidence.ciRunId).toBe("27483444876");
+    expect(evidence.qualityGateRunId).toBe("27483600135");
+    expect(evidence.qualityGateArtifactId).toBe("7615851582");
+
+    const p0 = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-event-pipeline-dlq-retry-boundary.json"), "utf8"));
+    expect(p0.runtimeReadinessClaimed).toBe(false);
+    expect(p0.productionReadinessClaimed).toBe(false);
+    expect(p0.legalComplianceClaimed).toBe(false);
+    expect(p0.youtubePolicyComplianceClaimed).toBe(false);
+    expect(p0.realYouTubeApiUsed).toBe(false);
+    expect(p0.realDbConnectionUsed).toBe(false);
+    expect(p0.dbDriverDependencyAdded).toBe(false);
+    expect(p0.packageJsonChanged).toBe(false);
+    expect(p0.pnpmLockChanged).toBe(false);
+  });
 });
