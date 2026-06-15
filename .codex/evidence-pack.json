@@ -1,20 +1,20 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
-  "harnessVersion": "1.2.3",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+  "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 83,
-  "headSha": "57a4bf798253e785941dd17a28be7fb5ef34b658",
-  "baseSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
+  "prNumber": 84,
+  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
+  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_overlay_resend_controls",
+  "changeType": "product_vertical_slice_admin_reaction_resend_controls",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin overlay resend controls",
-  "goal": "Add POST /admin/support-events/:eventId/overlay-resend for safe local/internal overlay resend candidate enqueueing.",
-  "ciRunId": "27527206332",
-  "qualityGateRunId": "27527362067",
-  "qualityGateArtifactId": "7630253989",
+  "title": "feat: add p0 admin reaction resend controls",
+  "goal": "Add POST /admin/support-events/:eventId/reaction-resend for safe local/internal reaction resend candidate enqueueing.",
+  "ciRunId": "27530487357",
+  "qualityGateRunId": "27530585694",
+  "qualityGateArtifactId": "7631473624",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,11 +22,10 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-overlay-resend-controls.test.ts",
-      "apps/api/src/p0-admin-support-event-adjustment-controls.test.ts",
-      "docs/P0_ADMIN_OVERLAY_RESEND_CONTROLS.md",
-      "docs/pr-p0-admin-overlay-resend-controls.md",
-      ".codex/p0-admin-overlay-resend-controls.json",
+      "apps/api/src/p0-admin-reaction-resend-controls.test.ts",
+      "docs/P0_ADMIN_REACTION_RESEND_CONTROLS.md",
+      "docs/pr-p0-admin-reaction-resend-controls.md",
+      ".codex/p0-admin-reaction-resend-controls.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -41,8 +40,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_OVERLAY_RESEND_CONTROLS.md",
-      "docs/pr-p0-admin-overlay-resend-controls.md",
+      "docs/P0_ADMIN_REACTION_RESEND_CONTROLS.md",
+      "docs/pr-p0-admin-reaction-resend-controls.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -59,7 +58,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -67,20 +66,18 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27527206332",
+      "runId": "27530487357",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27527362067",
+      "runId": "27530585694",
       "result": "success",
-      "artifactId": "7630253989"
+      "artifactId": "7631473624"
     }
   ],
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
-  "safeOutput": {
-    "status": "pass"
-  },
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
+  "safeOutput": { "status": "pass" },
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -89,16 +86,19 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin overlay resend API",
+    "local/internal admin reaction resend API",
     "admin auth guard",
-    "approved support resend candidate enqueue",
+    "approved support reaction resend candidate enqueue",
     "held and rejected support blockers",
-    "overlay resend idempotency",
+    "reaction resend idempotency",
     "safe audit metadata",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
+    "real TTS call",
+    "real Live2D call",
+    "real renderer call",
     "real OBS delivery",
     "real WebSocket delivery",
     "real YouTube API",
@@ -128,22 +128,22 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin overlay resend requires admin bearer token",
-    "admin overlay resend rejects missing or invalid auth",
-    "admin overlay resend returns 404 for unknown event",
-    "admin overlay resend blocks held support until approval",
-    "admin overlay resend blocks rejected support",
-    "admin overlay resend enqueues one resend candidate for approved support",
-    "admin overlay resend is idempotent by support event and stream",
-    "admin overlay resend does not duplicate affinity, reaction, original support, or original source fields",
-    "admin overlay resend excludes raw message and raw payload from response",
-    "admin overlay resend writes safe audit log"
+    "admin reaction resend requires admin bearer token",
+    "admin reaction resend rejects missing or invalid auth",
+    "admin reaction resend returns 404 for unknown event",
+    "admin reaction resend blocks held support until approval",
+    "admin reaction resend blocks rejected support",
+    "admin reaction resend enqueues one resend candidate for approved support",
+    "admin reaction resend is idempotent by support event and character",
+    "admin reaction resend does not duplicate affinity, overlay, original support, or original source fields",
+    "admin reaction resend excludes raw message and raw payload from response",
+    "admin reaction resend writes safe audit log"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 65,
-    "passed": 1784,
+    "testFiles": 66,
+    "passed": 1790,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -152,14 +152,14 @@
     "No real DB connection is introduced.",
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
-    "No real OBS or WebSocket delivery is performed.",
+    "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
     "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin overlay resend candidate enqueueing only.",
-    "Production Admin Console UI, durable persistence, OBS delivery workers, and operational replay policy remain future scoped work."
+    "This is local/internal admin reaction resend candidate enqueueing only.",
+    "Production Admin Console UI, durable persistence, TTS/renderer delivery workers, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -174,13 +174,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin overlay resend controls."
+    "statement": "Adds local/internal admin reaction resend controls."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin overlay resend candidate enqueueing only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin reaction resend candidate enqueueing only.",
   "reviewScope": {
-    "scope": "P0 admin overlay resend controls, admin auth, approved-only resend, idempotent overlay/outbox enqueue, side-effect blockers, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is resending held or rejected support, duplicating overlay/outbox jobs, mutating support financial/source fields, or implying real OBS/runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin overlay resend tests, existing support adjustment tests, existing manual support tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin reaction resend controls, admin auth, approved-only resend, idempotent reaction/outbox enqueue, side-effect blockers, safe audit metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is resending held or rejected support, duplicating reaction/outbox jobs, mutating support financial/source fields, or implying real TTS/renderer/runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin reaction resend tests, existing overlay resend tests, existing support adjustment tests, existing manual support tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-overlay-resend-controls.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-resend-controls.md"
 }

@@ -1,17 +1,17 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
-  "harnessVersion": "1.2.3",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+  "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 83,
-  "headSha": "57a4bf798253e785941dd17a28be7fb5ef34b658",
-  "baseSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
+  "prNumber": 84,
+  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
+  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
   "risks": [
     {
       "severity": "medium",
-      "risk": "overlay resend controls could resend held or rejected support, duplicate outbox jobs, mutate support fields, or imply real OBS/runtime readiness",
+      "risk": "reaction resend controls could resend held or rejected support, duplicate outbox jobs, mutate support fields, enqueue overlay, or imply real TTS/renderer readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce approved-only resend, idempotency, no affinity/reaction duplication, support field immutability, safe audit metadata, and no readiness or compliance claims"
+      "mitigation": "tests enforce approved-only resend, idempotency, no affinity/overlay enqueue, support field immutability, safe audit metadata, and no readiness or compliance claims"
     }
   ]
 }
