@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "deffa5fb533f01456080161c204314f3355fa5bb",
+  "prNumber": 82,
+  "headSha": "3124c657e47c3cfecbe9f0817e2bab9581f16b9c",
   "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support event adjustment controls",
   "goal": "Add PATCH /admin/support-events/:eventId for safe local/internal support event adjustment controls.",
-  "ciRunId": "0",
-  "qualityGateRunId": "0",
-  "qualityGateArtifactId": "0",
+  "ciRunId": "27525580026",
+  "qualityGateRunId": "27525732556",
+  "qualityGateArtifactId": "7629665527",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -102,14 +102,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "0",
+      "runId": "27525580026",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "0",
+      "runId": "27525732556",
       "result": "success",
-      "artifactId": "0"
+      "artifactId": "7629665527"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
@@ -178,7 +178,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 64,
-    "passed": 1776,
+    "passed": 1777,
     "skipped": 6
   },
   "securityBoundaries": [
