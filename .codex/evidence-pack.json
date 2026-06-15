@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 84,
-  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
-  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
+  "prNumber": 85,
+  "headSha": "b0263f32a59107e551252f7737362bccec013492",
+  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_reaction_resend_controls",
+  "changeType": "product_vertical_slice_admin_support_side_effect_ledger",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin reaction resend controls",
-  "goal": "Add POST /admin/support-events/:eventId/reaction-resend for safe local/internal reaction resend candidate enqueueing.",
-  "ciRunId": "27530487357",
-  "qualityGateRunId": "27530585694",
-  "qualityGateArtifactId": "7631473624",
+  "title": "feat: add p0 admin support side effect ledger",
+  "goal": "Add GET /admin/support-events/:eventId/side-effects for safe local/internal side-effect visibility.",
+  "ciRunId": "27545318238",
+  "qualityGateRunId": "27545318238",
+  "qualityGateArtifactId": "7637620918",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,10 +22,13 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-reaction-resend-controls.test.ts",
-      "docs/P0_ADMIN_REACTION_RESEND_CONTROLS.md",
-      "docs/pr-p0-admin-reaction-resend-controls.md",
-      ".codex/p0-admin-reaction-resend-controls.json",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/repositories/postgres.ts",
+      "apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "docs/P0_ADMIN_SUPPORT_SIDE_EFFECT_LEDGER.md",
+      "docs/pr-p0-admin-support-side-effect-ledger.md",
+      ".codex/p0-admin-support-side-effect-ledger.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,8 +43,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_REACTION_RESEND_CONTROLS.md",
-      "docs/pr-p0-admin-reaction-resend-controls.md",
+      "docs/P0_ADMIN_SUPPORT_SIDE_EFFECT_LEDGER.md",
+      "docs/pr-p0-admin-support-side-effect-ledger.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,7 +61,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -66,32 +69,21 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27530487357",
+      "runId": "27545318238",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27530585694",
+      "runId": "27545318238",
       "result": "success",
-      "artifactId": "7631473624"
+      "artifactId": "7637620918"
     }
   ],
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
-  "safeOutput": { "status": "pass" },
-  "productionClaims": {
-    "runtimeReady": false,
-    "productionReady": false,
-    "deploymentApplied": false,
-    "legalComplianceClaimed": false,
-    "youtubePolicyComplianceClaimed": false
-  },
   "allowedScope": [
-    "local/internal admin reaction resend API",
+    "local/internal admin support side-effect ledger API",
     "admin auth guard",
-    "approved support reaction resend candidate enqueue",
-    "held and rejected support blockers",
-    "reaction resend idempotency",
-    "safe audit metadata",
+    "read-only side-effect visibility",
+    "safe audit action counts",
     "docs",
     ".codex evidence"
   ],
@@ -128,22 +120,20 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin reaction resend requires admin bearer token",
-    "admin reaction resend rejects missing or invalid auth",
-    "admin reaction resend returns 404 for unknown event",
-    "admin reaction resend blocks held support until approval",
-    "admin reaction resend blocks rejected support",
-    "admin reaction resend enqueues one resend candidate for approved support",
-    "admin reaction resend is idempotent by support event and character",
-    "admin reaction resend does not duplicate affinity, overlay, original support, or original source fields",
-    "admin reaction resend excludes raw message and raw payload from response",
-    "admin reaction resend writes safe audit log"
+    "admin side-effect ledger requires admin bearer token",
+    "admin side-effect ledger returns 404 for unknown support event",
+    "admin side-effect ledger returns safe metadata only",
+    "admin side-effect ledger shows affinity reaction overlay and outbox state",
+    "admin side-effect ledger counts overlay and reaction resend candidates",
+    "admin side-effect ledger counts audit actions",
+    "admin side-effect ledger is read-only",
+    "admin side-effect ledger does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 66,
-    "passed": 1790,
+    "testFiles": 67,
+    "passed": 1793,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -158,8 +148,8 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin reaction resend candidate enqueueing only.",
-    "Production Admin Console UI, durable persistence, TTS/renderer delivery workers, and operational replay policy remain future scoped work."
+    "This is local/internal admin side-effect visibility only.",
+    "Production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -174,13 +164,24 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin reaction resend controls."
+    "statement": "Adds local/internal admin support side-effect ledger visibility."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin reaction resend candidate enqueueing only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only support side-effect visibility only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support mutation, side-effect enqueue, or readiness/compliance claims are introduced.",
+  "safeOutput": {
+    "status": "pass"
+  },
+  "productionClaims": {
+    "runtimeReady": false,
+    "productionReady": false,
+    "deploymentApplied": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
+  },
   "reviewScope": {
-    "scope": "P0 admin reaction resend controls, admin auth, approved-only resend, idempotent reaction/outbox enqueue, side-effect blockers, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is resending held or rejected support, duplicating reaction/outbox jobs, mutating support financial/source fields, or implying real TTS/renderer/runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin reaction resend tests, existing overlay resend tests, existing support adjustment tests, existing manual support tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support side-effect ledger, admin auth, read-only side-effect counts, safe metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is exposing raw support data, mutating support state, or implying runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin side-effect ledger tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-reaction-resend-controls.md"
+  "prBodyPath": "docs/pr-p0-admin-support-side-effect-ledger.md"
 }

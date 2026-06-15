@@ -2,23 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 84,
-  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
-  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
+  "prNumber": 85,
+  "headSha": "b0263f32a59107e551252f7737362bccec013492",
+  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
   "testCoverageStatus": "pass",
   "testFiles": 66,
   "passed": 1790,
   "skipped": 6,
   "coverage": [
-    "admin reaction resend requires admin bearer token",
-    "admin reaction resend rejects missing or invalid auth",
-    "admin reaction resend returns 404 for unknown event",
-    "admin reaction resend blocks held support until approval",
-    "admin reaction resend blocks rejected support",
-    "admin reaction resend enqueues one resend candidate for approved support",
-    "admin reaction resend is idempotent by support event and character",
-    "admin reaction resend does not duplicate affinity or overlay events",
-    "admin reaction resend does not mutate support amount source wallet or moderation fields",
-    "admin reaction resend writes safe audit log"
+    "admin side-effect ledger requires admin bearer token",
+    "admin side-effect ledger rejects missing or invalid auth",
+    "admin side-effect ledger returns 404 for unknown support event",
+    "admin side-effect ledger returns safe metadata only",
+    "admin side-effect ledger counts support side effects",
+    "admin side-effect ledger does not mutate state or enqueue side effects"
   ]
 }

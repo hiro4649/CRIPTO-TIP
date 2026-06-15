@@ -595,4 +595,28 @@ export class PostgresRepository implements CriptoTipRepository {
     const result = await this.db.query<Record<string, unknown>>(`select * from audit_logs${where} order by id desc limit 100`, params);
     return result.rows.map(rowToAuditLog);
   }
+  async getSupportSideEffectLedger(event: SupportReceived) {
+    const [affinity, reaction, overlay, outbox, overlayResend, reactionResend, auditCounts] = await Promise.all([
+      this.db.query<{ count: string }>("select count(*)::text as count from affinity_ledger where source_event_id = $1 and character_id = $2", [event.source_event_id, event.character_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from reaction_requests where source_event_id = $1 and character_id = $2", [event.source_event_id, event.character_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from overlay_events where source_event_id = $1 and stream_id = $2", [event.source_event_id, event.stream_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_type = 'support_event' and aggregate_id = $1", [event.event_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_id = $1 and idempotency_key like $2", [event.event_id, `overlay.resend:${event.event_id}:%`]),
+      this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_id = $1 and idempotency_key like $2", [event.event_id, `reaction.resend:${event.event_id}:%`]),
+      this.db.query<{ action: string; count: string }>("select action, count(*)::text as count from audit_logs where target_type = 'support_event' and target_id = $1 group by action", [event.event_id])
+    ]);
+    const audit_action_counts: Record<string, number> = {};
+    for (const row of auditCounts.rows) audit_action_counts[row.action] = Number(row.count);
+    return {
+      affinity_applied: Number(affinity.rows[0]?.count ?? 0) > 0,
+      reaction_requested: Number(reaction.rows[0]?.count ?? 0) > 0,
+      overlay_requested: Number(overlay.rows[0]?.count ?? 0) > 0,
+      outbox_enqueued: Number(outbox.rows[0]?.count ?? 0) > 0,
+      resend_candidates: {
+        overlay_resend: Number(overlayResend.rows[0]?.count ?? 0),
+        reaction_resend: Number(reactionResend.rows[0]?.count ?? 0)
+      },
+      audit_action_counts
+    };
+  }
 }

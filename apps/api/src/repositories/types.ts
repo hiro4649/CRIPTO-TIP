@@ -76,6 +76,18 @@ export type AuditLogInput = {
   user_agent?: string;
 };
 
+export type SupportSideEffectLedger = {
+  affinity_applied: boolean;
+  reaction_requested: boolean;
+  overlay_requested: boolean;
+  outbox_enqueued: boolean;
+  resend_candidates: {
+    overlay_resend: number;
+    reaction_resend: number;
+  };
+  audit_action_counts: Record<string, number>;
+};
+
 export type AuditLogListFilter = {
   action?: string;
   targetType?: string;
@@ -143,4 +155,5 @@ export interface CriptoTipRepository {
   createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
   writeAuditLog(input: AuditLogInput): Promise<void>;
   listAuditLogs(filter?: AuditLogListFilter): Promise<AuditLogInput[]>;
+  getSupportSideEffectLedger(event: SupportReceived): Promise<SupportSideEffectLedger>;
 }
