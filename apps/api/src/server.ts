@@ -234,6 +234,43 @@ function auditSummaryMatchesStream(summary: ReturnType<typeof toAdminAuditSafeSu
   return summary.target_id === streamId || summary.before_json?.stream_id === streamId || summary.after_json?.stream_id === streamId;
 }
 
+function countDeadLettersByStream(deadLetters: Awaited<ReturnType<CriptoTipRepository["listDeadLetters"]>>) {
+  const counts: Record<string, number> = {};
+  for (const deadLetter of deadLetters) {
+    const streamId = isAdminDlqSafePayload(deadLetter.payload_json) ? deadLetter.payload_json.stream_id : "unknown";
+    counts[streamId] = (counts[streamId] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function countAuditActions(logs: AuditLogInput[]) {
+  const counts: Record<string, number> = {};
+  for (const log of logs) {
+    if (!ADMIN_AUDIT_ACTIONS.has(log.action)) continue;
+    counts[log.action] = (counts[log.action] ?? 0) + 1;
+  }
+  return counts;
+}
+
+function summarizeAdminRateLimits(buckets: Map<string, AdminRateLimitBucket>) {
+  const activeBucketsByScope: Record<"dlq_list" | "dlq_retry" | "audit_export", number> = {
+    dlq_list: 0,
+    dlq_retry: 0,
+    audit_export: 0
+  };
+  for (const key of buckets.keys()) {
+    const [scope] = key.split(":");
+    if (scope === "dlq_list" || scope === "dlq_retry" || scope === "audit_export") {
+      activeBucketsByScope[scope] += 1;
+    }
+  }
+  return {
+    storage: "in_memory",
+    key_material: "redacted",
+    active_buckets_by_scope: activeBucketsByScope
+  };
+}
+
 async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: SupportReceived, jobType: JobType, reasonCode: SupportPipelineFailureReason) {
   const dlqJobId = stableId("outbox", `support-pipeline-dlq:${reasonCode}:${support.source}:${support.source_event_id}`);
   const job = await repo.enqueueOutbox({
@@ -489,6 +526,28 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         .map(toAdminAuditSafeSummary)
         .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
         .filter((summary) => auditSummaryMatchesStream(summary, query.stream_id))
+    };
+  });
+
+  app.get("/admin/operations/summary", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = z.object({ stream_id: z.string().optional() }).parse(req.query);
+    const deadLetters = await repo.listDeadLetters(query.stream_id ? { streamId: query.stream_id } : undefined);
+    const safeAuditLogs = (await repo.listAuditLogs())
+      .map(toAdminAuditSafeSummary)
+      .filter((summary): summary is NonNullable<typeof summary> => Boolean(summary))
+      .filter((summary) => auditSummaryMatchesStream(summary, query.stream_id));
+    return {
+      status: "ok",
+      dlq: {
+        total: deadLetters.length,
+        by_stream_id: countDeadLettersByStream(deadLetters)
+      },
+      audit: {
+        total: safeAuditLogs.length,
+        action_counts: countAuditActions(safeAuditLogs)
+      },
+      rate_limit: summarizeAdminRateLimits(adminRateLimitBuckets)
     };
   });
 

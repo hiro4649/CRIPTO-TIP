@@ -1,19 +1,19 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.2",
-  "harnessVersion": "1.2.2",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
+  "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 75,
-  "headSha": "093a3e2d23a021bc9e18ea8cf39fc0212840d460",
-  "baseSha": "8173d966416bcf1182556f9f3b4fc056b7c163cd",
+  "prNumber": 76,
+  "headSha": "5e5adbd6080126c784416d3ab25ba8201c07ff97",
+  "baseSha": "e38c0151e30c9978339c928b0d80afc1d4e059db",
   "riskStatus": "open_until_remote_checks",
   "risks": [
-    "This is local/internal in-memory admin rate-limit boundary only.",
-    "Production rate-limit readiness, distributed rate limits, durable abuse analytics, real retention policy, and multi-node coordination remain future scoped work."
+    "This is local/internal admin operations summary API only.",
+    "Web Admin Console readiness, production operations readiness, distributed metrics, durable analytics, and real retention policy remain future scoped work."
   ],
   "mitigations": [
-    "Admin auth is checked before rate-limit accounting.",
-    "Rate-limit keys use short token fingerprints only.",
-    "429 responses return safe metadata only.",
+    "Admin auth is checked before operations summary.",
+    "Summary only returns aggregate safe metadata.",
+    "Raw token, token fingerprint, IP, and user-agent are excluded.",
     "Internal events path is covered as unaffected."
   ]
 }

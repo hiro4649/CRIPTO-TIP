@@ -21,7 +21,7 @@ Done criteria: admin DLQ list rate-limits after threshold; admin DLQ retry rate-
 
 ## Evidence Integrity
 
-Head SHA: 093a3e2d23a021bc9e18ea8cf39fc0212840d460
+Head SHA: c2fb2f2cd7c99990ea46ca8c389925a53c4ab4a1
 
 Base SHA: 8173d966416bcf1182556f9f3b4fc056b7c163cd
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27495739527
+CI run: 27497109191
 
-Quality-gate run: 27495947354
+Quality-gate run: 27497109174
 
-Quality-gate artifact: 7620077368
+Quality-gate artifact: 7620445389
 
 Tests: 58 test files, 1741 passed, 6 skipped
 
