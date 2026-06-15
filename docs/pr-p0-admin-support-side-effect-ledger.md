@@ -21,7 +21,7 @@ Done criteria: admin side-effect ledger requires admin bearer token; admin side-
 
 ## Evidence Integrity
 
-Head SHA: b0263f32a59107e551252f7737362bccec013492
+Head SHA: bc4a66ffa5c29b16ac0763b34f07b853c5de9830
 
 Base SHA: de455a79d40cc6b120eb3b88c2c2140cd2155b35
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27545318238
+CI run: 27546566879
 
-Quality-gate run: 27545318238
+Quality-gate run: 27546693993
 
-Quality-gate artifact: 7637620918
+Quality-gate artifact: 7638237798
 
 Tests: 67 test files, 1793 passed, 6 skipped
 
