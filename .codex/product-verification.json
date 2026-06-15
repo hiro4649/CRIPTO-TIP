@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 88,
-  "headSha": "179585d9cb02d1cf19fe4736a126dbc3ee5a6ee2",
+  "headSha": "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",
   "baseSha": "542d896282528f4382cd930d387159a12f4263dc",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
@@ -17,11 +17,11 @@
   ],
   "coverage": [
     "admin support search auth",
-    "unknown support event 404",
     "safe metadata only",
     "read-only search results",
-    "resend candidate counts",
-    "audit action counts"
+    "stream, character, source, moderation, delivery, and created-at filters",
+    "safe pagination",
+    "no reaction or overlay enqueue"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,

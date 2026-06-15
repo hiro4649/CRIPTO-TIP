@@ -17,11 +17,11 @@ Runtime readiness claim: no.
 
 Product code changed: yes.
 
-Done criteria: admin support search requires admin bearer token; admin support search returns 404 for unknown support event; admin support search returns safe metadata only; admin support search includes side-effect ledger summary; admin support search includes overlay and reaction resend entries; admin support search includes audit action entries; admin support search is read-only; admin support search does not enqueue reaction or overlay.
+Done criteria: admin support search requires admin bearer token; admin support search returns safe metadata only; admin support search filters by stream, character, source, moderation, delivery, and created-at bounds; admin support search applies safe pagination; admin support search is read-only; admin support search does not enqueue reaction or overlay.
 
 ## Evidence Integrity
 
-Head SHA: 179585d9cb02d1cf19fe4736a126dbc3ee5a6ee2
+Head SHA: da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5
 
 Base SHA: 542d896282528f4382cd930d387159a12f4263dc
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27548866714
+CI run: 27549438817
 
-Quality-gate run: 27548991489
+Quality-gate run: 27549606557
 
-Quality-gate artifact: 7639227151
+Quality-gate artifact: 7639494132
 
 Tests: 69 test files, 1799 passed, 6 skipped
 
@@ -105,4 +105,7 @@ Current recorded test summary: 69 files, 1799 passed, 6 skipped.
 ## Human Confirmation
 
 - AI review is not human approval.
-- Merge remains blocked until PR creation, evidence refresh, and same-head checks pass.
+- AI review is not GitHub approval review.
+- This PR does not create owner approval record.
+- This PR does not create merge authority.
+- If final same-head checks, committed evidence, PR body evidence, safe artifact, and forbidden scope checks pass, AI Pro review may recommend merge and Codex may squash merge in the same task.
