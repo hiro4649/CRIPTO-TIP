@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 81,
-  "headSha": "35b379528e6cc9d57f74ae53e5ace6eb57608281",
-  "baseSha": "8785b807b0b6957037ce77e49683486e0bc8ee72",
+  "prNumber": 82,
+  "headSha": "3124c657e47c3cfecbe9f0817e2bab9581f16b9c",
+  "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -51,11 +51,12 @@
     }
   ],
   "coverage": [
-    "admin manual support auth",
-    "approved manual support side effects",
-    "hold and rejected manual support no-side-effect paths",
-    "manual support idempotency",
-    "safe audit metadata"
+    "admin support patch auth",
+    "safe field allowlist",
+    "forbidden field blocking",
+    "state transition blocking",
+    "safe audit metadata",
+    "no side-effect duplication"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
