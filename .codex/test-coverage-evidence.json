@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 86,
-  "headSha": "bc4a66ffa5c29b16ac0763b34f07b853c5de9830",
-  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
+  "prNumber": 87,
+  "headSha": "c7e5cbc349e2ce84da6ad8740d49825850026760",
+  "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
   "testCoverageStatus": "pass",
   "testFiles": 66,
   "passed": 1790,
   "skipped": 6,
   "coverage": [
-    "admin side-effect ledger requires admin bearer token",
-    "admin side-effect ledger rejects missing or invalid auth",
-    "admin side-effect ledger returns 404 for unknown support event",
-    "admin side-effect ledger returns safe metadata only",
-    "admin side-effect ledger counts support side effects",
-    "admin side-effect ledger does not mutate state or enqueue side effects"
+    "admin support timeline requires admin bearer token",
+    "admin support timeline rejects missing or invalid auth",
+    "admin support timeline returns 404 for unknown support event",
+    "admin support timeline returns safe metadata only",
+    "admin support timeline includes support lifecycle entries",
+    "admin support timeline does not mutate state or enqueue side effects"
   ]
 }

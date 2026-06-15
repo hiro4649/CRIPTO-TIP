@@ -88,6 +88,19 @@ export type SupportSideEffectLedger = {
   audit_action_counts: Record<string, number>;
 };
 
+export type SupportEventTimelineEntry = {
+  type: "support_created" | "audit_action" | "overlay_resend" | "reaction_resend" | "side_effect_ledger";
+  sequence: number;
+  occurred_at: string;
+  action?: string;
+  status?: string;
+  summary?: Record<string, boolean | number | string | Record<string, number>>;
+};
+
+export type SupportEventTimeline = {
+  entries: SupportEventTimelineEntry[];
+};
+
 export type AuditLogListFilter = {
   action?: string;
   targetType?: string;
@@ -156,4 +169,5 @@ export interface CriptoTipRepository {
   writeAuditLog(input: AuditLogInput): Promise<void>;
   listAuditLogs(filter?: AuditLogListFilter): Promise<AuditLogInput[]>;
   getSupportSideEffectLedger(event: SupportReceived): Promise<SupportSideEffectLedger>;
+  getSupportEventTimeline(event: SupportReceived): Promise<SupportEventTimeline>;
 }

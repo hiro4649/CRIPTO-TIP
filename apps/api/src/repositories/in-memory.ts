@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -282,5 +282,53 @@ export class InMemoryRepository implements CriptoTipRepository {
       },
       audit_action_counts
     };
+  }
+  async getSupportEventTimeline(event: SupportReceived) {
+    const ledger = await this.getSupportSideEffectLedger(event);
+    const auditLogs = await this.listAuditLogs({ targetType: "support_event", targetId: event.event_id });
+    const entries: SupportEventTimelineEntry[] = [
+      {
+        type: "support_created" as const,
+        sequence: 0,
+        occurred_at: event.created_at,
+        status: event.support.message_moderation_status,
+        summary: {
+          stream_id: event.stream_id,
+          character_id: event.character_id,
+          source: event.source
+        }
+      }
+    ];
+    auditLogs.forEach((log, index) => entries.push({
+      type: "audit_action" as const,
+      sequence: index + 1,
+      occurred_at: event.created_at,
+      action: log.action
+    }));
+    const resendOutbox = [...this.outboxEvents.values()]
+      .filter((outbox) => outbox.aggregate_type === "support_event" && outbox.aggregate_id === event.event_id)
+      .filter((outbox) => outbox.idempotency_key.startsWith(`overlay.resend:${event.event_id}:`) || outbox.idempotency_key.startsWith(`reaction.resend:${event.event_id}:`));
+    resendOutbox.forEach((outbox, index) => entries.push({
+      type: outbox.idempotency_key.startsWith("overlay.resend:") ? "overlay_resend" as const : "reaction_resend" as const,
+      sequence: auditLogs.length + index + 1,
+      occurred_at: outbox.created_at,
+      status: outbox.status
+    }));
+    entries.push({
+      type: "side_effect_ledger" as const,
+      sequence: auditLogs.length + resendOutbox.length + 1,
+      occurred_at: event.created_at,
+      summary: {
+        affinity_applied: ledger.affinity_applied,
+        reaction_requested: ledger.reaction_requested,
+        overlay_requested: ledger.overlay_requested,
+        outbox_enqueued: ledger.outbox_enqueued,
+        overlay_resend: ledger.resend_candidates.overlay_resend,
+        reaction_resend: ledger.resend_candidates.reaction_resend,
+        audit_action_counts: ledger.audit_action_counts
+      }
+    });
+    entries.sort((a, b) => a.occurred_at.localeCompare(b.occurred_at) || a.sequence - b.sequence);
+    return { entries: entries.map((entry, index) => ({ ...entry, sequence: index })) };
   }
 }

@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 86,
-  "headSha": "bc4a66ffa5c29b16ac0763b34f07b853c5de9830",
-  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
+  "prNumber": 87,
+  "headSha": "c7e5cbc349e2ce84da6ad8740d49825850026760",
+  "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
   "risks": [
     {
       "severity": "medium",
-      "risk": "side-effect ledger could expose raw support data, mutate state, or imply operational readiness",
+      "risk": "support event timeline could expose raw support data, mutate state, or imply operational readiness",
       "owner": "codex",
       "nextPr": "none",
       "mitigation": "tests enforce safe metadata, read-only behavior, no reaction/overlay enqueue, no raw payload/message exposure, and no readiness claims"
