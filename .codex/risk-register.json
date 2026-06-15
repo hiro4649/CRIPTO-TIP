@@ -2,18 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 76,
-  "headSha": "5e5adbd6080126c784416d3ab25ba8201c07ff97",
-  "baseSha": "e38c0151e30c9978339c928b0d80afc1d4e059db",
-  "riskStatus": "open_until_remote_checks",
+  "prNumber": 78,
+  "headSha": "59fb09f49e02624aaf8fa24ed6440779bc0a4d72",
+  "baseSha": "8879c52b7d675fd9d1ca69ce5ff58b2895a4be54",
   "risks": [
-    "This is local/internal admin operations summary API only.",
-    "Web Admin Console readiness, production operations readiness, distributed metrics, durable analytics, and real retention policy remain future scoped work."
-  ],
-  "mitigations": [
-    "Admin auth is checked before operations summary.",
-    "Summary only returns aggregate safe metadata.",
-    "Raw token, token fingerprint, IP, and user-agent are excluded.",
-    "Internal events path is covered as unaffected."
+    {
+      "severity": "medium",
+      "risk": "safe health metadata could be mistaken for runtime readiness",
+      "owner": "codex",
+      "nextPr": "none",
+      "mitigation": "docs and tests reject readiness and compliance claims"
+    }
   ]
 }
