@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 78,
-  "headSha": "59fb09f49e02624aaf8fa24ed6440779bc0a4d72",
-  "baseSha": "8879c52b7d675fd9d1ca69ce5ff58b2895a4be54",
+  "prNumber": 79,
+  "headSha": "80616c9a006fe1ea078133e810068580948276f3",
+  "baseSha": "5e8e3ec479ace39c8c97244c337f54bfd12a164a",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operations-safe-health-checks.test.ts apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts apps/api/src/p0-admin-operations-dashboard-api.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -51,11 +51,11 @@
     }
   ],
   "coverage": [
-    "admin operations health auth",
-    "safe metadata",
-    "endpoint availability",
-    "safe rate-limit config",
-    "existing operations summary"
+    "admin moderation hold auth",
+    "safe held support metadata",
+    "approve and reject idempotency",
+    "state transition blocking",
+    "safe audit metadata"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,

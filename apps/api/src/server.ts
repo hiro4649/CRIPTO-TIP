@@ -169,8 +169,8 @@ function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
   return { stream_id: streamId, result_count: resultCount };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter"]);
-const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
@@ -181,7 +181,9 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "character_id",
   "reason_code",
   "retry_status",
-  "target_id"
+  "target_id",
+  "review_status",
+  "moderation_status"
 ]);
 const ADMIN_AUDIT_UNSAFE_KEY_PATTERN = /(raw|payload|secret|token|oauth|database|db_url|wallet|private|stack|stdout|stderr|logs_url|jobs_url|url)/i;
 const ADMIN_AUDIT_UNSAFE_VALUE_PATTERN = /(bearer\s+|postgres:\/\/|redis:\/\/|kafka:\/\/|mongodb:\/\/|mysql:\/\/|https?:\/\/)/i;
@@ -286,6 +288,61 @@ function summarizeAdminRateLimitConfig() {
   };
 }
 
+function toAdminHeldSupportEntry(support: SupportReceived) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    viewer_display_name: sanitizeDisplayName(support.viewer.display_name).sanitized,
+    amount_display: support.support.amount_display,
+    tier: support.support.tier,
+    moderation_status: support.support.message_moderation_status,
+    created_at: support.created_at
+  };
+}
+
+function toHeldSupportAuditMetadata(support: SupportReceived, reviewStatus: "approved" | "rejected") {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    review_status: reviewStatus,
+    moderation_status: support.support.message_moderation_status
+  };
+}
+
+async function buildReviewedSupport(repo: CriptoTipRepository, support: SupportReceived, status: "approved" | "rejected") {
+  const previous = support.viewer.iris_user_id ? await repo.getCurrentAffinity(support.viewer.iris_user_id, support.character_id) : support.relationship.previous_affinity;
+  const affinity = status === "approved"
+    ? calculateAffinityDelta({ tier: support.support.tier, previous, dailyUsed: 0, streamUsed: 0 })
+    : { previous, delta: 0, next: previous };
+  return SupportReceivedSchema.parse({
+    ...support,
+    support: {
+      ...support.support,
+      message: sanitizeMessage(support.support.message),
+      message_moderation_status: status
+    },
+    relationship: {
+      previous_affinity: affinity.previous,
+      affinity_delta: affinity.delta,
+      new_affinity: affinity.next,
+      relationship_level: Math.floor(affinity.next / 50)
+    },
+    reaction_policy: {
+      ...support.reaction_policy,
+      can_say_name: status === "approved",
+      can_read_message: status === "approved",
+      must_not_discuss_token_price: true,
+      must_not_promise_financial_return: true
+    }
+  });
+}
+
 async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: SupportReceived, jobType: JobType, reasonCode: SupportPipelineFailureReason) {
   const dlqJobId = stableId("outbox", `support-pipeline-dlq:${reasonCode}:${support.source}:${support.source_event_id}`);
   const job = await repo.enqueueOutbox({
@@ -300,10 +357,7 @@ async function recordSupportPipelineDlq(repo: CriptoTipRepository, support: Supp
   return repo.failOutboxJob(job.id, reasonCode);
 }
 
-async function applySupportReceivedSideEffects(repo: CriptoTipRepository, support: SupportReceived) {
-  const createdSupport = await repo.createSupportEventIfAbsent(support);
-  if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
-
+async function applySupportReceivedEffects(repo: CriptoTipRepository, support: SupportReceived) {
   if (canApplyAffinity(support.support.message_moderation_status) && support.viewer.iris_user_id) {
     try {
       await repo.applyAffinityIfAbsent({
@@ -353,6 +407,12 @@ async function applySupportReceivedSideEffects(repo: CriptoTipRepository, suppor
     character_reaction_request: reactionRequest,
     overlay
   };
+}
+
+async function applySupportReceivedSideEffects(repo: CriptoTipRepository, support: SupportReceived) {
+  const createdSupport = await repo.createSupportEventIfAbsent(support);
+  if (!createdSupport.created) return { support_event: createdSupport.event, duplicate: true };
+  return applySupportReceivedEffects(repo, support);
 }
 
 const TipIntentRequestSchema = z.object({
@@ -507,16 +567,84 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return repo.listSupportEventsByStream(streamId);
   });
 
+  app.get("/admin/moderation/held-support", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = z.object({ stream_id: z.string().optional() }).parse(req.query);
+    const held = await repo.listHeldSupportEvents(query.stream_id ? { streamId: query.stream_id } : undefined);
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "list_held_support",
+      target_type: "held_support_list",
+      target_id: query.stream_id ?? "all",
+      after_json: { stream_id: query.stream_id ?? "all", result_count: held.length }
+    });
+    return { held_support: held.map(toAdminHeldSupportEntry) };
+  });
+
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
-    await repo.writeAuditLog({ actor_type: "admin", action: "approve_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
-    return { status: "approved", audit_log: "mock-admin-approve" };
+    const { supportEventId } = z.object({ supportEventId: z.string() }).parse(req.params);
+    const existingReview = await repo.getSupportModerationReviewStatus(supportEventId);
+    if (existingReview === "approved") return { status: "approved", idempotent: true };
+    if (existingReview === "rejected") return reply.code(409).send({ error: "support_event_already_rejected" });
+    const support = await repo.getSupportEventById(supportEventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    if (support.support.message_moderation_status !== "hold") return reply.code(409).send({ error: "support_event_not_held" });
+    const approved = await buildReviewedSupport(repo, support, "approved");
+    await repo.updateSupportEvent(approved);
+    const effects = await applySupportReceivedEffects(repo, approved);
+    await repo.setSupportModerationReviewStatus(supportEventId, "approved");
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "approve_held_support",
+      target_type: "support_event",
+      target_id: supportEventId,
+      after_json: toHeldSupportAuditMetadata(approved, "approved")
+    });
+    return {
+      status: "approved",
+      support_event: toAdminHeldSupportEntry(approved),
+      side_effects: {
+        affinity: approved.viewer.iris_user_id ? "applied" : "skipped",
+        reaction_request: effects.character_reaction_request ? "enqueued" : "skipped",
+        overlay: effects.overlay ? "enqueued" : "skipped",
+        outbox: effects.character_reaction_request || effects.overlay ? "enqueued" : "skipped"
+      }
+    };
   });
 
   app.post("/admin/tips/:supportEventId/reject", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
-    await repo.writeAuditLog({ actor_type: "admin", action: "reject_tip", target_type: "support_event", target_id: String((req.params as { supportEventId: string }).supportEventId) });
-    return { status: "rejected", audit_log: "mock-admin-reject" };
+    const { supportEventId } = z.object({ supportEventId: z.string() }).parse(req.params);
+    const existingReview = await repo.getSupportModerationReviewStatus(supportEventId);
+    if (existingReview === "rejected") return { status: "rejected", idempotent: true };
+    if (existingReview === "approved") return reply.code(409).send({ error: "support_event_already_approved" });
+    const support = await repo.getSupportEventById(supportEventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    if (support.support.message_moderation_status !== "hold") return reply.code(409).send({ error: "support_event_not_held" });
+    const rejected = await buildReviewedSupport(repo, support, "rejected");
+    await repo.updateSupportEvent(rejected);
+    await repo.setSupportModerationReviewStatus(supportEventId, "rejected");
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "reject_held_support",
+      target_type: "support_event",
+      target_id: supportEventId,
+      after_json: toHeldSupportAuditMetadata(rejected, "rejected")
+    });
+    return {
+      status: "rejected",
+      support_event: toAdminHeldSupportEntry(rejected),
+      side_effects: {
+        affinity: "skipped",
+        reaction_request: "skipped",
+        overlay: "skipped",
+        outbox: "skipped"
+      }
+    };
   });
 
   app.get("/admin/audit-logs", async (req, reply) => {

@@ -235,6 +235,40 @@ export class PostgresRepository implements CriptoTipRepository {
     const result = await this.db.query<SupportEventRow>("select * from support_events where stream_id = $1 order by created_at desc", [streamId]);
     return result.rows.map(rowToSupportReceived);
   }
+  async listHeldSupportEvents(filter: { streamId?: string } = {}) {
+    const result = filter.streamId
+      ? await this.db.query<SupportEventRow>(
+          "select * from support_events where message_moderation_status = 'hold' and stream_id = $1 order by created_at desc",
+          [filter.streamId]
+        )
+      : await this.db.query<SupportEventRow>("select * from support_events where message_moderation_status = 'hold' order by created_at desc");
+    return result.rows.map(rowToSupportReceived);
+  }
+  async getSupportEventById(eventId: string) {
+    const result = await this.db.query<SupportEventRow>("select * from support_events where id = $1 limit 1", [eventId]);
+    return result.rows[0] ? rowToSupportReceived(result.rows[0]) : undefined;
+  }
+  async updateSupportEvent(event: SupportReceived) {
+    await this.db.query(
+      `update support_events
+       set display_name_sanitized = $1,
+           display_name_llm_safe = $2,
+           message_sanitized = $3,
+           message_moderation_status = $4,
+           affinity_delta = $5
+       where source = $6 and source_event_id = $7`,
+      [
+        event.viewer.display_name,
+        event.viewer.display_name,
+        event.support.message,
+        event.support.message_moderation_status,
+        event.relationship.affinity_delta,
+        event.source,
+        event.source_event_id
+      ]
+    );
+    return (await this.getSupportEventBySource(event.source, event.source_event_id)) ?? event;
+  }
 
   async recordTipTransaction(transaction: TipTransaction) {
     const existing = await this.findTipTransactionByChainLog(transaction);
@@ -325,6 +359,24 @@ export class PostgresRepository implements CriptoTipRepository {
   async getSupportEventBySource(source: string, sourceEventId: string) {
     const result = await this.db.query<SupportEventRow>("select * from support_events where source = $1 and source_event_id = $2 limit 1", [source, sourceEventId]);
     return result.rows[0] ? rowToSupportReceived(result.rows[0]) : undefined;
+  }
+  async getSupportModerationReviewStatus(eventId: string) {
+    const result = await this.db.query<{ action: string }>(
+      `select action
+       from audit_logs
+       where target_type = 'support_event'
+         and target_id = $1
+         and action in ('approve_held_support', 'reject_held_support')
+       order by id desc
+       limit 1`,
+      [eventId]
+    );
+    if (result.rows[0]?.action === "approve_held_support") return "approved";
+    if (result.rows[0]?.action === "reject_held_support") return "rejected";
+    return undefined;
+  }
+  async setSupportModerationReviewStatus(_eventId: string, status: "approved" | "rejected") {
+    return status;
   }
   async applyAffinityIfAbsent(entry: AffinityLedgerEntry) {
     const result = await this.db.query<AffinityLedgerEntry>(

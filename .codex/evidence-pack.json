@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 78,
-  "headSha": "59fb09f49e02624aaf8fa24ed6440779bc0a4d72",
-  "baseSha": "8879c52b7d675fd9d1ca69ce5ff58b2895a4be54",
+  "prNumber": 79,
+  "headSha": "80616c9a006fe1ea078133e810068580948276f3",
+  "baseSha": "5e8e3ec479ace39c8c97244c337f54bfd12a164a",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_operations_safe_health_checks",
+  "changeType": "product_vertical_slice_admin_moderation_hold_review_controls",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin operations safe health checks",
-  "goal": "Add GET /admin/operations/health as an API-only safe health metadata endpoint for P0 admin operations.",
-  "ciRunId": "27517894572",
-  "qualityGateRunId": "27517954394",
-  "qualityGateArtifactId": "7626981869",
+  "title": "feat: add p0 admin moderation hold review controls",
+  "goal": "Add local/internal admin controls to list, approve, and reject held support.received events.",
+  "ciRunId": "27520863045",
+  "qualityGateRunId": "27520947099",
+  "qualityGateArtifactId": "7628032219",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,10 +22,12 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-operations-safe-health-checks.test.ts",
-      "docs/P0_ADMIN_OPERATIONS_SAFE_HEALTH_CHECKS.md",
-      "docs/pr-p0-admin-operations-safe-health-checks.md",
-      ".codex/p0-admin-operations-safe-health-checks.json",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/p0-admin-moderation-hold-review-controls.test.ts",
+      "docs/P0_ADMIN_MODERATION_HOLD_REVIEW_CONTROLS.md",
+      "docs/pr-p0-admin-moderation-hold-review-controls.md",
+      ".codex/p0-admin-moderation-hold-review-controls.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,8 +42,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_OPERATIONS_SAFE_HEALTH_CHECKS.md",
-      "docs/pr-p0-admin-operations-safe-health-checks.md",
+      "docs/P0_ADMIN_MODERATION_HOLD_REVIEW_CONTROLS.md",
+      "docs/pr-p0-admin-moderation-hold-review-controls.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,7 +60,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operations-safe-health-checks.test.ts apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts apps/api/src/p0-admin-operations-dashboard-api.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -101,14 +103,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27517894572",
+      "runId": "27520863045",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27517954394",
+      "runId": "27520947099",
       "result": "success",
-      "artifactId": "7626981869"
+      "artifactId": "7628032219"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
@@ -123,10 +125,11 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin operations health API",
+    "local/internal admin moderation hold review API",
     "admin auth guard",
-    "safe endpoint availability metadata",
-    "safe rate-limit config summary",
+    "safe held support metadata",
+    "approve and reject state transitions",
+    "safe audit metadata",
     "docs",
     ".codex evidence"
   ],
@@ -158,26 +161,22 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin operations health requires admin bearer token",
-    "missing auth returns 401",
-    "invalid auth returns 401",
-    "response is safe metadata only",
-    "includes generated_at",
-    "includes local repository mode",
-    "includes endpoint availability booleans",
-    "includes safe rate-limit config without raw key",
-    "excludes raw token and token fingerprint",
-    "excludes IP and user-agent",
-    "excludes raw payload secrets stack stdout stderr logs_url jobs_url",
-    "does not claim runtime readiness",
-    "existing admin operations summary tests still pass",
-    "existing admin DLQ visibility/redrive/audit/rate-limit tests still pass"
+    "admin held support list requires admin bearer token",
+    "admin approve and reject require admin bearer token",
+    "held list returns safe metadata only",
+    "approve held support triggers affinity, reaction, overlay, and outbox once",
+    "reject held support does not trigger affinity, reaction, overlay, or outbox",
+    "approve and reject are idempotent",
+    "approve after reject is blocked",
+    "reject after approve is blocked",
+    "approve and reject write safe audit metadata",
+    "existing support.received and admin operations tests still pass"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 60,
-    "passed": 1751,
+      "testFiles": 61,
+      "passed": 1759,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -187,16 +186,16 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
-    "Raw admin token, token fingerprint, IP address, and user-agent are not returned.",
+    "Raw payloads, secrets, authorization material, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal safe health metadata only.",
-    "Web Admin Console readiness, production operations readiness, distributed metrics, durable analytics, and real retention policy remain future scoped work."
+    "This is local/internal admin moderation hold review only.",
+    "Production Admin Console readiness, durable review storage, real audit retention, and human operations policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
-    "Merge remains blocked until same-head checks pass after evidence refresh."
+    "Merge remains blocked until PR creation, evidence refresh, and same-head checks pass."
   ],
   "productVerificationCommands": [],
   "packageVerification": {
@@ -207,13 +206,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin operations safe health metadata API."
+    "statement": "Adds local/internal admin moderation hold review controls."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin operations safe health metadata only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin moderation hold review only.",
   "reviewScope": {
-    "scope": "P0 admin operations safe health checks, admin auth, endpoint availability metadata, safe rate-limit config, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is exposing token, fingerprint, request metadata, raw payloads, or implying readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin operations health tests, existing admin operations summary tests, existing DLQ tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin moderation hold review controls, admin auth, safe held support metadata, approve/reject state transitions, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is double-applying side effects, unsafe raw payload exposure, or implying readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin moderation hold review tests, existing support.received tests, existing admin operations tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-operations-safe-health-checks.md"
+  "prBodyPath": "docs/pr-p0-admin-moderation-hold-review-controls.md"
 }
