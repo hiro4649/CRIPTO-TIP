@@ -21,7 +21,7 @@ Done criteria: admin manual support requires admin bearer token; admin manual su
 
 ## Evidence Integrity
 
-Head SHA: 8785b807b0b6957037ce77e49683486e0bc8ee72
+Head SHA: 35b379528e6cc9d57f74ae53e5ace6eb57608281
 
 Base SHA: 8785b807b0b6957037ce77e49683486e0bc8ee72
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 0
+CI run: 27524317684
 
-Quality-gate run: 0
+Quality-gate run: 27524458144
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7629236543
 
-Tests: 63 test files, 1769 passed, 6 skipped
+Tests: 63 test files, 1770 passed, 6 skipped
 
 ## Testing and review
 
@@ -83,7 +83,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 63 files, 1769 passed, 6 skipped.
+Current recorded test summary: 63 files, 1770 passed, 6 skipped.
 
 ## Security Boundaries
 

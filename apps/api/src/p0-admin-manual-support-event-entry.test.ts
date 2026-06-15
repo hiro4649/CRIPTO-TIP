@@ -7,6 +7,13 @@ import { InMemoryRepository } from "./repositories/in-memory.js";
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const adminAuth = `Bearer ${mockValue("admin")}`;
 const root = path.resolve(__dirname, "..", "..", "..");
+const prNumber = 81;
+const currentHeadSha = "35b379528e6cc9d57f74ae53e5ace6eb57608281";
+const currentBaseSha = "8785b807b0b6957037ce77e49683486e0bc8ee72";
+
+function readCodexEvidence(fileName: string) {
+  return JSON.parse(fs.readFileSync(path.join(root, ".codex", fileName), "utf8"));
+}
 
 function manualPayload(requestId: string, moderation_status: "approved" | "hold" | "rejected" = "approved") {
   return {
@@ -127,7 +134,7 @@ describe("P0 admin manual support event entry", () => {
   }, 20_000);
 
   it("committed manual support evidence preserves safe boundaries", () => {
-    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-admin-manual-support-event-entry.json"), "utf8"));
+    const evidence = readCodexEvidence("p0-admin-manual-support-event-entry.json");
 
     expect(evidence.adminManualSupportEntryStatus).toBe("implemented");
     expect(evidence.adminAuthStatus).toBe("pass");
@@ -151,5 +158,37 @@ describe("P0 admin manual support event entry", () => {
     expect(evidence.kafkaDependencyAdded).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed PR evidence uses PR 81 current head and nonzero same-head runs", () => {
+    const commonEvidenceFiles = [
+      "evidence-pack.json",
+      "product-verification.json",
+      "quality-gate-evidence.json",
+      "review-independence.json",
+      "risk-register.json",
+      "task-contract.json",
+      "test-coverage-evidence.json"
+    ];
+
+    for (const fileName of commonEvidenceFiles) {
+      const evidence = readCodexEvidence(fileName);
+      expect(evidence.prNumber, fileName).toBe(prNumber);
+      expect(evidence.headSha, fileName).toBe(currentHeadSha);
+      expect(evidence.baseSha, fileName).toBe(currentBaseSha);
+      expect(evidence.headSha, fileName).not.toBe(evidence.baseSha);
+      expect(JSON.stringify(evidence), fileName).not.toContain("current_pr_head");
+      expect(JSON.stringify(evidence), fileName).not.toContain("not_created_pre_pr");
+    }
+
+    const evidencePack = readCodexEvidence("evidence-pack.json");
+    const qualityGateEvidence = readCodexEvidence("quality-gate-evidence.json");
+    expect(evidencePack.ciRunId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.qualityGateRunId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.qualityGateArtifactId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.productCiStatus).toBe("success");
+    expect(evidencePack.qualityGateStatus).toBe("success");
+    expect(qualityGateEvidence.qualityGateRunId).toMatch(/^[1-9]\d+$/);
+    expect(qualityGateEvidence.qualityGateArtifactId).toMatch(/^[1-9]\d+$/);
   });
 });
