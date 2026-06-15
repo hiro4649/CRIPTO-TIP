@@ -7,7 +7,7 @@
   "baseSha": "e38c0151e30c9978339c928b0d80afc1d4e059db",
   "testCoverageStatus": "pass",
   "testFiles": 59,
-  "passed": 1746,
+  "passed": 1747,
   "skipped": 6,
   "coveredCriteria": [
     "admin operations summary requires admin bearer token",

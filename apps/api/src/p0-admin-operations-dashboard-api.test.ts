@@ -158,8 +158,7 @@ describe("P0 admin operations dashboard API", () => {
       ".codex/review-independence.json",
       ".codex/risk-register.json",
       ".codex/task-contract.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/test-summary.json"
+      ".codex/test-coverage-evidence.json"
     ];
 
     for (const file of evidenceFiles) {
@@ -183,6 +182,13 @@ describe("P0 admin operations dashboard API", () => {
       expect(text).not.toContain("\"qualityGateRunId\": \"0\"");
       expect(text).not.toContain("\"qualityGateArtifactId\": \"0\"");
     }
+
+    const testSummaryText = fs.readFileSync(path.join(root, ".codex", "test-summary.json"), "utf8");
+    expect(testSummaryText).not.toContain("\"prNumber\": 0");
+    expect(testSummaryText).not.toContain("current_pr_head");
+    expect(testSummaryText).not.toContain("\"ciRunId\": \"0\"");
+    expect(testSummaryText).not.toContain("\"qualityGateRunId\": \"0\"");
+    expect(testSummaryText).not.toContain("\"qualityGateArtifactId\": \"0\"");
 
     const pack = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
     const qualityGate = JSON.parse(fs.readFileSync(path.join(root, ".codex", "quality-gate-evidence.json"), "utf8"));
