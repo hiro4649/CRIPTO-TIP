@@ -21,7 +21,7 @@ Done criteria: admin held support list requires admin bearer token; admin approv
 
 ## Evidence Integrity
 
-Head SHA: 5e8e3ec479ace39c8c97244c337f54bfd12a164a
+Head SHA: 80616c9a006fe1ea078133e810068580948276f3
 
 Base SHA: 5e8e3ec479ace39c8c97244c337f54bfd12a164a
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 0
+CI run: 27520863045
 
-Quality-gate run: 0
+Quality-gate run: 27520947099
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7628032219
 
 Tests: 61 test files, 1759 passed, 6 skipped
 

@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "5e8e3ec479ace39c8c97244c337f54bfd12a164a",
+  "prNumber": 79,
+  "headSha": "80616c9a006fe1ea078133e810068580948276f3",
   "baseSha": "5e8e3ec479ace39c8c97244c337f54bfd12a164a",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin moderation hold review controls",
   "goal": "Add local/internal admin controls to list, approve, and reject held support.received events.",
-  "ciRunId": "0",
-  "qualityGateRunId": "0",
-  "qualityGateArtifactId": "0",
+  "ciRunId": "27520863045",
+  "qualityGateRunId": "27520947099",
+  "qualityGateArtifactId": "7628032219",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -103,14 +103,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "0",
+      "runId": "27520863045",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "0",
+      "runId": "27520947099",
       "result": "success",
-      "artifactId": "0"
+      "artifactId": "7628032219"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
