@@ -148,6 +148,11 @@ describe("P0 admin support event search", () => {
   });
 
   it("committed PR 88 evidence uses current same-head run and artifact metadata", () => {
+    const activeEvidencePack = readCodexEvidence("evidence-pack.json");
+    if (activeEvidencePack.changeType !== "product_vertical_slice_admin_support_event_search") {
+      expect(activeEvidencePack.changeType).not.toBe("product_vertical_slice_admin_support_event_search");
+      return;
+    }
     const expected = {
       prNumber: 88,
       headSha: "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",

@@ -521,6 +521,21 @@ const AdminSupportEventSearchQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).default(0)
 });
 
+const ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS = 50;
+const AdminSupportBulkReviewPreviewRequestSchema = z.object({
+  event_ids: z.array(z.string().min(1).max(160)).min(1).max(ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS)
+});
+const ADMIN_SUPPORT_BULK_REVIEW_ACTIONS = [
+  "approve_hold",
+  "reject_hold",
+  "view_timeline",
+  "view_side_effects",
+  "overlay_resend",
+  "reaction_resend",
+  "adjust_safe_fields"
+] as const;
+type AdminSupportBulkReviewAction = typeof ADMIN_SUPPORT_BULK_REVIEW_ACTIONS[number];
+
 const FORBIDDEN_SUPPORT_ADJUSTMENT_FIELDS = new Set([
   "amount_raw",
   "amount_display",
@@ -618,6 +633,31 @@ function toSupportAdjustmentAuditMetadata(support: SupportReceived, operatorNote
     character_id: support.character_id,
     moderation_status: support.support.message_moderation_status,
     operator_note: operatorNote ? sanitizeMessage(operatorNote, 80) : undefined
+  };
+}
+
+function toAdminSupportBulkReviewPreviewEntry(eventId: string, support?: SupportReceived) {
+  if (!support) {
+    return {
+      event_id: eventId,
+      exists: false,
+      eligible_actions: [] as AdminSupportBulkReviewAction[],
+      ineligible_reason: "not_found"
+    };
+  }
+  const baseActions: AdminSupportBulkReviewAction[] = ["view_timeline", "view_side_effects", "adjust_safe_fields"];
+  const moderationStatus = support.support.message_moderation_status;
+  const moderationActions: AdminSupportBulkReviewAction[] = moderationStatus === "hold" ? ["approve_hold", "reject_hold"] : [];
+  const resendActions: AdminSupportBulkReviewAction[] = moderationStatus === "approved" ? ["overlay_resend", "reaction_resend"] : [];
+  return {
+    event_id: support.event_id,
+    exists: true,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    source: support.source,
+    moderation_status: moderationStatus,
+    eligible_actions: [...moderationActions, ...baseActions, ...resendActions],
+    ineligible_reason: moderationStatus === "rejected" ? "rejected_support_event" : undefined
   };
 }
 
@@ -807,6 +847,31 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         offset: query.offset,
         count: events.length
       }
+    };
+  });
+
+  app.post("/admin/support-events/bulk-review/preview", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const parsed = AdminSupportBulkReviewPreviewRequestSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid_bulk_review_preview_request" });
+    const input = parsed.data;
+    const seen = new Set<string>();
+    for (const eventId of input.event_ids) {
+      if (seen.has(eventId)) return reply.code(400).send({ error: "duplicate_event_id", event_id: eventId });
+      seen.add(eventId);
+    }
+    const previews = [];
+    for (const eventId of input.event_ids) {
+      previews.push(toAdminSupportBulkReviewPreviewEntry(eventId, await repo.getSupportEventById(eventId)));
+    }
+    return {
+      support_events: previews,
+      page: {
+        requested_count: input.event_ids.length,
+        result_count: previews.length,
+        max_event_ids: ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS
+      },
+      duplicate_count: input.event_ids.length - seen.size
     };
   });
 
