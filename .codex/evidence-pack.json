@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 82,
-  "headSha": "3124c657e47c3cfecbe9f0817e2bab9581f16b9c",
+  "prNumber": 83,
+  "headSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
   "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_adjustment_controls",
+  "changeType": "product_vertical_slice_admin_overlay_resend_controls",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support event adjustment controls",
-  "goal": "Add PATCH /admin/support-events/:eventId for safe local/internal support event adjustment controls.",
-  "ciRunId": "27525580026",
-  "qualityGateRunId": "27525732556",
-  "qualityGateArtifactId": "7629665527",
+  "title": "feat: add p0 admin overlay resend controls",
+  "goal": "Add POST /admin/support-events/:eventId/overlay-resend for safe local/internal overlay resend candidate enqueueing.",
+  "ciRunId": "27526413476",
+  "qualityGateRunId": "27526413476",
+  "qualityGateArtifactId": "7629846716",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,11 +22,11 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "apps/api/src/p0-admin-support-event-adjustment-controls.test.ts",
-      "apps/api/src/p0-admin-manual-support-event-entry.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_ADJUSTMENT_CONTROLS.md",
-      "docs/pr-p0-admin-support-event-adjustment-controls.md",
-      ".codex/p0-admin-support-event-adjustment-controls.json",
+      "docs/P0_ADMIN_OVERLAY_RESEND_CONTROLS.md",
+      "docs/pr-p0-admin-overlay-resend-controls.md",
+      ".codex/p0-admin-overlay-resend-controls.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -41,8 +41,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_ADJUSTMENT_CONTROLS.md",
-      "docs/pr-p0-admin-support-event-adjustment-controls.md",
+      "docs/P0_ADMIN_OVERLAY_RESEND_CONTROLS.md",
+      "docs/pr-p0-admin-overlay-resend-controls.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -59,42 +59,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "npm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm evidence:ci",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -102,17 +67,17 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27525580026",
+      "runId": "27526413476",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27525732556",
+      "runId": "27526413476",
       "result": "success",
-      "artifactId": "7629665527"
+      "artifactId": "7629846716"
     }
   ],
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -124,17 +89,18 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin support event adjustment API",
+    "local/internal admin overlay resend API",
     "admin auth guard",
-    "safe field allowlist",
-    "forbidden field blocking",
-    "hold to rejected transition",
-    "approved reversal blocker",
+    "approved support resend candidate enqueue",
+    "held and rejected support blockers",
+    "overlay resend idempotency",
     "safe audit metadata",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
+    "real OBS delivery",
+    "real WebSocket delivery",
     "real YouTube API",
     "real OAuth token",
     "real DB connection",
@@ -152,7 +118,7 @@
     "legal compliance claim",
     "YouTube policy compliance claim",
     "web UI",
-    "overlay changes",
+    "overlay app changes",
     "token sale",
     "token exchange",
     "cash-out",
@@ -162,23 +128,22 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin support patch requires admin bearer token",
-    "admin support patch rejects missing or invalid auth",
-    "admin support patch returns 404 for unknown event",
-    "admin support patch allows sanitized display name update",
-    "admin support patch allows safe moderation status hold to rejected",
-    "admin support patch blocks approved to rejected reversal",
-    "admin support patch blocks amount_raw and amount_display changes",
-    "admin support patch blocks wallet/source/direct affinity changes",
-    "admin support patch excludes raw message and raw payload from response",
-    "admin support patch writes safe audit log",
-    "admin support patch does not duplicate reaction overlay affinity or outbox"
+    "admin overlay resend requires admin bearer token",
+    "admin overlay resend rejects missing or invalid auth",
+    "admin overlay resend returns 404 for unknown event",
+    "admin overlay resend blocks held support until approval",
+    "admin overlay resend blocks rejected support",
+    "admin overlay resend enqueues one resend candidate for approved support",
+    "admin overlay resend is idempotent by support event and stream",
+    "admin overlay resend does not duplicate affinity, reaction, original support, or original source fields",
+    "admin overlay resend excludes raw message and raw payload from response",
+    "admin overlay resend writes safe audit log"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 64,
-    "passed": 1777,
+    "testFiles": 65,
+    "passed": 1783,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -187,13 +152,14 @@
     "No real DB connection is introduced.",
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
-    "No RPC, wallet, deploy, contracts, workflows, web, or overlay changes.",
+    "No real OBS or WebSocket delivery is performed.",
+    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
     "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin support event adjustment only.",
-    "Production Admin Console readiness, durable audit retention, real persistence, reversal workflows, and operational policy remain future scoped work."
+    "This is local/internal admin overlay resend candidate enqueueing only.",
+    "Production Admin Console UI, durable persistence, OBS delivery workers, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -208,13 +174,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event adjustment controls."
+    "statement": "Adds local/internal admin overlay resend controls."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin support event adjustment only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin overlay resend candidate enqueueing only.",
   "reviewScope": {
-    "scope": "P0 admin support event adjustment controls, admin auth, safe field allowlist, forbidden field blocking, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is mutating money/source/wallet/direct affinity fields, duplicating side effects, or implying readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin support adjustment tests, existing manual support tests, existing moderation hold review tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin overlay resend controls, admin auth, approved-only resend, idempotent overlay/outbox enqueue, side-effect blockers, safe audit metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is resending held or rejected support, duplicating overlay/outbox jobs, mutating support financial/source fields, or implying real OBS/runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin overlay resend tests, existing support adjustment tests, existing manual support tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-adjustment-controls.md"
+  "prBodyPath": "docs/pr-p0-admin-overlay-resend-controls.md"
 }

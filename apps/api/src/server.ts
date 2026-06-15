@@ -171,7 +171,19 @@ function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
   return { stream_id: streamId, result_count: resultCount };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event"]);
+function toOverlayResendAuditMetadata(support: SupportReceived, resendSourceEventId: string, resendStatus: "queued" | "duplicate") {
+  return {
+    event_id: support.event_id,
+    source_event_id: resendSourceEventId,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    resend_status: resendStatus,
+    overlay_status: resendStatus,
+    outbox_status: resendStatus
+  };
+}
+
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
@@ -187,7 +199,10 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "retry_status",
   "target_id",
   "review_status",
-  "moderation_status"
+  "moderation_status",
+  "resend_status",
+  "overlay_status",
+  "outbox_status"
 ]);
 const ADMIN_AUDIT_UNSAFE_KEY_PATTERN = /(raw|payload|secret|token|oauth|database|db_url|wallet|private|stack|stdout|stderr|logs_url|jobs_url|url)/i;
 const ADMIN_AUDIT_UNSAFE_VALUE_PATTERN = /(bearer\s+|postgres:\/\/|redis:\/\/|kafka:\/\/|mongodb:\/\/|mysql:\/\/|https?:\/\/)/i;
@@ -828,6 +843,52 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         reaction_request: "skipped",
         overlay: "skipped",
         outbox: "skipped"
+      }
+    };
+  });
+
+  app.post("/admin/support-events/:eventId/overlay-resend", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    if (support.support.message_moderation_status === "rejected") return reply.code(409).send({ error: "support_event_rejected" });
+    if (support.support.message_moderation_status !== "approved") return reply.code(409).send({ error: "support_event_not_approved" });
+
+    const resendSourceEventId = `overlay-resend:${support.event_id}`;
+    const overlay = buildOverlayTipAlert(support);
+    const overlayResult = await repo.createOverlayEventIfAbsent(resendSourceEventId, support.stream_id, overlay);
+    const resendStatus = overlayResult.created ? "queued" : "duplicate";
+    await repo.enqueueOutbox({
+      id: stableId("outbox", `overlay-resend:${support.event_id}:${support.stream_id}`),
+      job_type: "overlay.emit",
+      aggregate_type: "support_event",
+      aggregate_id: support.event_id,
+      idempotency_key: `overlay.resend:${support.event_id}:${support.stream_id}`,
+      payload_json: overlay
+    });
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "resend_overlay",
+      target_type: "support_event",
+      target_id: support.event_id,
+      after_json: toOverlayResendAuditMetadata(support, resendSourceEventId, resendStatus)
+    });
+    return {
+      status: resendStatus,
+      support_event: toAdminHeldSupportEntry(support),
+      overlay_resend: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        resend_status: resendStatus
+      },
+      side_effects: {
+        affinity: "skipped",
+        reaction_request: "skipped",
+        overlay: resendStatus,
+        outbox: resendStatus
       }
     };
   });

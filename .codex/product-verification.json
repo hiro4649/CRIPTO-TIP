@@ -2,61 +2,28 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 82,
-  "headSha": "3124c657e47c3cfecbe9f0817e2bab9581f16b9c",
+  "prNumber": 83,
+  "headSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
   "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "npm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm evidence:ci",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
       "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "admin support patch auth",
-    "safe field allowlist",
-    "forbidden field blocking",
-    "state transition blocking",
-    "safe audit metadata",
-    "no side-effect duplication"
+    "admin overlay resend auth",
+    "unknown support event 404",
+    "held and rejected blockers",
+    "approved support overlay resend enqueue",
+    "overlay resend idempotency",
+    "no affinity or reaction duplication",
+    "support amount source wallet immutability",
+    "safe audit metadata"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
