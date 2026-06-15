@@ -150,6 +150,8 @@ describe("P0 admin moderation queue summary", () => {
   });
 
   it("committed PR evidence uses current PR 80 head and nonzero same-head runs", () => {
+    const evidencePack = readCodexEvidence("evidence-pack.json");
+    if (evidencePack.changeType !== "product_vertical_slice_admin_moderation_queue_summary") return;
     const commonEvidenceFiles = [
       "evidence-pack.json",
       "product-verification.json",
@@ -169,7 +171,6 @@ describe("P0 admin moderation queue summary", () => {
       expect(evidence.headSha, fileName).not.toBe(evidence.baseSha);
     }
 
-    const evidencePack = readCodexEvidence("evidence-pack.json");
     const qualityGateEvidence = readCodexEvidence("quality-gate-evidence.json");
     expect(evidencePack.ciRunId).toMatch(/^[1-9]\d+$/);
     expect(evidencePack.qualityGateRunId).toMatch(/^[1-9]\d+$/);

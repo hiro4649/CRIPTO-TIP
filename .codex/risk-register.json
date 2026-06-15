@@ -2,17 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 80,
-  "evidenceHeadMode": "canonical_previous_head_plus_current_artifact",
-  "headSha": "e789fc966c5bda25428945472ffa8d65fd518ad3",
-  "baseSha": "c7d53cf2b6cf524a7caf6296942c867b5793d124",
+  "prNumber": 81,
+  "headSha": "35b379528e6cc9d57f74ae53e5ace6eb57608281",
+  "baseSha": "8785b807b0b6957037ce77e49683486e0bc8ee72",
   "risks": [
     {
       "severity": "medium",
-      "risk": "admin moderation queue summary could expose unsafe raw messages or be mistaken for operations readiness",
+      "risk": "admin manual support entry could expose unsafe raw messages, double-apply side effects, or be mistaken for operations readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce safe metadata, raw message exclusion, and no readiness or compliance claims"
+      "mitigation": "tests enforce safe metadata, raw message exclusion, idempotency, moderation no-side-effect paths, and no readiness or compliance claims"
     }
   ]
 }

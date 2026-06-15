@@ -2,16 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 80,
-  "evidenceHeadMode": "canonical_previous_head_plus_current_artifact",
-  "headSha": "e789fc966c5bda25428945472ffa8d65fd518ad3",
-  "baseSha": "c7d53cf2b6cf524a7caf6296942c867b5793d124",
+  "prNumber": 81,
+  "headSha": "35b379528e6cc9d57f74ae53e5ace6eb57608281",
+  "baseSha": "8785b807b0b6957037ce77e49683486e0bc8ee72",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-moderation-queue-summary.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -52,11 +51,11 @@
     }
   ],
   "coverage": [
-    "admin moderation summary auth",
-    "safe queue counts",
-    "per-stream grouping",
-    "raw message exclusion",
-    "existing moderation hold review"
+    "admin manual support auth",
+    "approved manual support side effects",
+    "hold and rejected manual support no-side-effect paths",
+    "manual support idempotency",
+    "safe audit metadata"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
