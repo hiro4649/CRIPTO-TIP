@@ -21,7 +21,7 @@ Done criteria: admin moderation summary requires admin bearer token; admin moder
 
 ## Evidence Integrity
 
-Head SHA: c7d53cf2b6cf524a7caf6296942c867b5793d124
+Head SHA: cb83690e9c63275227d323f8e219fad16ac07e86
 
 Base SHA: c7d53cf2b6cf524a7caf6296942c867b5793d124
 
@@ -29,13 +29,13 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 0
+CI run: 27522651721
 
-Quality-gate run: 0
+Quality-gate run: 27522899106
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7628727191
 
-Tests: 62 test files, 1763 passed, 6 skipped
+Tests: 62 test files, 1764 passed, 6 skipped
 
 ## Testing and review
 
@@ -83,7 +83,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 62 files, 1763 passed, 6 skipped.
+Current recorded test summary: 62 files, 1764 passed, 6 skipped.
 
 ## Security Boundaries
 

@@ -8,6 +8,13 @@ const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const internalAuth = `Bearer ${mockValue("internal")}`;
 const adminAuth = `Bearer ${mockValue("admin")}`;
 const root = path.resolve(__dirname, "..", "..", "..");
+const prNumber = 80;
+const currentHeadSha = "cb83690e9c63275227d323f8e219fad16ac07e86";
+const currentBaseSha = "c7d53cf2b6cf524a7caf6296942c867b5793d124";
+
+function readCodexEvidence(fileName: string) {
+  return JSON.parse(fs.readFileSync(path.join(root, ".codex", fileName), "utf8"));
+}
 
 function heldFixture(liveChatMessageId: string, streamId: string) {
   return {
@@ -117,7 +124,7 @@ describe("P0 admin moderation queue summary", () => {
   }, 20_000);
 
   it("committed moderation queue summary evidence preserves safe boundaries", () => {
-    const evidence = JSON.parse(fs.readFileSync(path.join(root, ".codex", "p0-admin-moderation-queue-summary.json"), "utf8"));
+    const evidence = readCodexEvidence("p0-admin-moderation-queue-summary.json");
 
     expect(evidence.adminModerationQueueSummaryStatus).toBe("implemented");
     expect(evidence.adminAuthStatus).toBe("pass");
@@ -140,5 +147,35 @@ describe("P0 admin moderation queue summary", () => {
     expect(evidence.kafkaDependencyAdded).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed PR evidence uses current PR 80 head and nonzero same-head runs", () => {
+    const commonEvidenceFiles = [
+      "evidence-pack.json",
+      "product-verification.json",
+      "quality-gate-evidence.json",
+      "review-independence.json",
+      "risk-register.json",
+      "task-contract.json",
+      "test-coverage-evidence.json"
+    ];
+
+    for (const fileName of commonEvidenceFiles) {
+      const evidence = readCodexEvidence(fileName);
+      expect(evidence.prNumber, fileName).toBe(prNumber);
+      expect(evidence.headSha, fileName).toBe(currentHeadSha);
+      expect(evidence.baseSha, fileName).toBe(currentBaseSha);
+      expect(evidence.headSha, fileName).not.toBe(evidence.baseSha);
+    }
+
+    const evidencePack = readCodexEvidence("evidence-pack.json");
+    const qualityGateEvidence = readCodexEvidence("quality-gate-evidence.json");
+    expect(evidencePack.ciRunId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.qualityGateRunId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.qualityGateArtifactId).toMatch(/^[1-9]\d+$/);
+    expect(evidencePack.productCiStatus).toBe("success");
+    expect(evidencePack.qualityGateStatus).toBe("success");
+    expect(qualityGateEvidence.qualityGateRunId).toMatch(/^[1-9]\d+$/);
+    expect(qualityGateEvidence.qualityGateArtifactId).toMatch(/^[1-9]\d+$/);
   });
 });
