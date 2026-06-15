@@ -21,19 +21,19 @@ Done criteria: admin reaction resend requires admin bearer token; admin reaction
 
 ## Evidence Integrity
 
-Head SHA: 723ea916bf6e9092d828601893ed4b7f28cf3299
+Head SHA: 3299f8b51e49ac213e8fe45aa74190dcc583e64b
 
-Base SHA: ab5f47900a1692ae2df4be937ea58576ea5e730e
+Base SHA: 5d5274ac2dfba423ac615c3c21643f2aa8f9e144
 
 Product CI: success
 
 Quality-gate: success
 
-CI run: 27529510627
+CI run: 27530487357
 
-Quality-gate run: 27529510627
+Quality-gate run: 27530585694
 
-Quality-gate artifact: 7630997960
+Quality-gate artifact: 7631473624
 
 Tests: 66 test files, 1790 passed, 6 skipped
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "harnessVersion": "1.2.3",
+  "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "changeType": "product_vertical_slice_admin_reaction_resend_controls",
   "adminReactionResendStatus": "implemented",
