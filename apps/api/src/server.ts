@@ -171,12 +171,13 @@ function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
   return { stream_id: streamId, result_count: resultCount };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
   "request_id",
+  "operator_note",
   "outbox_event_id",
   "event_id",
   "source",
@@ -471,6 +472,31 @@ const AdminManualSupportRequestSchema = z.object({
 
 type AdminManualSupportRequest = z.infer<typeof AdminManualSupportRequestSchema>;
 
+const SupportEventAdjustmentSchema = z.object({
+  display_name_sanitized: z.string().min(1).max(120).optional(),
+  message_moderation_status: z.enum(["approved", "hold", "rejected"]).optional(),
+  tier: z.enum(["small", "medium", "large", "high"]).optional(),
+  operator_note: z.string().max(160).optional()
+});
+
+const FORBIDDEN_SUPPORT_ADJUSTMENT_FIELDS = new Set([
+  "amount_raw",
+  "amount_display",
+  "currency_or_token",
+  "wallet_address",
+  "youtube_author_channel_id",
+  "source",
+  "source_event_id",
+  "stream_id",
+  "character_id",
+  "affinity_delta",
+  "relationship",
+  "message",
+  "raw_message",
+  "raw_payload",
+  "payload"
+]);
+
 async function buildAdminManualSupport(repo: CriptoTipRepository, input: AdminManualSupportRequest) {
   const displayName = sanitizeDisplayName(input.display_name);
   const message = sanitizeMessage(input.message);
@@ -524,6 +550,32 @@ function toAdminManualSupportAuditMetadata(input: AdminManualSupportRequest, sup
     stream_id: support.stream_id,
     character_id: support.character_id,
     moderation_status: support.support.message_moderation_status
+  };
+}
+
+function toSupportAdjustmentSafeEntry(support: SupportReceived) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    viewer_display_name: sanitizeDisplayName(support.viewer.display_name).sanitized,
+    tier: support.support.tier,
+    moderation_status: support.support.message_moderation_status,
+    created_at: support.created_at
+  };
+}
+
+function toSupportAdjustmentAuditMetadata(support: SupportReceived, operatorNote?: string) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    moderation_status: support.support.message_moderation_status,
+    operator_note: operatorNote ? sanitizeMessage(operatorNote, 80) : undefined
   };
 }
 
@@ -730,6 +782,52 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         reaction_request: effects?.character_reaction_request ? "enqueued" : "skipped",
         overlay: effects?.overlay ? "enqueued" : "skipped",
         outbox: effects?.character_reaction_request || effects?.overlay ? "enqueued" : "skipped"
+      }
+    };
+  });
+
+  app.patch("/admin/support-events/:eventId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const rawBody = z.record(z.string(), z.unknown()).parse(req.body ?? {});
+    const forbiddenField = Object.keys(rawBody).find((key) => FORBIDDEN_SUPPORT_ADJUSTMENT_FIELDS.has(key));
+    if (forbiddenField) return reply.code(400).send({ error: "forbidden_support_adjustment_field", field: forbiddenField });
+    const patch = SupportEventAdjustmentSchema.parse(rawBody);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    if (patch.message_moderation_status === "approved") return reply.code(409).send({ error: "use_existing_approve_flow" });
+    if (support.support.message_moderation_status === "approved" && patch.message_moderation_status === "rejected") return reply.code(409).send({ error: "approved_reversal_blocked" });
+    const adjusted = SupportReceivedSchema.parse({
+      ...support,
+      viewer: {
+        ...support.viewer,
+        display_name: patch.display_name_sanitized ? sanitizeDisplayName(patch.display_name_sanitized).sanitized : support.viewer.display_name
+      },
+      support: {
+        ...support.support,
+        tier: patch.tier ?? support.support.tier,
+        message_moderation_status: patch.message_moderation_status ?? support.support.message_moderation_status
+      }
+    });
+    await repo.updateSupportEvent(adjusted);
+    if (patch.message_moderation_status === "rejected") await repo.setSupportModerationReviewStatus(eventId, "rejected");
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "adjust_support_event",
+      target_type: "support_event",
+      target_id: eventId,
+      before_json: toSupportAdjustmentAuditMetadata(support),
+      after_json: toSupportAdjustmentAuditMetadata(adjusted, patch.operator_note)
+    });
+    return {
+      status: "adjusted",
+      support_event: toSupportAdjustmentSafeEntry(adjusted),
+      side_effects: {
+        affinity: "skipped",
+        reaction_request: "skipped",
+        overlay: "skipped",
+        outbox: "skipped"
       }
     };
   });

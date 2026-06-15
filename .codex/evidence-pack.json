@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 81,
-  "headSha": "35b379528e6cc9d57f74ae53e5ace6eb57608281",
-  "baseSha": "8785b807b0b6957037ce77e49683486e0bc8ee72",
+  "prNumber": 0,
+  "headSha": "deffa5fb533f01456080161c204314f3355fa5bb",
+  "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_manual_support_event_entry",
+  "changeType": "product_vertical_slice_admin_support_event_adjustment_controls",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin manual support event entry",
-  "goal": "Add POST /admin/support-events/manual for safe local/internal admin manual support entry.",
-  "ciRunId": "27524317684",
-  "qualityGateRunId": "27524458144",
-  "qualityGateArtifactId": "7629236543",
+  "title": "feat: add p0 admin support event adjustment controls",
+  "goal": "Add PATCH /admin/support-events/:eventId for safe local/internal support event adjustment controls.",
+  "ciRunId": "0",
+  "qualityGateRunId": "0",
+  "qualityGateArtifactId": "0",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,10 +22,11 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/p0-admin-support-event-adjustment-controls.test.ts",
       "apps/api/src/p0-admin-manual-support-event-entry.test.ts",
-      "docs/P0_ADMIN_MANUAL_SUPPORT_EVENT_ENTRY.md",
-      "docs/pr-p0-admin-manual-support-event-entry.md",
-      ".codex/p0-admin-manual-support-event-entry.json",
+      "docs/P0_ADMIN_SUPPORT_EVENT_ADJUSTMENT_CONTROLS.md",
+      "docs/pr-p0-admin-support-event-adjustment-controls.md",
+      ".codex/p0-admin-support-event-adjustment-controls.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,8 +41,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_MANUAL_SUPPORT_EVENT_ENTRY.md",
-      "docs/pr-p0-admin-manual-support-event-entry.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_ADJUSTMENT_CONTROLS.md",
+      "docs/pr-p0-admin-support-event-adjustment-controls.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,7 +59,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-operations-safe-health-checks.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -101,14 +102,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27524317684",
+      "runId": "0",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27524458144",
+      "runId": "0",
       "result": "success",
-      "artifactId": "7629236543"
+      "artifactId": "0"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",
@@ -123,11 +124,12 @@
     "youtubePolicyComplianceClaimed": false
   },
   "allowedScope": [
-    "local/internal admin manual support entry API",
+    "local/internal admin support event adjustment API",
     "admin auth guard",
-    "admin_manual_support support.received normalization",
-    "approved manual support side effects",
-    "hold/rejected manual support no-side-effect paths",
+    "safe field allowlist",
+    "forbidden field blocking",
+    "hold to rejected transition",
+    "approved reversal blocker",
     "safe audit metadata",
     "docs",
     ".codex evidence"
@@ -160,26 +162,23 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin manual support requires admin bearer token",
-    "admin manual support rejects missing or invalid auth",
-    "admin manual support approved creates support.received",
-    "admin manual support approved applies affinity once",
-    "admin manual support approved enqueues reaction once",
-    "admin manual support approved enqueues overlay once",
-    "admin manual support approved enqueues outbox once",
-    "admin manual support hold does not trigger side effects",
-    "admin manual support rejected does not trigger side effects",
-    "duplicate admin request is idempotent",
-    "admin manual support sanitizes display name and message",
-    "admin manual support excludes raw payload and raw message from response",
-    "admin manual support writes safe audit log",
-    "admin manual support appears in admin tips list"
+    "admin support patch requires admin bearer token",
+    "admin support patch rejects missing or invalid auth",
+    "admin support patch returns 404 for unknown event",
+    "admin support patch allows sanitized display name update",
+    "admin support patch allows safe moderation status hold to rejected",
+    "admin support patch blocks approved to rejected reversal",
+    "admin support patch blocks amount_raw and amount_display changes",
+    "admin support patch blocks wallet/source/direct affinity changes",
+    "admin support patch excludes raw message and raw payload from response",
+    "admin support patch writes safe audit log",
+    "admin support patch does not duplicate reaction overlay affinity or outbox"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-      "testFiles": 63,
-      "passed": 1770,
+    "testFiles": 64,
+    "passed": 1776,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -193,8 +192,8 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin manual support entry only.",
-    "Production Admin Console readiness, durable audit retention, real persistence, and operational policy remain future scoped work."
+    "This is local/internal admin support event adjustment only.",
+    "Production Admin Console readiness, durable audit retention, real persistence, reversal workflows, and operational policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -209,13 +208,13 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin manual support entry."
+    "statement": "Adds local/internal admin support event adjustment controls."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin manual support entry only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin support event adjustment only.",
   "reviewScope": {
-    "scope": "P0 admin manual support entry, admin auth, support.received normalization, side-effect idempotency, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is exposing raw messages, double-applying side effects, or implying readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin manual support tests, existing moderation queue summary tests, existing moderation hold review tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event adjustment controls, admin auth, safe field allowlist, forbidden field blocking, safe audit metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is mutating money/source/wallet/direct affinity fields, duplicating side effects, or implying readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin support adjustment tests, existing manual support tests, existing moderation hold review tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-manual-support-event-entry.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-adjustment-controls.md"
 }

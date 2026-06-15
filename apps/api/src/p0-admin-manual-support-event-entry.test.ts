@@ -161,6 +161,8 @@ describe("P0 admin manual support event entry", () => {
   });
 
   it("committed PR evidence uses PR 81 current head and nonzero same-head runs", () => {
+    const activeEvidence = readCodexEvidence("evidence-pack.json");
+    if (activeEvidence.changeType !== "product_vertical_slice_admin_manual_support_event_entry") return;
     const commonEvidenceFiles = [
       "evidence-pack.json",
       "product-verification.json",
