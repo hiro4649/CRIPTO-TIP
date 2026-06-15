@@ -22,8 +22,10 @@ import {
   SupportReceivedSchema,
   YouTubeSuperChatInputSchema,
   type LiveSession,
+  type ModerationStatus,
   type OverlayTipAlert,
   type SupportReceived,
+  type Tier,
   type TipIntent
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
@@ -169,11 +171,12 @@ function toAdminDlqListAuditMetadata(streamId: string, resultCount: number) {
   return { stream_id: streamId, result_count: resultCount };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
+  "request_id",
   "outbox_event_id",
   "event_id",
   "source",
@@ -456,6 +459,74 @@ const TipIntentRequestSchema = z.object({
   tier: z.enum(["small", "medium", "large", "high"])
 });
 
+const AdminManualSupportRequestSchema = z.object({
+  request_id: z.string().min(1).max(80),
+  stream_id: z.string().min(1).max(120),
+  character_id: z.string().min(1).max(120),
+  display_name: z.string().min(1).max(120),
+  tier: z.enum(["small", "medium", "large", "high"]),
+  message: z.string().default(""),
+  moderation_status: z.enum(["approved", "hold", "rejected"])
+});
+
+type AdminManualSupportRequest = z.infer<typeof AdminManualSupportRequestSchema>;
+
+async function buildAdminManualSupport(repo: CriptoTipRepository, input: AdminManualSupportRequest) {
+  const displayName = sanitizeDisplayName(input.display_name);
+  const message = sanitizeMessage(input.message);
+  const source_event_id = stableId("adminmanual", input.request_id);
+  const irisUserId = stableId("adminusr", input.request_id);
+  const previous = await repo.getCurrentAffinity(irisUserId, input.character_id);
+  const affinity = input.moderation_status === "approved"
+    ? calculateAffinityDelta({ tier: input.tier as Tier, previous, dailyUsed: 0, streamUsed: 0 })
+    : { previous, delta: 0, next: previous };
+  return SupportReceivedSchema.parse({
+    event_type: "support.received",
+    event_id: stableId("evt", `admin_manual_support:${source_event_id}`),
+    source: "admin_manual_support",
+    source_event_id,
+    stream_id: input.stream_id,
+    character_id: input.character_id,
+    viewer: {
+      iris_user_id: irisUserId,
+      display_name: displayName.sanitized
+    },
+    support: {
+      amount_raw: "0",
+      amount_display: "manual support",
+      tier: input.tier,
+      message,
+      message_moderation_status: input.moderation_status as ModerationStatus
+    },
+    relationship: {
+      previous_affinity: affinity.previous,
+      affinity_delta: affinity.delta,
+      new_affinity: affinity.next,
+      relationship_level: Math.floor(affinity.next / 50)
+    },
+    reaction_policy: {
+      can_say_name: input.moderation_status === "approved",
+      can_read_message: input.moderation_status === "approved",
+      max_speech_seconds: 12,
+      must_not_discuss_token_price: true,
+      must_not_promise_financial_return: true
+    },
+    created_at: new Date().toISOString()
+  });
+}
+
+function toAdminManualSupportAuditMetadata(input: AdminManualSupportRequest, support: SupportReceived) {
+  return {
+    request_id: input.request_id,
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    moderation_status: support.support.message_moderation_status
+  };
+}
+
 export function buildServer(repo: CriptoTipRepository = repository) {
   const app = Fastify({ logger: false });
   const adminRateLimitBuckets = new Map<string, AdminRateLimitBucket>();
@@ -618,6 +689,49 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const held = await repo.listHeldSupportEvents();
     const reviewed = await repo.listSupportModerationReviewStatuses();
     return buildModerationQueueSummary(held, reviewed);
+  });
+
+  app.post("/admin/support-events/manual", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const input = AdminManualSupportRequestSchema.parse(req.body);
+    const sourceEventId = stableId("adminmanual", input.request_id);
+    const existing = await repo.getSupportEventBySource("admin_manual_support", sourceEventId);
+    if (existing) {
+      return {
+        status: existing.support.message_moderation_status,
+        duplicate: true,
+        support_event: toAdminHeldSupportEntry(existing),
+        side_effects: {
+          affinity: "skipped",
+          reaction_request: "skipped",
+          overlay: "skipped",
+          outbox: "skipped"
+        }
+      };
+    }
+    const support = await buildAdminManualSupport(repo, input);
+    const created = await repo.createSupportEventIfAbsent(support);
+    let effects: Awaited<ReturnType<typeof applySupportReceivedEffects>> | undefined;
+    if (support.support.message_moderation_status === "approved") effects = await applySupportReceivedEffects(repo, support);
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "create_manual_support",
+      target_type: "support_event",
+      target_id: created.event.event_id,
+      after_json: toAdminManualSupportAuditMetadata(input, created.event)
+    });
+    return {
+      status: support.support.message_moderation_status,
+      duplicate: false,
+      support_event: toAdminHeldSupportEntry(created.event),
+      side_effects: {
+        affinity: support.support.message_moderation_status === "approved" ? "applied" : "skipped",
+        reaction_request: effects?.character_reaction_request ? "enqueued" : "skipped",
+        overlay: effects?.overlay ? "enqueued" : "skipped",
+        outbox: effects?.character_reaction_request || effects?.overlay ? "enqueued" : "skipped"
+      }
+    };
   });
 
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {
