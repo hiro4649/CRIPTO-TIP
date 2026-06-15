@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -65,6 +65,32 @@ export class InMemoryRepository implements CriptoTipRepository {
   }
   async listSupportEventsByStream(streamId: string) {
     return [...this.supportEvents.values()].filter((event) => event.stream_id === streamId);
+  }
+  async searchSupportEvents(filter: SupportEventSearchFilter = {}) {
+    const limit = Math.min(Math.max(filter.limit ?? 50, 1), 100);
+    const offset = Math.max(filter.offset ?? 0, 0);
+    return [...this.supportEvents.values()]
+      .filter((event) => !filter.streamId || event.stream_id === filter.streamId)
+      .filter((event) => !filter.characterId || event.character_id === filter.characterId)
+      .filter((event) => !filter.source || event.source === filter.source)
+      .filter((event) => !filter.moderationStatus || event.support.message_moderation_status === filter.moderationStatus)
+      .filter((event) => !filter.deliveryStatus || (this.supportEventDeliveryStatus.get(event.source_event_id) ?? "pending") === filter.deliveryStatus)
+      .filter((event) => !filter.createdAfter || event.created_at >= filter.createdAfter)
+      .filter((event) => !filter.createdBefore || event.created_at <= filter.createdBefore)
+      .sort((a, b) => b.created_at.localeCompare(a.created_at) || a.event_id.localeCompare(b.event_id))
+      .slice(offset, offset + limit)
+      .map((event) => ({
+        event_id: event.event_id,
+        stream_id: event.stream_id,
+        character_id: event.character_id,
+        source: event.source,
+        source_event_id: event.source_event_id,
+        display_name_sanitized: event.viewer.display_name,
+        tier: event.support.tier,
+        moderation_status: event.support.message_moderation_status,
+        delivery_status: this.supportEventDeliveryStatus.get(event.source_event_id) ?? "pending",
+        created_at: event.created_at
+      }));
   }
   async listHeldSupportEvents(filter: { streamId?: string } = {}) {
     return [...this.supportEvents.values()].filter((event) =>
