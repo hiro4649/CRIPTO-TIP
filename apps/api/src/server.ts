@@ -18,6 +18,8 @@ import {
   sanitizeMessage,
   sha256Bytes32Hex,
   stableId,
+  moderationStatuses,
+  supportSources,
   TipIntentSchema,
   SupportReceivedSchema,
   YouTubeSuperChatInputSchema,
@@ -507,6 +509,18 @@ const SupportEventAdjustmentSchema = z.object({
   operator_note: z.string().max(160).optional()
 });
 
+const AdminSupportEventSearchQuerySchema = z.object({
+  stream_id: z.string().optional(),
+  character_id: z.string().optional(),
+  source: z.enum(supportSources).optional(),
+  message_moderation_status: z.enum(moderationStatuses).optional(),
+  delivery_status: z.enum(["pending", "retrying", "delivered", "failed"]).optional(),
+  created_after: z.string().optional(),
+  created_before: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
+
 const FORBIDDEN_SUPPORT_ADJUSTMENT_FIELDS = new Set([
   "amount_raw",
   "amount_display",
@@ -769,6 +783,31 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const held = await repo.listHeldSupportEvents();
     const reviewed = await repo.listSupportModerationReviewStatuses();
     return buildModerationQueueSummary(held, reviewed);
+  });
+
+  app.get("/admin/support-events", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminSupportEventSearchQuerySchema.parse(req.query);
+    const filter: Parameters<CriptoTipRepository["searchSupportEvents"]>[0] = {
+      limit: query.limit,
+      offset: query.offset
+    };
+    if (query.stream_id) filter.streamId = query.stream_id;
+    if (query.character_id) filter.characterId = query.character_id;
+    if (query.source) filter.source = query.source;
+    if (query.message_moderation_status) filter.moderationStatus = query.message_moderation_status;
+    if (query.delivery_status) filter.deliveryStatus = query.delivery_status;
+    if (query.created_after) filter.createdAfter = query.created_after;
+    if (query.created_before) filter.createdBefore = query.created_before;
+    const events = await repo.searchSupportEvents(filter);
+    return {
+      support_events: events,
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        count: events.length
+      }
+    };
   });
 
   app.post("/admin/support-events/manual", async (req, reply) => {

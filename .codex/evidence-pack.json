@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 87,
-  "headSha": "c7e5cbc349e2ce84da6ad8740d49825850026760",
-  "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
+  "prNumber": 88,
+  "headSha": "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",
+  "baseSha": "542d896282528f4382cd930d387159a12f4263dc",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_timeline",
+  "changeType": "product_vertical_slice_admin_support_event_search",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support event timeline",
-  "goal": "Add GET /admin/support-events/:eventId/timeline for safe local/internal support event lifecycle visibility.",
-  "ciRunId": "27547779558",
-  "qualityGateRunId": "27547898876",
-  "qualityGateArtifactId": "7638749061",
+  "title": "feat: add p0 admin support event search",
+  "goal": "Add GET /admin/support-events for safe local/internal support event search visibility.",
+  "ciRunId": "27549438817",
+  "qualityGateRunId": "27549606557",
+  "qualityGateArtifactId": "7639494132",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -25,10 +25,10 @@
       "apps/api/src/repositories/types.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/postgres.ts",
-      "apps/api/src/p0-admin-support-event-timeline.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_TIMELINE.md",
-      "docs/pr-p0-admin-support-event-timeline.md",
-      ".codex/p0-admin-support-event-timeline.json",
+      "apps/api/src/p0-admin-support-event-search.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_SEARCH.md",
+      "docs/pr-p0-admin-support-event-search.md",
+      ".codex/p0-admin-support-event-search.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -43,8 +43,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_TIMELINE.md",
-      "docs/pr-p0-admin-support-event-timeline.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_SEARCH.md",
+      "docs/pr-p0-admin-support-event-search.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -61,7 +61,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -69,21 +69,21 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27547779558",
+      "runId": "27549438817",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27547898876",
+      "runId": "27549606557",
       "result": "success",
-      "artifactId": "7638749061"
+      "artifactId": "7639494132"
     }
   ],
   "allowedScope": [
-    "local/internal admin support event timeline API",
+    "local/internal admin support event search API",
     "admin auth guard",
-    "read-only support event lifecycle visibility",
-    "safe audit action timeline entries",
+    "read-only support event search visibility",
+    "safe support event search filters",
     "docs",
     ".codex evidence"
   ],
@@ -120,20 +120,18 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin support timeline requires admin bearer token",
-    "admin support timeline returns 404 for unknown support event",
-    "admin support timeline returns safe metadata only",
-    "admin support timeline includes side-effect ledger summary",
-    "admin support timeline includes overlay and reaction resend entries",
-    "admin support timeline includes audit action entries",
-    "admin support timeline is read-only",
-    "admin support timeline does not enqueue reaction or overlay"
+    "admin support search requires admin bearer token",
+    "admin support search returns safe metadata only",
+    "admin support search filters by stream, character, source, moderation, delivery, and created-at bounds",
+    "admin support search applies safe pagination",
+    "admin support search is read-only",
+    "admin support search does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 68,
-    "passed": 1796,
+    "testFiles": 69,
+    "passed": 1799,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -148,12 +146,15 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin support event timeline visibility only.",
+    "This is local/internal admin support event search visibility only.",
     "Production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
-    "Merge remains blocked until PR creation, evidence refresh, and same-head checks pass."
+    "AI review is not GitHub approval review.",
+    "This PR does not create owner approval record.",
+    "This PR does not create merge authority.",
+    "If final same-head checks, committed evidence, PR body evidence, safe artifact, and forbidden scope checks pass, AI Pro review may recommend merge and Codex may squash merge in the same task."
   ],
   "productVerificationCommands": [],
   "packageVerification": {
@@ -164,7 +165,7 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event timeline visibility."
+    "statement": "Adds local/internal admin support event search visibility."
   },
   "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only support side-effect visibility only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support mutation, side-effect enqueue, or readiness/compliance claims are introduced.",
@@ -179,9 +180,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support event timeline, admin auth, read-only timeline entries, safe metadata, tests, docs, and .codex evidence.",
+    "scope": "P0 admin support event search, admin auth, read-only search results, safe metadata, tests, docs, and .codex evidence.",
     "riskSummary": "Main risk is exposing raw support data, mutating support state, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin support event timeline tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "verificationOracle": "Admin support event search tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-timeline.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-search.md"
 }

@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 87,
-  "headSha": "c7e5cbc349e2ce84da6ad8740d49825850026760",
-  "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
+  "prNumber": 88,
+  "headSha": "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",
+  "baseSha": "542d896282528f4382cd930d387159a12f4263dc",
   "testCoverageStatus": "pass",
-  "testFiles": 66,
-  "passed": 1790,
+  "testFiles": 69,
+  "passed": 1799,
   "skipped": 6,
   "coverage": [
-    "admin support timeline requires admin bearer token",
-    "admin support timeline rejects missing or invalid auth",
-    "admin support timeline returns 404 for unknown support event",
-    "admin support timeline returns safe metadata only",
-    "admin support timeline includes support lifecycle entries",
-    "admin support timeline does not mutate state or enqueue side effects"
+    "admin support search requires admin bearer token",
+    "admin support search rejects missing or invalid auth",
+    "admin support search returns safe metadata only",
+    "admin support search filters by stream, character, source, moderation, delivery, and created-at bounds",
+    "admin support search applies safe pagination",
+    "admin support search does not mutate state or enqueue side effects"
   ]
 }

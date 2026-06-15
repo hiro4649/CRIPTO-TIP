@@ -1,5 +1,5 @@
 import { createPublicId, SupportReceivedSchema, type CharacterReactionRequest, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventSearchFilter, TipTransactionStatusPatch } from "./types.js";
 
 export type QueryClient = {
   query<T = unknown>(sql: string, params?: unknown[]): Promise<{ rows: T[] }>;
@@ -23,6 +23,7 @@ type SupportEventRow = {
   message_sanitized?: string;
   message_moderation_status: SupportReceived["support"]["message_moderation_status"];
   affinity_delta: number;
+  delivery_status: "pending" | "retrying" | "delivered" | "failed";
   created_at: string;
 };
 
@@ -234,6 +235,41 @@ export class PostgresRepository implements CriptoTipRepository {
   async listSupportEventsByStream(streamId: string) {
     const result = await this.db.query<SupportEventRow>("select * from support_events where stream_id = $1 order by created_at desc", [streamId]);
     return result.rows.map(rowToSupportReceived);
+  }
+  async searchSupportEvents(filter: SupportEventSearchFilter = {}) {
+    const conditions: string[] = [];
+    const params: Array<string | number> = [];
+    const add = (condition: string, value: string | number) => {
+      params.push(value);
+      conditions.push(condition.replace("?", `$${params.length}`));
+    };
+    if (filter.streamId) add("stream_id = ?", filter.streamId);
+    if (filter.characterId) add("character_id = ?", filter.characterId);
+    if (filter.source) add("source = ?", filter.source);
+    if (filter.moderationStatus) add("message_moderation_status = ?", filter.moderationStatus);
+    if (filter.deliveryStatus) add("delivery_status = ?", filter.deliveryStatus);
+    if (filter.createdAfter) add("created_at >= ?", filter.createdAfter);
+    if (filter.createdBefore) add("created_at <= ?", filter.createdBefore);
+    const limit = Math.min(Math.max(filter.limit ?? 50, 1), 100);
+    const offset = Math.max(filter.offset ?? 0, 0);
+    params.push(limit, offset);
+    const where = conditions.length > 0 ? ` where ${conditions.join(" and ")}` : "";
+    const result = await this.db.query<SupportEventRow>(
+      `select * from support_events${where} order by created_at desc, id asc limit $${params.length - 1} offset $${params.length}`,
+      params
+    );
+    return result.rows.map((row) => ({
+      event_id: row.id,
+      stream_id: row.stream_id,
+      character_id: row.character_id,
+      source: row.source,
+      source_event_id: row.source_event_id,
+      display_name_sanitized: row.display_name_sanitized,
+      tier: row.tier,
+      moderation_status: row.message_moderation_status,
+      delivery_status: row.delivery_status,
+      created_at: iso(row.created_at)
+    }));
   }
   async listHeldSupportEvents(filter: { streamId?: string } = {}) {
     const result = filter.streamId

@@ -101,6 +101,31 @@ export type SupportEventTimeline = {
   entries: SupportEventTimelineEntry[];
 };
 
+export type SupportEventSearchFilter = {
+  streamId?: string;
+  characterId?: string;
+  source?: SupportReceived["source"];
+  moderationStatus?: SupportReceived["support"]["message_moderation_status"];
+  deliveryStatus?: "pending" | "retrying" | "delivered" | "failed";
+  createdAfter?: string;
+  createdBefore?: string;
+  limit?: number;
+  offset?: number;
+};
+
+export type SupportEventSearchEntry = {
+  event_id: string;
+  stream_id: string;
+  character_id: string;
+  source: SupportReceived["source"];
+  source_event_id: string;
+  display_name_sanitized: string;
+  tier: SupportReceived["support"]["tier"];
+  moderation_status: SupportReceived["support"]["message_moderation_status"];
+  delivery_status: "pending" | "retrying" | "delivered" | "failed";
+  created_at: string;
+};
+
 export type AuditLogListFilter = {
   action?: string;
   targetType?: string;
@@ -140,6 +165,7 @@ export interface CriptoTipRepository {
   recordRecentTipByWallet(walletAddress: string): Promise<void>;
   getCurrentAffinity(irisUserId: string, characterId: string): Promise<number>;
   listSupportEventsByStream(streamId: string): Promise<SupportReceived[]>;
+  searchSupportEvents(filter?: SupportEventSearchFilter): Promise<SupportEventSearchEntry[]>;
   listHeldSupportEvents(filter?: { streamId?: string }): Promise<SupportReceived[]>;
   getSupportEventById(eventId: string): Promise<SupportReceived | undefined>;
   updateSupportEvent(event: SupportReceived): Promise<SupportReceived>;
