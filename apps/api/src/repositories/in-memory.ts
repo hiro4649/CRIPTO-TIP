@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportModerationReviewStatus, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -87,6 +87,15 @@ export class InMemoryRepository implements CriptoTipRepository {
     if (existing) return existing;
     this.supportModerationReviewStates.set(eventId, status);
     return status;
+  }
+  async listSupportModerationReviewStatuses() {
+    const entries: SupportModerationReviewSummaryEntry[] = [];
+    for (const [eventId, status] of this.supportModerationReviewStates.entries()) {
+      const event = [...this.supportEvents.values()].find((support) => support.event_id === eventId);
+      if (!event) continue;
+      entries.push({ event_id: eventId, stream_id: event.stream_id, status });
+    }
+    return entries;
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

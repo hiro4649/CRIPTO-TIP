@@ -315,6 +315,37 @@ function toHeldSupportAuditMetadata(support: SupportReceived, reviewStatus: "app
   };
 }
 
+function buildModerationQueueSummary(
+  held: SupportReceived[],
+  reviewed: Awaited<ReturnType<CriptoTipRepository["listSupportModerationReviewStatuses"]>>
+) {
+  const perStream: Record<string, { held_count: number; approved_count: number; rejected_count: number }> = {};
+  const ensureStream = (streamId: string) => {
+    perStream[streamId] ??= { held_count: 0, approved_count: 0, rejected_count: 0 };
+    return perStream[streamId];
+  };
+  let newestHeldAt: string | undefined;
+  for (const event of held) {
+    ensureStream(event.stream_id).held_count += 1;
+    if (!newestHeldAt || event.created_at > newestHeldAt) newestHeldAt = event.created_at;
+  }
+  for (const entry of reviewed) {
+    const stream = ensureStream(entry.stream_id);
+    if (entry.status === "approved") stream.approved_count += 1;
+    if (entry.status === "rejected") stream.rejected_count += 1;
+  }
+  return {
+    status: "ok",
+    generated_at: new Date().toISOString(),
+    held_count: held.length,
+    approved_count: reviewed.filter((entry) => entry.status === "approved").length,
+    rejected_count: reviewed.filter((entry) => entry.status === "rejected").length,
+    blocked_transition_count: 0,
+    per_stream: perStream,
+    newest_held_at: newestHeldAt
+  };
+}
+
 async function buildReviewedSupport(repo: CriptoTipRepository, support: SupportReceived, status: "approved" | "rejected") {
   const previous = support.viewer.iris_user_id ? await repo.getCurrentAffinity(support.viewer.iris_user_id, support.character_id) : support.relationship.previous_affinity;
   const affinity = status === "approved"
@@ -580,6 +611,13 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       after_json: { stream_id: query.stream_id ?? "all", result_count: held.length }
     });
     return { held_support: held.map(toAdminHeldSupportEntry) };
+  });
+
+  app.get("/admin/moderation/summary", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const held = await repo.listHeldSupportEvents();
+    const reviewed = await repo.listSupportModerationReviewStatuses();
+    return buildModerationQueueSummary(held, reviewed);
   });
 
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {

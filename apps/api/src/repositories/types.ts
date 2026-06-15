@@ -83,6 +83,11 @@ export type AuditLogListFilter = {
 };
 
 export type SupportModerationReviewStatus = "approved" | "rejected";
+export type SupportModerationReviewSummaryEntry = {
+  event_id: string;
+  stream_id: string;
+  status: SupportModerationReviewStatus;
+};
 
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
@@ -115,6 +120,7 @@ export interface CriptoTipRepository {
   updateSupportEvent(event: SupportReceived): Promise<SupportReceived>;
   getSupportModerationReviewStatus(eventId: string): Promise<SupportModerationReviewStatus | undefined>;
   setSupportModerationReviewStatus(eventId: string, status: SupportModerationReviewStatus): Promise<SupportModerationReviewStatus>;
+  listSupportModerationReviewStatuses(): Promise<SupportModerationReviewSummaryEntry[]>;
   recordTipTransaction(transaction: TipTransaction): Promise<TipTransaction>;
   findTipTransactionByChainLog(key: ChainLogKey): Promise<TipTransaction | undefined>;
   listPendingTipTransactions(chainId: number, contractAddress: string): Promise<TipTransaction[]>;

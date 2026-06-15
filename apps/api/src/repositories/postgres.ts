@@ -378,6 +378,23 @@ export class PostgresRepository implements CriptoTipRepository {
   async setSupportModerationReviewStatus(_eventId: string, status: "approved" | "rejected") {
     return status;
   }
+  async listSupportModerationReviewStatuses() {
+    const result = await this.db.query<{ event_id: string; stream_id: string; action: string }>(
+      `select distinct on (a.target_id) a.target_id as event_id, s.stream_id, a.action
+       from audit_logs a
+       join support_events s on s.id = a.target_id
+       where a.target_type = 'support_event'
+         and a.action in ('approve_held_support', 'reject_held_support')
+       order by a.target_id, a.id desc`
+    );
+    return result.rows
+      .filter((row) => row.action === "approve_held_support" || row.action === "reject_held_support")
+      .map((row) => ({
+        event_id: row.event_id,
+        stream_id: row.stream_id,
+        status: row.action === "approve_held_support" ? "approved" as const : "rejected" as const
+      }));
+  }
   async applyAffinityIfAbsent(entry: AffinityLedgerEntry) {
     const result = await this.db.query<AffinityLedgerEntry>(
       `insert into affinity_ledger (id, source_event_id, iris_user_id, character_id, previous_affinity,
