@@ -149,4 +149,47 @@ describe("P0 admin operations dashboard API", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed PR evidence uses PR 76 GitHub evidence after PR creation", () => {
+    const evidenceFiles = [
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/review-independence.json",
+      ".codex/risk-register.json",
+      ".codex/task-contract.json",
+      ".codex/test-coverage-evidence.json",
+      ".codex/test-summary.json"
+    ];
+
+    for (const file of evidenceFiles) {
+      const text = fs.readFileSync(path.join(root, file), "utf8");
+      const evidence = JSON.parse(text);
+
+      expect(evidence.prNumber).toBe(76);
+      expect(evidence.headSha).toMatch(/^[0-9a-f]{40}$/);
+      expect(evidence.headSha).not.toBe("current_pr_head");
+      expect(evidence.baseSha).toBe("e38c0151e30c9978339c928b0d80afc1d4e059db");
+      expect(text).not.toContain("current_pr_head");
+      expect(text).not.toContain("current_pr_base");
+      expect(text).not.toContain("not_available_before_pr_creation");
+      expect(text).not.toContain("not_created_pre_pr");
+      expect(text).not.toContain("pending_after_pr_creation");
+      expect(text).not.toContain("artifact pending");
+      expect(text).not.toContain("HEAD_SHA_PLACEHOLDER");
+      expect(text).not.toContain("BASE_SHA_PLACEHOLDER");
+      expect(text).not.toContain("\"prNumber\": 0");
+      expect(text).not.toContain("\"ciRunId\": \"0\"");
+      expect(text).not.toContain("\"qualityGateRunId\": \"0\"");
+      expect(text).not.toContain("\"qualityGateArtifactId\": \"0\"");
+    }
+
+    const pack = JSON.parse(fs.readFileSync(path.join(root, ".codex", "evidence-pack.json"), "utf8"));
+    const qualityGate = JSON.parse(fs.readFileSync(path.join(root, ".codex", "quality-gate-evidence.json"), "utf8"));
+
+    expect(pack.ciRunId).toBe("27497720704");
+    expect(pack.qualityGateRunId).toBe("27497770876");
+    expect(pack.qualityGateArtifactId).toBe("7620651127");
+    expect(qualityGate.rawLogsRead).toBe(false);
+  });
 });

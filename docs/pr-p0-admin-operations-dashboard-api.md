@@ -21,7 +21,7 @@ Done criteria: admin operations summary requires admin bearer token; missing aut
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 5e5adbd6080126c784416d3ab25ba8201c07ff97
 
 Base SHA: e38c0151e30c9978339c928b0d80afc1d4e059db
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 0
+CI run: 27497720704
 
-Quality-gate run: 0
+Quality-gate run: 27497770876
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7620651127
 
 Tests: 59 test files, 1746 passed, 6 skipped
 
