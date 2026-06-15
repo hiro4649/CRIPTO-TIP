@@ -46,6 +46,9 @@ type AdminRateLimitBucket = {
   resetAt: number;
 };
 
+const ADMIN_RATE_LIMIT_WINDOW_MS = 60_000;
+const ADMIN_RATE_LIMIT_MAX_REQUESTS = 3;
+
 export const repository = new InMemoryRepository();
 export const store: Store = { overlayClients: new Map() };
 
@@ -63,15 +66,13 @@ function checkAdminRateLimit(
   scope: "dlq_list" | "dlq_retry" | "audit_export",
   now = Date.now()
 ) {
-  const windowMs = 60_000;
-  const limit = 3;
   const key = `${scope}:${adminTokenFingerprint(req)}`;
   const current = buckets.get(key);
   if (!current || current.resetAt <= now) {
-    buckets.set(key, { count: 1, resetAt: now + windowMs });
+    buckets.set(key, { count: 1, resetAt: now + ADMIN_RATE_LIMIT_WINDOW_MS });
     return { allowed: true as const };
   }
-  if (current.count >= limit) {
+  if (current.count >= ADMIN_RATE_LIMIT_MAX_REQUESTS) {
     return {
       allowed: false as const,
       response: {
@@ -268,6 +269,20 @@ function summarizeAdminRateLimits(buckets: Map<string, AdminRateLimitBucket>) {
     storage: "in_memory",
     key_material: "redacted",
     active_buckets_by_scope: activeBucketsByScope
+  };
+}
+
+function summarizeAdminRateLimitConfig() {
+  return {
+    storage: "in_memory",
+    key_material: "redacted",
+    window_ms: ADMIN_RATE_LIMIT_WINDOW_MS,
+    max_requests: ADMIN_RATE_LIMIT_MAX_REQUESTS,
+    scopes: {
+      dlq_list: { enabled: true },
+      dlq_retry: { enabled: true },
+      audit_export: { enabled: true }
+    }
   };
 }
 
@@ -548,6 +563,25 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         action_counts: countAuditActions(safeAuditLogs)
       },
       rate_limit: summarizeAdminRateLimits(adminRateLimitBuckets)
+    };
+  });
+
+  app.get("/admin/operations/health", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    return {
+      status: "ok",
+      generated_at: new Date().toISOString(),
+      repository: {
+        mode: "local_in_memory"
+      },
+      endpoints: {
+        dlq_list: true,
+        dlq_redrive: true,
+        audit_export: true,
+        operations_summary: true,
+        operations_health: true
+      },
+      rate_limit: summarizeAdminRateLimitConfig()
     };
   });
 

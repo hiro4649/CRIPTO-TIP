@@ -2,15 +2,15 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 76,
-  "headSha": "5e5adbd6080126c784416d3ab25ba8201c07ff97",
-  "baseSha": "e38c0151e30c9978339c928b0d80afc1d4e059db",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "8879c52b7d675fd9d1ca69ce5ff58b2895a4be54",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operations-safe-health-checks.test.ts apps/api/src/p0-admin-operations-dashboard-api.test.ts apps/api/src/p0-admin-dlq-rate-limit-boundary.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -51,27 +51,15 @@
     }
   ],
   "coverage": [
-    "admin operations summary requires admin bearer token",
-    "missing auth returns 401",
-    "invalid auth returns 401",
-    "response is safe metadata only",
-    "includes DLQ count",
-    "groups by stream_id",
-    "includes audit action counts",
-    "includes rate-limit status without raw key",
-    "excludes unsafe audit bodies",
-    "excludes secrets",
-    "excludes raw token and token fingerprint",
-    "excludes IP and user-agent",
-    "excludes logs_url jobs_url stack stdout stderr",
-    "existing admin DLQ visibility tests still pass",
-    "existing admin DLQ redrive tests still pass",
-    "existing admin audit export tests still pass",
-    "existing admin rate-limit tests still pass",
-    "internal/events support.received path remains unaffected"
+    "admin operations health auth",
+    "safe metadata",
+    "endpoint availability",
+    "safe rate-limit config",
+    "existing operations summary"
   ],
-  "status": "success",
-  "testFiles": 59,
-  "passed": 1747,
-  "skipped": 6
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+  }
 }
