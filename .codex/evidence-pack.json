@@ -3,7 +3,8 @@
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 80,
-  "headSha": "cb83690e9c63275227d323f8e219fad16ac07e86",
+  "evidenceHeadMode": "canonical_previous_head_plus_current_artifact",
+  "headSha": "e789fc966c5bda25428945472ffa8d65fd518ad3",
   "baseSha": "c7d53cf2b6cf524a7caf6296942c867b5793d124",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +13,12 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin moderation queue summary",
   "goal": "Add GET /admin/moderation/summary with safe moderation queue counts and per-stream grouping.",
-  "ciRunId": "27522651721",
-  "qualityGateRunId": "27522899106",
-  "qualityGateArtifactId": "7628727191",
+  "ciRunId": "27523480889",
+  "qualityGateRunId": "27523480914",
+  "qualityGateArtifactId": "7628919497",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
+  "currentHeadEvidenceSource": "pr_body_after_push",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -104,14 +106,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27522651721",
+      "runId": "27523480889",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27522899106",
+      "runId": "27523480914",
       "result": "success",
-      "artifactId": "7628727191"
+      "artifactId": "7628919497"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, or readiness/compliance claims are introduced.",

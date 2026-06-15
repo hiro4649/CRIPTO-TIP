@@ -9,7 +9,7 @@ const internalAuth = `Bearer ${mockValue("internal")}`;
 const adminAuth = `Bearer ${mockValue("admin")}`;
 const root = path.resolve(__dirname, "..", "..", "..");
 const prNumber = 80;
-const currentHeadSha = "cb83690e9c63275227d323f8e219fad16ac07e86";
+const currentHeadSha = "e789fc966c5bda25428945472ffa8d65fd518ad3";
 const currentBaseSha = "c7d53cf2b6cf524a7caf6296942c867b5793d124";
 
 function readCodexEvidence(fileName: string) {
@@ -163,6 +163,7 @@ describe("P0 admin moderation queue summary", () => {
     for (const fileName of commonEvidenceFiles) {
       const evidence = readCodexEvidence(fileName);
       expect(evidence.prNumber, fileName).toBe(prNumber);
+      expect(evidence.evidenceHeadMode, fileName).toBe("canonical_previous_head_plus_current_artifact");
       expect(evidence.headSha, fileName).toBe(currentHeadSha);
       expect(evidence.baseSha, fileName).toBe(currentBaseSha);
       expect(evidence.headSha, fileName).not.toBe(evidence.baseSha);
