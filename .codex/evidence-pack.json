@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 87,
-  "headSha": "206d821fccb6efdd1d00e53376e558e479236747",
+  "headSha": "c7e5cbc349e2ce84da6ad8740d49825850026760",
   "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support event timeline",
   "goal": "Add GET /admin/support-events/:eventId/timeline for safe local/internal support event lifecycle visibility.",
-  "ciRunId": "27547259477",
-  "qualityGateRunId": "27547395667",
-  "qualityGateArtifactId": "7638536317",
+  "ciRunId": "27547779558",
+  "qualityGateRunId": "27547898876",
+  "qualityGateArtifactId": "7638749061",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -69,14 +69,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27547259477",
+      "runId": "27547779558",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27547395667",
+      "runId": "27547898876",
       "result": "success",
-      "artifactId": "7638536317"
+      "artifactId": "7638749061"
     }
   ],
   "allowedScope": [

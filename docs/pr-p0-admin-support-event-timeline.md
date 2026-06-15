@@ -21,7 +21,7 @@ Done criteria: admin support timeline requires admin bearer token; admin support
 
 ## Evidence Integrity
 
-Head SHA: 206d821fccb6efdd1d00e53376e558e479236747
+Head SHA: c7e5cbc349e2ce84da6ad8740d49825850026760
 
 Base SHA: 001393fac364bc9f986d11842cee913b63085b15
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27547259477
+CI run: 27547779558
 
-Quality-gate run: 27547395667
+Quality-gate run: 27547898876
 
-Quality-gate artifact: 7638536317
+Quality-gate artifact: 7638749061
 
 Tests: 68 test files, 1796 passed, 6 skipped
 
