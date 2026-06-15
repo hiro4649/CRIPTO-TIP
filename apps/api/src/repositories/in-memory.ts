@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportModerationReviewStatus, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -27,6 +27,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   overlayEvents = new Map<string, OverlayTipAlert>();
   reactionRequests = new Map<string, CharacterReactionRequest>();
   auditLogs: AuditLogInput[] = [];
+  supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -43,6 +44,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.overlayEvents.clear();
     this.reactionRequests.clear();
     this.auditLogs = [];
+    this.supportModerationReviewStates.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -63,6 +65,28 @@ export class InMemoryRepository implements CriptoTipRepository {
   }
   async listSupportEventsByStream(streamId: string) {
     return [...this.supportEvents.values()].filter((event) => event.stream_id === streamId);
+  }
+  async listHeldSupportEvents(filter: { streamId?: string } = {}) {
+    return [...this.supportEvents.values()].filter((event) =>
+      event.support.message_moderation_status === "hold" &&
+      (!filter.streamId || event.stream_id === filter.streamId)
+    );
+  }
+  async getSupportEventById(eventId: string) {
+    return [...this.supportEvents.values()].find((event) => event.event_id === eventId);
+  }
+  async updateSupportEvent(event: SupportReceived) {
+    this.supportEvents.set(`${event.source}:${event.source_event_id}`, event);
+    return event;
+  }
+  async getSupportModerationReviewStatus(eventId: string) {
+    return this.supportModerationReviewStates.get(eventId);
+  }
+  async setSupportModerationReviewStatus(eventId: string, status: SupportModerationReviewStatus) {
+    const existing = this.supportModerationReviewStates.get(eventId);
+    if (existing) return existing;
+    this.supportModerationReviewStates.set(eventId, status);
+    return status;
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
