@@ -2,16 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 84,
-  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
-  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
+  "prNumber": 86,
+  "headSha": "bc4a66ffa5c29b16ac0763b34f07b853c5de9830",
+  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
   "risks": [
     {
       "severity": "medium",
-      "risk": "reaction resend controls could resend held or rejected support, duplicate outbox jobs, mutate support fields, enqueue overlay, or imply real TTS/renderer readiness",
+      "risk": "side-effect ledger could expose raw support data, mutate state, or imply operational readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce approved-only resend, idempotency, no affinity/overlay enqueue, support field immutability, safe audit metadata, and no readiness or compliance claims"
+      "mitigation": "tests enforce safe metadata, read-only behavior, no reaction/overlay enqueue, no raw payload/message exposure, and no readiness claims"
     }
   ]
 }

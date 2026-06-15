@@ -2,28 +2,26 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 84,
-  "headSha": "3299f8b51e49ac213e8fe45aa74190dcc583e64b",
-  "baseSha": "5d5274ac2dfba423ac615c3c21643f2aa8f9e144",
+  "prNumber": 86,
+  "headSha": "bc4a66ffa5c29b16ac0763b34f07b853c5de9830",
+  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "admin reaction resend auth",
+    "admin side-effect ledger auth",
     "unknown support event 404",
-    "held and rejected blockers",
-    "approved support reaction resend enqueue",
-    "reaction resend idempotency",
-    "no affinity or overlay enqueue",
-    "support amount source wallet moderation immutability",
-    "safe audit metadata"
+    "safe metadata only",
+    "read-only side-effect counts",
+    "resend candidate counts",
+    "audit action counts"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,

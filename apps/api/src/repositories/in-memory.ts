@@ -266,4 +266,21 @@ export class InMemoryRepository implements CriptoTipRepository {
       return true;
     });
   }
+  async getSupportSideEffectLedger(event: SupportReceived) {
+    const auditLogs = await this.listAuditLogs({ targetType: "support_event", targetId: event.event_id });
+    const audit_action_counts: Record<string, number> = {};
+    for (const log of auditLogs) audit_action_counts[log.action] = (audit_action_counts[log.action] ?? 0) + 1;
+    const sourceKey = event.source_event_id;
+    return {
+      affinity_applied: [...this.affinityLedger.values()].some((entry) => entry.source_event_id === sourceKey && entry.character_id === event.character_id),
+      reaction_requested: this.reactionRequests.has(`${sourceKey}:${event.character_id}`),
+      overlay_requested: this.overlayEvents.has(`${sourceKey}:${event.stream_id}`),
+      outbox_enqueued: [...this.outboxEvents.values()].some((outbox) => outbox.aggregate_type === "support_event" && outbox.aggregate_id === event.event_id),
+      resend_candidates: {
+        overlay_resend: [...this.outboxEvents.values()].filter((outbox) => outbox.aggregate_id === event.event_id && outbox.idempotency_key.startsWith(`overlay.resend:${event.event_id}:`)).length,
+        reaction_resend: [...this.outboxEvents.values()].filter((outbox) => outbox.aggregate_id === event.event_id && outbox.idempotency_key.startsWith(`reaction.resend:${event.event_id}:`)).length
+      },
+      audit_action_counts
+    };
+  }
 }
