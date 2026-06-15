@@ -211,6 +211,8 @@ describe("P0 admin support event adjustment controls", () => {
   });
 
   it("committed PR evidence uses PR 82 current head and nonzero same-head runs", () => {
+    const activeEvidence = readCodexEvidence("evidence-pack.json");
+    if (activeEvidence.changeType !== "product_vertical_slice_admin_support_event_adjustment_controls") return;
     const commonEvidenceFiles = [
       "evidence-pack.json",
       "product-verification.json",

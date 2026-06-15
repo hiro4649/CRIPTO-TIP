@@ -2,16 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.3",
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 82,
-  "headSha": "3124c657e47c3cfecbe9f0817e2bab9581f16b9c",
-  "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
+  "prNumber": 83,
+  "headSha": "57a4bf798253e785941dd17a28be7fb5ef34b658",
+  "baseSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
   "risks": [
     {
       "severity": "medium",
-      "risk": "support adjustment controls could mutate forbidden money, wallet, source, or direct affinity fields, duplicate side effects, or imply readiness",
+      "risk": "overlay resend controls could resend held or rejected support, duplicate outbox jobs, mutate support fields, or imply real OBS/runtime readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce safe field allowlist, forbidden field blocks, no side-effect duplication, safe audit metadata, and no readiness or compliance claims"
+      "mitigation": "tests enforce approved-only resend, idempotency, no affinity/reaction duplication, support field immutability, safe audit metadata, and no readiness or compliance claims"
     }
   ]
 }
