@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 86,
-  "headSha": "bc4a66ffa5c29b16ac0763b34f07b853c5de9830",
-  "baseSha": "de455a79d40cc6b120eb3b88c2c2140cd2155b35",
+  "prNumber": 87,
+  "headSha": "206d821fccb6efdd1d00e53376e558e479236747",
+  "baseSha": "001393fac364bc9f986d11842cee913b63085b15",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_side_effect_ledger",
+  "changeType": "product_vertical_slice_admin_support_event_timeline",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support side effect ledger",
-  "goal": "Add GET /admin/support-events/:eventId/side-effects for safe local/internal side-effect visibility.",
-  "ciRunId": "27546566879",
-  "qualityGateRunId": "27546693993",
-  "qualityGateArtifactId": "7638237798",
+  "title": "feat: add p0 admin support event timeline",
+  "goal": "Add GET /admin/support-events/:eventId/timeline for safe local/internal support event lifecycle visibility.",
+  "ciRunId": "27547259477",
+  "qualityGateRunId": "27547395667",
+  "qualityGateArtifactId": "7638536317",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -25,10 +25,10 @@
       "apps/api/src/repositories/types.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/postgres.ts",
-      "apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
-      "docs/P0_ADMIN_SUPPORT_SIDE_EFFECT_LEDGER.md",
-      "docs/pr-p0-admin-support-side-effect-ledger.md",
-      ".codex/p0-admin-support-side-effect-ledger.json",
+      "apps/api/src/p0-admin-support-event-timeline.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_TIMELINE.md",
+      "docs/pr-p0-admin-support-event-timeline.md",
+      ".codex/p0-admin-support-event-timeline.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -43,8 +43,8 @@
       "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_SIDE_EFFECT_LEDGER.md",
-      "docs/pr-p0-admin-support-side-effect-ledger.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_TIMELINE.md",
+      "docs/pr-p0-admin-support-event-timeline.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -61,7 +61,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -69,21 +69,21 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27546566879",
+      "runId": "27547259477",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27546693993",
+      "runId": "27547395667",
       "result": "success",
-      "artifactId": "7638237798"
+      "artifactId": "7638536317"
     }
   ],
   "allowedScope": [
-    "local/internal admin support side-effect ledger API",
+    "local/internal admin support event timeline API",
     "admin auth guard",
-    "read-only side-effect visibility",
-    "safe audit action counts",
+    "read-only support event lifecycle visibility",
+    "safe audit action timeline entries",
     "docs",
     ".codex evidence"
   ],
@@ -120,20 +120,20 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin side-effect ledger requires admin bearer token",
-    "admin side-effect ledger returns 404 for unknown support event",
-    "admin side-effect ledger returns safe metadata only",
-    "admin side-effect ledger shows affinity reaction overlay and outbox state",
-    "admin side-effect ledger counts overlay and reaction resend candidates",
-    "admin side-effect ledger counts audit actions",
-    "admin side-effect ledger is read-only",
-    "admin side-effect ledger does not enqueue reaction or overlay"
+    "admin support timeline requires admin bearer token",
+    "admin support timeline returns 404 for unknown support event",
+    "admin support timeline returns safe metadata only",
+    "admin support timeline includes side-effect ledger summary",
+    "admin support timeline includes overlay and reaction resend entries",
+    "admin support timeline includes audit action entries",
+    "admin support timeline is read-only",
+    "admin support timeline does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 67,
-    "passed": 1793,
+    "testFiles": 68,
+    "passed": 1796,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -148,7 +148,7 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin side-effect visibility only.",
+    "This is local/internal admin support event timeline visibility only.",
     "Production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
@@ -164,7 +164,7 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support side-effect ledger visibility."
+    "statement": "Adds local/internal admin support event timeline visibility."
   },
   "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only support side-effect visibility only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support mutation, side-effect enqueue, or readiness/compliance claims are introduced.",
@@ -179,9 +179,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support side-effect ledger, admin auth, read-only side-effect counts, safe metadata, tests, docs, and .codex evidence.",
+    "scope": "P0 admin support event timeline, admin auth, read-only timeline entries, safe metadata, tests, docs, and .codex evidence.",
     "riskSummary": "Main risk is exposing raw support data, mutating support state, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin side-effect ledger tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "verificationOracle": "Admin support event timeline tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-side-effect-ledger.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-timeline.md"
 }

@@ -619,4 +619,64 @@ export class PostgresRepository implements CriptoTipRepository {
       audit_action_counts
     };
   }
+  async getSupportEventTimeline(event: SupportReceived) {
+    const [ledger, audits, resendOutbox] = await Promise.all([
+      this.getSupportSideEffectLedger(event),
+      this.db.query<{ action: string; created_at: string }>(
+        "select action, created_at from audit_logs where target_type = 'support_event' and target_id = $1 order by created_at asc, id asc limit 100",
+        [event.event_id]
+      ),
+      this.db.query<{ idempotency_key: string; status: string; created_at: string }>(
+        `select idempotency_key, status, created_at
+         from outbox_events
+         where aggregate_type = 'support_event'
+           and aggregate_id = $1
+           and (idempotency_key like $2 or idempotency_key like $3)
+         order by created_at asc, id asc
+         limit 100`,
+        [event.event_id, `overlay.resend:${event.event_id}:%`, `reaction.resend:${event.event_id}:%`]
+      )
+    ]);
+    const entries = [
+      {
+        type: "support_created" as const,
+        sequence: 0,
+        occurred_at: event.created_at,
+        status: event.support.message_moderation_status,
+        summary: {
+          stream_id: event.stream_id,
+          character_id: event.character_id,
+          source: event.source
+        }
+      },
+      ...audits.rows.map((row, index) => ({
+        type: "audit_action" as const,
+        sequence: index + 1,
+        occurred_at: iso(row.created_at),
+        action: row.action
+      })),
+      ...resendOutbox.rows.map((row, index) => ({
+        type: row.idempotency_key.startsWith("overlay.resend:") ? "overlay_resend" as const : "reaction_resend" as const,
+        sequence: audits.rows.length + index + 1,
+        occurred_at: iso(row.created_at),
+        status: row.status
+      })),
+      {
+        type: "side_effect_ledger" as const,
+        sequence: audits.rows.length + resendOutbox.rows.length + 1,
+        occurred_at: event.created_at,
+        summary: {
+          affinity_applied: ledger.affinity_applied,
+          reaction_requested: ledger.reaction_requested,
+          overlay_requested: ledger.overlay_requested,
+          outbox_enqueued: ledger.outbox_enqueued,
+          overlay_resend: ledger.resend_candidates.overlay_resend,
+          reaction_resend: ledger.resend_candidates.reaction_resend,
+          audit_action_counts: ledger.audit_action_counts
+        }
+      }
+    ];
+    entries.sort((a, b) => a.occurred_at.localeCompare(b.occurred_at) || a.sequence - b.sequence);
+    return { entries: entries.map((entry, index) => ({ ...entry, sequence: index })) };
+  }
 }

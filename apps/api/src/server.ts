@@ -971,6 +971,25 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     };
   });
 
+  app.get("/admin/support-events/:eventId/timeline", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const timeline = await repo.getSupportEventTimeline(support);
+    return {
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source,
+        source_event_id: support.source_event_id,
+        moderation_status: support.support.message_moderation_status
+      },
+      timeline
+    };
+  });
+
   app.post("/admin/tips/:supportEventId/approve", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { supportEventId } = z.object({ supportEventId: z.string() }).parse(req.params);
