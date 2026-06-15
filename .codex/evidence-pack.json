@@ -3,8 +3,8 @@
   "harnessVersion": "1.2.3",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 83,
-  "headSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
-  "baseSha": "deffa5fb533f01456080161c204314f3355fa5bb",
+  "headSha": "57a4bf798253e785941dd17a28be7fb5ef34b658",
+  "baseSha": "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin overlay resend controls",
   "goal": "Add POST /admin/support-events/:eventId/overlay-resend for safe local/internal overlay resend candidate enqueueing.",
-  "ciRunId": "27526413476",
-  "qualityGateRunId": "27526413476",
-  "qualityGateArtifactId": "7629846716",
+  "ciRunId": "27527206332",
+  "qualityGateRunId": "27527362067",
+  "qualityGateArtifactId": "7630253989",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -67,14 +67,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27526413476",
+      "runId": "27527206332",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27526413476",
+      "runId": "27527362067",
       "result": "success",
-      "artifactId": "7629846716"
+      "artifactId": "7630253989"
     }
   ],
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
@@ -143,7 +143,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 65,
-    "passed": 1783,
+    "passed": 1784,
     "skipped": 6
   },
   "securityBoundaries": [

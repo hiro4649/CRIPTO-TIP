@@ -7,6 +7,10 @@ import { InMemoryRepository } from "./repositories/in-memory.js";
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const adminAuth = `Bearer ${mockValue("admin")}`;
 const root = path.resolve(__dirname, "..", "..", "..");
+const prNumber = 83;
+const currentHeadSha = "57a4bf798253e785941dd17a28be7fb5ef34b658";
+const currentBaseSha = "1e4e1d8b9e93c83e534ce69b33c61af22b80f59e";
+const staleBaseSha = "deffa5fb533f01456080161c204314f3355fa5bb";
 
 function readCodexEvidence(fileName: string) {
   return JSON.parse(fs.readFileSync(path.join(root, ".codex", fileName), "utf8"));
@@ -218,5 +222,42 @@ describe("P0 admin overlay resend controls", () => {
     expect(evidence.kafkaDependencyAdded).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed PR evidence uses PR 83 current head and nonzero same-head runs", () => {
+    const activeEvidence = readCodexEvidence("evidence-pack.json");
+    if (activeEvidence.changeType !== "product_vertical_slice_admin_overlay_resend_controls") return;
+    const commonEvidenceFiles = [
+      "evidence-pack.json",
+      "product-verification.json",
+      "quality-gate-evidence.json",
+      "review-independence.json",
+      "risk-register.json",
+      "task-contract.json",
+      "test-coverage-evidence.json"
+    ];
+
+    for (const fileName of commonEvidenceFiles) {
+      const evidence = readCodexEvidence(fileName);
+      expect(evidence.prNumber, fileName).toBe(prNumber);
+      expect(evidence.headSha, fileName).toBe(currentHeadSha);
+      expect(evidence.baseSha, fileName).toBe(currentBaseSha);
+      expect(evidence.headSha, fileName).not.toBe(evidence.baseSha);
+      expect(evidence.baseSha, fileName).not.toBe(staleBaseSha);
+      expect(JSON.stringify(evidence), fileName).not.toContain("current_pr_head");
+      expect(JSON.stringify(evidence), fileName).not.toContain("not_created_pre_pr");
+      expect(JSON.stringify(evidence), fileName).not.toContain("27526413476");
+      expect(JSON.stringify(evidence), fileName).not.toContain("7629846716");
+    }
+
+    const evidencePack = readCodexEvidence("evidence-pack.json");
+    const qualityGateEvidence = readCodexEvidence("quality-gate-evidence.json");
+    expect(evidencePack.ciRunId).toBe("27527206332");
+    expect(evidencePack.qualityGateRunId).toBe("27527362067");
+    expect(evidencePack.qualityGateArtifactId).toBe("7630253989");
+    expect(evidencePack.productCiStatus).toBe("success");
+    expect(evidencePack.qualityGateStatus).toBe("success");
+    expect(qualityGateEvidence.qualityGateRunId).toBe("27527362067");
+    expect(qualityGateEvidence.qualityGateArtifactId).toBe("7630253989");
   });
 });

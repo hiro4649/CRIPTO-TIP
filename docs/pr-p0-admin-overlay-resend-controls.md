@@ -21,21 +21,21 @@ Done criteria: admin overlay resend requires admin bearer token; admin overlay r
 
 ## Evidence Integrity
 
-Head SHA: 1e4e1d8b9e93c83e534ce69b33c61af22b80f59e
+Head SHA: 57a4bf798253e785941dd17a28be7fb5ef34b658
 
-Base SHA: deffa5fb533f01456080161c204314f3355fa5bb
+Base SHA: 1e4e1d8b9e93c83e534ce69b33c61af22b80f59e
 
 Product CI: success
 
 Quality-gate: success
 
-CI run: 27526413476
+CI run: 27527206332
 
-Quality-gate run: 27526413476
+Quality-gate run: 27527362067
 
-Quality-gate artifact: 7629846716
+Quality-gate artifact: 7630253989
 
-Tests: 65 test files, 1783 passed, 6 skipped
+Tests: 65 test files, 1784 passed, 6 skipped
 
 ## Testing and review
 
@@ -83,7 +83,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 65 files, 1783 passed, 6 skipped.
+Current recorded test summary: 65 files, 1784 passed, 6 skipped.
 
 ## Security Boundaries
 
