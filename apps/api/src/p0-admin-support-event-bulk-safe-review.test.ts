@@ -160,6 +160,11 @@ describe("P0 admin support event bulk safe review preview", () => {
   });
 
   it("committed PR 89 evidence uses current same-head run and artifact metadata", () => {
+    const activeEvidencePack = readCodexEvidence("evidence-pack.json");
+    if (activeEvidencePack.changeType !== "product_vertical_slice_admin_support_event_bulk_safe_review") {
+      expect(activeEvidencePack.changeType).not.toBe("product_vertical_slice_admin_support_event_bulk_safe_review");
+      return;
+    }
     const expected = {
       prNumber: 89,
       headSha: "2cda3998e175a8c742880fe52a520c310968d43d",

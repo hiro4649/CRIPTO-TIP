@@ -2,16 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 89,
-  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
-  "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
+  "prNumber": 0,
+  "headSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
   "risks": [
     {
-      "severity": "medium",
-      "risk": "bulk review preview could accidentally mutate moderation state, trigger side effects, expose raw support data, or imply operational readiness",
+      "severity": "high",
+      "risk": "bulk moderation apply could approve/reject arbitrary states, double-apply side effects, expose raw support data, or imply operational readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce safe metadata, read-only behavior, no reaction/overlay enqueue, unknown-event safe response, eligible-action allowlist, and no readiness claims"
+      "mitigation": "tests enforce hold-only behavior, idempotency, safe metadata, safe audit metadata, no unsupported mutation, and no readiness claims"
     }
   ]
 }

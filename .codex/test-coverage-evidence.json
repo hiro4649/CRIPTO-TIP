@@ -2,20 +2,20 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 89,
-  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
-  "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
+  "prNumber": 0,
+  "headSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
   "testCoverageStatus": "pass",
-  "testFiles": 70,
-  "passed": 1804,
+  "testFiles": 71,
+  "passed": 1808,
   "skipped": 6,
   "coverage": [
-    "admin bulk review preview requires admin bearer token",
-    "admin bulk review preview rejects missing or invalid auth",
-    "admin bulk review preview rejects empty, duplicate, and oversized event ID lists",
-    "admin bulk review preview handles unknown event ID safely",
-    "admin bulk review preview returns safe metadata only",
-    "admin bulk review preview returns eligible actions allowlist",
-    "admin bulk review preview does not mutate state or enqueue side effects"
+    "admin bulk moderation apply requires admin bearer token",
+    "admin bulk moderation apply rejects invalid input safely",
+    "admin bulk moderation apply handles unknown event ID safely",
+    "admin bulk moderation apply only applies to held events",
+    "admin bulk moderation apply skips approved and rejected events safely",
+    "admin bulk moderation apply is idempotent",
+    "admin bulk moderation apply response is safe metadata only"
   ]
 }
