@@ -84,9 +84,10 @@ describe("harness v1.2.0 adaptive review pool profile", () => {
   it("AGENTS active marker and v1.2.0 compatibility boundary are aligned", () => {
     const agents = readFileSync("AGENTS.md", "utf8");
 
-    expect(agents).toContain("CODEX_QUALITY_HARNESS_FILE v1.2.4");
-    expect(agents).toContain("Active target harness: v1.2.4 / v124.");
+    expect(agents).toContain("CODEX_QUALITY_HARNESS_FILE v1.2.5");
+    expect(agents).toContain("Active target harness: v1.2.5 / v125.");
     expect(agents).toContain("v1.2.0 adaptive routing");
+    expect(agents).toContain("v1.2.4 specialist-governance fields remain compatibility layers");
     expect(agents).not.toContain("downstream project consuming Codex Harness v1.1.8");
   });
 });

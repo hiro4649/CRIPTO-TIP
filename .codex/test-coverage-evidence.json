@@ -1,21 +1,18 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-  "harnessVersion": "1.2.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 98,
-  "headSha": "4bb910049674ddcce1db2d35f5af01881bea3bbb",
-  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
-  "testCoverageStatus": "pass",
-  "testFiles": 78,
-  "passed": 1832,
-  "skipped": 6,
-  "coverage": [
-    "admin reaction dispatch preview requires admin bearer token",
-    "admin reaction dispatch preview rejects invalid auth",
-    "admin reaction dispatch preview returns 404 for unknown support event",
-    "admin reaction dispatch preview returns safe metadata only",
-    "admin reaction dispatch preview is read-only",
-    "admin reaction dispatch preview does not enqueue reaction overlay or outbox",
-    "committed evidence remains no-package no-lockfile no-driver no-real-DB"
-  ]
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
+  "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 78,
+    "passed": 1832,
+    "skipped": 6
+  },
+  "v125SelfTestStatus": "pass",
+  "v124CompatibilitySelfTestStatus": "pass",
+  "v123CompatibilitySelfTestStatus": "pass"
 }

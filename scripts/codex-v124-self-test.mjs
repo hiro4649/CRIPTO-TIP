@@ -16,6 +16,20 @@ import {
 import { buildWorkerProofCapsule, validateWorkerProofCapsule } from './codex-worker-proof-capsule.mjs';
 import { buildOwnerDecisionBrief, validateOwnerDecisionBrief } from './codex-owner-decision-brief.mjs';
 
+function activeHarnessVersion() {
+  try {
+    return JSON.parse(fs.readFileSync('docs/process/CODEX_HARNESS_MANIFEST.json', 'utf8')).activeHarnessVersion;
+  } catch {
+    return '1.2.4';
+  }
+}
+
+function v124AuthorityTupleIsCurrentOrSupersededCompatibility() {
+  const activeSuite = buildOrchestrationCapsule().skillContextRouting.activeAuthorityTuple.activeSelfTestSuite;
+  if (activeHarnessVersion() === '1.2.4') return activeSuite === 'v124';
+  return activeSuite === 'v125';
+}
+
 function test(name, fn) {
   try {
     return { name, status: fn() ? 'pass' : 'fail', safeSummaryOnly: true };
@@ -39,7 +53,7 @@ const compatibilityCases = [
   ['v124_preserves_v118_final_decision', () => buildOrchestrationCapsule().finalAuthority === 'v1.1.8_final_decision_kernel'],
   ['v124_preserves_v119_orchestration_artifacts', () => V124_P0_ARTIFACTS.includes('codex-orchestration-capsule.safe.json')],
   ['v124_no_new_skill_daemon_or_visual_daemon', () => !fs.existsSync('scripts/codex-skill-daemon.mjs') && !fs.existsSync('scripts/codex-visual-proof-daemon.mjs')],
-  ['v124_active_authority_tuple_is_current', () => buildOrchestrationCapsule().skillContextRouting.activeAuthorityTuple.activeSelfTestSuite === 'v124'],
+  ['v124_compatibility_authority_tuple_current_or_superseded', v124AuthorityTupleIsCurrentOrSupersededCompatibility],
 ];
 
 const goalAndDelegationCases = [

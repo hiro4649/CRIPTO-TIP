@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.5",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "harnessV125Status": "active",
+  "v125SelfTestStatus": "pass",
+  "v124CompatibilitySelfTestStatus": "pass",
+  "v123CompatibilitySelfTestStatus": "pass_or_nonblocking_documented",
+  "activeAuthorityTupleOwner": "v125",
+  "v124AuthorityTupleMode": "compatibility_superseded_by_v125",
+  "productCodeChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "workflowChanged": false,
+  "rawLogsRead": false
+}

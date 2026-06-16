@@ -1,37 +1,36 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-  "harnessVersion": "1.2.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 98,
-  "headSha": "4bb910049674ddcce1db2d35f5af01881bea3bbb",
-  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
   "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_reaction_dispatch_preview",
+  "prProfile": "harness_compatibility_repair",
+  "taskMode": "harness-change",
+  "changeType": "harness_v125_v124_compat_self_test_repair",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin reaction dispatch preview",
-  "goal": "Add local/internal admin reaction dispatch preview so operators can inspect safe reaction context without mutating support events or triggering runtime side effects.",
-  "ciRunId": "27602290257",
-  "qualityGateRunId": "27602290290",
-  "qualityGateArtifactId": "7660376220",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "fix: repair v124 compatibility self-test under v125",
+  "goal": "Repair v1.2.4 compatibility self-test so it passes when v1.2.5 owns the active authority tuple.",
+  "ciRunId": "pre_pr_remote_pending",
+  "qualityGateRunId": "pre_pr_remote_pending",
+  "qualityGateArtifactId": "pre_pr_remote_pending",
+  "productCiStatus": "pre_pr_remote_pending",
+  "qualityGateStatus": "pre_pr_remote_pending",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
+  "productCodeChanged": false,
   "productValueContribution": [
-    "reaction_dispatch_safety",
-    "character_continuity",
-    "admin_operator_workflow",
-    "support_event_contract"
+    "harness_compatibility",
+    "v125_rollout_repair",
+    "self_test_closure"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_PREVIEW.md",
-      "docs/pr-p0-admin-reaction-dispatch-preview.md",
-      ".codex/p0-admin-reaction-dispatch-preview.json",
+      "scripts/codex-v124-self-test.mjs",
+      "docs/process/CODEX_V125_SPEC.md",
+      "docs/process/CODEX_V124_SPEC.md",
+      "docs/pr-harness-v125-v124-compat-self-test-repair.md",
+      ".codex/harness-v125-v124-compat-self-test-repair.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -42,21 +41,21 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/*.test.ts",
-      "apps/api/src/repositories/*",
-      "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_PREVIEW.md",
-      "docs/pr-p0-admin-reaction-dispatch-preview.md",
+      "scripts/codex-v124-self-test.mjs",
+      "docs/process/CODEX_V125_SPEC.md",
+      "docs/process/CODEX_V124_SPEC.md",
+      "docs/pr-harness-v125-v124-compat-self-test-repair.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
+      "apps/api/src/server.ts",
+      "apps/api/src/*.ts product runtime files",
+      "apps/api/src/*.test.ts product tests",
       "package.json",
       "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
       ".github/workflows/**",
-      "scripts/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
@@ -64,91 +63,41 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "name": "node scripts/codex-v125-self-test.mjs",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "corepack pnpm typecheck",
+      "name": "node scripts/codex-v124-self-test.mjs",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "npm test",
+      "name": "node scripts/codex-v123-self-test.mjs",
       "result": "pass",
       "status": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27602290257",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27602290290",
-      "result": "success",
-      "artifactId": "7660376220"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "local/internal admin reaction dispatch preview API",
-    "admin auth guard",
-    "safe context summary",
-    "character continuity metadata",
-    "reaction constraints",
-    "read-only preview behavior",
+    "harness compatibility self-test repair",
+    "v124/v125 spec clarification",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "support event mutation",
-    "reaction enqueue",
-    "overlay enqueue",
-    "outbox enqueue",
-    "raw message output",
-    "raw payload output",
-    "wallet address output",
-    "secret output",
-    "real TTS call",
-    "real Live2D call",
-    "real renderer call",
-    "real OBS delivery",
-    "real WebSocket delivery",
-    "real YouTube API",
-    "real OAuth token",
-    "real DB connection",
-    "DB driver dependency",
-    "Redis dependency",
-    "Kafka dependency",
+    "product runtime behavior change",
     "package.json change",
     "pnpm-lock change",
-    "contracts change",
-    "migrations change",
-    "real RPC",
-    "wallet/RPC/deploy changes",
+    "workflow change",
+    "quality-gate weakening",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "web UI",
-    "overlay app changes",
+    "owner approval record",
+    "GitHub approval review",
+    "merge authority",
     "token sale",
     "token exchange",
     "cash-out",
@@ -157,15 +106,13 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "reaction dispatch preview requires admin bearer token",
-    "reaction dispatch preview rejects invalid auth",
-    "reaction dispatch preview returns 404 for unknown support event",
-    "reaction dispatch preview returns safe metadata only",
-    "reaction dispatch preview includes character continuity metadata",
-    "reaction dispatch preview includes safe context summary",
-    "reaction dispatch preview is read-only",
-    "reaction dispatch preview does not enqueue reaction overlay or outbox",
-    "reaction dispatch preview excludes raw message raw payload wallet address and secrets"
+    "v125 self-test pass",
+    "v124 compatibility self-test pass",
+    "v123 compatibility self-test pass",
+    "no product runtime change",
+    "no package or lockfile change",
+    "no workflow change",
+    "no readiness or compliance claims"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
@@ -175,21 +122,15 @@
     "skipped": 6
   },
   "securityBoundaries": [
+    "No product runtime code is changed.",
     "No package.json or pnpm-lock change.",
-    "No DB driver, Redis, or Kafka dependency is added.",
-    "No real DB connection is introduced.",
-    "No migration is changed or executed.",
-    "No real YouTube API or OAuth token is used.",
-    "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No support events are mutated.",
-    "No reaction, overlay, or outbox side effects are enqueued.",
-    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw messages, raw payloads, wallet addresses, secrets, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+    "No workflow change.",
+    "No raw GitHub logs are read.",
+    "No owner approval, GitHub approval review, or merge authority is created.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin reaction dispatch preview only.",
-    "Actual IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, and WebSocket execution remain future scoped work."
+    "Product PR #99 must be rebased and reverified after this repair merges."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -198,36 +139,35 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts: pass",
-    "corepack pnpm typecheck: pass",
+    "node scripts/codex-v125-self-test.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-preview.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass",
     "cd contracts && forge test || true: unavailable_nonblocking"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package scripts, runtime dependencies, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin reaction dispatch preview endpoints."
+    "internalRuntimeApiChanged": false,
+    "statement": "Harness self-test compatibility only; product runtime behavior is unchanged."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin preview only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is harness compatibility repair only.",
+  "rollbackOrStopCondition": "Stop if product runtime, package, lockfile, workflow, contracts, migrations, web, overlay, readiness, compliance, owner approval, GitHub approval review, or merge authority changes are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -239,9 +179,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin reaction dispatch preview, admin auth, safe context, character continuity metadata, read-only behavior, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is raw data exposure, support event mutation, side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Reaction dispatch preview tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "v124 compatibility self-test under active v125, spec docs, and .codex evidence.",
+    "riskSummary": "Main risk is weakening active authority verification; v125 remains owner and v125 self-test still checks current authority.",
+    "verificationOracle": "v125, v124, and v123 self-tests plus repository quality checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-preview.md"
+  "prBodyPath": "docs/pr-harness-v125-v124-compat-self-test-repair.md"
 }

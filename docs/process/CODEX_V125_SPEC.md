@@ -45,6 +45,17 @@ semantics remain internal to those artifacts.
 
 v1.2.5 is a control plane, not an authority expansion.
 
+## v1.2.4 Compatibility Self-Test Boundary
+
+When v1.2.5 is the active harness, `v125` owns the active authority tuple check.
+The v1.2.4 self-test remains a blocking compatibility check, but it must not
+require the active authority tuple to still point at `v124` after v1.2.5
+rollout.
+
+In active v1.2.5 environments, the v1.2.4 compatibility self-test verifies that
+v1.2.4 artifacts, boundaries, and invariants are preserved while accepting that
+the active authority tuple is superseded by `v125`.
+
 ## Five P0-Internal Blocks
 
 v1.2.5 compresses the design into five internal blocks. These are machine-only
