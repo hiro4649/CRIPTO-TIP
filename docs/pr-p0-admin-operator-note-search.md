@@ -21,19 +21,19 @@ Done criteria: admin operator note search requires admin bearer token; admin ope
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 9d147b6a9b5af3b4be23cf9e2f828f4c7bcb7925
 
-Base SHA: current_pr_base
+Base SHA: 184be8fe1d6c2a2104e0bd0372d05b50959a252a
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27589174281
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27589174244
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7655734319
 
 Tests: 75 test files, 1823 passed, 6 skipped
 

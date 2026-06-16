@@ -2,9 +2,9 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "current_pr_base",
+  "prNumber": 94,
+  "headSha": "9d147b6a9b5af3b4be23cf9e2f828f4c7bcb7925",
+  "baseSha": "184be8fe1d6c2a2104e0bd0372d05b50959a252a",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin operator note search",
   "goal": "Add local/internal admin operator note search without mutating support events or notes or triggering side effects.",
-  "ciRunId": "not_created_pre_pr",
-  "qualityGateRunId": "not_created_pre_pr",
-  "qualityGateArtifactId": "not_created_pre_pr",
-  "productCiStatus": "not_created_pre_pr",
-  "qualityGateStatus": "not_created_pre_pr",
+  "ciRunId": "27589174281",
+  "qualityGateRunId": "27589174244",
+  "qualityGateArtifactId": "7655734319",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -83,7 +83,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27589174281",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27589174244",
+      "result": "success",
+      "artifactId": "7655734319"
+    }
+  ],
   "allowedScope": [
     "local/internal admin operator note search API",
     "admin auth guard",
