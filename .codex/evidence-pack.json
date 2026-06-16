@@ -4,10 +4,10 @@
     "repository":  "hiro4649/CRIPTO-TIP",
     "prNumber":  0,
     "headSha":  "current_pr_head",
-    "baseSha":  "8a499a0c5fe94add12e2d341be763df3afe9ea95",
-    "title":  "feat: add p0 admin dry-run approval gate",
-    "goal":  "Add local/internal admin approval and rejection gate for reaction dispatch dry-run boundary metadata without external execution.",
-    "changeType":  "product_vertical_slice_admin_dry_run_approval_gate",
+    "baseSha":  "de3217c85be021b4b015e89e93424bb7ddbf818c",
+    "title":  "feat: add p0 adapter execution boundary preview",
+    "goal":  "Add local/internal adapter execution boundary preview for approved reaction dispatch dry-run metadata without adapter execution.",
+    "changeType":  "product_vertical_slice_adapter_execution_boundary_preview",
     "runtimeReadinessClaimed":  false,
     "productionReadinessClaimed":  false,
     "legalComplianceClaimed":  false,
@@ -15,32 +15,29 @@
     "schemaVersion":  "1.0.0",
     "prProfile":  "product_r3",
     "taskMode":  "feature",
-    "ciRunId":  "27654830326",
-    "qualityGateRunId":  "27654830316",
-    "qualityGateArtifactId":  "7682192018",
-    "productCiStatus":  "success",
-    "qualityGateStatus":  "success",
+    "ciRunId":  "pre_pr",
+    "qualityGateRunId":  "pre_pr",
+    "qualityGateArtifactId":  "pre_pr",
+    "productCiStatus":  "local_pre_pr",
+    "qualityGateStatus":  "local_pre_pr",
     "riskLevel":  "R3",
     "runtimeReadinessClaim":  "no",
     "productCodeChanged":  true,
     "productValueContribution":  [
                                      "reaction_dispatch_safety",
                                      "admin_operator_workflow",
-                                     "dry_run_approval_gate"
+                                     "adapter_execution_boundary_preview"
                                  ],
     "scope":  {
                   "changedFiles":  [
                                        "apps/api/src/server.ts",
-                                       "apps/api/src/repositories/types.ts",
-                                       "apps/api/src/repositories/in-memory.ts",
-                                       "apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts",
-                                       "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
-                                       "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
-                                       ".codex/p0-admin-reaction-dispatch-dry-run-approval-gate.json",
+                                       "apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts",
+                                       "docs/P0_REACTION_DISPATCH_ADAPTER_EXECUTION_BOUNDARY_PREVIEW.md",
+                                       "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md",
+                                       ".codex/p0-reaction-dispatch-adapter-execution-boundary-preview.json",
                                        ".codex/evidence-pack.json",
                                        ".codex/product-verification.json",
                                        ".codex/quality-gate-evidence.json",
-                                       ".codex/test-summary.json",
                                        ".codex/test-coverage-evidence.json",
                                        ".codex/task-contract.json",
                                        ".codex/risk-register.json",
@@ -51,9 +48,8 @@
                                        "apps/api/src/*.test.ts",
                                        "apps/api/src/*.ts",
                                        "apps/api/src/repositories/*",
-                                       "packages/shared/src/index.ts",
-                                       "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
-                                       "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
+                                       "docs/P0_REACTION_DISPATCH_ADAPTER_EXECUTION_BOUNDARY_PREVIEW.md",
+                                       "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md",
                                        ".codex/**"
                                    ],
                   "forbiddenPaths":  [
@@ -71,7 +67,7 @@
                      {
                          "status":  "pass",
                          "result":  "pass",
-                         "name":  "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts"
+                         "name":  "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts"
                      },
                      {
                          "status":  "pass",
@@ -81,26 +77,23 @@
                  ],
     "remoteRuns":  [
                        {
+                           "result":  "local_pre_pr",
                            "name":  "ci",
-                           "runId":  "27654830326",
-                           "result":  "success"
+                           "runId":  "pre_pr"
                        },
                        {
+                           "artifactId":  "pre_pr",
+                           "result":  "local_pre_pr",
                            "name":  "quality-gate",
-                           "runId":  "27654830316",
-                           "result":  "success",
-                           "artifactId":  "7682192018"
+                           "runId":  "pre_pr"
                        }
                    ],
     "allowedScope":  [
-                         "local/internal admin dry-run approval gate",
-                         "safe dry-run approval and rejection metadata",
+                         "local/internal adapter execution boundary preview",
+                         "approved dry-run boundary requirement",
+                         "safe envelope hashes",
                          "admin auth guard",
-                         "approval idempotency",
-                         "rejection idempotency",
-                         "state transition guards",
-                         "adapter kind allowlist metadata",
-                         "safe audit metadata",
+                         "state drift guards",
                          "read-only support/outbox/lease/attempt-plan checks",
                          "no external execution checks",
                          "docs",
@@ -151,20 +144,16 @@
                            "refund"
                        ],
     "doneCriteria":  [
-                         "admin dry-run approval requires admin auth",
+                         "admin auth required",
                          "unknown dry-run boundary returns 404",
-                         "approval writes safe metadata only",
-                         "approval is idempotent",
-                         "rejection writes safe metadata only",
-                         "rejection is idempotent",
-                         "state guards reject blocked invalid superseded rejected or already approved transitions",
+                         "approved dry-run boundary creates safe preview",
+                         "unapproved or rejected dry-run boundary is blocked",
+                         "state drift is blocked",
                          "no support event mutation",
                          "no outbox delivery mutation",
                          "no lease mutation",
                          "no attempt plan mutation",
-                         "no reaction execution",
-                         "no overlay execution",
-                         "no external outbox delivery",
+                         "no adapter execution",
                          "no external runtime execution"
                      ],
     "testSummary":  {
@@ -181,16 +170,15 @@
                                "No migration, contract, workflow, web, or overlay path is changed.",
                                "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
                                "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
-                               "The new admin dry-run approval endpoints write only local/internal approval metadata and safe audit metadata.",
-                               "The endpoints do not mutate support events, outbox delivery state, leases, or attempt plans.",
+                               "The new endpoint returns adapter execution boundary preview metadata only.",
+                               "The endpoint does not mutate support events, outbox delivery state, leases, or attempt plans.",
                                "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-                               "Approval/rejection metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, adapter URLs, webhook URLs, request bodies, auth material, headers, and tokens.",
+                               "Preview metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, adapter URLs, webhook URLs, request bodies, auth material, headers, and tokens.",
                                "No runtime, production, legal, or YouTube policy readiness is claimed."
                            ],
     "residualRisks":  [
-                          "This is local/internal dry-run approval metadata only.",
-                          "Approved dry-run boundaries are not executed in this PR.",
-                          "Actual adapter execution boundary remains future scoped work."
+                          "This is local/internal adapter execution boundary preview metadata only.",
+                          "Actual adapter execution remains future scoped work."
                       ],
     "humanConfirmation":  [
                               "AI review is not human approval.",
@@ -199,7 +187,7 @@
                               "This PR does not create merge authority."
                           ],
     "productVerificationCommands":  [
-                                        "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts: pass",
+                                        "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts: pass",
                                         "corepack pnpm typecheck: pass"
                                     ],
     "packageVerification":  {
@@ -210,9 +198,9 @@
     "apiCompatibilitySummary":  {
                                     "publicApiChanged":  false,
                                     "internalRuntimeApiChanged":  true,
-                                    "statement":  "Adds local/internal admin dry-run approval and rejection endpoints."
+                                    "statement":  "Adds local/internal adapter execution boundary preview endpoint."
                                 },
-    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal dry-run approval metadata only.",
+    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal preview metadata only.",
     "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox delivery/lease/attempt plan mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
     "safeOutput":  {
                        "status":  "pass"
@@ -229,5 +217,5 @@
                         "riskSummary":  "Main risk is accidental external execution, unsafe state approval, raw data exposure, mutation of support/outbox/lease/attempt plan, or readiness claims; tests and docs reject those outcomes.",
                         "verificationOracle":  "Dry-run approval gate tests, dry-run review tests, dry-run adapter boundary tests, attempt plan review tests, attempt planning tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
                     },
-    "prBodyPath":  "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md"
+    "prBodyPath":  "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md"
 }
