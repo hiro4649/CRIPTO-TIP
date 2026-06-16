@@ -21,7 +21,7 @@ Done criteria: attempt plan requires admin auth; unknown outbox returns 404; act
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 35ff14d980bd0bd023bc56b70a0e58d1223c78d0
 
 Base SHA: da8f7c4f394e2afa56c12ec8a703c03eb41dcce3
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 2
+CI run: 27650043128
 
-Quality-gate run: 2
+Quality-gate run: 27650043149
 
-Quality-gate artifact: 2
+Quality-gate artifact: 7680389135
 
 Tests: 88 test files, 1881 passed, 6 skipped
 
