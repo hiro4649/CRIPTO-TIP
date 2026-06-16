@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -36,6 +36,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   reactionDispatchInternalOutbox = new Map<string, ReactionDispatchInternalOutboxMetadata>();
   reactionDispatchInternalOutboxLeases = new Map<string, ReactionDispatchInternalOutboxLeaseMetadata>();
   reactionDispatchInternalOutboxAttemptPlans = new Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>();
+  reactionDispatchDryRunApprovals = new Map<string, ReactionDispatchDryRunApprovalMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -61,6 +62,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.reactionDispatchInternalOutbox.clear();
     this.reactionDispatchInternalOutboxLeases.clear();
     this.reactionDispatchInternalOutboxAttemptPlans.clear();
+    this.reactionDispatchDryRunApprovals.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -234,6 +236,13 @@ export class InMemoryRepository implements CriptoTipRepository {
   async listReactionDispatchInternalOutboxAttemptPlans() {
     return [...this.reactionDispatchInternalOutboxAttemptPlans.values()]
       .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.plan_id.localeCompare(right.plan_id));
+  }
+  async setReactionDispatchDryRunApproval(approval: ReactionDispatchDryRunApprovalMetadata) {
+    this.reactionDispatchDryRunApprovals.set(approval.dry_run_boundary_id, approval);
+    return approval;
+  }
+  async getReactionDispatchDryRunApproval(dryRunBoundaryId: string) {
+    return this.reactionDispatchDryRunApprovals.get(dryRunBoundaryId);
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

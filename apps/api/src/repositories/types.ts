@@ -395,6 +395,55 @@ export type ReactionDispatchInternalOutboxAttemptPlanMetadata = {
   safe_reason_codes: ReactionDispatchInternalOutboxAttemptPlanReasonCode[];
 };
 
+export type ReactionDispatchDryRunApprovalStatus =
+  | "dry_run_ready"
+  | "approved_for_adapter_execution"
+  | "rejected_by_admin"
+  | "approval_blocked"
+  | "dry_run_invalid"
+  | "dry_run_superseded";
+
+export type ReactionDispatchDryRunApprovalReasonCode =
+  | "admin_approved"
+  | "admin_rejected"
+  | "already_approved"
+  | "already_rejected"
+  | "dry_run_not_found"
+  | "dry_run_not_ready"
+  | "dry_run_invalid"
+  | "dry_run_blocked"
+  | "dry_run_superseded"
+  | "unsafe_context"
+  | "adapter_kind_not_allowed"
+  | "external_delivery_not_attempted"
+  | "adapter_not_executed"
+  | "dispatch_attempt_count_not_zero"
+  | "state_transition_blocked"
+  | "external_execution_forbidden";
+
+export type ReactionDispatchDryRunApprovalMetadata = {
+  dry_run_boundary_id: string;
+  plan_id: string;
+  outbox_id: string;
+  lease_id: string;
+  candidate_id: string;
+  boundary_id: string;
+  support_event_id: string;
+  adapter_kind: "iris_core_reaction" | "voxweave_voice" | "overlay_effect" | "future_internal_adapter";
+  dry_run_status: "dry_run_planned" | "dry_run_ready" | "dry_run_blocked" | "dry_run_invalid" | "dry_run_superseded";
+  approval_status: ReactionDispatchDryRunApprovalStatus;
+  approved_at?: string;
+  rejected_at?: string;
+  approved_by_actor_type?: "admin";
+  rejected_by_actor_type?: "admin";
+  safe_reason_codes: ReactionDispatchDryRunApprovalReasonCode[];
+  external_delivery_status: ReactionDispatchExternalDeliveryStatus;
+  adapter_execution_status: ReactionDispatchAdapterExecutionStatus;
+  dispatch_attempt_count: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;
