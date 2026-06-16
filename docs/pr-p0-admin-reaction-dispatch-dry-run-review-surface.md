@@ -21,7 +21,7 @@ Done criteria: admin dry-run review requires admin auth; unknown dry-run boundar
 
 ## Evidence Integrity
 
-Head SHA: af3e5b95cc064582913062d7d44fc95bbf0de14d
+Head SHA: current_pr_head
 
 Base SHA: d609afbf89d8b90f738bc461c63beeda25eeba68
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27653360075
+CI run: 27653460212
 
-Quality-gate run: 27653360065
+Quality-gate run: 27653460234
 
-Quality-gate artifact: 7681647986
+Quality-gate artifact: 7681684134
 
 Tests: 91 test files, 1961 passed, 6 skipped
 

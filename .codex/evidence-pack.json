@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 113,
-  "headSha": "af3e5b95cc064582913062d7d44fc95bbf0de14d",
+  "headSha": "current_pr_head",
   "baseSha": "d609afbf89d8b90f738bc461c63beeda25eeba68",
   "title": "feat: add p0 admin dry-run review surface",
   "goal": "Add read-only admin review surface for local/internal reaction dispatch dry-run adapter boundary metadata without approval or external execution.",
@@ -15,9 +15,9 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "27653360075",
-  "qualityGateRunId": "27653360065",
-  "qualityGateArtifactId": "7681647986",
+  "ciRunId": "27653460212",
+  "qualityGateRunId": "27653460234",
+  "qualityGateArtifactId": "7681684134",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "riskLevel": "R3",
@@ -80,14 +80,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27653360075",
+      "runId": "27653460212",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27653360065",
+      "runId": "27653460234",
       "result": "success",
-      "artifactId": "7681647986"
+      "artifactId": "7681684134"
     }
   ],
   "allowedScope": [
