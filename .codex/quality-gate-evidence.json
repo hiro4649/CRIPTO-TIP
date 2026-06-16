@@ -2,13 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 102,
-  "headSha": "c94a08dafe88b242bbb0b154efb329219386d389",
-  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
-  "qualityGateStatus": "success",
-  "qualityGateRunId": "27615657769",
-  "qualityGateArtifactId": "7665988981",
-  "sameHeadRequired": true,
-  "rawLogsRead": false,
-  "qualityGateWeakening": false
+  "prNumber": 0,
+  "headSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
+  "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
+  "qualityGateStatus": "local_pre_pr_success_pending_remote",
+  "qualityGateRunId": "local_pre_pr",
+  "qualityGateArtifactId": "local_pre_pr",
+  "noRawLogsRead": true,
+  "noQualityGateWeakening": true
 }

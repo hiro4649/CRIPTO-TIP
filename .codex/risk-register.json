@@ -2,19 +2,21 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 102,
-  "headSha": "c94a08dafe88b242bbb0b154efb329219386d389",
-  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
+  "prNumber": 0,
+  "headSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
+  "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
   "risks": [
-    "This is local/internal admin Support Event Contract v2 visibility only.",
-    "Actual reaction approval, durable candidate persistence, and external execution adapters remain future scoped work."
-  ],
-  "forbiddenScopePreserved": true,
-  "productCodeChanged": true,
-  "packageJsonChanged": false,
-  "pnpmLockChanged": false,
-  "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false,
-  "legalComplianceClaimed": false,
-  "youtubePolicyComplianceClaimed": false
+    {
+      "id": "raw_data_exposure",
+      "status": "mitigated_by_tests"
+    },
+    {
+      "id": "accidental_dispatch_side_effect",
+      "status": "mitigated_by_tests"
+    },
+    {
+      "id": "stale_remote_evidence",
+      "status": "pending_pr_creation"
+    }
+  ]
 }

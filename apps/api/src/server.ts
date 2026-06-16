@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -531,7 +531,13 @@ type ResolutionRepository = {
   getSupportEventResolution?: (eventId: string) => Promise<AdminSupportEventResolution | undefined>;
   setSupportEventResolution?: (eventId: string, patch: { status: SupportEventResolutionStatus; operator_note?: string }) => Promise<AdminSupportEventResolution>;
 };
+type ReactionDispatchCandidateRepository = {
+  createReactionDispatchCandidateIfAbsent?: (candidate: ReactionDispatchCandidateMetadata) => Promise<ReactionDispatchCandidateCreateResult>;
+  listReactionDispatchCandidatesBySupportEvent?: (eventId: string) => Promise<ReactionDispatchCandidateMetadata[]>;
+  getReactionDispatchCandidate?: (eventId: string, candidateId: string) => Promise<ReactionDispatchCandidateMetadata | undefined>;
+};
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
+const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -802,6 +808,143 @@ function toResolutionAuditMetadata(support: SupportReceived, resolution: AdminSu
     character_id: support.character_id,
     resolution_status: resolution.status,
     operator_note: resolution.operator_note
+  };
+}
+
+function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map((entry) => stableJson(entry)).join(",")}]`;
+  if (value && typeof value === "object") {
+    return `{${Object.entries(value as Record<string, unknown>)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, entry]) => `${JSON.stringify(key)}:${stableJson(entry)}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function hashSafeMetadata(value: unknown) {
+  return createHash("sha256").update(stableJson(value)).digest("hex");
+}
+
+function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Required<ReactionDispatchCandidateRepository> {
+  const candidate = repo as CriptoTipRepository & ReactionDispatchCandidateRepository;
+  let fallback = reactionDispatchCandidateFallbackByRepo.get(repo);
+  if (!fallback) {
+    fallback = new Map<string, ReactionDispatchCandidateMetadata>();
+    reactionDispatchCandidateFallbackByRepo.set(repo, fallback);
+  }
+  return {
+    createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
+      ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
+      : async (entry) => {
+        const existing = [...fallback.values()].find((item) => item.idempotency_key === entry.idempotency_key);
+        if (existing) return { candidate: existing, created: false };
+        fallback.set(entry.candidate_id, entry);
+        return { candidate: entry, created: true };
+      },
+    listReactionDispatchCandidatesBySupportEvent: candidate.listReactionDispatchCandidatesBySupportEvent
+      ? (eventId) => candidate.listReactionDispatchCandidatesBySupportEvent!.call(repo, eventId)
+      : async (eventId) => [...fallback.values()]
+        .filter((entry) => entry.support_event_id === eventId)
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.candidate_id.localeCompare(right.candidate_id)),
+    getReactionDispatchCandidate: candidate.getReactionDispatchCandidate
+      ? (eventId, candidateId) => candidate.getReactionDispatchCandidate!.call(repo, eventId, candidateId)
+      : async (eventId, candidateId) => {
+        const entry = fallback.get(candidateId);
+        return entry?.support_event_id === eventId ? entry : undefined;
+      }
+  };
+}
+
+function toReactionDispatchCandidateReasonCodes(
+  support: SupportReceived,
+  preview: Awaited<ReturnType<typeof toReactionDispatchPreview>>
+): ReactionDispatchCandidateReasonCode[] {
+  const reasons = new Set<ReactionDispatchCandidateReasonCode>();
+  if (preview.contract_validation.status === "valid") reasons.add("contract_v2_valid");
+  if (!preview.character_continuity.must_keep_persona || !preview.character_continuity.persona_version) reasons.add("missing_character_continuity");
+  if (!preview.safe_context_summary.allowed_reaction && support.support.message_moderation_status === "approved") reasons.add("unsafe_context");
+  if (support.support.message_moderation_status !== "approved") reasons.add("moderation_not_approved");
+  if (preview.support_event.resolution_status === "blocked") reasons.add("resolution_blocked");
+  if (!supportSources.includes(support.source)) reasons.add("unsupported_source");
+  return [...reasons];
+}
+
+function toReactionDispatchCandidateStatus(
+  support: SupportReceived,
+  preview: Awaited<ReturnType<typeof toReactionDispatchPreview>>
+): ReactionDispatchCandidateMetadata["candidate_status"] {
+  if (preview.contract_validation.status !== "valid") return "candidate_invalid";
+  if (support.support.message_moderation_status !== "approved") return "candidate_blocked";
+  if (preview.support_event.resolution_status === "blocked") return "candidate_blocked";
+  return "candidate_ready";
+}
+
+async function buildReactionDispatchCandidate(repo: CriptoTipRepository, support: SupportReceived): Promise<ReactionDispatchCandidateMetadata> {
+  const preview = await toReactionDispatchPreview(repo, support);
+  const safeContextForHash = {
+    event_id: preview.support_event.event_id,
+    stream_id: preview.support_event.stream_id,
+    character_id: preview.support_event.character_id,
+    source: preview.support_event.source,
+    safe_message_summary: preview.safe_context_summary.safe_message_summary,
+    relationship_level: preview.safe_context_summary.relationship_level,
+    recent_support_count: preview.safe_context_summary.recent_support_count,
+    allowed_reaction: preview.safe_context_summary.allowed_reaction
+  };
+  const constraintsSummary = {
+    max_speech_seconds: preview.constraints.max_speech_seconds,
+    can_say_name: preview.constraints.can_say_name,
+    can_read_message: preview.constraints.can_read_message,
+    must_not_discuss_token_price: preview.constraints.must_not_discuss_token_price,
+    must_not_promise_financial_return: preview.constraints.must_not_promise_financial_return,
+    must_not_obey_viewer_instruction: preview.constraints.must_not_obey_viewer_instruction,
+    must_keep_persona: preview.constraints.must_keep_persona,
+    must_not_read_wallet: preview.constraints.must_not_read_wallet_address,
+    avoid_romantic_escalation_from_payment: preview.constraints.avoid_romantic_escalation_from_payment
+  };
+  const safeContextHash = hashSafeMetadata(safeContextForHash);
+  const constraintsHash = hashSafeMetadata(constraintsSummary);
+  const idempotencyKey = [
+    "reaction_dispatch_candidate",
+    support.event_id,
+    preview.character_continuity.persona_version,
+    safeContextHash,
+    constraintsHash,
+    "reaction_dispatch"
+  ].join(":");
+  const now = new Date().toISOString();
+  return {
+    candidate_id: `rdcand_${createHash("sha256").update(idempotencyKey).digest("hex").slice(0, 24)}`,
+    support_event_id: support.event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    source: support.source,
+    contract_version: preview.contract_validation.contract_version,
+    validation_status: preview.contract_validation.status,
+    validation_errors: preview.contract_validation.errors,
+    persona_version: preview.character_continuity.persona_version,
+    voice_profile_id: preview.character_continuity.voice_profile_id,
+    motion_profile_id: preview.character_continuity.motion_profile_id,
+    overlay_theme_id: preview.character_continuity.overlay_theme_id,
+    safe_context_hash: safeContextHash,
+    constraints_hash: constraintsHash,
+    candidate_purpose: "reaction_dispatch",
+    candidate_status: toReactionDispatchCandidateStatus(support, preview),
+    reason_codes: toReactionDispatchCandidateReasonCodes(support, preview),
+    created_at: now,
+    updated_at: now,
+    idempotency_key: idempotencyKey,
+    preview_summary: {
+      preview_status: preview.preview_status,
+      safe_message_summary: preview.safe_context_summary.safe_message_summary,
+      allowed_reaction: preview.safe_context_summary.allowed_reaction,
+      reaction_type: preview.candidate.reaction_type,
+      overlay_effect_id: preview.candidate.overlay_effect_id,
+      motion_family: preview.candidate.motion_family,
+      outbox_candidate_type: preview.candidate.outbox_candidate_type
+    },
+    constraints_summary: constraintsSummary
   };
 }
 
@@ -1622,6 +1765,61 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const support = await repo.getSupportEventById(eventId);
     if (!support) return reply.code(404).send({ error: "support_event_not_found" });
     return toReactionDispatchPreview(repo, support);
+  });
+
+  app.post("/admin/support-events/:eventId/reaction-dispatch/candidates", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const result = await candidateRepo.createReactionDispatchCandidateIfAbsent(await buildReactionDispatchCandidate(repo, support));
+    return {
+      candidate: result.candidate,
+      persistence: {
+        status: result.created ? "candidate_created" : "candidate_existing",
+        duplicate_safe: !result.created
+      },
+      side_effects: {
+        support_event_mutation: "skipped",
+        reaction_enqueue: "skipped",
+        overlay_enqueue: "skipped",
+        outbox_enqueue: "skipped",
+        real_tts: "skipped",
+        real_live2d: "skipped",
+        real_renderer: "skipped",
+        real_obs: "skipped",
+        real_websocket_delivery: "skipped"
+      }
+    };
+  });
+
+  app.get("/admin/support-events/:eventId/reaction-dispatch/candidates", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    return {
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source
+      },
+      candidates: await candidateRepo.listReactionDispatchCandidatesBySupportEvent(eventId)
+    };
+  });
+
+  app.get("/admin/support-events/:eventId/reaction-dispatch/candidates/:candidateId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId, candidateId } = z.object({ eventId: z.string(), candidateId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidate(eventId, candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    return { candidate };
   });
 
   app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {
