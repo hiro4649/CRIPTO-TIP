@@ -2,12 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 99,
-  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
-  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
+  "prNumber": 102,
+  "headSha": "c94a08dafe88b242bbb0b154efb329219386d389",
+  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
   "risks": [
-    "This is a local validator and preview alignment only.",
-    "Durable contract enforcement and external execution adapters remain future scoped work."
+    "This is local/internal admin Support Event Contract v2 visibility only.",
+    "Actual reaction approval, durable candidate persistence, and external execution adapters remain future scoped work."
   ],
   "forbiddenScopePreserved": true,
   "productCodeChanged": true,

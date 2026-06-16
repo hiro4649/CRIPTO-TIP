@@ -2,23 +2,28 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 99,
-  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
-  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
+  "prNumber": 102,
+  "headSha": "c94a08dafe88b242bbb0b154efb329219386d389",
+  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "productCodeChanged": true,
   "coverage": [
-    "valid contract v2 preview accepted",
-    "unsafe preview rejected",
-    "non-skipped side effects rejected",
-    "admin reaction dispatch preview alignment",
-    "raw message raw payload wallet address and secrets rejected"
+    "admin contract v2 surface auth",
+    "unknown support event 404",
+    "safe metadata only",
+    "validation status",
+    "character continuity summary",
+    "safe context summary presence",
+    "reaction constraints summary",
+    "read-only behavior",
+    "no reaction overlay or outbox enqueue",
+    "raw message raw payload wallet address and secrets excluded"
   ],
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },

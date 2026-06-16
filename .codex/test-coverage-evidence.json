@@ -2,17 +2,17 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 99,
-  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
-  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
+  "prNumber": 102,
+  "headSha": "c94a08dafe88b242bbb0b154efb329219386d389",
+  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 79,
-    "passed": 1836,
+    "testFiles": 80,
+    "passed": 1839,
     "skipped": 6
   },
-  "supportEventContractV2ValidatorStatus": "pass",
-  "reactionDispatchPreviewAlignmentStatus": "pass",
-  "unsafeOutputRejectionStatus": "pass"
+  "adminSupportEventContractV2SurfaceStatus": "implemented",
+  "supportEventContractV2Alignment": "pass",
+  "readOnlyStatus": "pending"
 }
