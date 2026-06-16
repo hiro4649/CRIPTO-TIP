@@ -21,19 +21,19 @@ Done criteria: admin support event action plan requires admin bearer token; admi
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: a53d4e634e32f36acd94b6969b6ce39f572d5442
 
-Base SHA: current_pr_base
+Base SHA: 8940de2d2f083b6190b97c88cd8983f263ed42a5
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27586375764
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27586375769
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7654639517
 
 Tests: 72 test files, 1813 passed, 6 skipped
 
