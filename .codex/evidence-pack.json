@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 109,
-  "headSha": "current_pr_head",
+  "headSha": "a8774651ee063da20abb812e4f4467eb29643822",
   "baseSha": "e6400bc174fad9d365e25f128dc7a586bfb00e4e",
   "title": "feat: add p0 reaction dispatch internal outbox lease",
   "goal": "Add local/internal lease controls for queued reaction dispatch internal outbox records without external dispatch.",
@@ -15,9 +15,9 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "2",
-  "qualityGateRunId": "2",
-  "qualityGateArtifactId": "2",
+  "ciRunId": "27648550464",
+  "qualityGateRunId": "27648550453",
+  "qualityGateArtifactId": "7679798485",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "riskLevel": "R3",
@@ -78,7 +78,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27648550464",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27648550453",
+      "result": "success",
+      "artifactId": "7679798485"
+    }
+  ],
   "allowedScope": [
     "internal outbox lease metadata",
     "admin auth guard",
@@ -208,5 +220,3 @@
   },
   "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-lease.md"
 }
-
-

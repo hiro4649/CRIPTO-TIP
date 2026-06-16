@@ -21,7 +21,7 @@ Done criteria: lease requires admin auth; unknown outbox returns 404; queued_int
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: a8774651ee063da20abb812e4f4467eb29643822
 
 Base SHA: e6400bc174fad9d365e25f128dc7a586bfb00e4e
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 2
+CI run: 27648550464
 
-Quality-gate run: 2
+Quality-gate run: 27648550453
 
-Quality-gate artifact: 2
+Quality-gate artifact: 7679798485
 
 Tests: 87 test files, 1864 passed, 6 skipped
 
