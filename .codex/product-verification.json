@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 107,
-  "headSha": "690e82b99a13d3e405f4d813eba574aa1fb0bb89",
-  "baseSha": "5fcfed1e89c601f5bb927925857eb8c1f104e3e9",
+  "prNumber": 108,
+  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
+  "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
   "verificationStatus": "local_and_remote_pass",
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -53,7 +53,7 @@
       "status": "pass"
     },
     {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md",
       "result": "pass",
       "status": "pass"
     },
