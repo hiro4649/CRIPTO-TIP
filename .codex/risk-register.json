@@ -2,23 +2,23 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 97,
-  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
-  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
+  "prNumber": 98,
+  "headSha": "4bb910049674ddcce1db2d35f5af01881bea3bbb",
+  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
   "risks": [
     {
       "severity": "high",
-      "risk": "AI character support specs could imply CRIPTO-TIP executes TTS, Live2D, VOXWEAVE, renderer, OBS, WebSocket, real DB, or production workflows",
+      "risk": "reaction dispatch preview could expose raw support data, wallet addresses, secrets, or prompt-unsafe text",
       "owner": "codex",
-      "nextPr": "feat/p0-admin-reaction-dispatch-preview",
-      "mitigation": "Docs and evidence explicitly state this PR is spec-only and does not execute external runtimes or claim readiness."
+      "nextPr": "feat/p0-support-event-contract-v2-validator",
+      "mitigation": "tests assert safe metadata only and reject raw message, raw payload, wallet address, secret, stdout, stderr, jobs_url, and logs_url exposure"
     },
     {
       "severity": "high",
-      "risk": "Support context could accidentally permit token price, investment return, custody, exchange, cash-out, ownership, or romantic escalation claims",
+      "risk": "preview endpoint could accidentally enqueue reaction, overlay, or outbox side effects",
       "owner": "codex",
-      "nextPr": "feat/p0-admin-reaction-dispatch-preview",
-      "mitigation": "Support Event Contract v2 and Character Continuity Contract define forbidden topics and hard reaction constraints."
+      "nextPr": "feat/p0-support-event-contract-v2-validator",
+      "mitigation": "tests assert repository counts remain unchanged and side-effect status remains skipped"
     }
   ]
 }

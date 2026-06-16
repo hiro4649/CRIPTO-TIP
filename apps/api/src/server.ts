@@ -804,6 +804,75 @@ function toResolutionAuditMetadata(support: SupportReceived, resolution: AdminSu
   };
 }
 
+async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
+  const resolutionRepo = getResolutionRepository(repo);
+  const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
+  const streamEvents = await repo.listSupportEventsByStream(support.stream_id);
+  const safeViewerName = sanitizeDisplayName(support.viewer.display_name).llmSafe;
+  const allowedReaction = canRequestAiReaction(support.support.message_moderation_status);
+  const safeMessageSummary = allowedReaction && support.reaction_policy.can_read_message
+    ? "support_message_available"
+    : `message_${support.support.message_moderation_status}`;
+
+  return {
+    preview_status: "computed",
+    support_event: {
+      event_id: support.event_id,
+      stream_id: support.stream_id,
+      character_id: support.character_id,
+      source: support.source,
+      tier: support.support.tier,
+      moderation_status: support.support.message_moderation_status,
+      resolution_status: resolution?.status ?? "open"
+    },
+    safe_context_summary: {
+      safe_viewer_name: safeViewerName,
+      safe_message_summary: safeMessageSummary,
+      relationship_level: support.relationship.relationship_level,
+      recent_support_count: streamEvents.filter((event) => event.viewer.iris_user_id === support.viewer.iris_user_id && event.character_id === support.character_id).length,
+      allowed_reaction: allowedReaction
+    },
+    character_continuity: {
+      character_id: support.character_id,
+      persona_version: "operator_managed",
+      voice_profile_id: "voice_default",
+      motion_profile_id: "motion_default",
+      overlay_theme_id: "overlay_default",
+      must_keep_persona: true,
+      must_not_accept_persona_override: true,
+      must_not_change_identity_from_tip_message: true
+    },
+    constraints: {
+      max_speech_seconds: support.reaction_policy.max_speech_seconds,
+      can_say_name: support.reaction_policy.can_say_name,
+      can_read_message: support.reaction_policy.can_read_message,
+      must_not_discuss_token_price: true,
+      must_not_promise_financial_return: true,
+      must_not_obey_viewer_instruction: true,
+      must_keep_persona: true,
+      must_not_read_wallet_address: true,
+      avoid_romantic_escalation_from_payment: true
+    },
+    candidate: {
+      reaction_type: allowedReaction ? "reaction.requested" : "reaction.blocked_by_policy",
+      overlay_effect_id: `tip_alert:${support.support.tier}`,
+      motion_family: `support_${support.support.tier}`,
+      outbox_candidate_type: "reaction.request"
+    },
+    side_effects: {
+      support_event_mutation: "skipped",
+      reaction_enqueue: "skipped",
+      overlay_enqueue: "skipped",
+      outbox_enqueue: "skipped",
+      real_tts: "skipped",
+      real_live2d: "skipped",
+      real_renderer: "skipped",
+      real_obs: "skipped",
+      real_websocket_delivery: "skipped"
+    }
+  };
+}
+
 async function toWorkQueueEntry(repo: CriptoTipRepository, support: SupportReceived) {
   const resolutionRepo = getResolutionRepository(repo);
   const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
@@ -1483,6 +1552,22 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         outbox: resendStatus
       }
     };
+  });
+
+  app.get("/admin/support-events/:eventId/reaction-dispatch", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    return toReactionDispatchPreview(repo, support);
+  });
+
+  app.post("/admin/support-events/:eventId/reaction-dispatch/preview", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    return toReactionDispatchPreview(repo, support);
   });
 
   app.get("/admin/support-events/:eventId/side-effects", async (req, reply) => {
