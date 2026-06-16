@@ -2,10 +2,10 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
+  "prNumber": 104,
+  "headSha": "d4d68aecc017a780cec5d77c515cf3848d8d108f",
   "baseSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
-  "verificationStatus": "local_partial_pass_pending_full_and_remote",
+  "verificationStatus": "local_and_remote_pass",
   "commands": [
     {
       "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
@@ -13,9 +13,89 @@
       "status": "pass"
     },
     {
+      "name": "corepack pnpm install",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
       "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm evidence:ci",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm quality:self-protection",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v125-self-test.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v124-self-test.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v123-self-test.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "cd contracts && forge test || true",
+      "result": "unavailable_nonblocking",
+      "status": "nonblocking"
     }
   ],
   "productRuntimeChanged": false,

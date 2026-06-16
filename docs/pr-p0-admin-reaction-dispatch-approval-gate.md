@@ -21,7 +21,7 @@ Done criteria: approval endpoints require admin bearer token; unknown candidate 
 
 ## Evidence Integrity
 
-Head SHA: d771698ffb279d3d9cd134e36a1ffdac080ea349
+Head SHA: d4d68aecc017a780cec5d77c515cf3848d8d108f
 
 Base SHA: d771698ffb279d3d9cd134e36a1ffdac080ea349
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: local_pre_pr
+CI run: 27619687826
 
-Quality-gate run: local_pre_pr
+Quality-gate run: 27619687910
 
-Quality-gate artifact: local_pre_pr
+Quality-gate artifact: 7667702046
 
 Tests: 82 test files, 1848 passed, 6 skipped
 
@@ -59,7 +59,23 @@ The commands below are the merge-relevant checks for this evidence tooling chang
 Product verification commands:
 
 - corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass
+- corepack pnpm install: pass
+- corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
+- corepack pnpm test: pass
+- npm test: pass
+- corepack pnpm evidence:ci: pass
+- corepack pnpm quality:self-protection: pass
+- node scripts/write-test-summary.mjs: pass
+- node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md: pass
+- node scripts/check-evidence-placeholders.mjs: pass
+- node scripts/validate-evidence-freshness.mjs: pass
+- node scripts/check-quality-gate-self-protection.mjs: pass
+- node scripts/codex-secret-safety-scan.mjs: pass
+- node scripts/codex-v125-self-test.mjs: pass
+- node scripts/codex-v124-self-test.mjs: pass
+- node scripts/codex-v123-self-test.mjs: pass
+- cd contracts && forge test || true: unavailable_nonblocking
 
 Package verification:
 

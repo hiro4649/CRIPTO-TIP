@@ -43,5 +43,7 @@
   "packageJsonChanged": false,
   "pnpmLockChanged": false,
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-  "prNumber": 0
+  "prNumber": 104,
+  "headSha": "d4d68aecc017a780cec5d77c515cf3848d8d108f",
+  "baseSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349"
 }
