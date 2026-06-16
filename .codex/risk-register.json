@@ -2,37 +2,40 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 111,
+  "prNumber": 112,
   "headSha": "current_pr_head",
-  "baseSha": "7dbcff32ee2ec5d639a0a941ba81102b3dd06c90",
-  "title": "feat: add p0 admin attempt plan review surface",
-  "goal": "Add read-only admin review surface for local/internal reaction dispatch attempt plans without external execution.",
-  "changeType": "product_vertical_slice_admin_attempt_plan_review_surface",
+  "baseSha": "6da6c4a281a68888c018e2121e60ccd65de36794",
+  "title": "feat: add p0 reaction dispatch dry-run adapter boundary",
+  "goal": "Add local/internal dry-run adapter boundary preview metadata from an active lease and reviewed attempt plan without external adapter execution.",
+  "changeType": "product_vertical_slice_dry_run_adapter_boundary",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "feature",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Accidental external dispatch from a review endpoint.",
+      "risk": "Accidental external adapter execution from dry-run boundary endpoint.",
       "owner": "codex",
-      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
-      "mitigation": "GET routes only project existing metadata and tests assert no reaction, overlay, external outbox, adapter, IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, or WebSocket execution."
+      "nextPr": "future_adapter_execution_scope",
+      "mitigation": "Endpoint returns safe preview metadata only; tests assert no runtime, adapter, IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, or WebSocket execution."
     },
     {
       "severity": "medium",
-      "risk": "Raw support message, payload, wallet, secret, private URL, adapter URL, or webhook URL exposure.",
+      "risk": "Raw message, payload, wallet, secret, private URL, adapter URL, or webhook URL exposure.",
       "owner": "codex",
-      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
-      "mitigation": "The response projection returns hashes, statuses, and reason codes only; tests assert forbidden raw fields and strings are absent."
+      "nextPr": "future_adapter_execution_scope",
+      "mitigation": "Projection returns hashes, statuses, and reason codes only; tests assert forbidden raw strings are absent."
     },
     {
       "severity": "medium",
-      "risk": "Review endpoint mutates support, outbox, lease, or attempt plan state.",
+      "risk": "Dry-run preview mutates support, outbox, lease, or attempt plan state.",
       "owner": "codex",
-      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
-      "mitigation": "The new handlers do not call repository write methods or audit writes; tests compare stored support, outbox, lease, attempt plan, audit, reaction, overlay, and outbox counts before and after reads."
+      "nextPr": "current",
+      "mitigation": "Handler does not call repository write methods or audit writes; tests compare stored state before and after."
     },
     {
       "severity": "low",
