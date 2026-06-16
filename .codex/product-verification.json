@@ -2,28 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 103,
-  "headSha": "1245a0b4f49655bc80279d7e3183cedad1f9a415",
-  "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
-  "verificationStatus": "local_pass_pending_remote",
+  "prNumber": 0,
+  "headSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
+  "baseSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
+  "verificationStatus": "local_partial_pass_pending_full_and_remote",
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -31,36 +16,6 @@
       "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "npm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm evidence:ci",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "cd contracts && forge test || true",
-      "result": "unavailable_nonblocking",
-      "status": "nonblocking"
     }
   ],
   "productRuntimeChanged": false,

@@ -211,6 +211,49 @@ export type ReactionDispatchCandidateCreateResult = {
   created: boolean;
 };
 
+export type ReactionDispatchApprovalStatus =
+  | "candidate_ready"
+  | "approved_for_dispatch"
+  | "rejected_by_admin"
+  | "approval_blocked"
+  | "candidate_invalid"
+  | "candidate_superseded";
+
+export type ReactionDispatchApprovalReasonCode =
+  | "contract_v2_valid"
+  | "admin_approved"
+  | "admin_rejected"
+  | "candidate_not_found"
+  | "candidate_invalid"
+  | "candidate_blocked"
+  | "candidate_superseded"
+  | "unsafe_context"
+  | "already_approved"
+  | "already_rejected"
+  | "state_transition_blocked"
+  | "external_execution_forbidden";
+
+export type ReactionDispatchApprovalMetadata = {
+  candidate_id: string;
+  support_event_id: string;
+  candidate_status: ReactionDispatchCandidateStatus;
+  approval_status: ReactionDispatchApprovalStatus;
+  approved_at?: string;
+  rejected_at?: string;
+  approved_by_actor_type?: "admin";
+  rejected_by_actor_type?: "admin";
+  safe_reason_codes: ReactionDispatchApprovalReasonCode[];
+  contract_validation_status: string;
+  idempotency_key: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReactionDispatchApprovalResult = {
+  approval: ReactionDispatchApprovalMetadata;
+  created: boolean;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {

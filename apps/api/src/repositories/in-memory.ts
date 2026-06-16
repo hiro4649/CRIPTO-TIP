@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -31,6 +31,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
   supportEventResolutions = new Map<string, SupportEventResolutionMetadata>();
   reactionDispatchCandidates = new Map<string, ReactionDispatchCandidateMetadata>();
+  reactionDispatchApprovals = new Map<string, ReactionDispatchApprovalMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -51,6 +52,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.supportModerationReviewStates.clear();
     this.supportEventResolutions.clear();
     this.reactionDispatchCandidates.clear();
+    this.reactionDispatchApprovals.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -160,6 +162,18 @@ export class InMemoryRepository implements CriptoTipRepository {
   async getReactionDispatchCandidate(eventId: string, candidateId: string) {
     const candidate = this.reactionDispatchCandidates.get(candidateId);
     return candidate?.support_event_id === eventId ? candidate : undefined;
+  }
+  async getReactionDispatchCandidateById(candidateId: string) {
+    return this.reactionDispatchCandidates.get(candidateId);
+  }
+  async setReactionDispatchApprovalIfAbsent(approval: ReactionDispatchApprovalMetadata): Promise<ReactionDispatchApprovalResult> {
+    const existing = this.reactionDispatchApprovals.get(approval.candidate_id);
+    if (existing) return { approval: existing, created: false };
+    this.reactionDispatchApprovals.set(approval.candidate_id, approval);
+    return { approval, created: true };
+  }
+  async getReactionDispatchApproval(candidateId: string) {
+    return this.reactionDispatchApprovals.get(candidateId);
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
