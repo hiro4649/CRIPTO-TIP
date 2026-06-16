@@ -1,200 +1,199 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-  "harnessVersion": "1.2.4",
-  "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 92,
-  "headSha": "5b82d7fce5cd14f6747e4948a8feb1e62503b0b3",
-  "baseSha": "4142e773594f1693583055f83bb4862c56017ad1",
-  "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_operator_notes",
-  "riskLevel": "R3",
-  "title": "feat: add p0 admin support event operator notes",
-  "goal": "Add local/internal admin operator notes for support events without mutating support core fields or triggering side effects.",
-  "ciRunId": "27587665772",
-  "qualityGateRunId": "27587761225",
-  "qualityGateArtifactId": "7655196901",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
-  "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
-  "scope": {
-    "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/repositories/in-memory.ts",
-      "apps/api/src/p0-admin-support-event-operator-notes.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTES.md",
-      "docs/pr-p0-admin-support-event-operator-notes.md",
-      ".codex/p0-admin-support-event-operator-notes.json",
-      ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/test-summary.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/task-contract.json",
-      ".codex/risk-register.json",
-      ".codex/review-independence.json"
-    ],
-    "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/*.test.ts",
-      "apps/api/src/repositories/**",
-      "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTES.md",
-      "docs/pr-p0-admin-support-event-operator-notes.md",
-      ".codex/**"
-    ],
-    "forbiddenPaths": [
-      "package.json",
-      "pnpm-lock.yaml",
-      "contracts/**",
-      "migrations/**",
-      ".github/workflows/**",
-      "scripts/**",
-      "apps/web/**",
-      "apps/overlay/**",
-      ".env.example"
-    ]
-  },
-  "commands": [
-    {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
-      "result": "pass",
-      "status": "pass"
-    }
-  ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27587665772",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27587761225",
-      "result": "success",
-      "artifactId": "7655196901"
-    }
-  ],
-  "allowedScope": [
-    "local/internal admin operator notes API",
-    "admin auth guard",
-    "safe note sanitization",
-    "safe note listing",
-    "safe audit metadata",
-    "support core read-only checks",
-    "docs",
-    ".codex evidence"
-  ],
-  "forbiddenScope": [
-    "support financial/source/wallet/moderation/affinity mutation",
-    "reaction enqueue",
-    "overlay enqueue",
-    "public note exposure",
-    "raw payload output",
-    "secret output",
-    "real TTS call",
-    "real Live2D call",
-    "real renderer call",
-    "real OBS delivery",
-    "real WebSocket delivery",
-    "real YouTube API",
-    "real OAuth token",
-    "real DB connection",
-    "DB driver dependency",
-    "Redis dependency",
-    "Kafka dependency",
-    "package.json change",
-    "pnpm-lock change",
-    "contracts change",
-    "migrations change",
-    "real RPC",
-    "wallet/RPC/deploy changes",
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
-    "web UI",
-    "overlay app changes",
-    "token sale",
-    "token exchange",
-    "cash-out",
-    "custody",
-    "internal balance",
-    "investment wording",
-    "speculative reward"
-  ],
-  "doneCriteria": [
-    "admin operator notes requires admin bearer token",
-    "admin operator notes rejects invalid auth",
-    "unknown support event returns 404",
-    "admin operator notes creates safe note",
-    "admin operator notes lists notes",
-    "admin operator notes enforces max length",
-    "admin operator notes sanitizes unsafe text",
-    "admin operator notes writes safe audit metadata",
-    "admin operator notes does not mutate support core fields",
-    "admin operator notes does not enqueue reaction or overlay"
-  ],
-  "testSummary": {
-    "schemaVersion": "1.0.0",
-    "command": "corepack pnpm test",
-    "testFiles": 73,
-    "passed": 1817,
-    "skipped": 6
-  },
-  "securityBoundaries": [
-    "No package.json or pnpm-lock change.",
-    "No DB driver, Redis, or Kafka dependency is added.",
-    "No real DB connection is introduced.",
-    "No migration is changed or executed.",
-    "No real YouTube API or OAuth token is used.",
-    "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No support financial, source, wallet, moderation, or affinity fields are mutated.",
-    "No reaction or overlay side effects are enqueued.",
-    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
-  ],
-  "residualRisks": [
-    "This is local/internal admin operator note metadata only.",
-    "Durable operator notes persistence remains future scoped work because migrations and real DB changes are forbidden."
-  ],
-  "humanConfirmation": [
-    "AI review is not human approval.",
-    "AI review is not GitHub approval review.",
-    "This PR does not create owner approval record.",
-    "This PR does not create merge authority."
-  ],
-  "productVerificationCommands": [],
-  "packageVerification": {
-    "packageScriptsChanged": false,
-    "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
-  },
-  "apiCompatibilitySummary": {
-    "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event operator notes metadata."
-  },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin operator notes metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public note exposure, or readiness/compliance claims are introduced.",
-  "safeOutput": {
-    "status": "pass"
-  },
-  "productionClaims": {
-    "runtimeReady": false,
-    "productionReady": false,
-    "deploymentApplied": false,
-    "legalComplianceClaimed": false,
-    "youtubePolicyComplianceClaimed": false
-  },
-  "reviewScope": {
-    "scope": "P0 admin support event operator notes, admin auth, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is exposing unsafe notes, mutating support core state, enqueueing side effects, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Operator notes tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
-  },
-  "prBodyPath": "docs/pr-p0-admin-support-event-operator-notes.md"
-}
+    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+    "harnessVersion":  "1.2.4",
+    "repository":  "hiro4649/CRIPTO-TIP",
+    "prNumber":  0,
+    "headSha":  "current_pr_head",
+    "baseSha":  "current_pr_base",
+    "schemaVersion":  "1.0.0",
+    "prProfile":  "product_r3",
+    "taskMode":  "feature",
+    "changeType":  "product_vertical_slice_admin_support_event_operator_note_management",
+    "riskLevel":  "R3",
+    "title":  "feat: add p0 admin operator note management",
+    "goal":  "Add local/internal admin operator note patch and archive controls without mutating support core fields or triggering side effects.",
+    "ciRunId":  "not_created_pre_pr",
+    "qualityGateRunId":  "not_created_pre_pr",
+    "qualityGateArtifactId":  "not_created_pre_pr",
+    "productCiStatus":  "not_created_pre_pr",
+    "qualityGateStatus":  "not_created_pre_pr",
+    "runtimeReadinessClaim":  "no",
+    "productCodeChanged":  true,
+    "scope":  {
+                  "changedFiles":  [
+                                       "apps/api/src/server.ts",
+                                       "apps/api/src/repositories/in-memory.ts",
+                                       "apps/api/src/p0-admin-support-event-operator-note-management.test.ts",
+                                       "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTE_MANAGEMENT.md",
+                                       "docs/pr-p0-admin-support-event-operator-note-management.md",
+                                       ".codex/p0-admin-support-event-operator-note-management.json",
+                                       ".codex/evidence-pack.json",
+                                       ".codex/product-verification.json",
+                                       ".codex/quality-gate-evidence.json",
+                                       ".codex/test-summary.json",
+                                       ".codex/test-coverage-evidence.json",
+                                       ".codex/task-contract.json",
+                                       ".codex/risk-register.json",
+                                       ".codex/review-independence.json"
+                                   ],
+                  "allowedPaths":  [
+                                       "apps/api/src/server.ts",
+                                       "apps/api/src/*.test.ts",
+                                       "apps/api/src/repositories/**",
+                                       "packages/shared/src/index.ts",
+                                       "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTES.md",
+                                       "docs/pr-p0-admin-support-event-operator-notes.md",
+                                       ".codex/**"
+                                   ],
+                  "forbiddenPaths":  [
+                                         "package.json",
+                                         "pnpm-lock.yaml",
+                                         "contracts/**",
+                                         "migrations/**",
+                                         ".github/workflows/**",
+                                         "scripts/**",
+                                         "apps/web/**",
+                                         "apps/overlay/**",
+                                         ".env.example"
+                                     ]
+              },
+    "commands":  [
+                     {
+                         "name":  "corepack pnpm vitest run apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+                         "result":  "pass",
+                         "status":  "pass"
+                     }
+                 ],
+    "remoteRuns":  [
+                       {
+                           "name":  "ci",
+                           "runId":  "27587665772",
+                           "result":  "success"
+                       },
+                       {
+                           "name":  "quality-gate",
+                           "runId":  "27587761225",
+                           "result":  "success",
+                           "artifactId":  "7655196901"
+                       }
+                   ],
+    "allowedScope":  [
+                         "local/internal admin operator note management API",
+                         "admin auth guard",
+                         "safe note patch",
+                         "archive and idempotent archive",
+                         "safe audit metadata",
+                         "support core read-only checks",
+                         "docs",
+                         ".codex evidence"
+                     ],
+    "forbiddenScope":  [
+                           "support financial/source/wallet/moderation/affinity mutation",
+                           "reaction enqueue",
+                           "overlay enqueue",
+                           "public note exposure",
+                           "raw payload output",
+                           "secret output",
+                           "real TTS call",
+                           "real Live2D call",
+                           "real renderer call",
+                           "real OBS delivery",
+                           "real WebSocket delivery",
+                           "real YouTube API",
+                           "real OAuth token",
+                           "real DB connection",
+                           "DB driver dependency",
+                           "Redis dependency",
+                           "Kafka dependency",
+                           "package.json change",
+                           "pnpm-lock change",
+                           "contracts change",
+                           "migrations change",
+                           "real RPC",
+                           "wallet/RPC/deploy changes",
+                           "runtime readiness claim",
+                           "production readiness claim",
+                           "legal compliance claim",
+                           "YouTube policy compliance claim",
+                           "web UI",
+                           "overlay app changes",
+                           "token sale",
+                           "token exchange",
+                           "cash-out",
+                           "custody",
+                           "internal balance",
+                           "investment wording",
+                           "speculative reward"
+                       ],
+    "doneCriteria":  [
+                         "admin operator note patch requires admin bearer token",
+                         "admin operator note patch returns 404 for unknown support event or note",
+                         "admin operator note patch enforces max length and sanitizes unsafe text",
+                         "admin operator note archive is idempotent",
+                         "admin operator note list excludes archived by default",
+                         "admin operator note list includes archived with include_archived=true",
+                         "admin operator note management does not mutate support core fields",
+                         "admin operator note management does not enqueue reaction or overlay"
+                     ],
+    "testSummary":  {
+                        "schemaVersion":  "1.0.0",
+                        "command":  "corepack pnpm test",
+                        "testFiles":  74,
+                        "passed":  1821,
+                        "skipped":  6
+                    },
+    "securityBoundaries":  [
+                               "No package.json or pnpm-lock change.",
+                               "No DB driver, Redis, or Kafka dependency is added.",
+                               "No real DB connection is introduced.",
+                               "No migration is changed or executed.",
+                               "No real YouTube API or OAuth token is used.",
+                               "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
+                               "No support financial, source, wallet, moderation, or affinity fields are mutated.",
+                               "No reaction or overlay side effects are enqueued.",
+                               "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
+                               "Raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+                               "No runtime, production, legal, or YouTube policy readiness is claimed."
+                           ],
+    "residualRisks":  [
+                          "This is local/internal admin operator note metadata only.",
+                          "Durable operator notes persistence remains future scoped work because migrations and real DB changes are forbidden."
+                      ],
+    "humanConfirmation":  [
+                              "AI review is not human approval.",
+                              "AI review is not GitHub approval review.",
+                              "This PR does not create owner approval record.",
+                              "This PR does not create merge authority."
+                          ],
+    "productVerificationCommands":  [
 
+                                    ],
+    "packageVerification":  {
+                                "packageScriptsChanged":  false,
+                                "runtimeDependenciesAdded":  false,
+                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+                            },
+    "apiCompatibilitySummary":  {
+                                    "publicApiChanged":  false,
+                                    "internalRuntimeApiChanged":  true,
+                                    "statement":  "Adds local/internal admin support event operator notes metadata."
+                                },
+    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal admin operator notes metadata only.",
+    "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public note exposure, or readiness/compliance claims are introduced.",
+    "safeOutput":  {
+                       "status":  "pass"
+                   },
+    "productionClaims":  {
+                             "runtimeReady":  false,
+                             "productionReady":  false,
+                             "deploymentApplied":  false,
+                             "legalComplianceClaimed":  false,
+                             "youtubePolicyComplianceClaimed":  false
+                         },
+    "reviewScope":  {
+                        "scope":  "P0 admin support event operator note management, admin auth, patch/archive, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.",
+                        "riskSummary":  "Main risk is unsafe note mutation, public exposure, support core mutation, side effects, or readiness claims; tests and docs reject those outcomes.",
+                        "verificationOracle":  "Operator notes tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+                    },
+    "prBodyPath":  "docs/pr-p0-admin-support-event-operator-note-management.md"
+}
