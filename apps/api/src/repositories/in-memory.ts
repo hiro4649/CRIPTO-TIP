@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -35,6 +35,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   reactionDispatchOutboxBoundaries = new Map<string, ReactionDispatchOutboxBoundaryMetadata>();
   reactionDispatchInternalOutbox = new Map<string, ReactionDispatchInternalOutboxMetadata>();
   reactionDispatchInternalOutboxLeases = new Map<string, ReactionDispatchInternalOutboxLeaseMetadata>();
+  reactionDispatchInternalOutboxAttemptPlans = new Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -59,6 +60,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.reactionDispatchOutboxBoundaries.clear();
     this.reactionDispatchInternalOutbox.clear();
     this.reactionDispatchInternalOutboxLeases.clear();
+    this.reactionDispatchInternalOutboxAttemptPlans.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -221,6 +223,13 @@ export class InMemoryRepository implements CriptoTipRepository {
   }
   async getReactionDispatchInternalOutboxLease(outboxId: string) {
     return this.reactionDispatchInternalOutboxLeases.get(outboxId);
+  }
+  async setReactionDispatchInternalOutboxAttemptPlan(plan: ReactionDispatchInternalOutboxAttemptPlanMetadata) {
+    this.reactionDispatchInternalOutboxAttemptPlans.set(plan.outbox_id, plan);
+    return plan;
+  }
+  async getReactionDispatchInternalOutboxAttemptPlan(outboxId: string) {
+    return this.reactionDispatchInternalOutboxAttemptPlans.get(outboxId);
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

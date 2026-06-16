@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -198,7 +198,7 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued", "reaction_dispatch_internal_outbox_cancelled", "reaction_dispatch_internal_outbox_lease_created", "reaction_dispatch_internal_outbox_lease_extended", "reaction_dispatch_internal_outbox_lease_released"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued", "reaction_dispatch_internal_outbox_cancelled", "reaction_dispatch_internal_outbox_lease_created", "reaction_dispatch_internal_outbox_lease_extended", "reaction_dispatch_internal_outbox_lease_released", "reaction_dispatch_internal_outbox_attempt_plan_created"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary", "reaction_dispatch_internal_outbox"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
@@ -227,6 +227,12 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "lease_id",
   "lease_expires_at",
   "leased_by_actor_type",
+  "attempt_plan_status",
+  "plan_id",
+  "planned_adapter_type",
+  "planned_action",
+  "plan_context_hash",
+  "created_by_actor_type",
   "cancelled_at",
   "cancelled_by_actor_type",
   "retry_status",
@@ -565,6 +571,8 @@ type ReactionDispatchCandidateRepository = {
   listReactionDispatchInternalOutbox?: () => Promise<ReactionDispatchInternalOutboxMetadata[]>;
   setReactionDispatchInternalOutboxLease?: (lease: ReactionDispatchInternalOutboxLeaseMetadata) => Promise<ReactionDispatchInternalOutboxLeaseMetadata>;
   getReactionDispatchInternalOutboxLease?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxLeaseMetadata | undefined>;
+  setReactionDispatchInternalOutboxAttemptPlan?: (plan: ReactionDispatchInternalOutboxAttemptPlanMetadata) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata>;
+  getReactionDispatchInternalOutboxAttemptPlan?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata | undefined>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
@@ -572,6 +580,7 @@ const reactionDispatchApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, 
 const reactionDispatchOutboxBoundaryFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchOutboxBoundaryMetadata>>();
 const reactionDispatchInternalOutboxFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxMetadata>>();
 const reactionDispatchInternalOutboxLeaseFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxLeaseMetadata>>();
+const reactionDispatchInternalOutboxAttemptPlanFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -895,6 +904,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     internalOutboxLeaseFallback = new Map<string, ReactionDispatchInternalOutboxLeaseMetadata>();
     reactionDispatchInternalOutboxLeaseFallbackByRepo.set(repo, internalOutboxLeaseFallback);
   }
+  let internalOutboxAttemptPlanFallback = reactionDispatchInternalOutboxAttemptPlanFallbackByRepo.get(repo);
+  if (!internalOutboxAttemptPlanFallback) {
+    internalOutboxAttemptPlanFallback = new Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>();
+    reactionDispatchInternalOutboxAttemptPlanFallbackByRepo.set(repo, internalOutboxAttemptPlanFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -978,7 +992,16 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       },
     getReactionDispatchInternalOutboxLease: candidate.getReactionDispatchInternalOutboxLease
       ? (outboxId) => candidate.getReactionDispatchInternalOutboxLease!.call(repo, outboxId)
-      : async (outboxId) => internalOutboxLeaseFallback.get(outboxId)
+      : async (outboxId) => internalOutboxLeaseFallback.get(outboxId),
+    setReactionDispatchInternalOutboxAttemptPlan: candidate.setReactionDispatchInternalOutboxAttemptPlan
+      ? (plan) => candidate.setReactionDispatchInternalOutboxAttemptPlan!.call(repo, plan)
+      : async (plan) => {
+        internalOutboxAttemptPlanFallback.set(plan.outbox_id, plan);
+        return plan;
+      },
+    getReactionDispatchInternalOutboxAttemptPlan: candidate.getReactionDispatchInternalOutboxAttemptPlan
+      ? (outboxId) => candidate.getReactionDispatchInternalOutboxAttemptPlan!.call(repo, outboxId)
+      : async (outboxId) => internalOutboxAttemptPlanFallback.get(outboxId)
   };
 }
 
@@ -1458,6 +1481,115 @@ function toReactionDispatchInternalOutboxLeaseAuditMetadata(lease: ReactionDispa
     lease_expires_at: lease.lease_expires_at,
     leased_by_actor_type: lease.leased_by_actor_type,
     reason_code: lease.safe_reason_codes[0] ?? "external_execution_forbidden"
+  };
+}
+
+const AdminReactionDispatchOutboxAttemptPlanRequestSchema = z.object({
+  lease_id: z.string().min(1).max(80)
+});
+
+function toReactionDispatchInternalOutboxAttemptPlanStatus(
+  outboxId: string,
+  plan: ReactionDispatchInternalOutboxAttemptPlanMetadata | undefined,
+  now = new Date()
+): ReactionDispatchInternalOutboxAttemptPlanMetadata {
+  return plan ?? {
+    outbox_id: outboxId,
+    lease_id: "none",
+    attempt_plan_status: "not_planned",
+    planned_adapter_type: "iris_core_reaction_dispatch",
+    planned_action: "reaction_dispatch",
+    plan_id: "none",
+    plan_context_hash: "none",
+    created_by_actor_type: "admin",
+    created_at: now.toISOString(),
+    updated_at: now.toISOString(),
+    safe_reason_codes: ["attempt_plan_not_found", "external_execution_forbidden"]
+  };
+}
+
+function toReactionDispatchInternalOutboxAttemptPlanBlockedReasons(
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata | undefined,
+  leaseId: string,
+  now = new Date()
+): ReactionDispatchInternalOutboxAttemptPlanReasonCode[] {
+  const reasons: ReactionDispatchInternalOutboxAttemptPlanReasonCode[] = [];
+  if (outbox.outbox_status !== "queued_internal") reasons.push("not_queued_internal");
+  if (outbox.external_delivery_status !== "not_attempted") reasons.push("state_transition_blocked");
+  else reasons.push("external_delivery_not_attempted");
+  if (outbox.adapter_execution_status !== "not_executed") reasons.push("state_transition_blocked");
+  else reasons.push("adapter_not_executed");
+  if (outbox.dispatch_attempt_count !== 0) reasons.push("state_transition_blocked");
+  if (!lease || lease.lease_status === "not_leased" || lease.lease_status === "lease_released") reasons.push("lease_required");
+  else if (!isReactionDispatchInternalOutboxLeaseActive(lease, now)) reasons.push("lease_expired");
+  else if (lease.lease_id !== leaseId) reasons.push("lease_id_mismatch");
+  reasons.push("external_execution_forbidden");
+  return [...new Set(reasons)];
+}
+
+function isReactionDispatchInternalOutboxAttemptPlannable(
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata | undefined,
+  leaseId: string,
+  now = new Date()
+) {
+  return (
+    outbox.outbox_status === "queued_internal" &&
+    outbox.external_delivery_status === "not_attempted" &&
+    outbox.adapter_execution_status === "not_executed" &&
+    outbox.dispatch_attempt_count === 0 &&
+    isReactionDispatchInternalOutboxLeaseActive(lease, now) &&
+    lease?.lease_id === leaseId
+  );
+}
+
+function buildReactionDispatchInternalOutboxAttemptPlan(
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata,
+  now = new Date()
+): ReactionDispatchInternalOutboxAttemptPlanMetadata {
+  const context = {
+    outbox_id: outbox.outbox_id,
+    boundary_id: outbox.boundary_id,
+    candidate_id: outbox.candidate_id,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash,
+    lease_id: lease.lease_id,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count
+  };
+  const planContextHash = hashSafeMetadata(context);
+  const planSeed = `reaction_dispatch_internal_outbox_attempt_plan:${outbox.outbox_id}:${lease.lease_id}:${planContextHash}`;
+  return {
+    outbox_id: outbox.outbox_id,
+    lease_id: lease.lease_id ?? "none",
+    attempt_plan_status: "planned_internal",
+    planned_adapter_type: "iris_core_reaction_dispatch",
+    planned_action: "reaction_dispatch",
+    plan_id: `rdplan_${createHash("sha256").update(planSeed).digest("hex").slice(0, 24)}`,
+    plan_context_hash: planContextHash,
+    created_by_actor_type: "admin",
+    created_at: now.toISOString(),
+    updated_at: now.toISOString(),
+    safe_reason_codes: ["attempt_plan_created", "external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"]
+  };
+}
+
+function toReactionDispatchInternalOutboxAttemptPlanAuditMetadata(plan: ReactionDispatchInternalOutboxAttemptPlanMetadata, beforeStatus: string) {
+  return {
+    outbox_id: plan.outbox_id,
+    before_status: beforeStatus,
+    after_status: plan.attempt_plan_status,
+    attempt_plan_status: plan.attempt_plan_status,
+    plan_id: plan.plan_id,
+    lease_id: plan.lease_id,
+    planned_adapter_type: plan.planned_adapter_type,
+    planned_action: plan.planned_action,
+    plan_context_hash: plan.plan_context_hash,
+    created_by_actor_type: plan.created_by_actor_type,
+    reason_code: plan.safe_reason_codes[0] ?? "external_execution_forbidden"
   };
 }
 
@@ -2717,6 +2849,78 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     });
     return {
       lease_status: released,
+      idempotent: false,
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox/:outboxId/attempt-plan", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    const plan = await candidateRepo.getReactionDispatchInternalOutboxAttemptPlan(outboxId);
+    return {
+      attempt_plan: toReactionDispatchInternalOutboxAttemptPlanStatus(outboxId, plan),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/outbox/:outboxId/attempt-plan", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const input = AdminReactionDispatchOutboxAttemptPlanRequestSchema.parse(req.body);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    const now = new Date();
+    const lease = toReactionDispatchInternalOutboxLeaseStatus(outboxId, await candidateRepo.getReactionDispatchInternalOutboxLease(outboxId), now);
+    const existing = await candidateRepo.getReactionDispatchInternalOutboxAttemptPlan(outboxId);
+    if (existing?.attempt_plan_status === "planned_internal") {
+      return {
+        attempt_plan: { ...existing, safe_reason_codes: ["attempt_plan_active", "external_execution_forbidden"] },
+        idempotent: true,
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      };
+    }
+    if (!isReactionDispatchInternalOutboxAttemptPlannable(outbox, lease, input.lease_id, now)) {
+      return reply.code(409).send({
+        attempt_plan: {
+          outbox_id: outbox.outbox_id,
+          lease_id: input.lease_id,
+          attempt_plan_status: "plan_blocked",
+          planned_adapter_type: "iris_core_reaction_dispatch",
+          planned_action: "reaction_dispatch",
+          plan_id: "none",
+          plan_context_hash: hashSafeMetadata({
+            outbox_id: outbox.outbox_id,
+            outbox_status: outbox.outbox_status,
+            external_delivery_status: outbox.external_delivery_status,
+            adapter_execution_status: outbox.adapter_execution_status,
+            dispatch_attempt_count: outbox.dispatch_attempt_count,
+            lease_status: lease.lease_status
+          }),
+          created_by_actor_type: "admin",
+          created_at: now.toISOString(),
+          updated_at: now.toISOString(),
+          safe_reason_codes: toReactionDispatchInternalOutboxAttemptPlanBlockedReasons(outbox, lease, input.lease_id, now)
+        },
+        error: "internal_outbox_attempt_plan_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const plan = await candidateRepo.setReactionDispatchInternalOutboxAttemptPlan(buildReactionDispatchInternalOutboxAttemptPlan(outbox, lease, now));
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "reaction_dispatch_internal_outbox_attempt_plan_created",
+      target_type: "reaction_dispatch_internal_outbox",
+      target_id: outbox.outbox_id,
+      after_json: toReactionDispatchInternalOutboxAttemptPlanAuditMetadata(plan, existing?.attempt_plan_status ?? "not_planned")
+    });
+    return {
+      attempt_plan: plan,
       idempotent: false,
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };

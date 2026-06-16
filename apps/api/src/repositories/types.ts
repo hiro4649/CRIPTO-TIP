@@ -360,6 +360,39 @@ export type ReactionDispatchInternalOutboxLeaseMetadata = {
   safe_reason_codes: ReactionDispatchInternalOutboxLeaseReasonCode[];
 };
 
+export type ReactionDispatchInternalOutboxAttemptPlanStatus =
+  | "not_planned"
+  | "planned_internal"
+  | "plan_blocked";
+
+export type ReactionDispatchInternalOutboxAttemptPlanReasonCode =
+  | "attempt_plan_created"
+  | "attempt_plan_active"
+  | "attempt_plan_not_found"
+  | "lease_required"
+  | "lease_id_mismatch"
+  | "lease_expired"
+  | "not_queued_internal"
+  | "external_delivery_not_attempted"
+  | "adapter_not_executed"
+  | "state_transition_blocked"
+  | "external_execution_forbidden"
+  | "outbox_not_found";
+
+export type ReactionDispatchInternalOutboxAttemptPlanMetadata = {
+  outbox_id: string;
+  lease_id: string;
+  attempt_plan_status: ReactionDispatchInternalOutboxAttemptPlanStatus;
+  planned_adapter_type: "iris_core_reaction_dispatch";
+  planned_action: "reaction_dispatch";
+  plan_id: string;
+  plan_context_hash: string;
+  created_by_actor_type: "admin";
+  created_at: string;
+  updated_at: string;
+  safe_reason_codes: ReactionDispatchInternalOutboxAttemptPlanReasonCode[];
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;
