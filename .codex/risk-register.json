@@ -2,16 +2,16 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 94,
-  "headSha": "aac017eb81248a7b9bf509f1a9b7521184c94604",
-  "baseSha": "184be8fe1d6c2a2104e0bd0372d05b50959a252a",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
   "risks": [
     {
       "severity": "high",
-      "risk": "operator note search could expose unsafe text, return raw support data, mutate notes or support core state, enqueue side effects, or imply operational readiness",
+      "risk": "resolution status could mutate support core state, expose raw data, enqueue side effects, or imply operational readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce admin auth, safe filters, safe metadata only, read-only behavior, no reaction or overlay enqueue, and no readiness claims"
+      "mitigation": "tests enforce admin auth, allowed statuses, max length, sanitization, safe audit metadata, safe metadata only, read-only support core behavior, no reaction or overlay enqueue, and no readiness claims"
     }
   ]
 }

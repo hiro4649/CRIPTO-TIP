@@ -2,30 +2,32 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 94,
-  "headSha": "aac017eb81248a7b9bf509f1a9b7521184c94604",
-  "baseSha": "184be8fe1d6c2a2104e0bd0372d05b50959a252a",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_operator_note_search",
+  "changeType": "product_vertical_slice_admin_support_event_resolution_status",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin operator note search",
-  "goal": "Add local/internal admin operator note search without mutating support events or notes or triggering side effects.",
-  "ciRunId": "27589283874",
-  "qualityGateRunId": "27589364543",
-  "qualityGateArtifactId": "7655803212",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add p0 admin support event resolution status",
+  "goal": "Add local/internal admin support event resolution status without mutating support core data or triggering side effects.",
+  "ciRunId": "not_created_pre_pr",
+  "qualityGateRunId": "not_created_pre_pr",
+  "qualityGateArtifactId": "not_created_pre_pr",
+  "productCiStatus": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-operator-note-search.test.ts",
-      "docs/P0_ADMIN_OPERATOR_NOTE_SEARCH.md",
-      "docs/pr-p0-admin-operator-note-search.md",
-      ".codex/p0-admin-operator-note-search.json",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/p0-admin-support-event-resolution-status.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_RESOLUTION_STATUS.md",
+      "docs/pr-p0-admin-support-event-resolution-status.md",
+      ".codex/p0-admin-support-event-resolution-status.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -38,10 +40,10 @@
     "allowedPaths": [
       "apps/api/src/server.ts",
       "apps/api/src/*.test.ts",
-      "apps/api/src/repositories/**",
+      "apps/api/src/repositories/*",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_OPERATOR_NOTE_SEARCH.md",
-      "docs/pr-p0-admin-operator-note-search.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_RESOLUTION_STATUS.md",
+      "docs/pr-p0-admin-support-event-resolution-status.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,17 +60,17 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
       "result": "pass",
       "status": "pass"
     },
@@ -83,25 +85,14 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27589283874",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27589364543",
-      "result": "success",
-      "artifactId": "7655803212"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "local/internal admin operator note search API",
+    "local/internal admin support event resolution metadata",
     "admin auth guard",
-    "safe filters",
-    "safe metadata only",
-    "read-only note visibility",
+    "allowed resolution statuses",
+    "safe operator note sanitization",
+    "safe audit metadata",
+    "read-only support core behavior",
     "docs",
     ".codex evidence"
   ],
@@ -109,7 +100,8 @@
     "support financial/source/wallet/moderation/affinity mutation",
     "reaction enqueue",
     "overlay enqueue",
-    "public note exposure",
+    "public resolution exposure",
+    "raw message output",
     "raw payload output",
     "secret output",
     "real TTS call",
@@ -141,21 +133,23 @@
     "custody",
     "internal balance",
     "investment wording",
-    "speculative reward"
+    "refund feature"
   ],
   "doneCriteria": [
-    "admin operator note search requires admin bearer token",
-    "admin operator note search filters by support event stream character archived and date",
-    "admin operator note search applies safe limit",
-    "admin operator note search returns safe metadata only",
-    "admin operator note search does not mutate support events or notes",
-    "admin operator note search does not enqueue reaction or overlay"
+    "admin resolution status requires admin bearer token",
+    "admin resolution status supports open resolved needs_followup blocked",
+    "admin resolution status can reopen to open",
+    "admin resolution status enforces max length and sanitization",
+    "admin resolution status writes safe audit metadata",
+    "admin resolution status returns safe metadata only",
+    "admin resolution status does not mutate support amount source wallet moderation or affinity",
+    "admin resolution status does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 75,
-    "passed": 1823,
+    "testFiles": 76,
+    "passed": 1826,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -168,12 +162,12 @@
     "No support financial, source, wallet, moderation, or affinity fields are mutated.",
     "No reaction or overlay side effects are enqueued.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+    "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin operator note metadata only.",
-    "Durable operator notes persistence remains future scoped work because migrations and real DB changes are forbidden."
+    "This is local/internal admin resolution metadata only.",
+    "Durable resolution persistence remains future scoped work because migrations and real DB changes are forbidden."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -190,10 +184,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin operator note search metadata."
+    "statement": "Adds local/internal admin support event resolution metadata."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin operator note search metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public note exposure, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin support event resolution metadata only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public resolution exposure, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -205,9 +199,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin operator note search, admin auth, safe filters, safe metadata, read-only note visibility, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is unsafe note exposure, support or note mutation, side effects, copied stale evidence, or readiness claims; tests and evidence reject those outcomes.",
-    "verificationOracle": "Operator note search tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event resolution metadata, admin auth, safe statuses, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is unsafe resolution exposure, support core mutation, side effects, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Resolution status tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-operator-note-search.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-resolution-status.md"
 }
