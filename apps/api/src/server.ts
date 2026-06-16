@@ -1507,6 +1507,9 @@ function toReactionDispatchInternalOutboxLeaseAuditMetadata(lease: ReactionDispa
 const AdminReactionDispatchOutboxAttemptPlanRequestSchema = z.object({
   lease_id: z.string().min(1).max(80)
 });
+const AdminReactionDispatchDryRunAdapterBoundaryRequestSchema = z.object({
+  lease_id: z.string().min(1).max(80)
+});
 
 function toReactionDispatchInternalOutboxAttemptPlanStatus(
   outboxId: string,
@@ -1678,6 +1681,90 @@ function toReactionDispatchAttemptPlanReviewEntry(
     },
     blocking_reason_codes: [...new Set(blockingReasonCodes)]
   };
+}
+
+function buildReactionDispatchDryRunAdapterBoundary(
+  plan: ReactionDispatchInternalOutboxAttemptPlanMetadata,
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata
+) {
+  const adapterKind = toReactionDispatchAttemptPlanAdapterKind(plan);
+  const requestPreview = {
+    plan_id: plan.plan_id,
+    outbox_id: outbox.outbox_id,
+    lease_id: lease.lease_id,
+    adapter_kind: adapterKind,
+    support_event_id: outbox.support_event_id,
+    stream_id: outbox.stream_id,
+    character_id: outbox.character_id,
+    contract_version: outbox.contract_version,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash,
+    plan_context_hash: plan.plan_context_hash
+  };
+  const requestPreviewHash = hashSafeMetadata(requestPreview);
+  const boundarySeed = `reaction_dispatch_dry_run_adapter_boundary:${plan.plan_id}:${lease.lease_id}:${requestPreviewHash}`;
+  return {
+    dry_run_boundary_id: `rddry_${createHash("sha256").update(boundarySeed).digest("hex").slice(0, 24)}`,
+    plan_id: plan.plan_id,
+    outbox_id: outbox.outbox_id,
+    lease_id: lease.lease_id,
+    candidate_id: outbox.candidate_id,
+    boundary_id: outbox.boundary_id,
+    support_event_id: outbox.support_event_id,
+    stream_id: outbox.stream_id,
+    character_id: outbox.character_id,
+    source: outbox.source,
+    adapter_kind: adapterKind,
+    dry_run_boundary_status: "dry_run_ready",
+    adapter_request_status: "preview_only",
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    contract_version: outbox.contract_version,
+    validation_status: outbox.candidate_status,
+    safe_reason_codes: ["dry_run_adapter_boundary_ready", "external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"],
+    request_preview_hash: requestPreviewHash,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash,
+    created_from_plan_at: plan.created_at,
+    request_preview_summary: {
+      adapter_kind: adapterKind,
+      execution_mode: "dry_run_preview_only",
+      external_adapter_call: "not_performed",
+      runtime_execution: "not_performed"
+    },
+    side_effect_summary: {
+      support_event_mutation: "skipped",
+      outbox_mutation: "skipped",
+      lease_mutation: "skipped",
+      attempt_plan_mutation: "skipped",
+      dispatch_attempt_count_increment: "skipped",
+      external_delivery: "skipped"
+    }
+  };
+}
+
+function toReactionDispatchDryRunAdapterBoundaryBlockers(
+  plan: ReactionDispatchInternalOutboxAttemptPlanMetadata | undefined,
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata | undefined,
+  leaseId: string,
+  now = new Date()
+) {
+  const reasons: string[] = [];
+  if (!plan) reasons.push("attempt_plan_not_found");
+  else if (plan.attempt_plan_status !== "planned_internal") reasons.push(plan.attempt_plan_status);
+  if (outbox.outbox_status !== "queued_internal") reasons.push("not_queued_internal");
+  if (outbox.external_delivery_status !== "not_attempted") reasons.push("state_transition_blocked");
+  else reasons.push("external_delivery_not_attempted");
+  if (outbox.adapter_execution_status !== "not_executed") reasons.push("state_transition_blocked");
+  else reasons.push("adapter_not_executed");
+  if (outbox.dispatch_attempt_count !== 0) reasons.push("state_transition_blocked");
+  if (!isReactionDispatchInternalOutboxLeaseActive(lease, now)) reasons.push("lease_required");
+  else if (lease?.lease_id !== leaseId || plan?.lease_id !== leaseId) reasons.push("lease_id_mismatch");
+  reasons.push("external_execution_forbidden");
+  return [...new Set(reasons)];
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -2840,6 +2927,48 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
     return {
       attempt_plan: toReactionDispatchAttemptPlanReviewEntry(plan, outbox, lease),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/attempt-plans/:planId/dry-run-adapter-boundary", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { planId } = z.object({ planId: z.string() }).parse(req.params);
+    const input = AdminReactionDispatchDryRunAdapterBoundaryRequestSchema.parse(req.body);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const plan = (await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()).find((entry) => entry.plan_id === planId);
+    if (!plan) return reply.code(404).send({ error: "reaction_dispatch_attempt_plan_not_found" });
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+    const now = new Date();
+    const blockers = toReactionDispatchDryRunAdapterBoundaryBlockers(plan, outbox, lease, input.lease_id, now);
+    const blocking = blockers.some((reason) => !["external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"].includes(reason));
+    if (blocking || !lease?.lease_id) {
+      return reply.code(409).send({
+        dry_run_boundary: {
+          plan_id: plan.plan_id,
+          outbox_id: outbox.outbox_id,
+          lease_id: input.lease_id,
+          adapter_kind: toReactionDispatchAttemptPlanAdapterKind(plan),
+          dry_run_boundary_status: "dry_run_blocked",
+          external_delivery_status: outbox.external_delivery_status,
+          adapter_execution_status: outbox.adapter_execution_status,
+          dispatch_attempt_count: outbox.dispatch_attempt_count,
+          safe_reason_codes: blockers,
+          request_preview_hash: hashSafeMetadata({
+            plan_id: plan.plan_id,
+            outbox_id: outbox.outbox_id,
+            lease_id: input.lease_id,
+            dry_run_boundary_status: "dry_run_blocked"
+          })
+        },
+        error: "dry_run_adapter_boundary_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    return {
+      dry_run_boundary: buildReactionDispatchDryRunAdapterBoundary(plan, outbox, lease),
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
   });
