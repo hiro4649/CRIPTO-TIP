@@ -27,7 +27,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   overlayEvents = new Map<string, OverlayTipAlert>();
   reactionRequests = new Map<string, CharacterReactionRequest>();
   auditLogs: AuditLogInput[] = [];
-  supportEventOperatorNotes = new Map<string, { id: string; event_id: string; note: string; created_at: string }[]>();
+  supportEventOperatorNotes = new Map<string, { id: string; event_id: string; note: string; archived: boolean; created_at: string; updated_at: string }[]>();
   supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
@@ -286,14 +286,28 @@ export class InMemoryRepository implements CriptoTipRepository {
     return { created: true };
   }
   async writeAuditLog(input: AuditLogInput) { this.auditLogs.push(input); }
-  async createSupportEventOperatorNote(note: { id: string; event_id: string; note: string; created_at: string }) {
+  async createSupportEventOperatorNote(note: { id: string; event_id: string; note: string; archived: boolean; created_at: string; updated_at: string }) {
     const notes = this.supportEventOperatorNotes.get(note.event_id) ?? [];
     notes.push(note);
     this.supportEventOperatorNotes.set(note.event_id, notes);
     return note;
   }
-  async listSupportEventOperatorNotes(eventId: string) {
-    return [...(this.supportEventOperatorNotes.get(eventId) ?? [])];
+  async listSupportEventOperatorNotes(eventId: string, options: { includeArchived?: boolean } = {}) {
+    return [...(this.supportEventOperatorNotes.get(eventId) ?? [])].filter((note) => options.includeArchived || !note.archived);
+  }
+  async getSupportEventOperatorNote(eventId: string, noteId: string) {
+    return (this.supportEventOperatorNotes.get(eventId) ?? []).find((note) => note.id === noteId);
+  }
+  async updateSupportEventOperatorNote(eventId: string, noteId: string, patch: Partial<{ note: string; archived: boolean }>) {
+    const notes = this.supportEventOperatorNotes.get(eventId) ?? [];
+    const index = notes.findIndex((note) => note.id === noteId);
+    if (index < 0) return undefined;
+    const existing = notes[index];
+    if (!existing) return undefined;
+    const updated = { ...existing, ...patch, updated_at: new Date().toISOString() };
+    notes[index] = updated;
+    this.supportEventOperatorNotes.set(eventId, notes);
+    return updated;
   }
   async listAuditLogs(filter: AuditLogListFilter = {}) {
     return this.auditLogs.filter((log) => {

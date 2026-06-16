@@ -1,24 +1,23 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-  "harnessVersion": "1.2.4",
-  "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 92,
-  "headSha": "5b82d7fce5cd14f6747e4948a8feb1e62503b0b3",
-  "baseSha": "4142e773594f1693583055f83bb4862c56017ad1",
-  "testCoverageStatus": "pass",
-  "testFiles": 73,
-  "passed": 1817,
-  "skipped": 6,
-  "coverage": [
-    "admin operator notes requires admin bearer token",
-    "admin operator notes rejects invalid auth",
-    "admin operator notes returns 404 for unknown support event",
-    "admin operator notes creates and lists safe notes",
-    "admin operator notes enforces max length",
-    "admin operator notes sanitizes unsafe text",
-    "admin operator notes writes safe audit metadata",
-    "admin operator notes does not mutate support core fields",
-    "admin operator notes does not enqueue reaction or overlay"
-  ]
+    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+    "harnessVersion":  "1.2.4",
+    "repository":  "hiro4649/CRIPTO-TIP",
+    "prNumber":  93,
+    "headSha":  "85b3854ef1136873d11787bd3c16cab2e0017c5e",
+    "baseSha":  "538db3d894e29f33c31970a1e9ff792f89ad61bc",
+    "testCoverageStatus":  "pass",
+    "testFiles":  74,
+    "passed":  1821,
+    "skipped":  6,
+    "coverage":  [
+                     "admin operator notes requires admin bearer token",
+                     "admin operator notes rejects invalid auth",
+                     "admin operator notes returns 404 for unknown support event",
+                     "admin operator notes creates and lists safe notes",
+                     "admin operator notes enforces max length",
+                     "admin operator notes sanitizes unsafe text",
+                     "admin operator notes writes safe audit metadata",
+                     "admin operator notes does not mutate support core fields",
+                     "admin operator notes does not enqueue reaction or overlay"
+                 ]
 }
-

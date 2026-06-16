@@ -197,7 +197,7 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
@@ -506,17 +506,25 @@ type AdminManualSupportRequest = z.infer<typeof AdminManualSupportRequestSchema>
 const AdminSupportEventOperatorNoteSchema = z.object({
   note: z.string().min(1).max(240)
 });
+const AdminSupportEventOperatorNotePatchSchema = z.object({
+  note: z.string().min(1).max(240).optional(),
+  archived: z.boolean().optional()
+}).refine((value) => value.note !== undefined || value.archived !== undefined);
 
 type AdminSupportEventOperatorNote = {
   id: string;
   event_id: string;
   note: string;
+  archived: boolean;
   created_at: string;
+  updated_at: string;
 };
 
 type OperatorNoteRepository = {
   createSupportEventOperatorNote?: (note: AdminSupportEventOperatorNote) => Promise<AdminSupportEventOperatorNote>;
-  listSupportEventOperatorNotes?: (eventId: string) => Promise<AdminSupportEventOperatorNote[]>;
+  listSupportEventOperatorNotes?: (eventId: string, options?: { includeArchived?: boolean }) => Promise<AdminSupportEventOperatorNote[]>;
+  getSupportEventOperatorNote?: (eventId: string, noteId: string) => Promise<AdminSupportEventOperatorNote | undefined>;
+  updateSupportEventOperatorNote?: (eventId: string, noteId: string, patch: Partial<Pick<AdminSupportEventOperatorNote, "note" | "archived">>) => Promise<AdminSupportEventOperatorNote | undefined>;
 };
 
 const SupportEventAdjustmentSchema = z.object({
@@ -677,7 +685,9 @@ function toOperatorNoteSafeEntry(note: AdminSupportEventOperatorNote) {
     id: note.id,
     event_id: note.event_id,
     note: note.note,
-    created_at: note.created_at
+    archived: note.archived,
+    created_at: note.created_at,
+    updated_at: note.updated_at
   };
 }
 
@@ -688,8 +698,14 @@ function getOperatorNoteRepository(repo: CriptoTipRepository): Required<Operator
       ? (note) => candidate.createSupportEventOperatorNote!.call(repo, note)
       : async (note) => note,
     listSupportEventOperatorNotes: candidate.listSupportEventOperatorNotes
-      ? (eventId) => candidate.listSupportEventOperatorNotes!.call(repo, eventId)
-      : async () => []
+      ? (eventId, options) => candidate.listSupportEventOperatorNotes!.call(repo, eventId, options)
+      : async () => [],
+    getSupportEventOperatorNote: candidate.getSupportEventOperatorNote
+      ? (eventId, noteId) => candidate.getSupportEventOperatorNote!.call(repo, eventId, noteId)
+      : async () => undefined,
+    updateSupportEventOperatorNote: candidate.updateSupportEventOperatorNote
+      ? (eventId, noteId, patch) => candidate.updateSupportEventOperatorNote!.call(repo, eventId, noteId, patch)
+      : async () => undefined
   };
 }
 
@@ -1324,7 +1340,9 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       id: stableId("opnote", `${support.event_id}:${Date.now()}:${input.note}`),
       event_id: support.event_id,
       note: sanitizeOperatorNote(input.note),
-      created_at: new Date().toISOString()
+      archived: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
     const noteRepo = getOperatorNoteRepository(repo);
     const created = await noteRepo.createSupportEventOperatorNote(note);
@@ -1352,10 +1370,11 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.get("/admin/support-events/:eventId/operator-notes", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const query = z.object({ include_archived: z.coerce.boolean().default(false) }).parse(req.query);
     const support = await repo.getSupportEventById(eventId);
     if (!support) return reply.code(404).send({ error: "support_event_not_found" });
     const noteRepo = getOperatorNoteRepository(repo);
-    const notes = await noteRepo.listSupportEventOperatorNotes(support.event_id);
+    const notes = await noteRepo.listSupportEventOperatorNotes(support.event_id, { includeArchived: query.include_archived });
     return {
       support_event: {
         event_id: support.event_id,
@@ -1365,6 +1384,61 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         moderation_status: support.support.message_moderation_status
       },
       operator_notes: notes.map(toOperatorNoteSafeEntry)
+    };
+  });
+
+  app.patch("/admin/support-events/:eventId/operator-notes/:noteId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId, noteId } = z.object({ eventId: z.string(), noteId: z.string() }).parse(req.params);
+    const parsed = AdminSupportEventOperatorNotePatchSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid_operator_note_patch" });
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const noteRepo = getOperatorNoteRepository(repo);
+    const existing = await noteRepo.getSupportEventOperatorNote(support.event_id, noteId);
+    if (!existing) return reply.code(404).send({ error: "operator_note_not_found" });
+    const patch: Partial<Pick<AdminSupportEventOperatorNote, "note" | "archived">> = {};
+    if (parsed.data.note !== undefined) patch.note = sanitizeOperatorNote(parsed.data.note);
+    if (parsed.data.archived !== undefined) patch.archived = parsed.data.archived;
+    const updated = await noteRepo.updateSupportEventOperatorNote(support.event_id, noteId, patch);
+    if (!updated) return reply.code(404).send({ error: "operator_note_not_found" });
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "update_operator_note",
+      target_type: "support_event",
+      target_id: support.event_id,
+      after_json: toOperatorNoteAuditMetadata(support, updated)
+    });
+    return {
+      status: "updated",
+      operator_note: toOperatorNoteSafeEntry(updated)
+    };
+  });
+
+  app.post("/admin/support-events/:eventId/operator-notes/:noteId/archive", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId, noteId } = z.object({ eventId: z.string(), noteId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const noteRepo = getOperatorNoteRepository(repo);
+    const existing = await noteRepo.getSupportEventOperatorNote(support.event_id, noteId);
+    if (!existing) return reply.code(404).send({ error: "operator_note_not_found" });
+    const updated = await noteRepo.updateSupportEventOperatorNote(support.event_id, noteId, { archived: true });
+    if (!updated) return reply.code(404).send({ error: "operator_note_not_found" });
+    if (!existing.archived) {
+      await repo.writeAuditLog({
+        actor_type: "admin",
+        actor_id: "admin_mock",
+        action: "archive_operator_note",
+        target_type: "support_event",
+        target_id: support.event_id,
+        after_json: toOperatorNoteAuditMetadata(support, updated)
+      });
+    }
+    return {
+      status: existing.archived ? "already_archived" : "archived",
+      operator_note: toOperatorNoteSafeEntry(updated)
     };
   });
 
