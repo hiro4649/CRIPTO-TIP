@@ -231,6 +231,10 @@ export class InMemoryRepository implements CriptoTipRepository {
   async getReactionDispatchInternalOutboxAttemptPlan(outboxId: string) {
     return this.reactionDispatchInternalOutboxAttemptPlans.get(outboxId);
   }
+  async listReactionDispatchInternalOutboxAttemptPlans() {
+    return [...this.reactionDispatchInternalOutboxAttemptPlans.values()]
+      .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.plan_id.localeCompare(right.plan_id));
+  }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
     const existing = this.tipTransactions.get(key);

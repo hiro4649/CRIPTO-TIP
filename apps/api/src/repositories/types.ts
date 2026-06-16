@@ -363,7 +363,9 @@ export type ReactionDispatchInternalOutboxLeaseMetadata = {
 export type ReactionDispatchInternalOutboxAttemptPlanStatus =
   | "not_planned"
   | "planned_internal"
-  | "plan_blocked";
+  | "plan_blocked"
+  | "plan_superseded"
+  | "plan_expired";
 
 export type ReactionDispatchInternalOutboxAttemptPlanReasonCode =
   | "attempt_plan_created"
