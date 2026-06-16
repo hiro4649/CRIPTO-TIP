@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 111,
-  "headSha": "current_pr_head",
+  "headSha": "ac5496c3e60f906822a83d960ad50dfed561544b",
   "baseSha": "7dbcff32ee2ec5d639a0a941ba81102b3dd06c90",
   "title": "feat: add p0 admin attempt plan review surface",
   "goal": "Add read-only admin review surface for local/internal reaction dispatch attempt plans without external execution.",
@@ -15,11 +15,11 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "2",
-  "qualityGateRunId": "2",
-  "qualityGateArtifactId": "2",
-  "productCiStatus": "local_pre_pr_pass",
-  "qualityGateStatus": "local_pre_pr_not_remote",
+  "ciRunId": "27651426937",
+  "qualityGateRunId": "27651426901",
+  "qualityGateArtifactId": "7680913722",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "riskLevel": "R3",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
@@ -82,14 +82,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "2",
-      "result": "local_pre_pr_pass"
+      "runId": "27651426937",
+      "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "2",
-      "result": "local_pre_pr_not_remote",
-      "artifactId": "2"
+      "runId": "27651426901",
+      "result": "success",
+      "artifactId": "7680913722"
     }
   ],
   "allowedScope": [

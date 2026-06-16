@@ -21,19 +21,19 @@ Done criteria: admin attempt plan review requires admin auth; unknown attempt pl
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: ac5496c3e60f906822a83d960ad50dfed561544b
 
 Base SHA: 7dbcff32ee2ec5d639a0a941ba81102b3dd06c90
 
-Product CI: local_pre_pr_pass
+Product CI: success
 
-Quality-gate: local_pre_pr_not_remote
+Quality-gate: success
 
-CI run: 2
+CI run: 27651426937
 
-Quality-gate run: 2
+Quality-gate run: 27651426901
 
-Quality-gate artifact: 2
+Quality-gate artifact: 7680913722
 
 Tests: 89 test files, 1931 passed, 6 skipped
 
