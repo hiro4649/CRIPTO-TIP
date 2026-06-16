@@ -2,30 +2,31 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 90,
-  "headSha": "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
-  "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_bulk_moderation_apply_controls",
+  "changeType": "product_vertical_slice_admin_support_event_action_plan",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin bulk moderation apply controls",
-  "goal": "Add POST /admin/support-events/bulk-review/apply for safe local/internal held support bulk moderation controls.",
-  "ciRunId": "27585268336",
-  "qualityGateRunId": "27585361161",
-  "qualityGateArtifactId": "7654250246",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add p0 admin support event action plan",
+  "goal": "Add GET /admin/support-events/:eventId/action-plan for safe local/internal read-only support event action planning.",
+  "ciRunId": "not_created_pre_pr",
+  "qualityGateRunId": "not_created_pre_pr",
+  "qualityGateArtifactId": "not_created_pre_pr",
+  "productCiStatus": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
+      "apps/api/src/p0-admin-support-event-action-plan.test.ts",
       "apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts",
-      "docs/P0_ADMIN_BULK_MODERATION_APPLY_CONTROLS.md",
-      "docs/pr-p0-admin-bulk-moderation-apply-controls.md",
-      ".codex/p0-admin-bulk-moderation-apply-controls.json",
+      "docs/P0_ADMIN_SUPPORT_EVENT_ACTION_PLAN.md",
+      "docs/pr-p0-admin-support-event-action-plan.md",
+      ".codex/p0-admin-support-event-action-plan.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,8 +41,8 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/repositories/**",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_BULK_MODERATION_APPLY_CONTROLS.md",
-      "docs/pr-p0-admin-bulk-moderation-apply-controls.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_ACTION_PLAN.md",
+      "docs/pr-p0-admin-support-event-action-plan.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -58,7 +59,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -66,29 +67,34 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27585268336",
-      "result": "success"
+      "runId": "not_created_pre_pr",
+      "result": "not_created_pre_pr"
     },
     {
       "name": "quality-gate",
-      "runId": "27585361161",
-      "result": "success",
-      "artifactId": "7654250246"
+      "runId": "not_created_pre_pr",
+      "result": "not_created_pre_pr",
+      "artifactId": "not_created_pre_pr"
     }
   ],
   "allowedScope": [
-    "local/internal admin bulk moderation apply API",
+    "local/internal admin support event action plan API",
     "admin auth guard",
-    "held support approve/reject controls",
-    "idempotent side-effect application",
+    "read-only action allowlist",
+    "blocked action reason metadata",
+    "side-effect ledger summary",
+    "timeline reference",
     "safe metadata only",
-    "safe audit metadata",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "arbitrary state approve or reject",
-    "amount/source/wallet/direct affinity mutation",
+    "support event mutation",
+    "reaction enqueue",
+    "overlay enqueue",
+    "audit log write",
+    "raw support message output",
+    "raw payload output",
     "real TTS call",
     "real Live2D call",
     "real renderer call",
@@ -121,20 +127,21 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin bulk moderation apply requires admin bearer token",
-    "admin bulk moderation apply rejects invalid input safely",
-    "admin bulk moderation apply only applies approve_hold and reject_hold to held events",
-    "admin bulk moderation apply skips approved, rejected, and unknown events safely",
-    "approve_hold triggers side effects once",
-    "reject_hold triggers no support side effects",
-    "admin bulk moderation apply is idempotent",
-    "admin bulk moderation apply returns safe metadata only"
+    "admin support event action plan requires admin bearer token",
+    "admin support event action plan rejects invalid auth",
+    "unknown support event returns 404",
+    "held events include safe eligible action allowlist and blocked resend reasons",
+    "approved events include already approved and side-effect already applied reasons",
+    "rejected events include already rejected reasons",
+    "side-effect ledger summary is included",
+    "timeline reference is safe",
+    "action plan is read-only and enqueues no reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 71,
-    "passed": 1809,
+    "testFiles": 72,
+    "passed": 1813,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -144,15 +151,14 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No arbitrary support state approval or rejection is performed.",
-    "No direct amount, source, wallet, or affinity field mutation is performed.",
+    "No support event mutation, reaction enqueue, overlay enqueue, or audit log write is performed by the action-plan endpoint.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
     "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin bulk moderation apply control only.",
-    "Production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
+    "This is local/internal admin action planning only.",
+    "Production Admin Console UI, durable persistence, and operational action execution policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -169,9 +175,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin bulk moderation apply controls."
+    "statement": "Adds local/internal admin support event action plan read model."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal held support moderation control only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin action planning only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -184,9 +190,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin bulk moderation apply controls, admin auth, hold-only approve/reject, idempotency, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is approving/rejecting arbitrary states, double-applying side effects, exposing raw support data, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Bulk moderation apply tests, existing bulk preview/search/timeline/ledger/resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event action plan, admin auth, safe allowlist, blocked reason metadata, side-effect summary, read-only tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is exposing raw support data, mutating state from a read endpoint, enqueueing runtime side effects, or implying runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Action plan tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-bulk-moderation-apply-controls.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-action-plan.md"
 }

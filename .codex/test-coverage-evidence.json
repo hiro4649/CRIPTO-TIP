@@ -2,20 +2,21 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 90,
-  "headSha": "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
-  "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "testCoverageStatus": "pass",
-  "testFiles": 71,
-  "passed": 1809,
+  "testFiles": 72,
+  "passed": 1813,
   "skipped": 6,
   "coverage": [
-    "admin bulk moderation apply requires admin bearer token",
-    "admin bulk moderation apply rejects invalid input safely",
-    "admin bulk moderation apply handles unknown event ID safely",
-    "admin bulk moderation apply only applies to held events",
-    "admin bulk moderation apply skips approved and rejected events safely",
-    "admin bulk moderation apply is idempotent",
-    "admin bulk moderation apply response is safe metadata only"
+    "admin support event action plan requires admin bearer token",
+    "admin support event action plan rejects invalid auth",
+    "admin support event action plan returns 404 for unknown support event",
+    "admin support event action plan returns safe metadata only",
+    "admin support event action plan includes eligible action allowlist",
+    "admin support event action plan includes blocked action reasons",
+    "admin support event action plan includes side-effect ledger summary",
+    "admin support event action plan is read-only and enqueues no reaction or overlay"
   ]
 }
