@@ -1,14 +1,14 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-    "harnessVersion":  "1.2.4",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  0,
-    "headSha":  "current_pr_head",
-    "baseSha":  "current_pr_base",
-    "reviewIndependenceStatus":  "pass",
-    "writerEvidencePresent":  true,
-    "reviewEvidencePresent":  true,
-    "humanApprovalCreated":  false,
-    "githubApprovalReviewCreated":  false,
-    "ownerApprovalRecordCreated":  false
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+  "harnessVersion": "1.2.4",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 94,
+  "headSha": "aac017eb81248a7b9bf509f1a9b7521184c94604",
+  "baseSha": "184be8fe1d6c2a2104e0bd0372d05b50959a252a",
+  "reviewIndependenceStatus": "pass",
+  "writerEvidencePresent": true,
+  "reviewEvidencePresent": true,
+  "humanApprovalCreated": false,
+  "githubApprovalReviewCreated": false,
+  "ownerApprovalRecordCreated": false
 }

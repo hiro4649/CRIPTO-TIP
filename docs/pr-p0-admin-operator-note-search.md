@@ -21,7 +21,7 @@ Done criteria: admin operator note search requires admin bearer token; admin ope
 
 ## Evidence Integrity
 
-Head SHA: 9d147b6a9b5af3b4be23cf9e2f828f4c7bcb7925
+Head SHA: aac017eb81248a7b9bf509f1a9b7521184c94604
 
 Base SHA: 184be8fe1d6c2a2104e0bd0372d05b50959a252a
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27589174281
+CI run: 27589283874
 
-Quality-gate run: 27589174244
+Quality-gate run: 27589364543
 
-Quality-gate artifact: 7655734319
+Quality-gate artifact: 7655803212
 
 Tests: 75 test files, 1823 passed, 6 skipped
 
@@ -69,17 +69,17 @@ API Compatibility Summary:
 
 - Public API changed: no
 - Internal runtime API changed: yes
-- Compatibility statement: Adds local/internal admin support event operator notes metadata.
+- Compatibility statement: Adds local/internal admin operator note search metadata.
 
 Runtime smoke rationale:
 
-- No runtime readiness is claimed; this is local/internal admin operator notes metadata only.
+- No runtime readiness is claimed; this is local/internal admin operator note search metadata only.
 
 Review scope and verification:
 
-- Scope: P0 admin support event operator note management, admin auth, patch/archive, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.
-- Risk summary: Main risk is unsafe note mutation, public exposure, support core mutation, side effects, or readiness claims; tests and docs reject those outcomes.
-- Verification oracle: Operator notes tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks.
+- Scope: P0 admin operator note search, admin auth, safe filters, safe metadata, read-only note visibility, tests, docs, and .codex evidence.
+- Risk summary: Main risk is unsafe note exposure, support or note mutation, side effects, copied stale evidence, or readiness claims; tests and evidence reject those outcomes.
+- Verification oracle: Operator note search tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks.
 
 ## Test Coverage Evidence
 
