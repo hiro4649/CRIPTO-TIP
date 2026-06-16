@@ -315,7 +315,14 @@ export type ReactionDispatchInternalOutboxReasonCode =
   | "candidate_superseded"
   | "unsafe_context"
   | "external_execution_forbidden"
-  | "already_queued";
+  | "already_queued"
+  | "cancelled_by_admin"
+  | "already_cancelled"
+  | "not_cancellable"
+  | "external_delivery_not_attempted"
+  | "adapter_not_executed"
+  | "state_transition_blocked"
+  | "outbox_not_found";
 
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
@@ -335,6 +342,8 @@ export type ReactionDispatchInternalOutboxMetadata = {
   safe_context_hash: string;
   constraints_hash: string;
   idempotency_key: string;
+  cancelled_at?: string;
+  cancelled_by_actor_type?: "admin";
   created_at: string;
   updated_at: string;
   safe_reason_codes: ReactionDispatchInternalOutboxReasonCode[];

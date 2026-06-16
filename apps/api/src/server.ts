@@ -198,7 +198,7 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued", "reaction_dispatch_internal_outbox_cancelled"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary", "reaction_dispatch_internal_outbox"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
@@ -223,6 +223,8 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "external_delivery_status",
   "adapter_execution_status",
   "dispatch_attempt_count",
+  "cancelled_at",
+  "cancelled_by_actor_type",
   "retry_status",
   "target_id",
   "review_status",
@@ -555,6 +557,7 @@ type ReactionDispatchCandidateRepository = {
   setReactionDispatchInternalOutboxIfAbsent?: (outbox: ReactionDispatchInternalOutboxMetadata) => Promise<ReactionDispatchInternalOutboxResult>;
   getReactionDispatchInternalOutboxByBoundary?: (boundaryId: string) => Promise<ReactionDispatchInternalOutboxMetadata | undefined>;
   getReactionDispatchInternalOutbox?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxMetadata | undefined>;
+  updateReactionDispatchInternalOutbox?: (outbox: ReactionDispatchInternalOutboxMetadata) => Promise<ReactionDispatchInternalOutboxMetadata | undefined>;
   listReactionDispatchInternalOutbox?: () => Promise<ReactionDispatchInternalOutboxMetadata[]>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
@@ -943,6 +946,14 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     getReactionDispatchInternalOutbox: candidate.getReactionDispatchInternalOutbox
       ? (outboxId) => candidate.getReactionDispatchInternalOutbox!.call(repo, outboxId)
       : async (outboxId) => [...internalOutboxFallback.values()].find((outbox) => outbox.outbox_id === outboxId),
+    updateReactionDispatchInternalOutbox: candidate.updateReactionDispatchInternalOutbox
+      ? (outbox) => candidate.updateReactionDispatchInternalOutbox!.call(repo, outbox)
+      : async (outbox) => {
+        const key = `${outbox.boundary_id}:${outbox.candidate_id}`;
+        if (!internalOutboxFallback.has(key)) return undefined;
+        internalOutboxFallback.set(key, outbox);
+        return outbox;
+      },
     listReactionDispatchInternalOutbox: candidate.listReactionDispatchInternalOutbox
       ? () => candidate.listReactionDispatchInternalOutbox!.call(repo)
       : async () => [...internalOutboxFallback.values()]
@@ -1290,6 +1301,50 @@ function toReactionDispatchOutboxReviewEntry(outbox: ReactionDispatchInternalOut
     review_blockers: reviewBlockers,
     created_at: outbox.created_at,
     updated_at: outbox.updated_at
+  };
+}
+
+function isReactionDispatchInternalOutboxCancellable(outbox: ReactionDispatchInternalOutboxMetadata) {
+  return (
+    (outbox.outbox_status === "queued_internal" || outbox.outbox_status === "pending_internal_dispatch") &&
+    outbox.external_delivery_status === "not_attempted" &&
+    outbox.adapter_execution_status === "not_executed" &&
+    outbox.dispatch_attempt_count === 0
+  );
+}
+
+function toReactionDispatchInternalOutboxCancelStatus(outbox: ReactionDispatchInternalOutboxMetadata) {
+  return {
+    outbox_id: outbox.outbox_id,
+    candidate_id: outbox.candidate_id,
+    boundary_id: outbox.boundary_id,
+    support_event_id: outbox.support_event_id,
+    outbox_status: outbox.outbox_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    cancelled_at: outbox.cancelled_at,
+    cancelled_by_actor_type: outbox.cancelled_by_actor_type,
+    safe_reason_codes: outbox.safe_reason_codes,
+    created_at: outbox.created_at,
+    updated_at: outbox.updated_at
+  };
+}
+
+function toReactionDispatchInternalOutboxCancelAuditMetadata(outbox: ReactionDispatchInternalOutboxMetadata, beforeStatus: string) {
+  return {
+    outbox_id: outbox.outbox_id,
+    boundary_id: outbox.boundary_id,
+    candidate_id: outbox.candidate_id,
+    support_event_id: outbox.support_event_id,
+    before_status: beforeStatus,
+    after_status: outbox.outbox_status,
+    outbox_status: outbox.outbox_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    cancelled_at: outbox.cancelled_at,
+    cancelled_by_actor_type: outbox.cancelled_by_actor_type,
+    reason_code: outbox.safe_reason_codes[0] ?? "cancelled_by_admin"
   };
 }
 
@@ -2402,6 +2457,72 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
     if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
     return { outbox, side_effects: toReactionDispatchInternalOutboxSkippedSideEffects() };
+  });
+
+  app.post("/admin/reaction-dispatch/outbox/:outboxId/cancel", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    if (outbox.outbox_status === "cancelled_internal") {
+      return {
+        cancel_status: toReactionDispatchInternalOutboxCancelStatus(outbox),
+        idempotent: true,
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      };
+    }
+    if (!isReactionDispatchInternalOutboxCancellable(outbox)) {
+      return reply.code(409).send({
+        cancel_status: toReactionDispatchInternalOutboxCancelStatus({
+          ...outbox,
+          safe_reason_codes: [
+            outbox.external_delivery_status === "not_attempted" ? "external_delivery_not_attempted" : "state_transition_blocked",
+            outbox.adapter_execution_status === "not_executed" ? "adapter_not_executed" : "state_transition_blocked",
+            "not_cancellable",
+            "external_execution_forbidden"
+          ]
+        }),
+        error: "internal_outbox_cancel_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const now = new Date().toISOString();
+    const cancelled: ReactionDispatchInternalOutboxMetadata = {
+      ...outbox,
+      outbox_status: "cancelled_internal",
+      cancelled_at: now,
+      cancelled_by_actor_type: "admin",
+      updated_at: now,
+      safe_reason_codes: ["cancelled_by_admin", "external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"]
+    };
+    const updated = await candidateRepo.updateReactionDispatchInternalOutbox(cancelled);
+    if (!updated) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "reaction_dispatch_internal_outbox_cancelled",
+      target_type: "reaction_dispatch_internal_outbox",
+      target_id: updated.outbox_id,
+      after_json: toReactionDispatchInternalOutboxCancelAuditMetadata(updated, outbox.outbox_status)
+    });
+    return {
+      cancel_status: toReactionDispatchInternalOutboxCancelStatus(updated),
+      idempotent: false,
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox/:outboxId/cancel-status", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    return {
+      cancel_status: toReactionDispatchInternalOutboxCancelStatus(outbox),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
   });
 
   app.get("/admin/reaction-dispatch/outbox-review", async (req, reply) => {

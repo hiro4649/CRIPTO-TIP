@@ -203,6 +203,12 @@ export class InMemoryRepository implements CriptoTipRepository {
   async getReactionDispatchInternalOutbox(outboxId: string) {
     return [...this.reactionDispatchInternalOutbox.values()].find((outbox) => outbox.outbox_id === outboxId);
   }
+  async updateReactionDispatchInternalOutbox(outbox: ReactionDispatchInternalOutboxMetadata) {
+    const key = `${outbox.boundary_id}:${outbox.candidate_id}`;
+    if (!this.reactionDispatchInternalOutbox.has(key)) return undefined;
+    this.reactionDispatchInternalOutbox.set(key, outbox);
+    return outbox;
+  }
   async listReactionDispatchInternalOutbox() {
     return [...this.reactionDispatchInternalOutbox.values()]
       .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.outbox_id.localeCompare(right.outbox_id));

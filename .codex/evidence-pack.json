@@ -2,35 +2,37 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 107,
-  "headSha": "690e82b99a13d3e405f4d813eba574aa1fb0bb89",
-  "baseSha": "5fcfed1e89c601f5bb927925857eb8c1f104e3e9",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_outbox_review_surface",
+  "changeType": "product_vertical_slice_internal_outbox_cancel",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin reaction dispatch outbox review surface",
-  "goal": "Add a read-only admin review surface for local/internal reaction dispatch outbox records without external dispatch.",
-  "ciRunId": "27623472748",
-  "qualityGateRunId": "27623634582",
-  "qualityGateArtifactId": "7669432097",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add p0 reaction dispatch internal outbox cancel",
+  "goal": "Add local/internal cancellation controls for queued reaction dispatch internal outbox records without external dispatch.",
+  "ciRunId": "local-pre-pr",
+  "qualityGateRunId": "local-pre-pr",
+  "qualityGateArtifactId": "local-pre-pr",
+  "productCiStatus": "local-pre-pr",
+  "qualityGateStatus": "local-pre-pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "internal_outbox_review"
+    "internal_outbox_cancel"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_OUTBOX_REVIEW_SURFACE.md",
-      "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
-      ".codex/p0-admin-reaction-dispatch-outbox-review-surface.json",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/repositories/types.ts",
+      "apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts",
+      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_CANCEL.md",
+      "docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md",
+      ".codex/p0-reaction-dispatch-internal-outbox-cancel.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -43,8 +45,10 @@
     "allowedPaths": [
       "apps/api/src/server.ts",
       "apps/api/src/*.test.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_OUTBOX_REVIEW_SURFACE.md",
-      "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
+      "apps/api/src/*.ts",
+      "apps/api/src/repositories/*",
+      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_CANCEL.md",
+      "docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -60,7 +64,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -105,7 +109,7 @@
       "status": "pass"
     },
     {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md",
       "result": "pass",
       "status": "pass"
     },
@@ -150,24 +154,14 @@
       "status": "nonblocking"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27623472748",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27623634582",
-      "result": "success",
-      "artifactId": "7669432097"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "read-only outbox review list/detail",
+    "internal outbox cancellation metadata",
     "admin auth guard",
-    "safe review summary",
-    "safe blockers",
+    "cancellable state guard",
+    "external-not-attempted guard",
+    "idempotent cancel",
+    "safe audit metadata",
     "docs",
     ".codex evidence"
   ],
@@ -211,11 +205,12 @@
     "refund"
   ],
   "doneCriteria": [
-    "admin auth is required",
-    "list returns safe review entries",
-    "detail returns safe review entry",
-    "filters work",
-    "review summary is safe",
+    "cancel requires admin auth",
+    "unknown outbox returns 404",
+    "queued_internal can become cancelled_internal",
+    "cancel is idempotent",
+    "blocked/non-cancellable records fail closed",
+    "cancel status returns safe metadata",
     "no support event mutation",
     "no reaction execution",
     "no overlay execution",
@@ -225,8 +220,8 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 85,
-    "passed": 1859,
+    "testFiles": 86,
+    "passed": 1863,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -238,11 +233,11 @@
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
     "No support events are mutated.",
     "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Review metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, adapter URLs, webhook URLs, and private URLs.",
+    "Cancel metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, and model-generated TTS text.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is read-only review metadata only.",
+    "This is local/internal cancellation metadata only.",
     "Actual runtime dispatch, adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain future scoped work."
   ],
   "humanConfirmation": [
@@ -252,7 +247,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -261,7 +256,7 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -279,9 +274,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds read-only admin reaction dispatch outbox review metadata endpoints."
+    "statement": "Adds local/internal reaction dispatch outbox cancellation endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is read-only review metadata only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal cancellation metadata only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -294,12 +289,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin reaction dispatch outbox review surface, admin auth, safe review metadata, tests, docs, and .codex evidence.",
+    "scope": "P0 reaction dispatch internal outbox cancel, admin auth, safe cancel metadata, idempotency, tests, docs, and .codex evidence.",
     "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Outbox review tests, internal outbox enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "verificationOracle": "Internal outbox cancel tests, review surface tests, internal enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
-  "qualityGateExpectedStatus": "success",
-  "qualityGateEvidenceStatus": "success",
-  "rawLogsRead": false
+  "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md"
 }
