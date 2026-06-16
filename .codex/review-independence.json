@@ -4,11 +4,12 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
+  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
   "reviewIndependenceStatus": "pass",
   "writerEvidencePresent": true,
   "reviewEvidencePresent": true,
   "humanApprovalCreated": false,
   "githubApprovalReviewCreated": false,
-  "ownerApprovalRecordCreated": false
+  "ownerApprovalRecordCreated": false,
+  "mergeAuthorityCreated": false
 }

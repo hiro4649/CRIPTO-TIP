@@ -3,29 +3,37 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
-  "headSha": "da9f325233f9a9e6408bebc9ef784fb74537fa3b",
-  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
+  "headSha": "current_pr_head",
+  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
   "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_work_queue",
-  "riskLevel": "R3",
-  "title": "feat: add p0 admin support event work queue",
-  "goal": "Add local/internal admin support event work queue visibility without mutating support events or triggering side effects.",
-  "ciRunId": "27591149540",
-  "qualityGateRunId": "27591239485",
-  "qualityGateArtifactId": "7656432437",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "prProfile": "docs_or_spec_r2",
+  "taskMode": "spec",
+  "changeType": "spec_ai_character_support_event_contracts_v124",
+  "riskLevel": "R2",
+  "title": "docs: add AI character support event contracts",
+  "goal": "Document Support Event Contract v2, character continuity, safe context summary, reaction dispatch contract, adaptive support policy, admin operator workflow, product-value return gate, and role boundaries without changing runtime behavior.",
+  "ciRunId": "not_created_pre_pr",
+  "qualityGateRunId": "not_created_pre_pr",
+  "qualityGateArtifactId": "not_created_pre_pr",
+  "productCiStatus": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
+  "productCodeChanged": false,
+  "productValueContribution": [
+    "support_event_contract",
+    "reaction_dispatch_safety",
+    "character_continuity",
+    "admin_operator_workflow"
+  ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-support-event-work-queue.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_WORK_QUEUE.md",
-      "docs/pr-p0-admin-support-event-work-queue.md",
-      ".codex/p0-admin-support-event-work-queue.json",
+      "docs/SUPPORT_EVENT_CONTRACT_V2.md",
+      "docs/CHARACTER_CONTINUITY_CONTRACT.md",
+      "docs/REACTION_DISPATCH_CONTRACT.md",
+      "docs/PRODUCT_VALUE_RETURN_GATE.md",
+      "docs/DEVELOPMENT_ROADMAP_AI_CHARACTER_SUPPORT.md",
+      "docs/pr-spec-ai-character-support-event-contracts-v124.md",
+      ".codex/spec-ai-character-support-event-contracts-v124.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -36,17 +44,14 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/*.test.ts",
-      "apps/api/src/repositories/*",
-      "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_WORK_QUEUE.md",
-      "docs/pr-p0-admin-support-event-work-queue.md",
+      "docs/**",
       ".codex/**"
     ],
     "forbiddenPaths": [
       "package.json",
       "pnpm-lock.yaml",
+      "apps/api/src/server.ts",
+      "apps/api/src/*.ts",
       "contracts/**",
       "migrations/**",
       ".github/workflows/**",
@@ -58,22 +63,17 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
       "name": "corepack pnpm install",
       "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     },
@@ -88,75 +88,60 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27591149540",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27591239485",
-      "result": "success",
-      "artifactId": "7656432437"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "local/internal admin support event work queue API",
-    "admin auth guard",
-    "safe filters",
-    "safe metadata only",
-    "read-only queue visibility",
-    "docs",
+    "Support Event Contract v2 documentation",
+    "Character Continuity Contract documentation",
+    "Reaction Dispatch Contract documentation",
+    "Product-Value Return Gate documentation",
+    "AI character support roadmap documentation",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "support event mutation",
-    "reaction enqueue",
-    "overlay enqueue",
-    "public queue exposure",
-    "raw message output",
-    "raw payload output",
-    "secret output",
+    "runtime product behavior change",
+    "package.json change",
+    "pnpm-lock change",
+    "DB driver dependency",
+    "Redis dependency",
+    "Kafka dependency",
+    "real DB connection",
+    "migration change",
+    "contract change",
+    "workflow change",
+    "real YouTube API",
+    "real OAuth token",
+    "real RPC",
+    "wallet/RPC/deploy changes",
     "real TTS call",
     "real Live2D call",
     "real renderer call",
     "real OBS delivery",
     "real WebSocket delivery",
-    "real YouTube API",
-    "real OAuth token",
-    "real DB connection",
-    "DB driver dependency",
-    "Redis dependency",
-    "Kafka dependency",
-    "package.json change",
-    "pnpm-lock change",
-    "contracts change",
-    "migrations change",
-    "real RPC",
-    "wallet/RPC/deploy changes",
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
-    "web UI",
-    "overlay app changes",
     "token sale",
     "token exchange",
     "cash-out",
     "custody",
     "internal balance",
     "investment wording",
-    "refund feature"
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "owner approval record",
+    "GitHub approval review",
+    "merge authority"
   ],
   "doneCriteria": [
-    "admin work queue requires admin bearer token",
-    "admin work queue filters by resolution_status moderation_status stream_id and character_id",
-    "admin work queue applies safe limit",
-    "admin work queue returns safe metadata only",
-    "admin work queue excludes raw message raw payload and secrets",
-    "admin work queue is read-only",
-    "admin work queue does not enqueue reaction or overlay"
+    "support event contract v2 documented",
+    "character continuity contract documented",
+    "safe context summary documented",
+    "reaction dispatch contract documented",
+    "adaptive support policy documented",
+    "admin operator workflow contract documented",
+    "product-value return gate documented",
+    "role boundaries documented",
+    "no runtime code changed",
+    "no package or lockfile changed"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
@@ -170,17 +155,17 @@
     "No DB driver, Redis, or Kafka dependency is added.",
     "No real DB connection is introduced.",
     "No migration is changed or executed.",
-    "No real YouTube API or OAuth token is used.",
+    "No contracts or workflows are changed.",
+    "No real YouTube API, OAuth token, RPC, wallet, or deploy operation is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No support events are mutated.",
-    "No reaction or overlay side effects are enqueued.",
-    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw messages, raw payloads, secrets, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+    "No runtime product behavior is changed.",
+    "No token sale, exchange, cash-out, custody, internal balance, or investment wording is introduced.",
+    "IRIS Token Tip is not represented as YouTube Super Chat.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin work queue visibility only.",
-    "Durable queue persistence remains future scoped work because migrations and real DB changes are forbidden."
+    "This is a specification PR only; runtime validators and admin reaction dispatch preview remain future scoped work.",
+    "External AI character execution remains outside CRIPTO-TIP and requires separate owner scope before integration."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -188,7 +173,20 @@
     "This PR does not create owner approval record.",
     "This PR does not create merge authority."
   ],
-  "productVerificationCommands": [],
+  "productVerificationCommands": [
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs || true: pass",
+    "node scripts/codex-v123-self-test.mjs || true: pass",
+    "cd contracts && forge test || true: unavailable_nonblocking"
+  ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
@@ -196,11 +194,11 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event work queue visibility."
+    "internalRuntimeApiChanged": false,
+    "statement": "Adds product specification documents only; no runtime API behavior changes."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin work queue visibility only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, public queue exposure, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR is docs/spec and machine-readable evidence only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, runtime code, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -212,9 +210,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support event work queue visibility, admin auth, safe filters, safe metadata, read-only behavior, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is raw data exposure, support event mutation, side effects, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Work queue tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "Support Event Contract v2, character continuity, safe context summary, reaction dispatch contract, adaptive support policy, admin operator workflow, product-value return gate, role boundary docs, and .codex evidence.",
+    "riskSummary": "Main risk is creating misleading runtime, production, legal, YouTube policy, custody, token exchange, or external execution claims; docs and evidence explicitly reject those outcomes.",
+    "verificationOracle": "Docs-only diff, evidence checks, quality self-protection, secret scan, v1.2.4 self-test, compatibility self-test, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-work-queue.md"
+  "prBodyPath": "docs/pr-spec-ai-character-support-event-contracts-v124.md"
 }
