@@ -21,19 +21,19 @@ Done criteria: admin dry-run approval requires admin auth; unknown dry-run bound
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: c152cc0b354b4d4156f20c090f8eceb57d3a5874
 
 Base SHA: 8a499a0c5fe94add12e2d341be763df3afe9ea95
 
-Product CI: local_pre_pr
+Product CI: success
 
-Quality-gate: local_pre_pr
+Quality-gate: success
 
-CI run: pre_pr
+CI run: 27654830326
 
-Quality-gate run: pre_pr
+Quality-gate run: 27654830316
 
-Quality-gate artifact: pre_pr
+Quality-gate artifact: 7682192018
 
 Tests: 91 test files, 1961 passed, 6 skipped
 
