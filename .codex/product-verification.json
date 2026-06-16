@@ -2,29 +2,29 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 89,
-  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
-  "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
+  "prNumber": 90,
+  "headSha": "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
+  "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "admin bulk review preview auth",
-    "empty, duplicate, and oversized event ID rejection",
+    "admin bulk moderation apply auth",
+    "empty, duplicate, oversized, and unsupported action rejection",
     "unknown event safe response",
-    "safe metadata only",
-    "eligible action allowlist",
-    "hold event approve/reject eligibility",
-    "rejected event approve eligibility blocked",
-    "read-only support state",
-    "no reaction or overlay enqueue"
+    "hold-only apply behavior",
+    "approve_hold side effects once",
+    "reject_hold no support side effects",
+    "idempotency",
+    "safe audit metadata",
+    "safe metadata only"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,

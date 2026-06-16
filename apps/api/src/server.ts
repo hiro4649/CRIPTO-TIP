@@ -525,6 +525,9 @@ const ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS = 50;
 const AdminSupportBulkReviewPreviewRequestSchema = z.object({
   event_ids: z.array(z.string().min(1).max(160)).min(1).max(ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS)
 });
+const AdminSupportBulkReviewApplyRequestSchema = AdminSupportBulkReviewPreviewRequestSchema.extend({
+  action: z.enum(["approve_hold", "reject_hold"])
+});
 const ADMIN_SUPPORT_BULK_REVIEW_ACTIONS = [
   "approve_hold",
   "reject_hold",
@@ -658,6 +661,80 @@ function toAdminSupportBulkReviewPreviewEntry(eventId: string, support?: Support
     moderation_status: moderationStatus,
     eligible_actions: [...moderationActions, ...baseActions, ...resendActions],
     ineligible_reason: moderationStatus === "rejected" ? "rejected_support_event" : undefined
+  };
+}
+
+function toAdminBulkModerationSideEffects(status: "enqueued" | "skipped") {
+  return {
+    affinity: status === "enqueued",
+    reaction_request: status === "enqueued",
+    overlay: status === "enqueued",
+    outbox: status === "enqueued"
+  };
+}
+
+function toAdminBulkModerationSkippedEntry(eventId: string, action: "approve_hold" | "reject_hold", reason: string) {
+  return {
+    event_id: eventId,
+    status: reason === "not_found" ? "failed" : "skipped",
+    action,
+    reason,
+    side_effects_applied: toAdminBulkModerationSideEffects("skipped")
+  };
+}
+
+async function applyAdminBulkModerationItem(repo: CriptoTipRepository, eventId: string, action: "approve_hold" | "reject_hold") {
+  const support = await repo.getSupportEventById(eventId);
+  if (!support) return toAdminBulkModerationSkippedEntry(eventId, action, "not_found");
+  const existingReview = await repo.getSupportModerationReviewStatus(eventId);
+  if (existingReview === "approved") return toAdminBulkModerationSkippedEntry(eventId, action, "already_approved");
+  if (existingReview === "rejected") return toAdminBulkModerationSkippedEntry(eventId, action, "already_rejected");
+  if (support.support.message_moderation_status !== "hold") return toAdminBulkModerationSkippedEntry(eventId, action, `not_hold_${support.support.message_moderation_status}`);
+
+  if (action === "reject_hold") {
+    const rejected = await buildReviewedSupport(repo, support, "rejected");
+    await repo.updateSupportEvent(rejected);
+    await repo.setSupportModerationReviewStatus(eventId, "rejected");
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "reject_held_support",
+      target_type: "support_event",
+      target_id: eventId,
+      after_json: toHeldSupportAuditMetadata(rejected, "rejected")
+    });
+    return {
+      event_id: eventId,
+      status: "applied",
+      action,
+      reason: "rejected_hold",
+      side_effects_applied: toAdminBulkModerationSideEffects("skipped")
+    };
+  }
+
+  const approved = await buildReviewedSupport(repo, support, "approved");
+  await repo.updateSupportEvent(approved);
+  const effects = await applySupportReceivedEffects(repo, approved);
+  await repo.setSupportModerationReviewStatus(eventId, "approved");
+  await repo.writeAuditLog({
+    actor_type: "admin",
+    actor_id: "admin_mock",
+    action: "approve_held_support",
+    target_type: "support_event",
+    target_id: eventId,
+    after_json: toHeldSupportAuditMetadata(approved, "approved")
+  });
+  return {
+    event_id: eventId,
+    status: "applied",
+    action,
+    reason: "approved_hold",
+    side_effects_applied: {
+      affinity: Boolean(approved.viewer.iris_user_id),
+      reaction_request: Boolean(effects.character_reaction_request),
+      overlay: Boolean(effects.overlay),
+      outbox: Boolean(effects.character_reaction_request || effects.overlay)
+    }
   };
 }
 
@@ -872,6 +949,32 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         max_event_ids: ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS
       },
       duplicate_count: input.event_ids.length - seen.size
+    };
+  });
+
+  app.post("/admin/support-events/bulk-review/apply", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const parsed = AdminSupportBulkReviewApplyRequestSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid_bulk_review_apply_request" });
+    const input = parsed.data;
+    const seen = new Set<string>();
+    for (const eventId of input.event_ids) {
+      if (seen.has(eventId)) return reply.code(400).send({ error: "duplicate_event_id", event_id: eventId });
+      seen.add(eventId);
+    }
+    const results = [];
+    for (const eventId of input.event_ids) {
+      results.push(await applyAdminBulkModerationItem(repo, eventId, input.action));
+    }
+    return {
+      status: "reviewed",
+      action: input.action,
+      results,
+      page: {
+        requested_count: input.event_ids.length,
+        result_count: results.length,
+        max_event_ids: ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS
+      }
     };
   });
 
