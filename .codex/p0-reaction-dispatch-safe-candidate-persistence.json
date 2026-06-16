@@ -58,5 +58,7 @@
   "contractsChanged": false,
   "migrationsChanged": false,
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-  "prNumber": 0
+  "prNumber": 103,
+  "headSha": "1245a0b4f49655bc80279d7e3183cedad1f9a415",
+  "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8"
 }

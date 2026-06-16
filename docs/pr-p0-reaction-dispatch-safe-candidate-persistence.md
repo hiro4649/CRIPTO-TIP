@@ -21,7 +21,7 @@ Done criteria: candidate endpoints require admin bearer token; unknown support e
 
 ## Evidence Integrity
 
-Head SHA: bbcff26879af805ad818a5c8249334abd39dfbb8
+Head SHA: 1245a0b4f49655bc80279d7e3183cedad1f9a415
 
 Base SHA: bbcff26879af805ad818a5c8249334abd39dfbb8
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: local_pre_pr
+CI run: 27617948861
 
-Quality-gate run: local_pre_pr
+Quality-gate run: 27617948843
 
-Quality-gate artifact: local_pre_pr
+Quality-gate artifact: 7666936950
 
 Tests: 81 test files, 1843 passed, 6 skipped
 

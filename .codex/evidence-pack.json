@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
+  "prNumber": 103,
+  "headSha": "1245a0b4f49655bc80279d7e3183cedad1f9a415",
   "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 reaction dispatch safe candidate persistence",
   "goal": "Add local/internal safe candidate persistence for reaction dispatch using Support Event Contract v2 validation, without dispatching runtime side effects or exposing raw data.",
-  "ciRunId": "local_pre_pr",
-  "qualityGateRunId": "local_pre_pr",
-  "qualityGateArtifactId": "local_pre_pr",
+  "ciRunId": "27617948861",
+  "qualityGateRunId": "27617948843",
+  "qualityGateArtifactId": "7666936950",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -124,14 +124,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "local_pre_pr",
+      "runId": "27617948861",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "local_pre_pr",
+      "runId": "27617948843",
       "result": "success",
-      "artifactId": "local_pre_pr"
+      "artifactId": "7666936950"
     }
   ],
   "allowedScope": [
