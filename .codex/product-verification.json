@@ -1,34 +1,51 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-    "harnessVersion":  "1.2.4",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  93,
-    "headSha":  "85b3854ef1136873d11787bd3c16cab2e0017c5e",
-    "baseSha":  "538db3d894e29f33c31970a1e9ff792f89ad61bc",
-    "productVerificationStatus":  "pass",
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "commands":  [
-                     {
-                         "name":  "corepack pnpm vitest run apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
-                         "result":  "pass",
-                         "status":  "pass"
-                     }
-                 ],
-    "coverage":  [
-                     "admin operator notes auth",
-                     "unknown support event 404",
-                     "safe note creation",
-                     "safe note listing",
-                     "max length enforcement",
-                     "unsafe text sanitization",
-                     "safe audit metadata",
-                     "support core read-only behavior",
-                     "no reaction or overlay enqueue"
-                 ],
-    "packageVerification":  {
-                                "packageScriptsChanged":  false,
-                                "runtimeDependenciesAdded":  false,
-                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
-                            }
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
+  "harnessVersion": "1.2.4",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 94,
+  "headSha": "aac017eb81248a7b9bf509f1a9b7521184c94604",
+  "baseSha": "184be8fe1d6c2a2104e0bd0372d05b50959a252a",
+  "productVerificationStatus": "pass",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "commands": [
+    {
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
+      "result": "pass",
+      "status": "pass"
+    }
+  ],
+  "coverage": [
+    "admin operator note search auth",
+    "safe filters by support_event_id stream_id character_id archived date and query",
+    "safe limit and offset",
+    "safe metadata only",
+    "read-only support event and note behavior",
+    "no reaction or overlay enqueue"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+  }
 }
