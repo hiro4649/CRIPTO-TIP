@@ -324,6 +324,42 @@ export type ReactionDispatchInternalOutboxReasonCode =
   | "state_transition_blocked"
   | "outbox_not_found";
 
+export type ReactionDispatchInternalOutboxLeaseStatus =
+  | "not_leased"
+  | "leased_internal"
+  | "lease_expired"
+  | "lease_released"
+  | "lease_blocked";
+
+export type ReactionDispatchInternalOutboxLeaseReasonCode =
+  | "lease_created"
+  | "lease_extended"
+  | "lease_released"
+  | "lease_active"
+  | "lease_expired"
+  | "lease_not_found"
+  | "lease_id_mismatch"
+  | "outbox_not_found"
+  | "not_queued_internal"
+  | "cancelled_internal"
+  | "blocked_internal"
+  | "superseded_internal"
+  | "external_delivery_not_attempted"
+  | "adapter_not_executed"
+  | "external_execution_forbidden"
+  | "state_transition_blocked";
+
+export type ReactionDispatchInternalOutboxLeaseMetadata = {
+  outbox_id: string;
+  lease_status: ReactionDispatchInternalOutboxLeaseStatus;
+  lease_id?: string;
+  lease_expires_at?: string;
+  leased_by_actor_type?: "admin";
+  created_at: string;
+  updated_at: string;
+  safe_reason_codes: ReactionDispatchInternalOutboxLeaseReasonCode[];
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;

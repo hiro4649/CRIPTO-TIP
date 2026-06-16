@@ -2,12 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 108,
-  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
-  "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
+  "prNumber": 109,
+  "headSha": "current_pr_head",
+  "baseSha": "e6400bc174fad9d365e25f128dc7a586bfb00e4e",
+  "title": "feat: add p0 reaction dispatch internal outbox lease",
+  "goal": "Add local/internal lease controls for queued reaction dispatch internal outbox records without external dispatch.",
+  "changeType": "product_vertical_slice_internal_outbox_lease",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
   "risks": [
     {
-      "id": "accidental_outbox_enqueue",
+      "id": "accidental_external_dispatch",
       "status": "mitigated_by_tests"
     },
     {
@@ -15,19 +22,14 @@
       "status": "mitigated_by_tests"
     },
     {
-      "id": "external_execution",
+      "id": "lease_state_drift",
       "status": "mitigated_by_tests"
     },
     {
       "id": "stale_remote_evidence",
-      "status": "pending_pr_creation"
+      "status": "awaiting_current_head_pr_refresh"
     }
-  ],
-  "title": "feat: add p0 reaction dispatch internal outbox cancel",
-  "goal": "Add local/internal cancellation controls for queued reaction dispatch internal outbox records without external dispatch.",
-  "changeType": "product_vertical_slice_internal_outbox_cancel",
-  "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false,
-  "legalComplianceClaimed": false,
-  "youtubePolicyComplianceClaimed": false
+  ]
 }
+
+
