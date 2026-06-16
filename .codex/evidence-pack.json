@@ -1,233 +1,233 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-  "harnessVersion": "1.2.5",
-  "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "c152cc0b354b4d4156f20c090f8eceb57d3a5874",
-  "baseSha": "8a499a0c5fe94add12e2d341be763df3afe9ea95",
-  "title": "feat: add p0 admin dry-run approval gate",
-  "goal": "Add local/internal admin approval and rejection gate for reaction dispatch dry-run boundary metadata without external execution.",
-  "changeType": "product_vertical_slice_admin_dry_run_approval_gate",
-  "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false,
-  "legalComplianceClaimed": false,
-  "youtubePolicyComplianceClaimed": false,
-  "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "feature",
-  "ciRunId": "27654830326",
-  "qualityGateRunId": "27654830316",
-  "qualityGateArtifactId": "7682192018",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
-  "riskLevel": "R3",
-  "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
-  "productValueContribution": [
-    "reaction_dispatch_safety",
-    "admin_operator_workflow",
-    "dry_run_approval_gate"
-  ],
-  "scope": {
-    "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/repositories/types.ts",
-      "apps/api/src/repositories/in-memory.ts",
-      "apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
-      "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
-      ".codex/p0-admin-reaction-dispatch-dry-run-approval-gate.json",
-      ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/test-summary.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/task-contract.json",
-      ".codex/risk-register.json",
-      ".codex/review-independence.json"
-    ],
-    "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/*.test.ts",
-      "apps/api/src/*.ts",
-      "apps/api/src/repositories/*",
-      "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
-      "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
-      ".codex/**"
-    ],
-    "forbiddenPaths": [
-      "package.json",
-      "pnpm-lock.yaml",
-      "contracts/**",
-      "migrations/**",
-      ".github/workflows/**",
-      "apps/web/**",
-      "apps/overlay/**",
-      ".env.example"
-    ]
-  },
-  "commands": [
-    {
-      "status": "pass",
-      "result": "pass",
-      "name": "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts"
-    },
-    {
-      "status": "pass",
-      "result": "pass",
-      "name": "corepack pnpm typecheck"
-    }
-  ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27654830326",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27654830316",
-      "result": "success",
-      "artifactId": "7682192018"
-    }
-  ],
-  "allowedScope": [
-    "local/internal admin dry-run approval gate",
-    "safe dry-run approval and rejection metadata",
-    "admin auth guard",
-    "approval idempotency",
-    "rejection idempotency",
-    "state transition guards",
-    "adapter kind allowlist metadata",
-    "safe audit metadata",
-    "read-only support/outbox/lease/attempt-plan checks",
-    "no external execution checks",
-    "docs",
-    ".codex evidence"
-  ],
-  "forbiddenScope": [
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
-    "package.json change",
-    "pnpm-lock change",
-    "DB driver dependency",
-    "Redis dependency",
-    "Kafka dependency",
-    "real DB connection",
-    "migration change",
-    "contract change",
-    "workflow change",
-    "apps/web change",
-    "apps/overlay change",
-    "real YouTube API",
-    "real OAuth token",
-    "real RPC",
-    "wallet/RPC/deploy changes",
-    "real TTS call",
-    "real Live2D call",
-    "real renderer call",
-    "real OBS delivery",
-    "real WebSocket delivery",
-    "IRIS Core call",
-    "VOXWEAVE call",
-    "support event mutation",
-    "outbox delivery mutation",
-    "lease mutation",
-    "attempt plan mutation",
-    "reaction execution",
-    "overlay execution",
-    "external outbox dispatch",
-    "external adapter execution",
-    "AI generation execution",
-    "token sale",
-    "token exchange",
-    "cash-out",
-    "custody",
-    "internal balance",
-    "investment wording",
-    "refund"
-  ],
-  "doneCriteria": [
-    "admin dry-run approval requires admin auth",
-    "unknown dry-run boundary returns 404",
-    "approval writes safe metadata only",
-    "approval is idempotent",
-    "rejection writes safe metadata only",
-    "rejection is idempotent",
-    "state guards reject blocked invalid superseded rejected or already approved transitions",
-    "no support event mutation",
-    "no outbox delivery mutation",
-    "no lease mutation",
-    "no attempt plan mutation",
-    "no reaction execution",
-    "no overlay execution",
-    "no external outbox delivery",
-    "no external runtime execution"
-  ],
-  "testSummary": {
-    "schemaVersion": "1.0.0",
-    "command": "corepack pnpm test",
-    "testFiles": 91,
-    "passed": 1961,
-    "skipped": 6
-  },
-  "securityBoundaries": [
-    "No package.json or pnpm-lock change.",
-    "No DB driver, Redis, or Kafka dependency is added.",
-    "No real DB connection is introduced.",
-    "No migration, contract, workflow, web, or overlay path is changed.",
-    "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
-    "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
-    "The new admin dry-run approval endpoints write only local/internal approval metadata and safe audit metadata.",
-    "The endpoints do not mutate support events, outbox delivery state, leases, or attempt plans.",
-    "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Approval/rejection metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, adapter URLs, webhook URLs, request bodies, auth material, headers, and tokens.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
-  ],
-  "residualRisks": [
-    "This is local/internal dry-run approval metadata only.",
-    "Approved dry-run boundaries are not executed in this PR.",
-    "Actual adapter execution boundary remains future scoped work."
-  ],
-  "humanConfirmation": [
-    "AI review is not human approval.",
-    "AI review is not GitHub approval review.",
-    "This PR does not create owner approval record.",
-    "This PR does not create merge authority."
-  ],
-  "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts: pass",
-    "corepack pnpm typecheck: pass"
-  ],
-  "packageVerification": {
-    "packageScriptsChanged": false,
-    "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
-  },
-  "apiCompatibilitySummary": {
-    "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin dry-run approval and rejection endpoints."
-  },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal dry-run approval metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox delivery/lease/attempt plan mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
-  "safeOutput": {
-    "status": "pass"
-  },
-  "productionClaims": {
-    "runtimeReady": false,
-    "productionReady": false,
-    "deploymentApplied": false,
-    "legalComplianceClaimed": false,
-    "youtubePolicyComplianceClaimed": false
-  },
-  "reviewScope": {
-    "scope": "P0 admin reaction dispatch dry-run approval gate, admin auth, safe approval/rejection metadata, idempotency, state guards, safe audit metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental external execution, unsafe state approval, raw data exposure, mutation of support/outbox/lease/attempt plan, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Dry-run approval gate tests, dry-run review tests, dry-run adapter boundary tests, attempt plan review tests, attempt planning tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
-  },
-  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md"
+    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+    "harnessVersion":  "1.2.5",
+    "repository":  "hiro4649/CRIPTO-TIP",
+    "prNumber":  0,
+    "headSha":  "current_pr_head",
+    "baseSha":  "8a499a0c5fe94add12e2d341be763df3afe9ea95",
+    "title":  "feat: add p0 admin dry-run approval gate",
+    "goal":  "Add local/internal admin approval and rejection gate for reaction dispatch dry-run boundary metadata without external execution.",
+    "changeType":  "product_vertical_slice_admin_dry_run_approval_gate",
+    "runtimeReadinessClaimed":  false,
+    "productionReadinessClaimed":  false,
+    "legalComplianceClaimed":  false,
+    "youtubePolicyComplianceClaimed":  false,
+    "schemaVersion":  "1.0.0",
+    "prProfile":  "product_r3",
+    "taskMode":  "feature",
+    "ciRunId":  "27654830326",
+    "qualityGateRunId":  "27654830316",
+    "qualityGateArtifactId":  "7682192018",
+    "productCiStatus":  "success",
+    "qualityGateStatus":  "success",
+    "riskLevel":  "R3",
+    "runtimeReadinessClaim":  "no",
+    "productCodeChanged":  true,
+    "productValueContribution":  [
+                                     "reaction_dispatch_safety",
+                                     "admin_operator_workflow",
+                                     "dry_run_approval_gate"
+                                 ],
+    "scope":  {
+                  "changedFiles":  [
+                                       "apps/api/src/server.ts",
+                                       "apps/api/src/repositories/types.ts",
+                                       "apps/api/src/repositories/in-memory.ts",
+                                       "apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts",
+                                       "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
+                                       "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
+                                       ".codex/p0-admin-reaction-dispatch-dry-run-approval-gate.json",
+                                       ".codex/evidence-pack.json",
+                                       ".codex/product-verification.json",
+                                       ".codex/quality-gate-evidence.json",
+                                       ".codex/test-summary.json",
+                                       ".codex/test-coverage-evidence.json",
+                                       ".codex/task-contract.json",
+                                       ".codex/risk-register.json",
+                                       ".codex/review-independence.json"
+                                   ],
+                  "allowedPaths":  [
+                                       "apps/api/src/server.ts",
+                                       "apps/api/src/*.test.ts",
+                                       "apps/api/src/*.ts",
+                                       "apps/api/src/repositories/*",
+                                       "packages/shared/src/index.ts",
+                                       "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_APPROVAL_GATE.md",
+                                       "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md",
+                                       ".codex/**"
+                                   ],
+                  "forbiddenPaths":  [
+                                         "package.json",
+                                         "pnpm-lock.yaml",
+                                         "contracts/**",
+                                         "migrations/**",
+                                         ".github/workflows/**",
+                                         "apps/web/**",
+                                         "apps/overlay/**",
+                                         ".env.example"
+                                     ]
+              },
+    "commands":  [
+                     {
+                         "status":  "pass",
+                         "result":  "pass",
+                         "name":  "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts"
+                     },
+                     {
+                         "status":  "pass",
+                         "result":  "pass",
+                         "name":  "corepack pnpm typecheck"
+                     }
+                 ],
+    "remoteRuns":  [
+                       {
+                           "name":  "ci",
+                           "runId":  "27654830326",
+                           "result":  "success"
+                       },
+                       {
+                           "name":  "quality-gate",
+                           "runId":  "27654830316",
+                           "result":  "success",
+                           "artifactId":  "7682192018"
+                       }
+                   ],
+    "allowedScope":  [
+                         "local/internal admin dry-run approval gate",
+                         "safe dry-run approval and rejection metadata",
+                         "admin auth guard",
+                         "approval idempotency",
+                         "rejection idempotency",
+                         "state transition guards",
+                         "adapter kind allowlist metadata",
+                         "safe audit metadata",
+                         "read-only support/outbox/lease/attempt-plan checks",
+                         "no external execution checks",
+                         "docs",
+                         ".codex evidence"
+                     ],
+    "forbiddenScope":  [
+                           "runtime readiness claim",
+                           "production readiness claim",
+                           "legal compliance claim",
+                           "YouTube policy compliance claim",
+                           "package.json change",
+                           "pnpm-lock change",
+                           "DB driver dependency",
+                           "Redis dependency",
+                           "Kafka dependency",
+                           "real DB connection",
+                           "migration change",
+                           "contract change",
+                           "workflow change",
+                           "apps/web change",
+                           "apps/overlay change",
+                           "real YouTube API",
+                           "real OAuth token",
+                           "real RPC",
+                           "wallet/RPC/deploy changes",
+                           "real TTS call",
+                           "real Live2D call",
+                           "real renderer call",
+                           "real OBS delivery",
+                           "real WebSocket delivery",
+                           "IRIS Core call",
+                           "VOXWEAVE call",
+                           "support event mutation",
+                           "outbox delivery mutation",
+                           "lease mutation",
+                           "attempt plan mutation",
+                           "reaction execution",
+                           "overlay execution",
+                           "external outbox dispatch",
+                           "external adapter execution",
+                           "AI generation execution",
+                           "token sale",
+                           "token exchange",
+                           "cash-out",
+                           "custody",
+                           "internal balance",
+                           "investment wording",
+                           "refund"
+                       ],
+    "doneCriteria":  [
+                         "admin dry-run approval requires admin auth",
+                         "unknown dry-run boundary returns 404",
+                         "approval writes safe metadata only",
+                         "approval is idempotent",
+                         "rejection writes safe metadata only",
+                         "rejection is idempotent",
+                         "state guards reject blocked invalid superseded rejected or already approved transitions",
+                         "no support event mutation",
+                         "no outbox delivery mutation",
+                         "no lease mutation",
+                         "no attempt plan mutation",
+                         "no reaction execution",
+                         "no overlay execution",
+                         "no external outbox delivery",
+                         "no external runtime execution"
+                     ],
+    "testSummary":  {
+                        "schemaVersion":  "1.0.0",
+                        "command":  "corepack pnpm test",
+                        "testFiles":  91,
+                        "passed":  1961,
+                        "skipped":  6
+                    },
+    "securityBoundaries":  [
+                               "No package.json or pnpm-lock change.",
+                               "No DB driver, Redis, or Kafka dependency is added.",
+                               "No real DB connection is introduced.",
+                               "No migration, contract, workflow, web, or overlay path is changed.",
+                               "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
+                               "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
+                               "The new admin dry-run approval endpoints write only local/internal approval metadata and safe audit metadata.",
+                               "The endpoints do not mutate support events, outbox delivery state, leases, or attempt plans.",
+                               "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
+                               "Approval/rejection metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, adapter URLs, webhook URLs, request bodies, auth material, headers, and tokens.",
+                               "No runtime, production, legal, or YouTube policy readiness is claimed."
+                           ],
+    "residualRisks":  [
+                          "This is local/internal dry-run approval metadata only.",
+                          "Approved dry-run boundaries are not executed in this PR.",
+                          "Actual adapter execution boundary remains future scoped work."
+                      ],
+    "humanConfirmation":  [
+                              "AI review is not human approval.",
+                              "AI review is not GitHub approval review.",
+                              "This PR does not create owner approval record.",
+                              "This PR does not create merge authority."
+                          ],
+    "productVerificationCommands":  [
+                                        "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts: pass",
+                                        "corepack pnpm typecheck: pass"
+                                    ],
+    "packageVerification":  {
+                                "packageScriptsChanged":  false,
+                                "runtimeDependenciesAdded":  false,
+                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
+                            },
+    "apiCompatibilitySummary":  {
+                                    "publicApiChanged":  false,
+                                    "internalRuntimeApiChanged":  true,
+                                    "statement":  "Adds local/internal admin dry-run approval and rejection endpoints."
+                                },
+    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal dry-run approval metadata only.",
+    "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox delivery/lease/attempt plan mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
+    "safeOutput":  {
+                       "status":  "pass"
+                   },
+    "productionClaims":  {
+                             "runtimeReady":  false,
+                             "productionReady":  false,
+                             "deploymentApplied":  false,
+                             "legalComplianceClaimed":  false,
+                             "youtubePolicyComplianceClaimed":  false
+                         },
+    "reviewScope":  {
+                        "scope":  "P0 admin reaction dispatch dry-run approval gate, admin auth, safe approval/rejection metadata, idempotency, state guards, safe audit metadata, tests, docs, and .codex evidence.",
+                        "riskSummary":  "Main risk is accidental external execution, unsafe state approval, raw data exposure, mutation of support/outbox/lease/attempt plan, or readiness claims; tests and docs reject those outcomes.",
+                        "verificationOracle":  "Dry-run approval gate tests, dry-run review tests, dry-run adapter boundary tests, attempt plan review tests, attempt planning tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+                    },
+    "prBodyPath":  "docs/pr-p0-admin-reaction-dispatch-dry-run-approval-gate.md"
 }

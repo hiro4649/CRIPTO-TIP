@@ -21,7 +21,7 @@ Done criteria: admin dry-run approval requires admin auth; unknown dry-run bound
 
 ## Evidence Integrity
 
-Head SHA: c152cc0b354b4d4156f20c090f8eceb57d3a5874
+Head SHA: current_pr_head
 
 Base SHA: 8a499a0c5fe94add12e2d341be763df3afe9ea95
 
