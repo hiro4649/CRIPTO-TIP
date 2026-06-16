@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -198,8 +198,8 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued", "reaction_dispatch_internal_outbox_cancelled", "reaction_dispatch_internal_outbox_lease_created", "reaction_dispatch_internal_outbox_lease_extended", "reaction_dispatch_internal_outbox_lease_released", "reaction_dispatch_internal_outbox_attempt_plan_created"]);
-const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary", "reaction_dispatch_internal_outbox"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued", "reaction_dispatch_internal_outbox_cancelled", "reaction_dispatch_internal_outbox_lease_created", "reaction_dispatch_internal_outbox_lease_extended", "reaction_dispatch_internal_outbox_lease_released", "reaction_dispatch_internal_outbox_attempt_plan_created", "reaction_dispatch_dry_run_boundary_approved", "reaction_dispatch_dry_run_boundary_rejected"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary", "reaction_dispatch_internal_outbox", "reaction_dispatch_dry_run_boundary"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
@@ -229,6 +229,13 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "leased_by_actor_type",
   "attempt_plan_status",
   "plan_id",
+  "dry_run_boundary_id",
+  "dry_run_status",
+  "adapter_kind",
+  "approved_at",
+  "rejected_at",
+  "approved_by_actor_type",
+  "rejected_by_actor_type",
   "planned_adapter_type",
   "planned_action",
   "plan_context_hash",
@@ -574,6 +581,8 @@ type ReactionDispatchCandidateRepository = {
   setReactionDispatchInternalOutboxAttemptPlan?: (plan: ReactionDispatchInternalOutboxAttemptPlanMetadata) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata>;
   getReactionDispatchInternalOutboxAttemptPlan?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata | undefined>;
   listReactionDispatchInternalOutboxAttemptPlans?: () => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata[]>;
+  setReactionDispatchDryRunApproval?: (approval: ReactionDispatchDryRunApprovalMetadata) => Promise<ReactionDispatchDryRunApprovalMetadata>;
+  getReactionDispatchDryRunApproval?: (dryRunBoundaryId: string) => Promise<ReactionDispatchDryRunApprovalMetadata | undefined>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
@@ -582,6 +591,7 @@ const reactionDispatchOutboxBoundaryFallbackByRepo = new WeakMap<CriptoTipReposi
 const reactionDispatchInternalOutboxFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxMetadata>>();
 const reactionDispatchInternalOutboxLeaseFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxLeaseMetadata>>();
 const reactionDispatchInternalOutboxAttemptPlanFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>>();
+const reactionDispatchDryRunApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchDryRunApprovalMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -944,6 +954,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     internalOutboxAttemptPlanFallback = new Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>();
     reactionDispatchInternalOutboxAttemptPlanFallbackByRepo.set(repo, internalOutboxAttemptPlanFallback);
   }
+  let dryRunApprovalFallback = reactionDispatchDryRunApprovalFallbackByRepo.get(repo);
+  if (!dryRunApprovalFallback) {
+    dryRunApprovalFallback = new Map<string, ReactionDispatchDryRunApprovalMetadata>();
+    reactionDispatchDryRunApprovalFallbackByRepo.set(repo, dryRunApprovalFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -1040,7 +1055,16 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     listReactionDispatchInternalOutboxAttemptPlans: candidate.listReactionDispatchInternalOutboxAttemptPlans
       ? () => candidate.listReactionDispatchInternalOutboxAttemptPlans!.call(repo)
       : async () => [...internalOutboxAttemptPlanFallback.values()]
-        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.plan_id.localeCompare(right.plan_id))
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.plan_id.localeCompare(right.plan_id)),
+    setReactionDispatchDryRunApproval: candidate.setReactionDispatchDryRunApproval
+      ? (approval) => candidate.setReactionDispatchDryRunApproval!.call(repo, approval)
+      : async (approval) => {
+        dryRunApprovalFallback.set(approval.dry_run_boundary_id, approval);
+        return approval;
+      },
+    getReactionDispatchDryRunApproval: candidate.getReactionDispatchDryRunApproval
+      ? (dryRunBoundaryId) => candidate.getReactionDispatchDryRunApproval!.call(repo, dryRunBoundaryId)
+      : async (dryRunBoundaryId) => dryRunApprovalFallback.get(dryRunBoundaryId)
   };
 }
 
@@ -1496,8 +1520,8 @@ function toReactionDispatchInternalOutboxLeaseBlockedReasons(outbox: ReactionDis
   return [...new Set(reasons)];
 }
 
-function buildReactionDispatchInternalOutboxLease(outbox: ReactionDispatchInternalOutboxMetadata, now = new Date()) {
-  const leaseIdSeed = `reaction_dispatch_internal_outbox_lease:${outbox.outbox_id}:${now.toISOString()}:${outbox.updated_at}`;
+function buildReactionDispatchInternalOutboxLease(outbox: ReactionDispatchInternalOutboxMetadata, now = new Date(), previousLease?: ReactionDispatchInternalOutboxLeaseMetadata) {
+  const leaseIdSeed = `reaction_dispatch_internal_outbox_lease:${outbox.outbox_id}:${now.toISOString()}:${outbox.updated_at}:${previousLease?.lease_id ?? "none"}:${previousLease?.updated_at ?? "none"}`;
   return {
     outbox_id: outbox.outbox_id,
     lease_status: "leased_internal" as const,
@@ -1795,7 +1819,13 @@ function toReactionDispatchDryRunReviewEntry(
   const leaseStatus = toReactionDispatchInternalOutboxLeaseStatus(outbox.outbox_id, lease, now);
   const blockers = toReactionDispatchDryRunAdapterBoundaryBlockers(plan, outbox, leaseStatus, plan.lease_id, now);
   const blockingReasonCodes = blockers.filter((reason) => !["external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"].includes(reason));
-  const dryRunStatus = blockingReasonCodes.length === 0 ? "dry_run_ready" : "dry_run_blocked";
+  const dryRunStatus: "dry_run_planned" | "dry_run_ready" | "dry_run_blocked" | "dry_run_invalid" | "dry_run_superseded" = plan.attempt_plan_status === "plan_superseded" || outbox.outbox_status === "superseded_internal"
+    ? "dry_run_superseded"
+    : plan.attempt_plan_status === "plan_expired" || outbox.outbox_status === "cancelled_internal"
+      ? "dry_run_invalid"
+      : blockingReasonCodes.length === 0
+        ? "dry_run_ready"
+        : "dry_run_blocked";
   const readyBoundary = leaseStatus.lease_id && dryRunStatus === "dry_run_ready"
     ? buildReactionDispatchDryRunAdapterBoundary(plan, outbox, leaseStatus)
     : undefined;
@@ -1862,6 +1892,113 @@ function toReactionDispatchDryRunReviewEntry(
       auth_material_included: false
     },
     blocking_reason_codes: [...new Set(blockingReasonCodes)]
+  };
+}
+
+type ReactionDispatchDryRunReviewEntry = ReturnType<typeof toReactionDispatchDryRunReviewEntry>;
+
+const ALLOWED_DRY_RUN_APPROVAL_ADAPTER_KINDS = new Set(["iris_core_reaction"]);
+
+function toReactionDispatchDryRunApprovalBaseline(entry: ReactionDispatchDryRunReviewEntry): ReactionDispatchDryRunApprovalMetadata {
+  return {
+    dry_run_boundary_id: entry.dry_run_boundary_id,
+    plan_id: entry.plan_id,
+    outbox_id: entry.outbox_id,
+    lease_id: entry.lease_id,
+    candidate_id: entry.candidate_id,
+    boundary_id: entry.boundary_id,
+    support_event_id: entry.support_event_id,
+    adapter_kind: entry.adapter_kind,
+    dry_run_status: entry.dry_run_status,
+    approval_status: entry.dry_run_status === "dry_run_ready" ? "dry_run_ready" : "approval_blocked",
+    safe_reason_codes: entry.dry_run_status === "dry_run_ready"
+      ? ["external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"]
+      : toReactionDispatchDryRunApprovalBlockers(entry),
+    external_delivery_status: entry.external_delivery_status,
+    adapter_execution_status: entry.adapter_execution_status,
+    dispatch_attempt_count: entry.dispatch_attempt_count,
+    created_at: entry.created_at,
+    updated_at: entry.updated_at
+  };
+}
+
+function toReactionDispatchDryRunApprovalBlockers(entry: ReactionDispatchDryRunReviewEntry): ReactionDispatchDryRunApprovalReasonCode[] {
+  const reasons = new Set<ReactionDispatchDryRunApprovalReasonCode>();
+  if (entry.dry_run_status === "dry_run_blocked") reasons.add("dry_run_blocked");
+  if (entry.dry_run_status === "dry_run_invalid") reasons.add("dry_run_invalid");
+  if (entry.dry_run_status === "dry_run_superseded") reasons.add("dry_run_superseded");
+  if (entry.dry_run_status !== "dry_run_ready") reasons.add("dry_run_not_ready");
+  if (!ALLOWED_DRY_RUN_APPROVAL_ADAPTER_KINDS.has(entry.adapter_kind)) reasons.add("adapter_kind_not_allowed");
+  if (entry.validation_status !== "candidate_ready") reasons.add("unsafe_context");
+  if (entry.external_delivery_status !== "not_attempted") reasons.add("state_transition_blocked");
+  if (entry.adapter_execution_status !== "not_executed") reasons.add("state_transition_blocked");
+  if (entry.dispatch_attempt_count !== 0) reasons.add("dispatch_attempt_count_not_zero");
+  if (entry.blocking_reason_codes.some((reason) => reason === "unsafe_context")) reasons.add("unsafe_context");
+  reasons.add("external_execution_forbidden");
+  return [...reasons];
+}
+
+function isReactionDispatchDryRunApprovalSafe(entry: ReactionDispatchDryRunReviewEntry) {
+  return toReactionDispatchDryRunApprovalBlockers(entry).filter((reason) => reason !== "external_execution_forbidden").length === 0;
+}
+
+function toReactionDispatchDryRunApprovalResponse(approval: ReactionDispatchDryRunApprovalMetadata) {
+  return {
+    dry_run_boundary_id: approval.dry_run_boundary_id,
+    plan_id: approval.plan_id,
+    outbox_id: approval.outbox_id,
+    lease_id: approval.lease_id,
+    candidate_id: approval.candidate_id,
+    boundary_id: approval.boundary_id,
+    support_event_id: approval.support_event_id,
+    adapter_kind: approval.adapter_kind,
+    dry_run_status: approval.dry_run_status,
+    approval_status: approval.approval_status,
+    approved_at: approval.approved_at,
+    rejected_at: approval.rejected_at,
+    approved_by_actor_type: approval.approved_by_actor_type,
+    rejected_by_actor_type: approval.rejected_by_actor_type,
+    safe_reason_codes: approval.safe_reason_codes,
+    external_delivery_status: approval.external_delivery_status,
+    adapter_execution_status: approval.adapter_execution_status,
+    dispatch_attempt_count: approval.dispatch_attempt_count,
+    created_at: approval.created_at,
+    updated_at: approval.updated_at
+  };
+}
+
+async function findReactionDispatchDryRunReviewEntry(
+  candidateRepo: Required<ReactionDispatchCandidateRepository>,
+  dryRunBoundaryId: string,
+  now = new Date()
+) {
+  for (const plan of await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()) {
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+    if (!outbox) continue;
+    const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+    const entry = toReactionDispatchDryRunReviewEntry(plan, outbox, lease, now);
+    if (entry.dry_run_boundary_id === dryRunBoundaryId) return { entry, outbox, lease, plan };
+  }
+  return undefined;
+}
+
+function toReactionDispatchDryRunApprovalAuditMetadata(approval: ReactionDispatchDryRunApprovalMetadata, beforeStatus: string) {
+  return {
+    dry_run_boundary_id: approval.dry_run_boundary_id,
+    plan_id: approval.plan_id,
+    outbox_id: approval.outbox_id,
+    lease_id: approval.lease_id,
+    candidate_id: approval.candidate_id,
+    boundary_id: approval.boundary_id,
+    support_event_id: approval.support_event_id,
+    adapter_kind: approval.adapter_kind,
+    dry_run_status: approval.dry_run_status,
+    before_status: beforeStatus,
+    after_status: approval.approval_status,
+    approval_status: approval.approval_status,
+    external_delivery_status: approval.external_delivery_status,
+    adapter_execution_status: approval.adapter_execution_status,
+    dispatch_attempt_count: approval.dispatch_attempt_count
   };
 }
 
@@ -3106,7 +3243,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       review_summary: {
         dry_run_ready: filtered.filter((entry) => entry.dry_run_status === "dry_run_ready").length,
         dry_run_blocked: filtered.filter((entry) => entry.dry_run_status === "dry_run_blocked").length,
-        dry_run_planned: filtered.filter((entry) => entry.dry_run_status === "dry_run_planned").length,
+        dry_run_planned: 0,
         dry_run_invalid: filtered.filter((entry) => entry.dry_run_status === "dry_run_invalid").length,
         dry_run_superseded: filtered.filter((entry) => entry.dry_run_status === "dry_run_superseded").length
       },
@@ -3132,6 +3269,131 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       }
     }
     return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+  });
+
+  app.get("/admin/reaction-dispatch/dry-run-boundaries/:dryRunBoundaryId/approval", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const found = await findReactionDispatchDryRunReviewEntry(candidateRepo, dryRunBoundaryId);
+    if (!found) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+    const stored = await candidateRepo.getReactionDispatchDryRunApproval(dryRunBoundaryId);
+    return {
+      approval: toReactionDispatchDryRunApprovalResponse(stored ?? toReactionDispatchDryRunApprovalBaseline(found.entry)),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/dry-run-boundaries/:dryRunBoundaryId/approve", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const found = await findReactionDispatchDryRunReviewEntry(candidateRepo, dryRunBoundaryId);
+    if (!found) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+    const existing = await candidateRepo.getReactionDispatchDryRunApproval(dryRunBoundaryId);
+    if (existing?.approval_status === "approved_for_adapter_execution") {
+      return {
+        approval: toReactionDispatchDryRunApprovalResponse({ ...existing, safe_reason_codes: ["already_approved", "external_execution_forbidden"] }),
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      };
+    }
+    if (existing?.approval_status === "rejected_by_admin") {
+      return reply.code(409).send({
+        approval: toReactionDispatchDryRunApprovalResponse({ ...existing, safe_reason_codes: ["state_transition_blocked", "external_execution_forbidden"] }),
+        error: "reaction_dispatch_dry_run_approval_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    if (!isReactionDispatchDryRunApprovalSafe(found.entry)) {
+      const blocked = {
+        ...toReactionDispatchDryRunApprovalBaseline(found.entry),
+        approval_status: "approval_blocked" as const,
+        safe_reason_codes: toReactionDispatchDryRunApprovalBlockers(found.entry)
+      };
+      return reply.code(409).send({
+        approval: toReactionDispatchDryRunApprovalResponse(blocked),
+        error: "reaction_dispatch_dry_run_approval_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const now = new Date().toISOString();
+    const approval: ReactionDispatchDryRunApprovalMetadata = {
+      ...toReactionDispatchDryRunApprovalBaseline(found.entry),
+      approval_status: "approved_for_adapter_execution",
+      approved_at: now,
+      approved_by_actor_type: "admin",
+      safe_reason_codes: ["admin_approved", "external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"],
+      updated_at: now
+    };
+    await candidateRepo.setReactionDispatchDryRunApproval(approval);
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      action: "reaction_dispatch_dry_run_boundary_approved",
+      target_type: "reaction_dispatch_dry_run_boundary",
+      target_id: approval.dry_run_boundary_id,
+      before_json: toReactionDispatchDryRunApprovalAuditMetadata(toReactionDispatchDryRunApprovalBaseline(found.entry), existing?.approval_status ?? "dry_run_ready"),
+      after_json: toReactionDispatchDryRunApprovalAuditMetadata(approval, existing?.approval_status ?? "dry_run_ready")
+    });
+    return {
+      approval: toReactionDispatchDryRunApprovalResponse(approval),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/dry-run-boundaries/:dryRunBoundaryId/reject", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const found = await findReactionDispatchDryRunReviewEntry(candidateRepo, dryRunBoundaryId);
+    if (!found) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+    const existing = await candidateRepo.getReactionDispatchDryRunApproval(dryRunBoundaryId);
+    if (existing?.approval_status === "rejected_by_admin") {
+      return {
+        approval: toReactionDispatchDryRunApprovalResponse({ ...existing, safe_reason_codes: ["already_rejected", "external_execution_forbidden"] }),
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      };
+    }
+    if (existing?.approval_status === "approved_for_adapter_execution") {
+      return reply.code(409).send({
+        approval: toReactionDispatchDryRunApprovalResponse({ ...existing, safe_reason_codes: ["state_transition_blocked", "external_execution_forbidden"] }),
+        error: "reaction_dispatch_dry_run_rejection_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    if (["dry_run_invalid", "dry_run_superseded"].includes(found.entry.dry_run_status)) {
+      const blocked = {
+        ...toReactionDispatchDryRunApprovalBaseline(found.entry),
+        approval_status: found.entry.dry_run_status as "dry_run_invalid" | "dry_run_superseded",
+        safe_reason_codes: toReactionDispatchDryRunApprovalBlockers(found.entry)
+      };
+      return reply.code(409).send({
+        approval: toReactionDispatchDryRunApprovalResponse(blocked),
+        error: "reaction_dispatch_dry_run_rejection_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const now = new Date().toISOString();
+    const approval: ReactionDispatchDryRunApprovalMetadata = {
+      ...toReactionDispatchDryRunApprovalBaseline(found.entry),
+      approval_status: "rejected_by_admin",
+      rejected_at: now,
+      rejected_by_actor_type: "admin",
+      safe_reason_codes: ["admin_rejected", "external_execution_forbidden"],
+      updated_at: now
+    };
+    await candidateRepo.setReactionDispatchDryRunApproval(approval);
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      action: "reaction_dispatch_dry_run_boundary_rejected",
+      target_type: "reaction_dispatch_dry_run_boundary",
+      target_id: approval.dry_run_boundary_id,
+      before_json: toReactionDispatchDryRunApprovalAuditMetadata(toReactionDispatchDryRunApprovalBaseline(found.entry), existing?.approval_status ?? found.entry.dry_run_status),
+      after_json: toReactionDispatchDryRunApprovalAuditMetadata(approval, existing?.approval_status ?? found.entry.dry_run_status)
+    });
+    return {
+      approval: toReactionDispatchDryRunApprovalResponse(approval),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
   });
 
   app.get("/admin/reaction-dispatch/outbox/:outboxId/lease", async (req, reply) => {
@@ -3175,7 +3437,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
       });
     }
-    const lease = await candidateRepo.setReactionDispatchInternalOutboxLease(buildReactionDispatchInternalOutboxLease(outbox, now));
+    const lease = await candidateRepo.setReactionDispatchInternalOutboxLease(buildReactionDispatchInternalOutboxLease(outbox, now, existing));
     await repo.writeAuditLog({
       actor_type: "admin",
       actor_id: "admin_mock",

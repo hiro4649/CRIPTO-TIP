@@ -1,34 +1,34 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-  "harnessVersion": "1.2.5",
-  "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 113,
-  "headSha": "current_pr_head",
-  "baseSha": "d609afbf89d8b90f738bc461c63beeda25eeba68",
-  "title": "feat: add p0 admin dry-run review surface",
-  "goal": "Add read-only admin review surface for local/internal reaction dispatch dry-run adapter boundary metadata without approval or external execution.",
-  "changeType": "product_vertical_slice_admin_dry_run_review_surface",
-  "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false,
-  "legalComplianceClaimed": false,
-  "youtubePolicyComplianceClaimed": false,
-  "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "feature",
-  "productVerificationStatus": "targeted_pass_full_pending",
-  "commands": [
-    {
-      "name": "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
-      "result": "pass",
-      "status": "pass"
-    }
-  ],
-  "noRuntimeReadinessClaim": true,
-  "noProductionReadinessClaim": true,
-  "noExternalExecution": true
+    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+    "harnessVersion":  "1.2.5",
+    "repository":  "hiro4649/CRIPTO-TIP",
+    "prNumber":  0,
+    "headSha":  "current_pr_head",
+    "baseSha":  "8a499a0c5fe94add12e2d341be763df3afe9ea95",
+    "title":  "feat: add p0 admin dry-run approval gate",
+    "goal":  "Add local/internal admin approval and rejection gate for reaction dispatch dry-run boundary metadata without external execution.",
+    "changeType":  "product_vertical_slice_admin_dry_run_approval_gate",
+    "runtimeReadinessClaimed":  false,
+    "productionReadinessClaimed":  false,
+    "legalComplianceClaimed":  false,
+    "youtubePolicyComplianceClaimed":  false,
+    "schemaVersion":  "1.0.0",
+    "prProfile":  "product_r3",
+    "taskMode":  "feature",
+    "productVerificationStatus":  "targeted_pass_full_pending",
+    "commands":  [
+                     {
+                         "status":  "pass",
+                         "result":  "pass",
+                         "name":  "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts"
+                     },
+                     {
+                         "status":  "pass",
+                         "result":  "pass",
+                         "name":  "corepack pnpm typecheck"
+                     }
+                 ],
+    "noRuntimeReadinessClaim":  true,
+    "noProductionReadinessClaim":  true,
+    "noExternalExecution":  true
 }
