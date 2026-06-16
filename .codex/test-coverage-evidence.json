@@ -2,12 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 109,
+  "prNumber": 110,
   "headSha": "current_pr_head",
-  "baseSha": "e6400bc174fad9d365e25f128dc7a586bfb00e4e",
-  "title": "feat: add p0 reaction dispatch internal outbox lease",
-  "goal": "Add local/internal lease controls for queued reaction dispatch internal outbox records without external dispatch.",
-  "changeType": "product_vertical_slice_internal_outbox_lease",
+  "baseSha": "da8f7c4f394e2afa56c12ec8a703c03eb41dcce3",
+  "title": "feat: add p0 reaction dispatch internal outbox attempt planning",
+  "goal": "Add local/internal attempt planning metadata after active lease without external adapter execution.",
+  "changeType": "product_vertical_slice_internal_outbox_attempt_planning",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -15,17 +15,13 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 87,
-    "passed": 1864,
+    "testFiles": 88,
+    "passed": 1881,
     "skipped": 6
   },
-  "reactionDispatchInternalOutboxLeaseStatus": "implemented",
-  "outboxLeaseStatus": "pass",
-  "outboxLeaseIdempotencyStatus": "pass",
-  "outboxLeaseExpiryStatus": "pass",
-  "outboxLeaseExtendStatus": "pass",
-  "outboxLeaseReleaseStatus": "pass",
+  "reactionDispatchInternalOutboxAttemptPlanningStatus": "implemented",
+  "attemptPlanStatus": "pass",
+  "activeLeaseRequiredStatus": "pass",
+  "leaseIdMatchRequiredStatus": "pass",
   "safeMetadataStatus": "pass"
 }
-
-

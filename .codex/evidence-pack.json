@@ -2,12 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 109,
-  "headSha": "a8774651ee063da20abb812e4f4467eb29643822",
-  "baseSha": "e6400bc174fad9d365e25f128dc7a586bfb00e4e",
-  "title": "feat: add p0 reaction dispatch internal outbox lease",
-  "goal": "Add local/internal lease controls for queued reaction dispatch internal outbox records without external dispatch.",
-  "changeType": "product_vertical_slice_internal_outbox_lease",
+  "prNumber": 110,
+  "headSha": "35ff14d980bd0bd023bc56b70a0e58d1223c78d0",
+  "baseSha": "da8f7c4f394e2afa56c12ec8a703c03eb41dcce3",
+  "title": "feat: add p0 reaction dispatch internal outbox attempt planning",
+  "goal": "Add local/internal attempt planning metadata after active lease without external adapter execution.",
+  "changeType": "product_vertical_slice_internal_outbox_attempt_planning",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -15,9 +15,9 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "27648550464",
-  "qualityGateRunId": "27648550453",
-  "qualityGateArtifactId": "7679798485",
+  "ciRunId": "27650043128",
+  "qualityGateRunId": "27650043149",
+  "qualityGateArtifactId": "7680389135",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "riskLevel": "R3",
@@ -26,17 +26,17 @@
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "internal_outbox_lease"
+    "internal_outbox_attempt_planning"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/types.ts",
-      "apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_LEASE.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-lease.md",
-      ".codex/p0-reaction-dispatch-internal-outbox-lease.json",
+      "apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts",
+      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ATTEMPT_PLANNING.md",
+      "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md",
+      ".codex/p0-reaction-dispatch-internal-outbox-attempt-planning.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -51,8 +51,8 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/*.ts",
       "apps/api/src/repositories/*",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_LEASE.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-lease.md",
+      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ATTEMPT_PLANNING.md",
+      "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -68,7 +68,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -81,25 +81,25 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27648550464",
+      "runId": "27650043128",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27648550453",
+      "runId": "27650043149",
       "result": "success",
-      "artifactId": "7679798485"
+      "artifactId": "7680389135"
     }
   ],
   "allowedScope": [
-    "internal outbox lease metadata",
+    "internal outbox attempt planning metadata",
     "admin auth guard",
+    "active lease guard",
+    "lease id match guard",
     "queued-only state guard",
     "external-not-attempted guard",
     "adapter-not-executed guard",
-    "lease expiry",
-    "lease extend",
-    "lease release",
+    "dispatch attempt count guard",
     "safe audit metadata",
     "docs",
     ".codex evidence"
@@ -144,14 +144,14 @@
     "refund"
   ],
   "doneCriteria": [
-    "lease requires admin auth",
+    "attempt plan requires admin auth",
     "unknown outbox returns 404",
-    "queued_internal can be leased",
-    "duplicate active lease is blocked",
-    "expired lease can be reclaimed",
-    "extend requires active matching lease",
-    "release is idempotent",
-    "lease status returns safe metadata",
+    "active lease is required",
+    "lease_id must match",
+    "queued_internal only can be planned",
+    "duplicate plan is idempotent",
+    "expired or released lease is blocked",
+    "attempt status returns safe metadata",
     "no support event mutation",
     "no reaction execution",
     "no overlay execution",
@@ -161,8 +161,8 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 87,
-    "passed": 1864,
+    "testFiles": 88,
+    "passed": 1881,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -174,11 +174,11 @@
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
     "No support events are mutated.",
     "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Lease metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, LLM output, and raw lease tokens.",
+    "Attempt plan metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, and LLM output.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal lease metadata only.",
+    "This is local/internal attempt planning metadata only.",
     "Actual runtime dispatch, adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain future scoped work."
   ],
   "humanConfirmation": [
@@ -188,7 +188,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts: pass",
+    "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts: pass",
     "corepack pnpm typecheck: pass"
   ],
   "packageVerification": {
@@ -199,9 +199,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal reaction dispatch outbox lease endpoints."
+    "statement": "Adds local/internal reaction dispatch outbox attempt planning endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal lease metadata only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal attempt planning metadata only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -214,9 +214,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 reaction dispatch internal outbox lease, admin auth, safe lease metadata, expiry, extend, release, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Internal outbox lease tests, cancel tests, review surface tests, internal enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 reaction dispatch internal outbox attempt planning, admin auth, active lease gate, safe plan metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, attempt count mutation, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Attempt planning tests, lease tests, cancel tests, review surface tests, internal enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-lease.md"
+  "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md"
 }
