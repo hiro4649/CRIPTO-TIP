@@ -21,7 +21,7 @@ Done criteria: admin operator notes requires admin bearer token; admin operator 
 
 ## Evidence Integrity
 
-Head SHA: 837249ea6b5030ec51327d55ea0a7d6dc1111ed3
+Head SHA: 5b82d7fce5cd14f6747e4948a8feb1e62503b0b3
 
 Base SHA: 4142e773594f1693583055f83bb4862c56017ad1
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27587546065
+CI run: 27587665772
 
-Quality-gate run: 27587546061
+Quality-gate run: 27587761225
 
-Quality-gate artifact: 7655108628
+Quality-gate artifact: 7655196901
 
 Tests: 73 test files, 1817 passed, 6 skipped
 

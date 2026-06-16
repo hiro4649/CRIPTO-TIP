@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 92,
-  "headSha": "837249ea6b5030ec51327d55ea0a7d6dc1111ed3",
+  "headSha": "5b82d7fce5cd14f6747e4948a8feb1e62503b0b3",
   "baseSha": "4142e773594f1693583055f83bb4862c56017ad1",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support event operator notes",
   "goal": "Add local/internal admin operator notes for support events without mutating support core fields or triggering side effects.",
-  "ciRunId": "27587546065",
-  "qualityGateRunId": "27587546061",
-  "qualityGateArtifactId": "7655108628",
+  "ciRunId": "27587665772",
+  "qualityGateRunId": "27587761225",
+  "qualityGateArtifactId": "7655196901",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -67,14 +67,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27587546065",
+      "runId": "27587665772",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27587546061",
+      "runId": "27587761225",
       "result": "success",
-      "artifactId": "7655108628"
+      "artifactId": "7655196901"
     }
   ],
   "allowedScope": [
@@ -197,3 +197,4 @@
   },
   "prBodyPath": "docs/pr-p0-admin-support-event-operator-notes.md"
 }
+
