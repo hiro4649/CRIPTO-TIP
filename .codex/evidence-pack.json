@@ -2,38 +2,35 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 106,
-  "headSha": "2c47040225cb1759cd24fa3489f94b582686e231",
-  "baseSha": "9616a90e4aea0488b0aadbc60e21aa61b6f5b302",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "5fcfed1e89c601f5bb927925857eb8c1f104e3e9",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_internal_outbox_enqueue",
+  "changeType": "product_vertical_slice_outbox_review_surface",
   "riskLevel": "R3",
-  "title": "feat: add p0 reaction dispatch internal outbox enqueue",
-  "goal": "Convert an approved candidate outbox boundary into a local/internal outbox queue record without external dispatch.",
-  "ciRunId": "27622572704",
-  "qualityGateRunId": "27622572668",
-  "qualityGateArtifactId": "7668967723",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add p0 admin reaction dispatch outbox review surface",
+  "goal": "Add a read-only admin review surface for local/internal reaction dispatch outbox records without external dispatch.",
+  "ciRunId": "local-pre-pr",
+  "qualityGateRunId": "local-pre-pr",
+  "qualityGateArtifactId": "local-pre-pr",
+  "productCiStatus": "local-pre-pr",
+  "qualityGateStatus": "local-pre-pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "internal_outbox_enqueue",
-    "approval_gate"
+    "internal_outbox_review"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/repositories/in-memory.ts",
-      "apps/api/src/repositories/types.ts",
-      "apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ENQUEUE.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-enqueue.md",
-      ".codex/p0-reaction-dispatch-internal-outbox-enqueue.json",
+      "apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_OUTBOX_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
+      ".codex/p0-admin-reaction-dispatch-outbox-review-surface.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -46,10 +43,8 @@
     "allowedPaths": [
       "apps/api/src/server.ts",
       "apps/api/src/*.test.ts",
-      "apps/api/src/*.ts",
-      "apps/api/src/repositories/*",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ENQUEUE.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-enqueue.md",
+      "docs/P0_ADMIN_REACTION_DISPATCH_OUTBOX_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -65,7 +60,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -110,7 +105,7 @@
       "status": "pass"
     },
     {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-enqueue.md",
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
       "result": "pass",
       "status": "pass"
     },
@@ -155,27 +150,12 @@
       "status": "nonblocking"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27622572704",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27622572668",
-      "result": "success",
-      "artifactId": "7668967723"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "internal outbox enqueue metadata",
+    "read-only outbox review list/detail",
     "admin auth guard",
-    "boundary-ready gate",
-    "approved-candidate gate",
-    "Support Event Contract v2 revalidation",
-    "idempotent internal outbox record",
-    "safe audit metadata",
+    "safe review summary",
+    "safe blockers",
     "docs",
     ".codex evidence"
   ],
@@ -219,12 +199,11 @@
     "refund"
   ],
   "doneCriteria": [
-    "boundary_ready creates queued_internal record",
-    "approved_for_dispatch is required",
-    "Support Event Contract v2 is revalidated before enqueue",
-    "enqueue is idempotent",
-    "duplicate enqueue does not duplicate audit",
-    "safe metadata only",
+    "admin auth is required",
+    "list returns safe review entries",
+    "detail returns safe review entry",
+    "filters work",
+    "review summary is safe",
     "no support event mutation",
     "no reaction execution",
     "no overlay execution",
@@ -234,8 +213,8 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 84,
-    "passed": 1856,
+    "testFiles": 85,
+    "passed": 1859,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -247,11 +226,11 @@
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
     "No support events are mutated.",
     "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Internal outbox metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, adapter URLs, webhook URLs, and private URLs.",
+    "Review metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, adapter URLs, webhook URLs, and private URLs.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal outbox enqueue metadata only.",
+    "This is read-only review metadata only.",
     "Actual runtime dispatch, adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain future scoped work."
   ],
   "humanConfirmation": [
@@ -261,7 +240,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -270,7 +249,7 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-enqueue.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -288,9 +267,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal reaction dispatch outbox enqueue metadata endpoints."
+    "statement": "Adds read-only admin reaction dispatch outbox review metadata endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal outbox metadata only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is read-only review metadata only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -303,9 +282,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 internal reaction dispatch outbox enqueue, admin auth, safe outbox metadata, idempotency, tests, docs, and .codex evidence.",
+    "scope": "P0 admin reaction dispatch outbox review surface, admin auth, safe review metadata, tests, docs, and .codex evidence.",
     "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Internal outbox enqueue tests, approved boundary tests, approval gate tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "verificationOracle": "Outbox review tests, internal outbox enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-enqueue.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md"
 }

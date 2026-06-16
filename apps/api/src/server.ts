@@ -605,6 +605,14 @@ const AdminSupportEventWorkQueueQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
+const AdminReactionDispatchOutboxReviewQuerySchema = z.object({
+  outbox_status: z.enum(["queued_internal", "pending_internal_dispatch", "cancelled_internal", "blocked_internal", "superseded_internal"]).optional(),
+  stream_id: z.string().optional(),
+  character_id: z.string().optional(),
+  source: z.enum(supportSources).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
@@ -1252,6 +1260,36 @@ function toReactionDispatchInternalOutboxAuditMetadata(outbox: ReactionDispatchI
     adapter_execution_status: outbox.adapter_execution_status,
     dispatch_attempt_count: outbox.dispatch_attempt_count,
     reason_code: outbox.safe_reason_codes[0] ?? "external_execution_forbidden"
+  };
+}
+
+function toReactionDispatchOutboxReviewEntry(outbox: ReactionDispatchInternalOutboxMetadata) {
+  const reviewBlockers = [
+    outbox.external_delivery_status !== "not_attempted" ? "external_delivery_already_attempted" : undefined,
+    outbox.adapter_execution_status !== "not_executed" ? "adapter_already_executed" : undefined,
+    outbox.dispatch_attempt_count !== 0 ? "dispatch_attempt_count_nonzero" : undefined,
+    outbox.outbox_status !== "queued_internal" ? "not_queued_internal" : undefined
+  ].filter((entry): entry is string => Boolean(entry));
+  return {
+    outbox_id: outbox.outbox_id,
+    boundary_id: outbox.boundary_id,
+    candidate_id: outbox.candidate_id,
+    support_event_id: outbox.support_event_id,
+    stream_id: outbox.stream_id,
+    character_id: outbox.character_id,
+    source: outbox.source,
+    contract_version: outbox.contract_version,
+    candidate_status: outbox.candidate_status,
+    boundary_status: outbox.boundary_status,
+    outbox_status: outbox.outbox_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    review_status: reviewBlockers.length === 0 ? "ready_for_operator_review" : "blocked_for_operator_review",
+    safe_reason_codes: outbox.safe_reason_codes,
+    review_blockers: reviewBlockers,
+    created_at: outbox.created_at,
+    updated_at: outbox.updated_at
   };
 }
 
@@ -2364,6 +2402,43 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
     if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
     return { outbox, side_effects: toReactionDispatchInternalOutboxSkippedSideEffects() };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox-review", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminReactionDispatchOutboxReviewQuerySchema.parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const all = (await candidateRepo.listReactionDispatchInternalOutbox())
+      .filter((outbox) => !query.outbox_status || outbox.outbox_status === query.outbox_status)
+      .filter((outbox) => !query.stream_id || outbox.stream_id === query.stream_id)
+      .filter((outbox) => !query.character_id || outbox.character_id === query.character_id)
+      .filter((outbox) => !query.source || outbox.source === query.source);
+    const entries = all.slice(query.offset, query.offset + query.limit).map(toReactionDispatchOutboxReviewEntry);
+    return {
+      review_entries: entries,
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        total: all.length
+      },
+      review_summary: {
+        ready_for_operator_review: all.filter((outbox) => toReactionDispatchOutboxReviewEntry(outbox).review_status === "ready_for_operator_review").length,
+        blocked_for_operator_review: all.filter((outbox) => toReactionDispatchOutboxReviewEntry(outbox).review_status === "blocked_for_operator_review").length
+      },
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox-review/:outboxId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    return {
+      review_entry: toReactionDispatchOutboxReviewEntry(outbox),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
   });
 
   app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {
