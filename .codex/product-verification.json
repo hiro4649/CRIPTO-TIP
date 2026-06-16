@@ -2,23 +2,20 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 108,
-  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
-  "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
-  "verificationStatus": "local_and_remote_pass",
+  "prNumber": 109,
+  "headSha": "current_pr_head",
+  "baseSha": "e6400bc174fad9d365e25f128dc7a586bfb00e4e",
+  "title": "feat: add p0 reaction dispatch internal outbox lease",
+  "goal": "Add local/internal lease controls for queued reaction dispatch internal outbox records without external dispatch.",
+  "changeType": "product_vertical_slice_internal_outbox_lease",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "verificationStatus": "local_full_pass_remote_pending",
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm install",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm lint",
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -26,81 +23,9 @@
       "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
-    },
-    {
-      "name": "corepack pnpm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "npm test",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm evidence:ci",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm quality:self-protection",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/write-test-summary.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-internal-outbox-cancel.md",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/check-evidence-placeholders.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/validate-evidence-freshness.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-secret-safety-scan.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-v125-self-test.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-v124-self-test.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-v123-self-test.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "cd contracts && forge test || true",
-      "result": "unavailable_nonblocking",
-      "status": "nonblocking"
     }
   ],
-  "productRuntimeChanged": false,
-  "runtimeReadinessClaimed": false,
-  "productionReadinessClaimed": false,
-  "legalComplianceClaimed": false,
-  "youtubePolicyComplianceClaimed": false
+  "productRuntimeChanged": false
 }
+
+
