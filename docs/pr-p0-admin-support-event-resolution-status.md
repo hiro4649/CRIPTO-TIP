@@ -21,19 +21,19 @@ Done criteria: admin resolution status requires admin bearer token; admin resolu
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: e9a0abefddfeaef0f67d2ca6e4a32a41f527765b
 
 Base SHA: 1fecb4e893798f9089ab4fe9bcb4621aee671d3c
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27590773119
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27590773126
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7656280764
 
 Tests: 76 test files, 1826 passed, 6 skipped
 

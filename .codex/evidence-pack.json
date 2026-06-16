@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
-  "headSha": "current_pr_head",
+  "headSha": "e9a0abefddfeaef0f67d2ca6e4a32a41f527765b",
   "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support event resolution status",
   "goal": "Add local/internal admin support event resolution status without mutating support core data or triggering side effects.",
-  "ciRunId": "not_created_pre_pr",
-  "qualityGateRunId": "not_created_pre_pr",
-  "qualityGateArtifactId": "not_created_pre_pr",
-  "productCiStatus": "not_created_pre_pr",
-  "qualityGateStatus": "not_created_pre_pr",
+  "ciRunId": "27590773119",
+  "qualityGateRunId": "27590773126",
+  "qualityGateArtifactId": "7656280764",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -85,7 +85,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27590773119",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27590773126",
+      "result": "success",
+      "artifactId": "7656280764"
+    }
+  ],
   "allowedScope": [
     "local/internal admin support event resolution metadata",
     "admin auth guard",
