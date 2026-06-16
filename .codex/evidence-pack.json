@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
-  "headSha": "current_pr_head",
+  "headSha": "da9f325233f9a9e6408bebc9ef784fb74537fa3b",
   "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support event work queue",
   "goal": "Add local/internal admin support event work queue visibility without mutating support events or triggering side effects.",
-  "ciRunId": "not_created_pre_pr",
-  "qualityGateRunId": "not_created_pre_pr",
-  "qualityGateArtifactId": "not_created_pre_pr",
-  "productCiStatus": "not_created_pre_pr",
-  "qualityGateStatus": "not_created_pre_pr",
+  "ciRunId": "27591149540",
+  "qualityGateRunId": "27591239485",
+  "qualityGateArtifactId": "7656432437",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -88,7 +88,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27591149540",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27591239485",
+      "result": "success",
+      "artifactId": "7656432437"
+    }
+  ],
   "allowedScope": [
     "local/internal admin support event work queue API",
     "admin auth guard",

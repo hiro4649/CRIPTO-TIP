@@ -21,19 +21,19 @@ Done criteria: admin work queue requires admin bearer token; admin work queue fi
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: da9f325233f9a9e6408bebc9ef784fb74537fa3b
 
 Base SHA: c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27591149540
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27591239485
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7656432437
 
 Tests: 77 test files, 1828 passed, 6 skipped
 
