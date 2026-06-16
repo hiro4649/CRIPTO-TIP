@@ -33,6 +33,7 @@ import {
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -814,7 +815,7 @@ async function toReactionDispatchPreview(repo: CriptoTipRepository, support: Sup
     ? "support_message_available"
     : `message_${support.support.message_moderation_status}`;
 
-  return {
+  const preview = {
     preview_status: "computed",
     support_event: {
       event_id: support.event_id,
@@ -870,6 +871,10 @@ async function toReactionDispatchPreview(repo: CriptoTipRepository, support: Sup
       real_obs: "skipped",
       real_websocket_delivery: "skipped"
     }
+  };
+  return {
+    ...preview,
+    contract_validation: validateSupportEventContractV2Preview(preview)
   };
 }
 
