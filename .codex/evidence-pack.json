@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "prNumber": 90,
+  "headSha": "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
   "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin bulk moderation apply controls",
   "goal": "Add POST /admin/support-events/bulk-review/apply for safe local/internal held support bulk moderation controls.",
-  "ciRunId": "0",
-  "qualityGateRunId": "0",
-  "qualityGateArtifactId": "0",
-  "productCiStatus": "pre_pr",
-  "qualityGateStatus": "pre_pr",
+  "ciRunId": "27585268336",
+  "qualityGateRunId": "27585361161",
+  "qualityGateArtifactId": "7654250246",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -63,7 +63,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27585268336",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27585361161",
+      "result": "success",
+      "artifactId": "7654250246"
+    }
+  ],
   "allowedScope": [
     "local/internal admin bulk moderation apply API",
     "admin auth guard",
@@ -122,7 +134,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 71,
-    "passed": 1808,
+    "passed": 1809,
     "skipped": 6
   },
   "securityBoundaries": [

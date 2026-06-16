@@ -21,21 +21,21 @@ Done criteria: admin bulk moderation apply requires admin bearer token; admin bu
 
 ## Evidence Integrity
 
-Head SHA: ad9bd8d40174985943c228ae13267dab0c4c561c
+Head SHA: 12649acfe26fc3b1beb315b1b179d95ee9f5d872
 
 Base SHA: ad9bd8d40174985943c228ae13267dab0c4c561c
 
-Product CI: pre_pr
+Product CI: success
 
-Quality-gate: pre_pr
+Quality-gate: success
 
-CI run: 0
+CI run: 27585268336
 
-Quality-gate run: 0
+Quality-gate run: 27585361161
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7654250246
 
-Tests: 71 test files, 1808 passed, 6 skipped
+Tests: 71 test files, 1809 passed, 6 skipped
 
 ## Testing and review
 
@@ -83,7 +83,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 71 files, 1808 passed, 6 skipped.
+Current recorded test summary: 71 files, 1809 passed, 6 skipped.
 
 ## Security Boundaries
 

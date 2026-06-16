@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
+  "prNumber": 90,
+  "headSha": "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
   "baseSha": "ad9bd8d40174985943c228ae13267dab0c4c561c",
   "risks": [
     {

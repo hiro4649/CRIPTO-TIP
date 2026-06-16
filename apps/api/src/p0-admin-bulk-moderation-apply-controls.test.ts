@@ -194,4 +194,59 @@ describe("P0 admin bulk moderation apply controls", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed PR 90 evidence uses current same-head run and artifact metadata", () => {
+    const expected = {
+      prNumber: 90,
+      headSha: "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
+      baseSha: "ad9bd8d40174985943c228ae13267dab0c4c561c",
+      ciRunId: "27585268336",
+      qualityGateRunId: "27585361161",
+      qualityGateArtifactId: "7654250246"
+    };
+    const staleValues = [
+      ["current", "pr", "head"].join("_"),
+      ["current", "pr", "base"].join("_"),
+      ["not", "available", "before", "pr", "creation"].join("_"),
+      ["not", "created", "pre", "pr"].join("_"),
+      ["pending", "after", "pr", "creation"].join("_"),
+      ["HEAD", "SHA", "PLACEHOLDER"].join("_"),
+      ["BASE", "SHA", "PLACEHOLDER"].join("_"),
+      ["pre", "pr"].join("_")
+    ];
+    const evidenceFiles = [
+      "evidence-pack.json",
+      "product-verification.json",
+      "quality-gate-evidence.json",
+      "review-independence.json",
+      "risk-register.json",
+      "task-contract.json",
+      "test-coverage-evidence.json"
+    ];
+
+    for (const fileName of evidenceFiles) {
+      const evidence = readCodexEvidence(fileName);
+      const serialized = JSON.stringify(evidence);
+      expect(evidence.prNumber).toBe(expected.prNumber);
+      expect(evidence.headSha).toBe(expected.headSha);
+      expect(evidence.baseSha).toBe(expected.baseSha);
+      expect(serialized).not.toContain("\"prNumber\":0");
+      expect(serialized).not.toContain("\"ciRunId\":\"0\"");
+      expect(serialized).not.toContain("\"qualityGateRunId\":\"0\"");
+      expect(serialized).not.toContain("\"qualityGateArtifactId\":\"0\"");
+      for (const staleValue of staleValues) expect(serialized).not.toContain(staleValue);
+    }
+
+    const evidencePack = readCodexEvidence("evidence-pack.json");
+    expect(evidencePack.ciRunId).toBe(expected.ciRunId);
+    expect(evidencePack.qualityGateRunId).toBe(expected.qualityGateRunId);
+    expect(evidencePack.qualityGateArtifactId).toBe(expected.qualityGateArtifactId);
+    expect(evidencePack.productCiStatus).toBe("success");
+    expect(evidencePack.qualityGateStatus).toBe("success");
+
+    const qualityGateEvidence = readCodexEvidence("quality-gate-evidence.json");
+    expect(qualityGateEvidence.qualityGateRunId).toBe(expected.qualityGateRunId);
+    expect(qualityGateEvidence.qualityGateArtifactId).toBe(expected.qualityGateArtifactId);
+    expect(qualityGateEvidence.rawLogsRead).toBe(false);
+  });
 });
