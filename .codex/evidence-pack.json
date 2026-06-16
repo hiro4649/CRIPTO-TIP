@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "80530a8ab87e0412ad60d91c3fe389a964626bc0",
+  "prNumber": 105,
+  "headSha": "16d8ae95e35f26ed59a77915a1578e86698df686",
   "baseSha": "80530a8ab87e0412ad60d91c3fe389a964626bc0",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,9 +12,9 @@
   "riskLevel": "R3",
   "title": "feat: add p0 approved candidate outbox boundary",
   "goal": "Add a local/internal outbox boundary record for approved reaction dispatch candidates without enqueueing outbox or executing external adapters.",
-  "ciRunId": "local_pre_pr",
-  "qualityGateRunId": "local_pre_pr",
-  "qualityGateArtifactId": "local_pre_pr",
+  "ciRunId": "27620561427",
+  "qualityGateRunId": "27620561441",
+  "qualityGateArtifactId": "7668084304",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -158,14 +158,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "local_pre_pr",
+      "runId": "27620561427",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "local_pre_pr",
+      "runId": "27620561441",
       "result": "success",
-      "artifactId": "local_pre_pr"
+      "artifactId": "7668084304"
     }
   ],
   "allowedScope": [

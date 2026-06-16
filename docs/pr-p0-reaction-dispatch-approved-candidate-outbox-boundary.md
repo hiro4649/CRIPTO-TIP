@@ -21,7 +21,7 @@ Done criteria: approved candidate creates boundary_ready record; boundary creati
 
 ## Evidence Integrity
 
-Head SHA: 80530a8ab87e0412ad60d91c3fe389a964626bc0
+Head SHA: 16d8ae95e35f26ed59a77915a1578e86698df686
 
 Base SHA: 80530a8ab87e0412ad60d91c3fe389a964626bc0
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: local_pre_pr
+CI run: 27620561427
 
-Quality-gate run: local_pre_pr
+Quality-gate run: 27620561441
 
-Quality-gate artifact: local_pre_pr
+Quality-gate artifact: 7668084304
 
 Tests: 83 test files, 1852 passed, 6 skipped
 
