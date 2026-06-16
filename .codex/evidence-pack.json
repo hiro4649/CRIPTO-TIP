@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 107,
+  "headSha": "690e82b99a13d3e405f4d813eba574aa1fb0bb89",
   "baseSha": "5fcfed1e89c601f5bb927925857eb8c1f104e3e9",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin reaction dispatch outbox review surface",
   "goal": "Add a read-only admin review surface for local/internal reaction dispatch outbox records without external dispatch.",
-  "ciRunId": "local-pre-pr",
-  "qualityGateRunId": "local-pre-pr",
-  "qualityGateArtifactId": "local-pre-pr",
-  "productCiStatus": "local-pre-pr",
-  "qualityGateStatus": "local-pre-pr",
+  "ciRunId": "27623472748",
+  "qualityGateRunId": "27623634582",
+  "qualityGateArtifactId": "7669432097",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
@@ -150,7 +150,19 @@
       "status": "nonblocking"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27623472748",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27623634582",
+      "result": "success",
+      "artifactId": "7669432097"
+    }
+  ],
   "allowedScope": [
     "read-only outbox review list/detail",
     "admin auth guard",
@@ -286,5 +298,8 @@
     "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, or readiness claims; tests and docs reject those outcomes.",
     "verificationOracle": "Outbox review tests, internal outbox enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-outbox-review-surface.md",
+  "qualityGateExpectedStatus": "success",
+  "qualityGateEvidenceStatus": "success",
+  "rawLogsRead": false
 }

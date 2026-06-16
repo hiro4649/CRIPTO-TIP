@@ -38,5 +38,13 @@
   "packageJsonChanged": false,
   "pnpmLockChanged": false,
   "marker": "P0_ADMIN_REACTION_DISPATCH_OUTBOX_REVIEW_SURFACE",
-  "prNumber": 0
+  "prNumber": 107,
+  "headSha": "690e82b99a13d3e405f4d813eba574aa1fb0bb89",
+  "baseSha": "5fcfed1e89c601f5bb927925857eb8c1f104e3e9",
+  "ciRunId": "27623472748",
+  "qualityGateRunId": "27623634582",
+  "qualityGateArtifactId": "7669432097",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "rawLogsRead": false
 }

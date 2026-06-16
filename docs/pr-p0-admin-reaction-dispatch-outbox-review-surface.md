@@ -21,19 +21,19 @@ Done criteria: admin auth is required; list returns safe review entries; detail 
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 690e82b99a13d3e405f4d813eba574aa1fb0bb89
 
 Base SHA: 5fcfed1e89c601f5bb927925857eb8c1f104e3e9
 
-Product CI: local-pre-pr
+Product CI: success
 
-Quality-gate: local-pre-pr
+Quality-gate: success
 
-CI run: local-pre-pr
+CI run: 27623472748
 
-Quality-gate run: local-pre-pr
+Quality-gate run: 27623634582
 
-Quality-gate artifact: local-pre-pr
+Quality-gate artifact: 7669432097
 
 Tests: 85 test files, 1859 passed, 6 skipped
 
