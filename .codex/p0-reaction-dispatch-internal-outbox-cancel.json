@@ -40,5 +40,13 @@
   "packageJsonChanged": false,
   "pnpmLockChanged": false,
   "marker": "P0_REACTION_DISPATCH_INTERNAL_OUTBOX_CANCEL",
-  "prNumber": 0
+  "prNumber": 108,
+  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
+  "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
+  "ciRunId": "27643427091",
+  "qualityGateRunId": "27643427085",
+  "qualityGateArtifactId": "7677791567",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
+  "rawLogsRead": false
 }

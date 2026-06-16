@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 108,
+  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
   "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 reaction dispatch internal outbox cancel",
   "goal": "Add local/internal cancellation controls for queued reaction dispatch internal outbox records without external dispatch.",
-  "ciRunId": "local-pre-pr",
-  "qualityGateRunId": "local-pre-pr",
-  "qualityGateArtifactId": "local-pre-pr",
-  "productCiStatus": "local-pre-pr",
-  "qualityGateStatus": "local-pre-pr",
+  "ciRunId": "27643427091",
+  "qualityGateRunId": "27643427085",
+  "qualityGateArtifactId": "7677791567",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
@@ -154,7 +154,19 @@
       "status": "nonblocking"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27643427091",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27643427085",
+      "result": "success",
+      "artifactId": "7677791567"
+    }
+  ],
   "allowedScope": [
     "internal outbox cancellation metadata",
     "admin auth guard",

@@ -2,10 +2,10 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 108,
+  "headSha": "2f2bb162d53c5cbbc6e82a7051fbd812324674f6",
   "baseSha": "0584fcbc8def06ab4eb8619ee88fd8d88e9498d9",
-  "verificationStatus": "local_pre_pr",
+  "verificationStatus": "local_and_remote_pass",
   "commands": [
     {
       "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts",

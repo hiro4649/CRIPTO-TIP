@@ -21,19 +21,19 @@ Done criteria: cancel requires admin auth; unknown outbox returns 404; queued_in
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 2f2bb162d53c5cbbc6e82a7051fbd812324674f6
 
 Base SHA: 0584fcbc8def06ab4eb8619ee88fd8d88e9498d9
 
-Product CI: local-pre-pr
+Product CI: success
 
-Quality-gate: local-pre-pr
+Quality-gate: success
 
-CI run: local-pre-pr
+CI run: 27643427091
 
-Quality-gate run: local-pre-pr
+Quality-gate run: 27643427085
 
-Quality-gate artifact: local-pre-pr
+Quality-gate artifact: 7677791567
 
 Tests: 86 test files, 1863 passed, 6 skipped
 
