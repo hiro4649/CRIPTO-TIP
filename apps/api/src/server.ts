@@ -197,13 +197,14 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note"]);
 const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
   "request_id",
   "operator_note",
+  "operator_note_id",
   "outbox_event_id",
   "event_id",
   "source",
@@ -502,6 +503,22 @@ const AdminManualSupportRequestSchema = z.object({
 
 type AdminManualSupportRequest = z.infer<typeof AdminManualSupportRequestSchema>;
 
+const AdminSupportEventOperatorNoteSchema = z.object({
+  note: z.string().min(1).max(240)
+});
+
+type AdminSupportEventOperatorNote = {
+  id: string;
+  event_id: string;
+  note: string;
+  created_at: string;
+};
+
+type OperatorNoteRepository = {
+  createSupportEventOperatorNote?: (note: AdminSupportEventOperatorNote) => Promise<AdminSupportEventOperatorNote>;
+  listSupportEventOperatorNotes?: (eventId: string) => Promise<AdminSupportEventOperatorNote[]>;
+};
+
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
   message_moderation_status: z.enum(["approved", "hold", "rejected"]).optional(),
@@ -644,6 +661,47 @@ function toSupportAdjustmentAuditMetadata(support: SupportReceived, operatorNote
     character_id: support.character_id,
     moderation_status: support.support.message_moderation_status,
     operator_note: operatorNote ? sanitizeMessage(operatorNote, 80) : undefined
+  };
+}
+
+function sanitizeOperatorNote(input: string) {
+  return sanitizeMessage(input, 240)
+    .replace(/https?:\/\/\S+/gi, "[redacted-url]")
+    .replace(/\bBearer\s+\S+/gi, "[redacted-token]")
+    .replace(/\b(?:sk|ghp|github_pat)_[A-Za-z0-9_:-]+/g, "[redacted-token]")
+    .trim();
+}
+
+function toOperatorNoteSafeEntry(note: AdminSupportEventOperatorNote) {
+  return {
+    id: note.id,
+    event_id: note.event_id,
+    note: note.note,
+    created_at: note.created_at
+  };
+}
+
+function getOperatorNoteRepository(repo: CriptoTipRepository): Required<OperatorNoteRepository> {
+  const candidate = repo as CriptoTipRepository & OperatorNoteRepository;
+  return {
+    createSupportEventOperatorNote: candidate.createSupportEventOperatorNote
+      ? (note) => candidate.createSupportEventOperatorNote!.call(repo, note)
+      : async (note) => note,
+    listSupportEventOperatorNotes: candidate.listSupportEventOperatorNotes
+      ? (eventId) => candidate.listSupportEventOperatorNotes!.call(repo, eventId)
+      : async () => []
+  };
+}
+
+function toOperatorNoteAuditMetadata(support: SupportReceived, note: AdminSupportEventOperatorNote) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    operator_note_id: note.id,
+    operator_note: note.note
   };
 }
 
@@ -1252,6 +1310,62 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const support = await repo.getSupportEventById(eventId);
     if (!support) return reply.code(404).send({ error: "support_event_not_found" });
     return toAdminSupportEventActionPlan(repo, support);
+  });
+
+  app.post("/admin/support-events/:eventId/operator-notes", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const parsed = AdminSupportEventOperatorNoteSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid_operator_note" });
+    const input = parsed.data;
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const note: AdminSupportEventOperatorNote = {
+      id: stableId("opnote", `${support.event_id}:${Date.now()}:${input.note}`),
+      event_id: support.event_id,
+      note: sanitizeOperatorNote(input.note),
+      created_at: new Date().toISOString()
+    };
+    const noteRepo = getOperatorNoteRepository(repo);
+    const created = await noteRepo.createSupportEventOperatorNote(note);
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "create_operator_note",
+      target_type: "support_event",
+      target_id: support.event_id,
+      after_json: toOperatorNoteAuditMetadata(support, created)
+    });
+    return {
+      status: "created",
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source,
+        moderation_status: support.support.message_moderation_status
+      },
+      operator_note: toOperatorNoteSafeEntry(created)
+    };
+  });
+
+  app.get("/admin/support-events/:eventId/operator-notes", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const noteRepo = getOperatorNoteRepository(repo);
+    const notes = await noteRepo.listSupportEventOperatorNotes(support.event_id);
+    return {
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source,
+        moderation_status: support.support.message_moderation_status
+      },
+      operator_notes: notes.map(toOperatorNoteSafeEntry)
+    };
   });
 
   app.get("/admin/support-events/:eventId/timeline", async (req, reply) => {

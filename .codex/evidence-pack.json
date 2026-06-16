@@ -2,31 +2,31 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 91,
-  "headSha": "a53d4e634e32f36acd94b6969b6ce39f572d5442",
-  "baseSha": "8940de2d2f083b6190b97c88cd8983f263ed42a5",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "current_pr_base",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_action_plan",
+  "changeType": "product_vertical_slice_admin_support_event_operator_notes",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support event action plan",
-  "goal": "Add GET /admin/support-events/:eventId/action-plan for safe local/internal read-only support event action planning.",
-  "ciRunId": "27586375764",
-  "qualityGateRunId": "27586375769",
-  "qualityGateArtifactId": "7654639517",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "title": "feat: add p0 admin support event operator notes",
+  "goal": "Add local/internal admin operator notes for support events without mutating support core fields or triggering side effects.",
+  "ciRunId": "not_created_pre_pr",
+  "qualityGateRunId": "not_created_pre_pr",
+  "qualityGateArtifactId": "not_created_pre_pr",
+  "productCiStatus": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-admin-support-event-action-plan.test.ts",
-      "apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_ACTION_PLAN.md",
-      "docs/pr-p0-admin-support-event-action-plan.md",
-      ".codex/p0-admin-support-event-action-plan.json",
+      "apps/api/src/repositories/in-memory.ts",
+      "apps/api/src/p0-admin-support-event-operator-notes.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTES.md",
+      "docs/pr-p0-admin-support-event-operator-notes.md",
+      ".codex/p0-admin-support-event-operator-notes.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -41,8 +41,8 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/repositories/**",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_ACTION_PLAN.md",
-      "docs/pr-p0-admin-support-event-action-plan.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_OPERATOR_NOTES.md",
+      "docs/pr-p0-admin-support-event-operator-notes.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -59,7 +59,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-support-event-adjustment-controls.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-manual-support-event-entry.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -67,34 +67,33 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27586375764",
-      "result": "success"
+      "runId": "not_created_pre_pr",
+      "result": "not_created_pre_pr"
     },
     {
       "name": "quality-gate",
-      "runId": "27586375769",
-      "result": "success",
-      "artifactId": "7654639517"
+      "runId": "not_created_pre_pr",
+      "result": "not_created_pre_pr",
+      "artifactId": "not_created_pre_pr"
     }
   ],
   "allowedScope": [
-    "local/internal admin support event action plan API",
+    "local/internal admin operator notes API",
     "admin auth guard",
-    "read-only action allowlist",
-    "blocked action reason metadata",
-    "side-effect ledger summary",
-    "timeline reference",
-    "safe metadata only",
+    "safe note sanitization",
+    "safe note listing",
+    "safe audit metadata",
+    "support core read-only checks",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "support event mutation",
+    "support financial/source/wallet/moderation/affinity mutation",
     "reaction enqueue",
     "overlay enqueue",
-    "audit log write",
-    "raw support message output",
+    "public note exposure",
     "raw payload output",
+    "secret output",
     "real TTS call",
     "real Live2D call",
     "real renderer call",
@@ -127,21 +126,22 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin support event action plan requires admin bearer token",
-    "admin support event action plan rejects invalid auth",
+    "admin operator notes requires admin bearer token",
+    "admin operator notes rejects invalid auth",
     "unknown support event returns 404",
-    "held events include safe eligible action allowlist and blocked resend reasons",
-    "approved events include already approved and side-effect already applied reasons",
-    "rejected events include already rejected reasons",
-    "side-effect ledger summary is included",
-    "timeline reference is safe",
-    "action plan is read-only and enqueues no reaction or overlay"
+    "admin operator notes creates safe note",
+    "admin operator notes lists notes",
+    "admin operator notes enforces max length",
+    "admin operator notes sanitizes unsafe text",
+    "admin operator notes writes safe audit metadata",
+    "admin operator notes does not mutate support core fields",
+    "admin operator notes does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 72,
-    "passed": 1813,
+    "testFiles": 73,
+    "passed": 1817,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -151,14 +151,15 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No support event mutation, reaction enqueue, overlay enqueue, or audit log write is performed by the action-plan endpoint.",
+    "No support financial, source, wallet, moderation, or affinity fields are mutated.",
+    "No reaction or overlay side effects are enqueued.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+    "Raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin action planning only.",
-    "Production Admin Console UI, durable persistence, and operational action execution policy remain future scoped work."
+    "This is local/internal admin operator note metadata only.",
+    "Durable operator notes persistence remains future scoped work because migrations and real DB changes are forbidden."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -175,10 +176,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event action plan read model."
+    "statement": "Adds local/internal admin support event operator notes metadata."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin action planning only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin operator notes metadata only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public note exposure, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -190,9 +191,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support event action plan, admin auth, safe allowlist, blocked reason metadata, side-effect summary, read-only tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is exposing raw support data, mutating state from a read endpoint, enqueueing runtime side effects, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Action plan tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event operator notes, admin auth, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is exposing unsafe notes, mutating support core state, enqueueing side effects, or implying runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Operator notes tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-action-plan.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-operator-notes.md"
 }
