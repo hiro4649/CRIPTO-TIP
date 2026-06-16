@@ -2,19 +2,34 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 110,
+  "prNumber": 111,
   "headSha": "current_pr_head",
-  "baseSha": "da8f7c4f394e2afa56c12ec8a703c03eb41dcce3",
-  "title": "feat: add p0 reaction dispatch internal outbox attempt planning",
-  "goal": "Add local/internal attempt planning metadata after active lease without external adapter execution.",
-  "changeType": "product_vertical_slice_internal_outbox_attempt_planning",
+  "baseSha": "7dbcff32ee2ec5d639a0a941ba81102b3dd06c90",
+  "title": "feat: add p0 admin attempt plan review surface",
+  "goal": "Add read-only admin review surface for local/internal reaction dispatch attempt plans without external execution.",
+  "changeType": "product_vertical_slice_admin_attempt_plan_review_surface",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
-  "qualityGateStatus": "success",
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "feature",
+  "qualityGateStatus": "local_pre_pr_not_remote",
   "qualityGateRunId": "2",
   "qualityGateArtifactId": "2",
-  "noRawLogsRead": true,
-  "noQualityGateWeakening": true
+  "requiredLocalChecks": [
+    {
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    }
+  ],
+  "rawLogsRead": false,
+  "qualityGateWeakening": false
 }

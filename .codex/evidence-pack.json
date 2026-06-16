@@ -2,12 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 110,
-  "headSha": "35ff14d980bd0bd023bc56b70a0e58d1223c78d0",
-  "baseSha": "da8f7c4f394e2afa56c12ec8a703c03eb41dcce3",
-  "title": "feat: add p0 reaction dispatch internal outbox attempt planning",
-  "goal": "Add local/internal attempt planning metadata after active lease without external adapter execution.",
-  "changeType": "product_vertical_slice_internal_outbox_attempt_planning",
+  "prNumber": 111,
+  "headSha": "current_pr_head",
+  "baseSha": "7dbcff32ee2ec5d639a0a941ba81102b3dd06c90",
+  "title": "feat: add p0 admin attempt plan review surface",
+  "goal": "Add read-only admin review surface for local/internal reaction dispatch attempt plans without external execution.",
+  "changeType": "product_vertical_slice_admin_attempt_plan_review_surface",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -15,28 +15,28 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "27650043128",
-  "qualityGateRunId": "27650043149",
-  "qualityGateArtifactId": "7680389135",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "ciRunId": "2",
+  "qualityGateRunId": "2",
+  "qualityGateArtifactId": "2",
+  "productCiStatus": "local_pre_pr_pass",
+  "qualityGateStatus": "local_pre_pr_not_remote",
   "riskLevel": "R3",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "internal_outbox_attempt_planning"
+    "attempt_plan_review_surface"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/types.ts",
-      "apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ATTEMPT_PLANNING.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md",
-      ".codex/p0-reaction-dispatch-internal-outbox-attempt-planning.json",
+      "apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_ATTEMPT_PLAN_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-attempt-plan-review-surface.md",
+      ".codex/p0-admin-reaction-dispatch-attempt-plan-review-surface.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -51,8 +51,9 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/*.ts",
       "apps/api/src/repositories/*",
-      "docs/P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ATTEMPT_PLANNING.md",
-      "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md",
+      "packages/shared/src/index.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_ATTEMPT_PLAN_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-attempt-plan-review-surface.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -68,7 +69,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -81,26 +82,25 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27650043128",
-      "result": "success"
+      "runId": "2",
+      "result": "local_pre_pr_pass"
     },
     {
       "name": "quality-gate",
-      "runId": "27650043149",
-      "result": "success",
-      "artifactId": "7680389135"
+      "runId": "2",
+      "result": "local_pre_pr_not_remote",
+      "artifactId": "2"
     }
   ],
   "allowedScope": [
-    "internal outbox attempt planning metadata",
+    "read-only admin attempt plan review surface",
+    "safe attempt plan list/detail metadata",
     "admin auth guard",
-    "active lease guard",
-    "lease id match guard",
-    "queued-only state guard",
-    "external-not-attempted guard",
-    "adapter-not-executed guard",
-    "dispatch attempt count guard",
-    "safe audit metadata",
+    "safe filters and pagination",
+    "adapter kind allowlist metadata",
+    "safe validation summary",
+    "read-only no-mutation checks",
+    "no external execution checks",
     "docs",
     ".codex evidence"
   ],
@@ -118,6 +118,8 @@
     "migration change",
     "contract change",
     "workflow change",
+    "apps/web change",
+    "apps/overlay change",
     "real YouTube API",
     "real OAuth token",
     "real RPC",
@@ -130,10 +132,14 @@
     "IRIS Core call",
     "VOXWEAVE call",
     "support event mutation",
+    "outbox mutation from review endpoints",
+    "lease mutation from review endpoints",
+    "attempt plan mutation from review endpoints",
     "reaction execution",
     "overlay execution",
     "external outbox dispatch",
     "external adapter execution",
+    "dry-run adapter request",
     "AI generation execution",
     "token sale",
     "token exchange",
@@ -144,15 +150,16 @@
     "refund"
   ],
   "doneCriteria": [
-    "attempt plan requires admin auth",
-    "unknown outbox returns 404",
-    "active lease is required",
-    "lease_id must match",
-    "queued_internal only can be planned",
-    "duplicate plan is idempotent",
-    "expired or released lease is blocked",
-    "attempt status returns safe metadata",
+    "admin attempt plan review requires admin auth",
+    "unknown attempt plan returns 404",
+    "list returns safe metadata only",
+    "detail returns safe metadata only",
+    "filters cover support_event_id, outbox_id, lease_id, character_id, stream_id, plan_status, outbox_status, lease_status, adapter_kind, created range, limit, and offset",
+    "safe validation summary is included",
     "no support event mutation",
+    "no outbox mutation",
+    "no lease mutation",
+    "no attempt plan mutation",
     "no reaction execution",
     "no overlay execution",
     "no external outbox delivery",
@@ -161,8 +168,8 @@
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 88,
-    "passed": 1881,
+    "testFiles": 89,
+    "passed": 1931,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -172,14 +179,15 @@
     "No migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
-    "No support events are mutated.",
-    "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Attempt plan metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, and LLM output.",
+    "The new admin attempt plan review endpoints are read-only and do not mutate support events, outbox records, leases, approvals, or attempt plans.",
+    "No reaction, overlay, external outbox delivery, dry-run adapter request, or runtime dispatch is executed.",
+    "Attempt plan review metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, LLM output, TTS text, audio URLs, and renderer URLs.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal attempt planning metadata only.",
-    "Actual runtime dispatch, adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain future scoped work."
+    "This is local/internal attempt plan review metadata only.",
+    "Dry-run adapter boundary metadata remains future scoped work.",
+    "Actual runtime dispatch, adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain out of scope."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -188,7 +196,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts: pass",
+    "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-lease.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-cancel.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-enqueue.test.ts apps/api/src/p0-admin-reaction-dispatch-outbox-review-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
     "corepack pnpm typecheck: pass"
   ],
   "packageVerification": {
@@ -199,10 +207,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal reaction dispatch outbox attempt planning endpoints."
+    "statement": "Adds read-only local/internal admin attempt plan review endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal attempt planning metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only attempt plan review metadata only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox/lease/attempt plan mutation from review endpoints, reaction/overlay/external outbox dispatch, dry-run adapter execution, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -214,9 +222,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 reaction dispatch internal outbox attempt planning, admin auth, active lease gate, safe plan metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental external dispatch, raw data exposure, support event mutation, attempt count mutation, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Attempt planning tests, lease tests, cancel tests, review surface tests, internal enqueue tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin reaction dispatch attempt plan review surface, admin auth, safe filters, safe list/detail metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental external dispatch, raw data exposure, mutation of support/outbox/lease/attempt plan state, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Attempt plan review tests, attempt planning tests, lease tests, cancel tests, outbox review tests, internal enqueue tests, approval gate tests, safe candidate persistence tests, contract v2 tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-reaction-dispatch-internal-outbox-attempt-planning.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-attempt-plan-review-surface.md"
 }

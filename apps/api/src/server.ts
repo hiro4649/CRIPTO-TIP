@@ -573,6 +573,7 @@ type ReactionDispatchCandidateRepository = {
   getReactionDispatchInternalOutboxLease?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxLeaseMetadata | undefined>;
   setReactionDispatchInternalOutboxAttemptPlan?: (plan: ReactionDispatchInternalOutboxAttemptPlanMetadata) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata>;
   getReactionDispatchInternalOutboxAttemptPlan?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata | undefined>;
+  listReactionDispatchInternalOutboxAttemptPlans?: () => Promise<ReactionDispatchInternalOutboxAttemptPlanMetadata[]>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
@@ -629,6 +630,21 @@ const AdminReactionDispatchOutboxReviewQuerySchema = z.object({
   stream_id: z.string().optional(),
   character_id: z.string().optional(),
   source: z.enum(supportSources).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
+const AdminReactionDispatchAttemptPlanReviewQuerySchema = z.object({
+  support_event_id: z.string().optional(),
+  outbox_id: z.string().optional(),
+  lease_id: z.string().optional(),
+  character_id: z.string().optional(),
+  stream_id: z.string().optional(),
+  plan_status: z.enum(["planned_internal", "plan_blocked", "plan_superseded", "plan_expired"]).optional(),
+  outbox_status: z.enum(["queued_internal", "pending_internal_dispatch", "cancelled_internal", "blocked_internal", "superseded_internal"]).optional(),
+  lease_status: z.enum(["not_leased", "leased_internal", "lease_expired", "lease_released", "lease_blocked"]).optional(),
+  adapter_kind: z.enum(["iris_core_reaction", "voxweave_voice", "overlay_effect", "future_internal_adapter"]).optional(),
+  created_after: z.string().optional(),
+  created_before: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
@@ -1001,7 +1017,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       },
     getReactionDispatchInternalOutboxAttemptPlan: candidate.getReactionDispatchInternalOutboxAttemptPlan
       ? (outboxId) => candidate.getReactionDispatchInternalOutboxAttemptPlan!.call(repo, outboxId)
-      : async (outboxId) => internalOutboxAttemptPlanFallback.get(outboxId)
+      : async (outboxId) => internalOutboxAttemptPlanFallback.get(outboxId),
+    listReactionDispatchInternalOutboxAttemptPlans: candidate.listReactionDispatchInternalOutboxAttemptPlans
+      ? () => candidate.listReactionDispatchInternalOutboxAttemptPlans!.call(repo)
+      : async () => [...internalOutboxAttemptPlanFallback.values()]
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.plan_id.localeCompare(right.plan_id))
   };
 }
 
@@ -1590,6 +1610,73 @@ function toReactionDispatchInternalOutboxAttemptPlanAuditMetadata(plan: Reaction
     plan_context_hash: plan.plan_context_hash,
     created_by_actor_type: plan.created_by_actor_type,
     reason_code: plan.safe_reason_codes[0] ?? "external_execution_forbidden"
+  };
+}
+
+function toReactionDispatchAttemptPlanAdapterKind(plan: ReactionDispatchInternalOutboxAttemptPlanMetadata) {
+  if (plan.planned_adapter_type === "iris_core_reaction_dispatch") return "iris_core_reaction" as const;
+  return "future_internal_adapter" as const;
+}
+
+function toReactionDispatchAttemptPlanReviewEntry(
+  plan: ReactionDispatchInternalOutboxAttemptPlanMetadata,
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata | undefined,
+  now = new Date()
+) {
+  const leaseStatus = toReactionDispatchInternalOutboxLeaseStatus(outbox.outbox_id, lease, now);
+  const blockingReasonCodes = [
+    outbox.outbox_status !== "queued_internal" ? "not_queued_internal" : undefined,
+    outbox.external_delivery_status !== "not_attempted" ? "external_delivery_already_attempted" : undefined,
+    outbox.adapter_execution_status !== "not_executed" ? "adapter_already_executed" : undefined,
+    outbox.dispatch_attempt_count !== 0 ? "dispatch_attempt_count_nonzero" : undefined,
+    leaseStatus.lease_status !== "leased_internal" ? leaseStatus.lease_status : undefined,
+    ...plan.safe_reason_codes.filter((reason) => reason !== "attempt_plan_created" && reason !== "external_delivery_not_attempted" && reason !== "adapter_not_executed")
+  ].filter((entry): entry is string => Boolean(entry));
+  return {
+    plan_id: plan.plan_id,
+    outbox_id: outbox.outbox_id,
+    lease_id: plan.lease_id,
+    candidate_id: outbox.candidate_id,
+    boundary_id: outbox.boundary_id,
+    support_event_id: outbox.support_event_id,
+    stream_id: outbox.stream_id,
+    character_id: outbox.character_id,
+    source: outbox.source,
+    adapter_kind: toReactionDispatchAttemptPlanAdapterKind(plan),
+    plan_status: plan.attempt_plan_status,
+    outbox_status: outbox.outbox_status,
+    lease_status: leaseStatus.lease_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    contract_version: outbox.contract_version,
+    validation_status: outbox.candidate_status,
+    safe_reason_codes: plan.safe_reason_codes,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash,
+    created_at: plan.created_at,
+    updated_at: plan.updated_at,
+    character_continuity_summary: {
+      character_id: outbox.character_id,
+      source: outbox.source,
+      contract_version: outbox.contract_version
+    },
+    safe_context_summary_presence: {
+      safe_context_hash_present: Boolean(outbox.safe_context_hash),
+      constraints_hash_present: Boolean(outbox.constraints_hash)
+    },
+    reaction_constraints_summary: {
+      external_delivery_status: outbox.external_delivery_status,
+      adapter_execution_status: outbox.adapter_execution_status,
+      dispatch_attempt_count: outbox.dispatch_attempt_count
+    },
+    operator_state_summary: {
+      review_surface: "read_only",
+      next_step: "dry_run_adapter_boundary",
+      runtime_execution: "not_performed"
+    },
+    blocking_reason_codes: [...new Set(blockingReasonCodes)]
   };
 }
 
@@ -2702,6 +2789,59 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
     if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
     return { outbox, side_effects: toReactionDispatchInternalOutboxSkippedSideEffects() };
+  });
+
+  app.get("/admin/reaction-dispatch/attempt-plans", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminReactionDispatchAttemptPlanReviewQuerySchema.parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const now = new Date();
+    const entries = [];
+    for (const plan of await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()) {
+      const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+      if (!outbox) continue;
+      const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+      entries.push(toReactionDispatchAttemptPlanReviewEntry(plan, outbox, lease, now));
+    }
+    const filtered = entries
+      .filter((entry) => !query.support_event_id || entry.support_event_id === query.support_event_id)
+      .filter((entry) => !query.outbox_id || entry.outbox_id === query.outbox_id)
+      .filter((entry) => !query.lease_id || entry.lease_id === query.lease_id)
+      .filter((entry) => !query.character_id || entry.character_id === query.character_id)
+      .filter((entry) => !query.stream_id || entry.stream_id === query.stream_id)
+      .filter((entry) => !query.plan_status || entry.plan_status === query.plan_status)
+      .filter((entry) => !query.outbox_status || entry.outbox_status === query.outbox_status)
+      .filter((entry) => !query.lease_status || entry.lease_status === query.lease_status)
+      .filter((entry) => !query.adapter_kind || entry.adapter_kind === query.adapter_kind)
+      .filter((entry) => !query.created_after || entry.created_at >= query.created_after)
+      .filter((entry) => !query.created_before || entry.created_at <= query.created_before);
+    const page = filtered.slice(query.offset, query.offset + query.limit);
+    return {
+      attempt_plans: page,
+      page: { limit: query.limit, offset: query.offset, total: filtered.length },
+      review_summary: {
+        planned_internal: filtered.filter((entry) => entry.plan_status === "planned_internal").length,
+        plan_blocked: filtered.filter((entry) => entry.plan_status === "plan_blocked").length,
+        plan_superseded: filtered.filter((entry) => entry.plan_status === "plan_superseded").length,
+        plan_expired: filtered.filter((entry) => entry.plan_status === "plan_expired").length
+      },
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/attempt-plans/:planId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { planId } = z.object({ planId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const plan = (await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()).find((entry) => entry.plan_id === planId);
+    if (!plan) return reply.code(404).send({ error: "reaction_dispatch_attempt_plan_not_found" });
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+    return {
+      attempt_plan: toReactionDispatchAttemptPlanReviewEntry(plan, outbox, lease),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
   });
 
   app.get("/admin/reaction-dispatch/outbox/:outboxId/lease", async (req, reply) => {

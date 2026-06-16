@@ -2,32 +2,44 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 110,
+  "prNumber": 111,
   "headSha": "current_pr_head",
-  "baseSha": "da8f7c4f394e2afa56c12ec8a703c03eb41dcce3",
-  "title": "feat: add p0 reaction dispatch internal outbox attempt planning",
-  "goal": "Add local/internal attempt planning metadata after active lease without external adapter execution.",
-  "changeType": "product_vertical_slice_internal_outbox_attempt_planning",
+  "baseSha": "7dbcff32ee2ec5d639a0a941ba81102b3dd06c90",
+  "title": "feat: add p0 admin attempt plan review surface",
+  "goal": "Add read-only admin review surface for local/internal reaction dispatch attempt plans without external execution.",
+  "changeType": "product_vertical_slice_admin_attempt_plan_review_surface",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "risks": [
     {
-      "id": "accidental_external_dispatch",
-      "status": "mitigated_by_tests"
+      "severity": "medium",
+      "risk": "Accidental external dispatch from a review endpoint.",
+      "owner": "codex",
+      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
+      "mitigation": "GET routes only project existing metadata and tests assert no reaction, overlay, external outbox, adapter, IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, or WebSocket execution."
     },
     {
-      "id": "raw_data_exposure",
-      "status": "mitigated_by_tests"
+      "severity": "medium",
+      "risk": "Raw support message, payload, wallet, secret, private URL, adapter URL, or webhook URL exposure.",
+      "owner": "codex",
+      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
+      "mitigation": "The response projection returns hashes, statuses, and reason codes only; tests assert forbidden raw fields and strings are absent."
     },
     {
-      "id": "attempt_plan_state_drift",
-      "status": "mitigated_by_tests"
+      "severity": "medium",
+      "risk": "Review endpoint mutates support, outbox, lease, or attempt plan state.",
+      "owner": "codex",
+      "nextPr": "feat/p0-reaction-dispatch-dry-run-adapter-boundary",
+      "mitigation": "The new handlers do not call repository write methods or audit writes; tests compare stored support, outbox, lease, attempt plan, audit, reaction, overlay, and outbox counts before and after reads."
     },
     {
-      "id": "stale_remote_evidence",
-      "status": "awaiting_current_head_pr_refresh"
+      "severity": "low",
+      "risk": "Committed local evidence must be refreshed with PR current-head GitHub run and artifact IDs.",
+      "owner": "codex",
+      "nextPr": "current",
+      "mitigation": "Refresh PR evidence after PR creation, then confirm same-head CI, contracts, quality-gate, and safe artifact."
     }
   ]
 }
