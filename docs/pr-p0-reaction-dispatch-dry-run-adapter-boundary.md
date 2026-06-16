@@ -21,7 +21,7 @@ Done criteria: admin dry-run adapter boundary requires admin auth; unknown attem
 
 ## Evidence Integrity
 
-Head SHA: 77c1de1abc53eb457003f359d5d21de646cd0f00
+Head SHA: current_pr_head
 
 Base SHA: 6da6c4a281a68888c018e2121e60ccd65de36794
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27652421144
+CI run: 27652523423
 
-Quality-gate run: 27652421146
+Quality-gate run: 27652523450
 
-Quality-gate artifact: 7681296312
+Quality-gate artifact: 7681333643
 
 Tests: 90 test files, 1944 passed, 6 skipped
 
