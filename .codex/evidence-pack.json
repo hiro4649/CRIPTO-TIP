@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 99,
-  "headSha": "current_pr_head_after_rebase",
+  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
   "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 support event contract v2 validator",
   "goal": "Add a local Support Event Contract v2 validator and prove admin reaction dispatch preview aligns with it without claiming runtime readiness.",
-  "ciRunId": "current_ci_run_after_rebase",
-  "qualityGateRunId": "current_quality_gate_run_after_rebase",
-  "qualityGateArtifactId": "current_quality_gate_artifact_after_rebase",
-  "productCiStatus": "pending_after_rebase",
-  "qualityGateStatus": "pending_after_rebase",
+  "ciRunId": "27611496242",
+  "qualityGateRunId": "27611639378",
+  "qualityGateArtifactId": "7664304271",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
@@ -94,7 +94,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27611496242",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27611639378",
+      "result": "success",
+      "artifactId": "7664304271"
+    }
+  ],
   "allowedScope": [
     "Support Event Contract v2 local validator",
     "reaction dispatch preview validator alignment",
@@ -182,17 +194,17 @@
     "corepack pnpm lint: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
-    "corepack pnpm evidence:ci: pending_after_rebase",
-    "corepack pnpm quality:self-protection: pending_after_rebase",
-    "node scripts/write-test-summary.mjs: pending_after_rebase",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-support-event-contract-v2-validator.md: pending_after_rebase",
-    "node scripts/check-evidence-placeholders.mjs: pending_after_rebase",
-    "node scripts/validate-evidence-freshness.mjs: pending_after_rebase",
-    "node scripts/check-quality-gate-self-protection.mjs: pending_after_rebase",
-    "node scripts/codex-secret-safety-scan.mjs: pending_after_rebase",
-    "node scripts/codex-v125-self-test.mjs: pending_after_rebase",
-    "node scripts/codex-v124-self-test.mjs: pending_after_rebase",
-    "node scripts/codex-v123-self-test.mjs: pending_after_rebase",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-support-event-contract-v2-validator.md: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v125-self-test.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
     "cd contracts && forge test || true: unavailable_nonblocking"
   ],
   "packageVerification": {

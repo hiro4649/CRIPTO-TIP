@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 99,
-  "headSha": "current_pr_head_after_rebase",
+  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
   "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
   "testSummary": {
     "schemaVersion": "1.0.0",

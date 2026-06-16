@@ -21,19 +21,19 @@ Done criteria: validator accepts valid reaction dispatch preview; validator reje
 
 ## Evidence Integrity
 
-Head SHA: 932c6571e7fefb0c19037bf6dceb76748614dc26
+Head SHA: c82b1001e4157e252735612a5fbb10cbf1f2c229
 
-Base SHA: 7c11398264e1be352c3ac0e6d51489b020e5358a
+Base SHA: 05d28b1ab215da5d33bc8bd082f0774d392efe1e
 
 Product CI: success
 
 Quality-gate: success
 
-CI run: 27611190851
+CI run: 27611496242
 
-Quality-gate run: 27611190750
+Quality-gate run: 27611639378
 
-Quality-gate artifact: 7664111632
+Quality-gate artifact: 7664304271
 
 Tests: 79 test files, 1836 passed, 6 skipped
 
@@ -72,9 +72,9 @@ Product verification commands:
 - node scripts/validate-evidence-freshness.mjs: pass
 - node scripts/check-quality-gate-self-protection.mjs: pass
 - node scripts/codex-secret-safety-scan.mjs: pass
-- node scripts/codex-v125-self-test.mjs || true: pass
-- node scripts/codex-v124-self-test.mjs || true: fail (v124_active_authority_tuple_is_current under active v125)
-- node scripts/codex-v123-self-test.mjs || true: pass
+- node scripts/codex-v125-self-test.mjs: pass
+- node scripts/codex-v124-self-test.mjs: pass
+- node scripts/codex-v123-self-test.mjs: pass
 - cd contracts && forge test || true: unavailable_nonblocking
 
 Package verification:
