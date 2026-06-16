@@ -2,38 +2,36 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 97,
-  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
-  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
   "schemaVersion": "1.0.0",
-  "prProfile": "docs_or_spec_r2",
-  "taskMode": "spec",
-  "changeType": "spec_ai_character_support_event_contracts_v124",
-  "riskLevel": "R2",
-  "title": "docs: add AI character support event contracts",
-  "goal": "Document Support Event Contract v2, character continuity, safe context summary, reaction dispatch contract, adaptive support policy, admin operator workflow, product-value return gate, and role boundaries without changing runtime behavior.",
-  "ciRunId": "27601460599",
-  "qualityGateRunId": "27601460525",
-  "qualityGateArtifactId": "7660049841",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "prProfile": "product_r3",
+  "taskMode": "feature",
+  "changeType": "product_vertical_slice_admin_reaction_dispatch_preview",
+  "riskLevel": "R3",
+  "title": "feat: add p0 admin reaction dispatch preview",
+  "goal": "Add local/internal admin reaction dispatch preview so operators can inspect safe reaction context without mutating support events or triggering runtime side effects.",
+  "ciRunId": "not_created_pre_pr",
+  "qualityGateRunId": "not_created_pre_pr",
+  "qualityGateArtifactId": "not_created_pre_pr",
+  "productCiStatus": "not_created_pre_pr",
+  "qualityGateStatus": "not_created_pre_pr",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "productValueContribution": [
-    "support_event_contract",
     "reaction_dispatch_safety",
     "character_continuity",
-    "admin_operator_workflow"
+    "admin_operator_workflow",
+    "support_event_contract"
   ],
   "scope": {
     "changedFiles": [
-      "docs/SUPPORT_EVENT_CONTRACT_V2.md",
-      "docs/CHARACTER_CONTINUITY_CONTRACT.md",
-      "docs/REACTION_DISPATCH_CONTRACT.md",
-      "docs/PRODUCT_VALUE_RETURN_GATE.md",
-      "docs/DEVELOPMENT_ROADMAP_AI_CHARACTER_SUPPORT.md",
-      "docs/pr-spec-ai-character-support-event-contracts-v124.md",
-      ".codex/spec-ai-character-support-event-contracts-v124.json",
+      "apps/api/src/server.ts",
+      "apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_PREVIEW.md",
+      "docs/pr-p0-admin-reaction-dispatch-preview.md",
+      ".codex/p0-admin-reaction-dispatch-preview.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -44,14 +42,17 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "docs/**",
+      "apps/api/src/server.ts",
+      "apps/api/src/*.test.ts",
+      "apps/api/src/repositories/*",
+      "packages/shared/src/index.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_PREVIEW.md",
+      "docs/pr-p0-admin-reaction-dispatch-preview.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
       "package.json",
       "pnpm-lock.yaml",
-      "apps/api/src/server.ts",
-      "apps/api/src/*.ts",
       "contracts/**",
       "migrations/**",
       ".github/workflows/**",
@@ -63,17 +64,22 @@
   },
   "commands": [
     {
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
       "name": "corepack pnpm install",
       "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm lint",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     },
@@ -88,78 +94,72 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27601460599",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27601460525",
-      "result": "success",
-      "artifactId": "7660049841"
-    }
-  ],
+  "remoteRuns": [],
   "allowedScope": [
-    "Support Event Contract v2 documentation",
-    "Character Continuity Contract documentation",
-    "Reaction Dispatch Contract documentation",
-    "Product-Value Return Gate documentation",
-    "AI character support roadmap documentation",
+    "local/internal admin reaction dispatch preview API",
+    "admin auth guard",
+    "safe context summary",
+    "character continuity metadata",
+    "reaction constraints",
+    "read-only preview behavior",
+    "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "runtime product behavior change",
-    "package.json change",
-    "pnpm-lock change",
-    "DB driver dependency",
-    "Redis dependency",
-    "Kafka dependency",
-    "real DB connection",
-    "migration change",
-    "contract change",
-    "workflow change",
-    "real YouTube API",
-    "real OAuth token",
-    "real RPC",
-    "wallet/RPC/deploy changes",
+    "support event mutation",
+    "reaction enqueue",
+    "overlay enqueue",
+    "outbox enqueue",
+    "raw message output",
+    "raw payload output",
+    "wallet address output",
+    "secret output",
     "real TTS call",
     "real Live2D call",
     "real renderer call",
     "real OBS delivery",
     "real WebSocket delivery",
+    "real YouTube API",
+    "real OAuth token",
+    "real DB connection",
+    "DB driver dependency",
+    "Redis dependency",
+    "Kafka dependency",
+    "package.json change",
+    "pnpm-lock change",
+    "contracts change",
+    "migrations change",
+    "real RPC",
+    "wallet/RPC/deploy changes",
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "web UI",
+    "overlay app changes",
     "token sale",
     "token exchange",
     "cash-out",
     "custody",
     "internal balance",
-    "investment wording",
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
-    "owner approval record",
-    "GitHub approval review",
-    "merge authority"
+    "investment wording"
   ],
   "doneCriteria": [
-    "support event contract v2 documented",
-    "character continuity contract documented",
-    "safe context summary documented",
-    "reaction dispatch contract documented",
-    "adaptive support policy documented",
-    "admin operator workflow contract documented",
-    "product-value return gate documented",
-    "role boundaries documented",
-    "no runtime code changed",
-    "no package or lockfile changed"
+    "reaction dispatch preview requires admin bearer token",
+    "reaction dispatch preview rejects invalid auth",
+    "reaction dispatch preview returns 404 for unknown support event",
+    "reaction dispatch preview returns safe metadata only",
+    "reaction dispatch preview includes character continuity metadata",
+    "reaction dispatch preview includes safe context summary",
+    "reaction dispatch preview is read-only",
+    "reaction dispatch preview does not enqueue reaction overlay or outbox",
+    "reaction dispatch preview excludes raw message raw payload wallet address and secrets"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 77,
-    "passed": 1828,
+    "testFiles": 78,
+    "passed": 1832,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -167,17 +167,17 @@
     "No DB driver, Redis, or Kafka dependency is added.",
     "No real DB connection is introduced.",
     "No migration is changed or executed.",
-    "No contracts or workflows are changed.",
-    "No real YouTube API, OAuth token, RPC, wallet, or deploy operation is used.",
+    "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No runtime product behavior is changed.",
-    "No token sale, exchange, cash-out, custody, internal balance, or investment wording is introduced.",
-    "IRIS Token Tip is not represented as YouTube Super Chat.",
+    "No support events are mutated.",
+    "No reaction, overlay, or outbox side effects are enqueued.",
+    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
+    "Raw messages, raw payloads, wallet addresses, secrets, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is a specification PR only; runtime validators and admin reaction dispatch preview remain future scoped work.",
-    "External AI character execution remains outside CRIPTO-TIP and requires separate owner scope before integration."
+    "This is local/internal admin reaction dispatch preview only.",
+    "Actual IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, and WebSocket execution remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -186,17 +186,22 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
+    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts: pass",
+    "corepack pnpm typecheck: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-preview.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs || true: pass",
-    "node scripts/codex-v123-self-test.mjs || true: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
     "cd contracts && forge test || true: unavailable_nonblocking"
   ],
   "packageVerification": {
@@ -206,11 +211,11 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "Adds product specification documents only; no runtime API behavior changes."
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds local/internal admin reaction dispatch preview endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR is docs/spec and machine-readable evidence only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, runtime code, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin preview only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -222,9 +227,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "Support Event Contract v2, character continuity, safe context summary, reaction dispatch contract, adaptive support policy, admin operator workflow, product-value return gate, role boundary docs, and .codex evidence.",
-    "riskSummary": "Main risk is creating misleading runtime, production, legal, YouTube policy, custody, token exchange, or external execution claims; docs and evidence explicitly reject those outcomes.",
-    "verificationOracle": "Docs-only diff, evidence checks, quality self-protection, secret scan, v1.2.4 self-test, compatibility self-test, and GitHub same-head checks."
+    "scope": "P0 admin reaction dispatch preview, admin auth, safe context, character continuity metadata, read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is raw data exposure, support event mutation, side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Reaction dispatch preview tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-spec-ai-character-support-event-contracts-v124.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-preview.md"
 }

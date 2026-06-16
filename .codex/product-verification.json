@@ -2,39 +2,34 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 97,
-  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
-  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
-  "productCodeChanged": false,
-  "productValueContribution": [
-    "support_event_contract",
-    "reaction_dispatch_safety",
-    "character_continuity",
-    "admin_operator_workflow"
+  "productCodeChanged": true,
+  "coverage": [
+    "admin reaction dispatch preview auth",
+    "unknown support event 404",
+    "safe metadata only",
+    "character continuity metadata",
+    "safe context summary",
+    "read-only behavior",
+    "no reaction overlay or outbox enqueue",
+    "raw message raw payload wallet address and secrets excluded"
   ],
   "commands": [
     {
-      "name": "corepack pnpm typecheck",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "corepack pnpm test",
+      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     }
-  ],
-  "coverage": [
-    "Support Event Contract v2 documented",
-    "safe context summary documented",
-    "character continuity documented",
-    "reaction dispatch preview roadmap documented",
-    "admin operator workflow contract documented",
-    "role boundary documented",
-    "runtime execution remains future scoped"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
