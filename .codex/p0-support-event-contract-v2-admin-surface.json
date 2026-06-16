@@ -32,5 +32,7 @@
   "realObsCallUsed": false,
   "realWebSocketDeliveryUsed": false,
   "packageJsonChanged": false,
-  "pnpmLockChanged": false
+  "pnpmLockChanged": false,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "prNumber": 102
 }

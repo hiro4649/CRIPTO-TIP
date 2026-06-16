@@ -21,7 +21,7 @@ Done criteria: admin contract v2 surface requires admin bearer token; admin cont
 
 ## Evidence Integrity
 
-Head SHA: 8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0
+Head SHA: c94a08dafe88b242bbb0b154efb329219386d389
 
 Base SHA: 8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0
 
@@ -29,11 +29,11 @@ Product CI: success
 
 Quality-gate: success
 
-CI run: 27615034765
+CI run: 27615657768
 
-Quality-gate run: 27615181516
+Quality-gate run: 27615657769
 
-Quality-gate artifact: 7665786700
+Quality-gate artifact: 7665988981
 
 Tests: 80 test files, 1839 passed, 6 skipped
 
