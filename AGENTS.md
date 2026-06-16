@@ -19,7 +19,7 @@ owner scope and evidence. Done means the smallest relevant verification was run
 or honestly reported unavailable, with no raw logs or secret-like output.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.2.4
+CODEX_QUALITY_HARNESS_FILE v1.2.5
 
 ## Prime Directive
 
@@ -31,9 +31,9 @@ docs/process.
 
 ## Active Harness
 
-Active target harness: v1.2.4 / v124.
+Active target harness: v1.2.5 / v125.
 Read first: AGENTS.md, docs/process/CODEX_HARNESS_MANIFEST.json,
-docs/process/CODEX_V124_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json.
+docs/process/CODEX_V125_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json.
 README, legacy specs, and PR history are conditional reads only.
 
 ## Authority
@@ -42,9 +42,10 @@ v1.1.8 Final Decision remains final authority.
 v1.1.9 P0 artifacts and operator-visible statuses remain preserved.
 v1.2.0 adaptive routing, v1.2.1 calibration, v1.2.2 read-budget routing,
 and v1.2.3 observed evidence/decision closure remain compatibility layers.
-v1.2.4 adds only internal Goal Contract, Delegation Boundary, Evidence
-Semantics, Bounded Expert Loop, Safe Failure/Owner Burden, and Target Footprint
-fields inside the existing P0 artifacts.
+v1.2.4 specialist-governance fields remain compatibility layers.
+v1.2.5 adds only internal Goal Shard, Worktree Fleet, Evidence Lane,
+Typed Monitor Inbox, Fanout Guard, and Yield fields inside the existing P0
+artifacts.
 
 ## Target Footprint
 
@@ -68,7 +69,7 @@ proposal-only and owner-approval-required.
 ## Local Task Discipline
 
 Start from clean default branch or clean worktree. Preserve user changes.
-Run v124 self-test and the local quality gate for harness rollout. For product
+Run v125 self-test and the local quality gate for harness rollout. For product
 work, use the repo-specific commands above and keep product evidence separate
 from harness evidence.
 <!-- CODEX_QUALITY_HARNESS_END -->
