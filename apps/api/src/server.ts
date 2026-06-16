@@ -545,6 +545,17 @@ const AdminSupportEventSearchQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
+const AdminOperatorNoteSearchQuerySchema = z.object({
+  support_event_id: z.string().optional(),
+  stream_id: z.string().optional(),
+  character_id: z.string().optional(),
+  archived: z.coerce.boolean().optional(),
+  created_after: z.string().optional(),
+  created_before: z.string().optional(),
+  q: z.string().max(120).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
 
 const ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS = 50;
 const AdminSupportBulkReviewPreviewRequestSchema = z.object({
@@ -1066,6 +1077,48 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         offset: query.offset,
         count: events.length
       }
+    };
+  });
+
+  app.get("/admin/operator-notes", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminOperatorNoteSearchQuerySchema.parse(req.query);
+    const noteRepo = getOperatorNoteRepository(repo);
+    const searchFilter: Parameters<CriptoTipRepository["searchSupportEvents"]>[0] = { limit: 100, offset: 0 };
+    if (query.stream_id) searchFilter.streamId = query.stream_id;
+    if (query.character_id) searchFilter.characterId = query.character_id;
+    const supportEvents = query.support_event_id
+      ? [await repo.getSupportEventById(query.support_event_id)].filter((event): event is SupportReceived => Boolean(event))
+      : (await repo.searchSupportEvents(searchFilter))
+        .map((entry) => ({
+          event_id: entry.event_id,
+          stream_id: entry.stream_id,
+          character_id: entry.character_id,
+          source: entry.source
+        }));
+    const needle = query.q ? sanitizeOperatorNote(query.q).toLowerCase() : undefined;
+    const entries = [];
+    for (const event of supportEvents) {
+      const notes = await noteRepo.listSupportEventOperatorNotes(event.event_id, { includeArchived: true });
+      for (const note of notes) {
+        if (query.archived !== undefined && note.archived !== query.archived) continue;
+        if (query.created_after && note.created_at < query.created_after) continue;
+        if (query.created_before && note.created_at > query.created_before) continue;
+        if (needle && !note.note.toLowerCase().includes(needle)) continue;
+        entries.push({
+          ...toOperatorNoteSafeEntry(note),
+          support_event: {
+            event_id: event.event_id,
+            stream_id: event.stream_id,
+            character_id: event.character_id,
+            source: event.source
+          }
+        });
+      }
+    }
+    return {
+      operator_notes: entries.slice(query.offset, query.offset + query.limit),
+      page: { limit: query.limit, offset: query.offset, count: Math.max(0, Math.min(entries.length - query.offset, query.limit)) }
     };
   });
 
