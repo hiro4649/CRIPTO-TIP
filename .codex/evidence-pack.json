@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 106,
+  "headSha": "2c47040225cb1759cd24fa3489f94b582686e231",
   "baseSha": "9616a90e4aea0488b0aadbc60e21aa61b6f5b302",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 reaction dispatch internal outbox enqueue",
   "goal": "Convert an approved candidate outbox boundary into a local/internal outbox queue record without external dispatch.",
-  "ciRunId": "local-pre-pr",
-  "qualityGateRunId": "local-pre-pr",
-  "qualityGateArtifactId": "local-pre-pr",
-  "productCiStatus": "local-pre-pr",
-  "qualityGateStatus": "local-pre-pr",
+  "ciRunId": "27622572704",
+  "qualityGateRunId": "27622572668",
+  "qualityGateArtifactId": "7668967723",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
@@ -155,7 +155,19 @@
       "status": "nonblocking"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27622572704",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27622572668",
+      "result": "success",
+      "artifactId": "7668967723"
+    }
+  ],
   "allowedScope": [
     "internal outbox enqueue metadata",
     "admin auth guard",

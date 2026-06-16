@@ -43,5 +43,10 @@
   "packageJsonChanged": false,
   "pnpmLockChanged": false,
   "marker": "P0_REACTION_DISPATCH_INTERNAL_OUTBOX_ENQUEUE",
-  "prNumber": 0
+  "prNumber": 106,
+  "headSha": "2c47040225cb1759cd24fa3489f94b582686e231",
+  "baseSha": "9616a90e4aea0488b0aadbc60e21aa61b6f5b302",
+  "ciRunId": "27622572704",
+  "qualityGateRunId": "27622572668",
+  "qualityGateArtifactId": "7668967723"
 }

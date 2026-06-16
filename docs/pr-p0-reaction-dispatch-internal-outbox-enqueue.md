@@ -21,19 +21,19 @@ Done criteria: boundary_ready creates queued_internal record; approved_for_dispa
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 2c47040225cb1759cd24fa3489f94b582686e231
 
 Base SHA: 9616a90e4aea0488b0aadbc60e21aa61b6f5b302
 
-Product CI: local-pre-pr
+Product CI: success
 
-Quality-gate: local-pre-pr
+Quality-gate: success
 
-CI run: local-pre-pr
+CI run: 27622572704
 
-Quality-gate run: local-pre-pr
+Quality-gate run: 27622572668
 
-Quality-gate artifact: local-pre-pr
+Quality-gate artifact: 7668967723
 
 Tests: 84 test files, 1856 passed, 6 skipped
 
