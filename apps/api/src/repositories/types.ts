@@ -254,6 +254,46 @@ export type ReactionDispatchApprovalResult = {
   created: boolean;
 };
 
+export type ReactionDispatchOutboxBoundaryStatus =
+  | "boundary_ready"
+  | "boundary_blocked"
+  | "candidate_not_approved"
+  | "candidate_invalid"
+  | "candidate_superseded";
+
+export type ReactionDispatchOutboxBoundaryReasonCode =
+  | "approved_for_dispatch"
+  | "candidate_not_found"
+  | "approval_not_found"
+  | "candidate_not_approved"
+  | "candidate_invalid"
+  | "candidate_blocked"
+  | "candidate_superseded"
+  | "unsafe_context"
+  | "external_execution_forbidden"
+  | "already_recorded";
+
+export type ReactionDispatchOutboxBoundaryMetadata = {
+  boundary_id: string;
+  candidate_id: string;
+  support_event_id: string;
+  boundary_status: ReactionDispatchOutboxBoundaryStatus;
+  approval_status: ReactionDispatchApprovalStatus;
+  candidate_status: ReactionDispatchCandidateStatus;
+  safe_reason_codes: ReactionDispatchOutboxBoundaryReasonCode[];
+  contract_validation_status: string;
+  safe_context_hash: string;
+  constraints_hash: string;
+  idempotency_key: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReactionDispatchOutboxBoundaryResult = {
+  boundary: ReactionDispatchOutboxBoundaryMetadata;
+  created: boolean;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {

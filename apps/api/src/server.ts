@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -198,8 +198,8 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected"]);
-const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
@@ -213,9 +213,12 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "character_id",
   "reason_code",
   "candidate_id",
+  "boundary_id",
   "support_event_id",
   "before_status",
   "after_status",
+  "boundary_status",
+  "approval_status",
   "contract_validation_status",
   "retry_status",
   "target_id",
@@ -543,10 +546,13 @@ type ReactionDispatchCandidateRepository = {
   getReactionDispatchCandidateById?: (candidateId: string) => Promise<ReactionDispatchCandidateMetadata | undefined>;
   setReactionDispatchApprovalIfAbsent?: (approval: ReactionDispatchApprovalMetadata) => Promise<ReactionDispatchApprovalResult>;
   getReactionDispatchApproval?: (candidateId: string) => Promise<ReactionDispatchApprovalMetadata | undefined>;
+  setReactionDispatchOutboxBoundaryIfAbsent?: (boundary: ReactionDispatchOutboxBoundaryMetadata) => Promise<ReactionDispatchOutboxBoundaryResult>;
+  getReactionDispatchOutboxBoundary?: (candidateId: string) => Promise<ReactionDispatchOutboxBoundaryMetadata | undefined>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
 const reactionDispatchApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchApprovalMetadata>>();
+const reactionDispatchOutboxBoundaryFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchOutboxBoundaryMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -847,6 +853,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     approvalFallback = new Map<string, ReactionDispatchApprovalMetadata>();
     reactionDispatchApprovalFallbackByRepo.set(repo, approvalFallback);
   }
+  let boundaryFallback = reactionDispatchOutboxBoundaryFallbackByRepo.get(repo);
+  if (!boundaryFallback) {
+    boundaryFallback = new Map<string, ReactionDispatchOutboxBoundaryMetadata>();
+    reactionDispatchOutboxBoundaryFallbackByRepo.set(repo, boundaryFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -880,7 +891,18 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       },
     getReactionDispatchApproval: candidate.getReactionDispatchApproval
       ? (candidateId) => candidate.getReactionDispatchApproval!.call(repo, candidateId)
-      : async (candidateId) => approvalFallback.get(candidateId)
+      : async (candidateId) => approvalFallback.get(candidateId),
+    setReactionDispatchOutboxBoundaryIfAbsent: candidate.setReactionDispatchOutboxBoundaryIfAbsent
+      ? (boundary) => candidate.setReactionDispatchOutboxBoundaryIfAbsent!.call(repo, boundary)
+      : async (boundary) => {
+        const existing = boundaryFallback.get(boundary.candidate_id);
+        if (existing) return { boundary: existing, created: false };
+        boundaryFallback.set(boundary.candidate_id, boundary);
+        return { boundary, created: true };
+      },
+    getReactionDispatchOutboxBoundary: candidate.getReactionDispatchOutboxBoundary
+      ? (candidateId) => candidate.getReactionDispatchOutboxBoundary!.call(repo, candidateId)
+      : async (candidateId) => boundaryFallback.get(candidateId)
   };
 }
 
@@ -1076,6 +1098,60 @@ function toInitialReactionDispatchApprovalStatus(candidate: ReactionDispatchCand
   if (candidate.candidate_status === "candidate_invalid") return "candidate_invalid";
   if (candidate.candidate_status === "candidate_superseded") return "candidate_superseded";
   return "approval_blocked";
+}
+
+function toReactionDispatchOutboxBoundarySkippedSideEffects() {
+  return {
+    support_event_mutation: "skipped",
+    reaction_enqueue: "skipped",
+    overlay_enqueue: "skipped",
+    outbox_enqueue: "skipped",
+    external_adapter_execution: "skipped",
+    iris_core_call: "skipped",
+    voxweave_call: "skipped",
+    real_tts: "skipped",
+    real_live2d: "skipped",
+    real_renderer: "skipped",
+    real_obs: "skipped",
+    real_websocket_delivery: "skipped"
+  };
+}
+
+function buildReactionDispatchOutboxBoundary(
+  candidate: ReactionDispatchCandidateMetadata,
+  approval: ReactionDispatchApprovalMetadata,
+  reasonCodes: ReactionDispatchOutboxBoundaryReasonCode[],
+  status: ReactionDispatchOutboxBoundaryMetadata["boundary_status"],
+  now = new Date().toISOString()
+): ReactionDispatchOutboxBoundaryMetadata {
+  const idempotencyKey = `reaction_dispatch_outbox_boundary:${candidate.candidate_id}:${approval.approval_status}:${candidate.safe_context_hash}:${candidate.constraints_hash}`;
+  return {
+    boundary_id: `rdbound_${createHash("sha256").update(idempotencyKey).digest("hex").slice(0, 24)}`,
+    candidate_id: candidate.candidate_id,
+    support_event_id: candidate.support_event_id,
+    boundary_status: status,
+    approval_status: approval.approval_status,
+    candidate_status: candidate.candidate_status,
+    safe_reason_codes: reasonCodes,
+    contract_validation_status: candidate.validation_status,
+    safe_context_hash: candidate.safe_context_hash,
+    constraints_hash: candidate.constraints_hash,
+    idempotency_key: idempotencyKey,
+    created_at: now,
+    updated_at: now
+  };
+}
+
+function toReactionDispatchOutboxBoundaryAuditMetadata(boundary: ReactionDispatchOutboxBoundaryMetadata) {
+  return {
+    boundary_id: boundary.boundary_id,
+    candidate_id: boundary.candidate_id,
+    support_event_id: boundary.support_event_id,
+    boundary_status: boundary.boundary_status,
+    approval_status: boundary.approval_status,
+    reason_code: boundary.safe_reason_codes[0] ?? "external_execution_forbidden",
+    contract_validation_status: boundary.contract_validation_status
+  };
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -2046,6 +2122,72 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       },
       side_effects: toReactionDispatchApprovalSkippedSideEffects()
     };
+  });
+
+  app.post("/admin/reaction-dispatch/candidates/:candidateId/outbox-boundary", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { candidateId } = z.object({ candidateId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    const approval = await candidateRepo.getReactionDispatchApproval(candidate.candidate_id);
+    if (!approval) {
+      return reply.code(409).send({
+        boundary: buildReactionDispatchOutboxBoundary(candidate, {
+          candidate_id: candidate.candidate_id,
+          support_event_id: candidate.support_event_id,
+          candidate_status: candidate.candidate_status,
+          approval_status: toInitialReactionDispatchApprovalStatus(candidate),
+          safe_reason_codes: ["external_execution_forbidden"],
+          contract_validation_status: candidate.validation_status,
+          idempotency_key: `reaction_dispatch_approval:none:${candidate.candidate_id}`,
+          created_at: candidate.created_at,
+          updated_at: candidate.updated_at
+        }, ["approval_not_found", "external_execution_forbidden"], "candidate_not_approved"),
+        error: "candidate_not_approved",
+        side_effects: toReactionDispatchOutboxBoundarySkippedSideEffects()
+      });
+    }
+    const validation = await validateCandidateForApproval(repo, candidate);
+    if (approval.approval_status !== "approved_for_dispatch" || validation.status !== "valid" || candidate.candidate_status !== "candidate_ready") {
+      const reason: ReactionDispatchOutboxBoundaryReasonCode = approval.approval_status !== "approved_for_dispatch"
+        ? "candidate_not_approved"
+        : candidate.candidate_status === "candidate_invalid"
+          ? "candidate_invalid"
+          : candidate.candidate_status === "candidate_superseded"
+            ? "candidate_superseded"
+            : candidate.candidate_status === "candidate_blocked"
+              ? "candidate_blocked"
+              : "unsafe_context";
+      return reply.code(409).send({
+        boundary: buildReactionDispatchOutboxBoundary(candidate, approval, [reason, "external_execution_forbidden"], reason === "candidate_not_approved" ? "candidate_not_approved" : reason === "candidate_invalid" ? "candidate_invalid" : reason === "candidate_superseded" ? "candidate_superseded" : "boundary_blocked"),
+        error: "outbox_boundary_blocked",
+        side_effects: toReactionDispatchOutboxBoundarySkippedSideEffects()
+      });
+    }
+    const result = await candidateRepo.setReactionDispatchOutboxBoundaryIfAbsent(buildReactionDispatchOutboxBoundary(candidate, approval, ["approved_for_dispatch", "external_execution_forbidden"], "boundary_ready"));
+    if (result.created) {
+      await repo.writeAuditLog({
+        actor_type: "admin",
+        actor_id: "admin_mock",
+        action: "reaction_dispatch_outbox_boundary_recorded",
+        target_type: "reaction_dispatch_outbox_boundary",
+        target_id: result.boundary.boundary_id,
+        after_json: toReactionDispatchOutboxBoundaryAuditMetadata(result.boundary)
+      });
+    }
+    return { boundary: result.boundary, idempotent: !result.created, side_effects: toReactionDispatchOutboxBoundarySkippedSideEffects() };
+  });
+
+  app.get("/admin/reaction-dispatch/candidates/:candidateId/outbox-boundary", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { candidateId } = z.object({ candidateId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    const boundary = await candidateRepo.getReactionDispatchOutboxBoundary(candidate.candidate_id);
+    if (!boundary) return reply.code(404).send({ error: "reaction_dispatch_outbox_boundary_not_found" });
+    return { boundary, side_effects: toReactionDispatchOutboxBoundarySkippedSideEffects() };
   });
 
   app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {
