@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
+  "prNumber": 89,
+  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
   "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin support bulk safe review",
   "goal": "Add POST /admin/support-events/bulk-review/preview for safe local/internal support event bulk review preflight.",
-  "ciRunId": "0",
-  "qualityGateRunId": "0",
-  "qualityGateArtifactId": "0",
-  "productCiStatus": "pre_pr",
-  "qualityGateStatus": "pre_pr",
+  "ciRunId": "27583632129",
+  "qualityGateRunId": "27583725902",
+  "qualityGateArtifactId": "7653675479",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "scope": {
@@ -63,7 +63,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27583632129",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27583725902",
+      "result": "success",
+      "artifactId": "7653675479"
+    }
+  ],
   "allowedScope": [
     "local/internal admin support event bulk review preview API",
     "admin auth guard",
@@ -119,7 +131,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 70,
-    "passed": 1803,
+    "passed": 1804,
     "skipped": 6
   },
   "securityBoundaries": [

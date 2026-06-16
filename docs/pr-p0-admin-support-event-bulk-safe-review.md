@@ -21,21 +21,21 @@ Done criteria: admin bulk review preview requires admin bearer token; admin bulk
 
 ## Evidence Integrity
 
-Head SHA: 4dd664d9c344827fe1b87db28d3a6e3e1ade60a5
+Head SHA: 2cda3998e175a8c742880fe52a520c310968d43d
 
 Base SHA: 4dd664d9c344827fe1b87db28d3a6e3e1ade60a5
 
-Product CI: pre_pr
+Product CI: success
 
-Quality-gate: pre_pr
+Quality-gate: success
 
-CI run: 0
+CI run: 27583632129
 
-Quality-gate run: 0
+Quality-gate run: 27583725902
 
-Quality-gate artifact: 0
+Quality-gate artifact: 7653675479
 
-Tests: 70 test files, 1803 passed, 6 skipped
+Tests: 70 test files, 1804 passed, 6 skipped
 
 ## Testing and review
 
@@ -83,7 +83,7 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 70 files, 1803 passed, 6 skipped.
+Current recorded test summary: 70 files, 1804 passed, 6 skipped.
 
 ## Security Boundaries
 
