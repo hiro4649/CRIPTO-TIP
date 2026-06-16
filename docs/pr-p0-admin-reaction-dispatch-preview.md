@@ -21,19 +21,19 @@ Done criteria: reaction dispatch preview requires admin bearer token; reaction d
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 4bb910049674ddcce1db2d35f5af01881bea3bbb
 
 Base SHA: ffce428f0826f4d225d08a849fbec2708a0f7700
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27602290257
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27602290290
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7660376220
 
 Tests: 78 test files, 1832 passed, 6 skipped
 

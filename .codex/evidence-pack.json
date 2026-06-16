@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 98,
+  "headSha": "4bb910049674ddcce1db2d35f5af01881bea3bbb",
   "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
@@ -12,11 +12,11 @@
   "riskLevel": "R3",
   "title": "feat: add p0 admin reaction dispatch preview",
   "goal": "Add local/internal admin reaction dispatch preview so operators can inspect safe reaction context without mutating support events or triggering runtime side effects.",
-  "ciRunId": "not_created_pre_pr",
-  "qualityGateRunId": "not_created_pre_pr",
-  "qualityGateArtifactId": "not_created_pre_pr",
-  "productCiStatus": "not_created_pre_pr",
-  "qualityGateStatus": "not_created_pre_pr",
+  "ciRunId": "27602290257",
+  "qualityGateRunId": "27602290290",
+  "qualityGateArtifactId": "7660376220",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
@@ -94,7 +94,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27602290257",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27602290290",
+      "result": "success",
+      "artifactId": "7660376220"
+    }
+  ],
   "allowedScope": [
     "local/internal admin reaction dispatch preview API",
     "admin auth guard",
