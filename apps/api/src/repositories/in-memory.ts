@@ -27,6 +27,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   overlayEvents = new Map<string, OverlayTipAlert>();
   reactionRequests = new Map<string, CharacterReactionRequest>();
   auditLogs: AuditLogInput[] = [];
+  supportEventOperatorNotes = new Map<string, { id: string; event_id: string; note: string; created_at: string }[]>();
   supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
@@ -44,6 +45,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.overlayEvents.clear();
     this.reactionRequests.clear();
     this.auditLogs = [];
+    this.supportEventOperatorNotes.clear();
     this.supportModerationReviewStates.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
@@ -284,6 +286,15 @@ export class InMemoryRepository implements CriptoTipRepository {
     return { created: true };
   }
   async writeAuditLog(input: AuditLogInput) { this.auditLogs.push(input); }
+  async createSupportEventOperatorNote(note: { id: string; event_id: string; note: string; created_at: string }) {
+    const notes = this.supportEventOperatorNotes.get(note.event_id) ?? [];
+    notes.push(note);
+    this.supportEventOperatorNotes.set(note.event_id, notes);
+    return note;
+  }
+  async listSupportEventOperatorNotes(eventId: string) {
+    return [...(this.supportEventOperatorNotes.get(eventId) ?? [])];
+  }
   async listAuditLogs(filter: AuditLogListFilter = {}) {
     return this.auditLogs.filter((log) => {
       if (filter.action && log.action !== filter.action) return false;
