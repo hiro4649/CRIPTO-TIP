@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -32,6 +32,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   supportEventResolutions = new Map<string, SupportEventResolutionMetadata>();
   reactionDispatchCandidates = new Map<string, ReactionDispatchCandidateMetadata>();
   reactionDispatchApprovals = new Map<string, ReactionDispatchApprovalMetadata>();
+  reactionDispatchOutboxBoundaries = new Map<string, ReactionDispatchOutboxBoundaryMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -53,6 +54,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.supportEventResolutions.clear();
     this.reactionDispatchCandidates.clear();
     this.reactionDispatchApprovals.clear();
+    this.reactionDispatchOutboxBoundaries.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -174,6 +176,15 @@ export class InMemoryRepository implements CriptoTipRepository {
   }
   async getReactionDispatchApproval(candidateId: string) {
     return this.reactionDispatchApprovals.get(candidateId);
+  }
+  async setReactionDispatchOutboxBoundaryIfAbsent(boundary: ReactionDispatchOutboxBoundaryMetadata): Promise<ReactionDispatchOutboxBoundaryResult> {
+    const existing = this.reactionDispatchOutboxBoundaries.get(boundary.candidate_id);
+    if (existing) return { boundary: existing, created: false };
+    this.reactionDispatchOutboxBoundaries.set(boundary.candidate_id, boundary);
+    return { boundary, created: true };
+  }
+  async getReactionDispatchOutboxBoundary(candidateId: string) {
+    return this.reactionDispatchOutboxBoundaries.get(candidateId);
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

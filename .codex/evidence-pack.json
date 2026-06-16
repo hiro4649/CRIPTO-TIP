@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 104,
-  "headSha": "d4d68aecc017a780cec5d77c515cf3848d8d108f",
-  "baseSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
+  "prNumber": 105,
+  "headSha": "16d8ae95e35f26ed59a77915a1578e86698df686",
+  "baseSha": "80530a8ab87e0412ad60d91c3fe389a964626bc0",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_reaction_dispatch_approval_gate",
+  "changeType": "product_vertical_slice_approved_candidate_outbox_boundary",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin reaction dispatch approval gate",
-  "goal": "Add a local/internal admin approval gate for persisted safe reaction dispatch candidates without dispatching runtime work or exposing raw data.",
-  "ciRunId": "27619687826",
-  "qualityGateRunId": "27619687910",
-  "qualityGateArtifactId": "7667702046",
+  "title": "feat: add p0 approved candidate outbox boundary",
+  "goal": "Add a local/internal outbox boundary record for approved reaction dispatch candidates without enqueueing outbox or executing external adapters.",
+  "ciRunId": "27620561427",
+  "qualityGateRunId": "27620561441",
+  "qualityGateArtifactId": "7668084304",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,18 +22,18 @@
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "approval_gate",
-    "support_event_contract_v2"
+    "outbox_boundary",
+    "approval_gate"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/types.ts",
-      "apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_APPROVAL_GATE.md",
-      "docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
-      ".codex/p0-admin-reaction-dispatch-approval-gate.json",
+      "apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts",
+      "docs/P0_REACTION_DISPATCH_APPROVED_CANDIDATE_OUTBOX_BOUNDARY.md",
+      "docs/pr-p0-reaction-dispatch-approved-candidate-outbox-boundary.md",
+      ".codex/p0-reaction-dispatch-approved-candidate-outbox-boundary.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -48,9 +48,8 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/*.ts",
       "apps/api/src/repositories/*",
-      "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_REACTION_DISPATCH_APPROVAL_GATE.md",
-      "docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
+      "docs/P0_REACTION_DISPATCH_APPROVED_CANDIDATE_OUTBOX_BOUNDARY.md",
+      "docs/pr-p0-reaction-dispatch-approved-candidate-outbox-boundary.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -66,7 +65,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -111,7 +110,7 @@
       "status": "pass"
     },
     {
-      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-approved-candidate-outbox-boundary.md",
       "result": "pass",
       "status": "pass"
     },
@@ -159,24 +158,22 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27619687826",
+      "runId": "27620561427",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27619687910",
+      "runId": "27620561441",
       "result": "success",
-      "artifactId": "7667702046"
+      "artifactId": "7668084304"
     }
   ],
   "allowedScope": [
-    "admin reaction dispatch approval gate",
-    "candidate approval metadata",
-    "candidate rejection metadata",
+    "approved candidate outbox boundary metadata",
     "admin auth guard",
+    "approved-only gate",
     "safe audit metadata",
-    "Support Event Contract v2 validation before approval",
-    "idempotent approval and rejection",
+    "idempotent boundary record",
     "docs",
     ".codex evidence"
   ],
@@ -209,6 +206,7 @@
     "reaction enqueue",
     "overlay enqueue",
     "outbox enqueue",
+    "external adapter execution",
     "AI generation execution",
     "token sale",
     "token exchange",
@@ -219,43 +217,37 @@
     "refund"
   ],
   "doneCriteria": [
-    "approval endpoints require admin bearer token",
-    "unknown candidate returns 404",
-    "candidate_ready can be approved_for_dispatch",
-    "approval is idempotent",
-    "candidate_ready can be rejected_by_admin",
-    "rejection is idempotent",
-    "invalid blocked superseded and unsafe candidates are blocked",
-    "safe audit metadata is written once per transition",
+    "approved candidate creates boundary_ready record",
+    "boundary creation is idempotent",
+    "unapproved candidate is blocked",
+    "unsafe candidate is blocked",
+    "safe metadata only",
     "no support event mutation",
     "no reaction overlay or outbox enqueue",
-    "no external runtime execution",
-    "safe metadata only"
+    "no external runtime execution"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 82,
-    "passed": 1848,
+    "testFiles": 83,
+    "passed": 1852,
     "skipped": 6
   },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
     "No DB driver, Redis, or Kafka dependency is added.",
     "No real DB connection is introduced.",
-    "No migration is changed or executed.",
-    "No contracts or workflows are changed.",
-    "No real YouTube API or OAuth token is used.",
-    "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, or VOXWEAVE call is performed.",
+    "No migration, contract, or workflow is changed.",
+    "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
+    "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
     "No support events are mutated.",
     "No reaction, overlay, or outbox side effects are enqueued.",
-    "No RPC, wallet, deploy, web, or overlay app changes.",
-    "Approval metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, and private URLs.",
+    "Boundary metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, and private URLs.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin approval gate metadata only.",
-    "Actual approved-candidate outbox boundary and external execution adapters remain future scoped work."
+    "This is local/internal outbox boundary metadata only.",
+    "Actual internal outbox enqueue and external execution adapters remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -264,7 +256,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-approved-candidate-outbox-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -273,7 +265,7 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-approved-candidate-outbox-boundary.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -291,10 +283,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin reaction dispatch candidate approval endpoints."
+    "statement": "Adds local/internal approved candidate outbox boundary metadata endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal approval metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal boundary metadata only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/outbox enqueue, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -306,9 +298,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin reaction dispatch approval gate, admin auth, candidate approval/rejection metadata, safe audit metadata, idempotency, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is unsafe approval, raw data exposure, support event mutation, dispatch side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Approval gate tests, safe candidate persistence tests, contract v2 tests, reaction dispatch preview tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 approved candidate outbox boundary, admin auth, safe boundary metadata, idempotency, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental outbox enqueue, raw data exposure, support event mutation, external execution, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Outbox boundary tests, approval gate tests, safe candidate persistence tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-approval-gate.md"
+  "prBodyPath": "docs/pr-p0-reaction-dispatch-approved-candidate-outbox-boundary.md"
 }
