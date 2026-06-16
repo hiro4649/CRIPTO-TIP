@@ -535,9 +535,17 @@ const ADMIN_SUPPORT_BULK_REVIEW_ACTIONS = [
   "view_side_effects",
   "overlay_resend",
   "reaction_resend",
-  "adjust_safe_fields"
+  "adjust_safe_fields",
+  "bulk_preview"
 ] as const;
 type AdminSupportBulkReviewAction = typeof ADMIN_SUPPORT_BULK_REVIEW_ACTIONS[number];
+type AdminSupportActionPlanBlockedReason =
+  | "already_approved"
+  | "already_rejected"
+  | "held_requires_review"
+  | "unsupported_source"
+  | "side_effect_already_applied"
+  | "state_transition_blocked";
 
 const FORBIDDEN_SUPPORT_ADJUSTMENT_FIELDS = new Set([
   "amount_raw",
@@ -661,6 +669,66 @@ function toAdminSupportBulkReviewPreviewEntry(eventId: string, support?: Support
     moderation_status: moderationStatus,
     eligible_actions: [...moderationActions, ...baseActions, ...resendActions],
     ineligible_reason: moderationStatus === "rejected" ? "rejected_support_event" : undefined
+  };
+}
+
+async function toAdminSupportEventActionPlan(repo: CriptoTipRepository, support: SupportReceived) {
+  const moderationStatus = support.support.message_moderation_status;
+  const reviewStatus = await repo.getSupportModerationReviewStatus(support.event_id);
+  const ledger = await repo.getSupportSideEffectLedger(support);
+  const timeline = await repo.getSupportEventTimeline(support);
+  const eligibleActions: AdminSupportBulkReviewAction[] = [...ADMIN_SUPPORT_BULK_REVIEW_ACTIONS];
+  const blockedActions: { action: AdminSupportBulkReviewAction; reason: AdminSupportActionPlanBlockedReason }[] = [];
+  const block = (action: AdminSupportBulkReviewAction, reason: AdminSupportActionPlanBlockedReason) => blockedActions.push({ action, reason });
+
+  if (moderationStatus === "hold" && !reviewStatus) {
+    block("overlay_resend", "held_requires_review");
+    block("reaction_resend", "held_requires_review");
+  } else if (reviewStatus === "approved" || moderationStatus === "approved") {
+    block("approve_hold", "already_approved");
+    block("reject_hold", "already_approved");
+    if (ledger.overlay_requested) block("overlay_resend", "side_effect_already_applied");
+    if (ledger.reaction_requested) block("reaction_resend", "side_effect_already_applied");
+  } else if (reviewStatus === "rejected" || moderationStatus === "rejected") {
+    block("approve_hold", "already_rejected");
+    block("reject_hold", "already_rejected");
+    block("overlay_resend", "already_rejected");
+    block("reaction_resend", "already_rejected");
+  } else {
+    block("approve_hold", "state_transition_blocked");
+    block("reject_hold", "state_transition_blocked");
+    block("overlay_resend", "state_transition_blocked");
+    block("reaction_resend", "state_transition_blocked");
+  }
+
+  if (!supportSources.includes(support.source)) {
+    block("approve_hold", "unsupported_source");
+    block("reject_hold", "unsupported_source");
+  }
+
+  return {
+    support_event: {
+      event_id: support.event_id,
+      moderation_status: moderationStatus,
+      review_status: reviewStatus ?? "not_reviewed",
+      delivery_status: "pending",
+      source: support.source,
+      stream_id: support.stream_id,
+      character_id: support.character_id
+    },
+    eligible_actions: eligibleActions,
+    blocked_actions: blockedActions,
+    side_effects: {
+      affinity_applied: ledger.affinity_applied,
+      reaction_requested: ledger.reaction_requested,
+      overlay_requested: ledger.overlay_requested,
+      outbox_enqueued: ledger.outbox_enqueued,
+      resend_candidates: ledger.resend_candidates
+    },
+    timeline_ref: {
+      event_id: support.event_id,
+      entry_count: timeline.entries.length
+    }
   };
 }
 
@@ -1176,6 +1244,14 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       },
       side_effects: ledger
     };
+  });
+
+  app.get("/admin/support-events/:eventId/action-plan", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    return toAdminSupportEventActionPlan(repo, support);
   });
 
   app.get("/admin/support-events/:eventId/timeline", async (req, reply) => {

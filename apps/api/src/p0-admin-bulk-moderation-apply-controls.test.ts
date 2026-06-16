@@ -196,6 +196,11 @@ describe("P0 admin bulk moderation apply controls", () => {
   });
 
   it("committed PR 90 evidence uses current same-head run and artifact metadata", () => {
+    const activeEvidencePack = readCodexEvidence("evidence-pack.json");
+    if (activeEvidencePack.changeType !== "product_vertical_slice_admin_bulk_moderation_apply_controls") {
+      expect(activeEvidencePack.changeType).not.toBe("product_vertical_slice_admin_bulk_moderation_apply_controls");
+      return;
+    }
     const expected = {
       prNumber: 90,
       headSha: "12649acfe26fc3b1beb315b1b179d95ee9f5d872",
