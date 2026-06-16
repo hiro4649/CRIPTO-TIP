@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 103,
-  "headSha": "1245a0b4f49655bc80279d7e3183cedad1f9a415",
-  "baseSha": "bbcff26879af805ad818a5c8249334abd39dfbb8",
+  "prNumber": 104,
+  "headSha": "d4d68aecc017a780cec5d77c515cf3848d8d108f",
+  "baseSha": "d771698ffb279d3d9cd134e36a1ffdac080ea349",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_reaction_dispatch_safe_candidate_persistence",
+  "changeType": "product_vertical_slice_admin_reaction_dispatch_approval_gate",
   "riskLevel": "R3",
-  "title": "feat: add p0 reaction dispatch safe candidate persistence",
-  "goal": "Add local/internal safe candidate persistence for reaction dispatch using Support Event Contract v2 validation, without dispatching runtime side effects or exposing raw data.",
-  "ciRunId": "27617948861",
-  "qualityGateRunId": "27617948843",
-  "qualityGateArtifactId": "7666936950",
+  "title": "feat: add p0 admin reaction dispatch approval gate",
+  "goal": "Add a local/internal admin approval gate for persisted safe reaction dispatch candidates without dispatching runtime work or exposing raw data.",
+  "ciRunId": "27619687826",
+  "qualityGateRunId": "27619687910",
+  "qualityGateArtifactId": "7667702046",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,18 +22,18 @@
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "support_event_contract_v2",
-    "safe_candidate_persistence"
+    "approval_gate",
+    "support_event_contract_v2"
   ],
   "scope": {
     "changedFiles": [
+      "apps/api/src/server.ts",
       "apps/api/src/repositories/in-memory.ts",
       "apps/api/src/repositories/types.ts",
-      "apps/api/src/server.ts",
-      "apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts",
-      "docs/P0_REACTION_DISPATCH_SAFE_CANDIDATE_PERSISTENCE.md",
-      "docs/pr-p0-reaction-dispatch-safe-candidate-persistence.md",
-      ".codex/p0-reaction-dispatch-safe-candidate-persistence.json",
+      "apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_APPROVAL_GATE.md",
+      "docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
+      ".codex/p0-admin-reaction-dispatch-approval-gate.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -49,8 +49,8 @@
       "apps/api/src/*.ts",
       "apps/api/src/repositories/*",
       "packages/shared/src/index.ts",
-      "docs/P0_REACTION_DISPATCH_SAFE_CANDIDATE_PERSISTENCE.md",
-      "docs/pr-p0-reaction-dispatch-safe-candidate-persistence.md",
+      "docs/P0_ADMIN_REACTION_DISPATCH_APPROVAL_GATE.md",
+      "docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -66,12 +66,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -111,7 +106,47 @@
       "status": "pass"
     },
     {
+      "name": "node scripts/write-test-summary.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-evidence-placeholders.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/validate-evidence-freshness.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/check-quality-gate-self-protection.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
       "name": "node scripts/codex-secret-safety-scan.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v125-self-test.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v124-self-test.mjs",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "node scripts/codex-v123-self-test.mjs",
       "result": "pass",
       "status": "pass"
     },
@@ -124,23 +159,24 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27617948861",
+      "runId": "27619687826",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27617948843",
+      "runId": "27619687910",
       "result": "success",
-      "artifactId": "7666936950"
+      "artifactId": "7667702046"
     }
   ],
   "allowedScope": [
-    "reaction dispatch safe candidate persistence",
+    "admin reaction dispatch approval gate",
+    "candidate approval metadata",
+    "candidate rejection metadata",
     "admin auth guard",
-    "Support Event Contract v2 validator alignment",
-    "safe metadata only",
-    "idempotent local/internal candidate records",
-    "list and detail admin candidate views",
+    "safe audit metadata",
+    "Support Event Contract v2 validation before approval",
+    "idempotent approval and rejection",
     "docs",
     ".codex evidence"
   ],
@@ -173,46 +209,53 @@
     "reaction enqueue",
     "overlay enqueue",
     "outbox enqueue",
+    "AI generation execution",
     "token sale",
     "token exchange",
     "cash-out",
     "custody",
     "internal balance",
-    "investment wording"
+    "investment wording",
+    "refund"
   ],
   "doneCriteria": [
-    "candidate endpoints require admin bearer token",
-    "unknown support event returns 404",
-    "candidate creation uses Support Event Contract v2 validation",
-    "candidate creation is idempotent by safe context and constraints hashes",
-    "list and detail return safe metadata only",
+    "approval endpoints require admin bearer token",
+    "unknown candidate returns 404",
+    "candidate_ready can be approved_for_dispatch",
+    "approval is idempotent",
+    "candidate_ready can be rejected_by_admin",
+    "rejection is idempotent",
+    "invalid blocked superseded and unsafe candidates are blocked",
+    "safe audit metadata is written once per transition",
     "no support event mutation",
-    "no reaction, overlay, or outbox enqueue",
-    "no raw message, raw payload, wallet address, authorization, secrets, prompts, LLM output, or private URLs"
+    "no reaction overlay or outbox enqueue",
+    "no external runtime execution",
+    "safe metadata only"
   ],
+  "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 82,
+    "passed": 1848,
+    "skipped": 6
+  },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
     "No DB driver, Redis, or Kafka dependency is added.",
     "No real DB connection is introduced.",
     "No migration is changed or executed.",
+    "No contracts or workflows are changed.",
     "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, or VOXWEAVE call is performed.",
     "No support events are mutated.",
     "No reaction, overlay, or outbox side effects are enqueued.",
-    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Candidate metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, and private URLs.",
+    "No RPC, wallet, deploy, web, or overlay app changes.",
+    "Approval metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, logs_url, full prompts, LLM output, model-generated TTS text, and private URLs.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
-  "testSummary": {
-    "schemaVersion": "1.0.0",
-    "command": "corepack pnpm test",
-    "testFiles": 81,
-    "passed": 1843,
-    "skipped": 6
-  },
   "residualRisks": [
-    "This is local/internal reaction dispatch candidate persistence only.",
-    "Actual admin approval, durable production persistence, and external execution adapters remain future scoped work."
+    "This is local/internal admin approval gate metadata only.",
+    "Actual approved-candidate outbox boundary and external execution adapters remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -221,8 +264,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts: pass",
-    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-preview.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-admin-reaction-dispatch-approval-gate.test.ts apps/api/src/p0-reaction-dispatch-safe-candidate-persistence.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
@@ -231,7 +273,7 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-reaction-dispatch-safe-candidate-persistence.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-admin-reaction-dispatch-approval-gate.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -249,9 +291,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin reaction dispatch safe candidate metadata endpoints."
+    "statement": "Adds local/internal admin reaction dispatch candidate approval endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal candidate metadata only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal approval metadata only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -264,9 +306,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 reaction dispatch safe candidate persistence, admin auth, Support Event Contract v2 alignment, safe metadata, idempotency, list/detail views, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is raw data exposure, support event mutation, dispatch side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Candidate persistence tests, contract v2 admin surface tests, validator tests, reaction dispatch preview tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin reaction dispatch approval gate, admin auth, candidate approval/rejection metadata, safe audit metadata, idempotency, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is unsafe approval, raw data exposure, support event mutation, dispatch side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Approval gate tests, safe candidate persistence tests, contract v2 tests, reaction dispatch preview tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-reaction-dispatch-safe-candidate-persistence.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-approval-gate.md"
 }

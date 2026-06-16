@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -198,8 +198,8 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note"]);
-const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
@@ -212,6 +212,11 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "source_event_id",
   "character_id",
   "reason_code",
+  "candidate_id",
+  "support_event_id",
+  "before_status",
+  "after_status",
+  "contract_validation_status",
   "retry_status",
   "target_id",
   "review_status",
@@ -535,9 +540,13 @@ type ReactionDispatchCandidateRepository = {
   createReactionDispatchCandidateIfAbsent?: (candidate: ReactionDispatchCandidateMetadata) => Promise<ReactionDispatchCandidateCreateResult>;
   listReactionDispatchCandidatesBySupportEvent?: (eventId: string) => Promise<ReactionDispatchCandidateMetadata[]>;
   getReactionDispatchCandidate?: (eventId: string, candidateId: string) => Promise<ReactionDispatchCandidateMetadata | undefined>;
+  getReactionDispatchCandidateById?: (candidateId: string) => Promise<ReactionDispatchCandidateMetadata | undefined>;
+  setReactionDispatchApprovalIfAbsent?: (approval: ReactionDispatchApprovalMetadata) => Promise<ReactionDispatchApprovalResult>;
+  getReactionDispatchApproval?: (candidateId: string) => Promise<ReactionDispatchApprovalMetadata | undefined>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
+const reactionDispatchApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchApprovalMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -833,6 +842,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     fallback = new Map<string, ReactionDispatchCandidateMetadata>();
     reactionDispatchCandidateFallbackByRepo.set(repo, fallback);
   }
+  let approvalFallback = reactionDispatchApprovalFallbackByRepo.get(repo);
+  if (!approvalFallback) {
+    approvalFallback = new Map<string, ReactionDispatchApprovalMetadata>();
+    reactionDispatchApprovalFallbackByRepo.set(repo, approvalFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -852,7 +866,21 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       : async (eventId, candidateId) => {
         const entry = fallback.get(candidateId);
         return entry?.support_event_id === eventId ? entry : undefined;
-      }
+      },
+    getReactionDispatchCandidateById: candidate.getReactionDispatchCandidateById
+      ? (candidateId) => candidate.getReactionDispatchCandidateById!.call(repo, candidateId)
+      : async (candidateId) => fallback.get(candidateId),
+    setReactionDispatchApprovalIfAbsent: candidate.setReactionDispatchApprovalIfAbsent
+      ? (approval) => candidate.setReactionDispatchApprovalIfAbsent!.call(repo, approval)
+      : async (approval) => {
+        const existing = approvalFallback.get(approval.candidate_id);
+        if (existing) return { approval: existing, created: false };
+        approvalFallback.set(approval.candidate_id, approval);
+        return { approval, created: true };
+      },
+    getReactionDispatchApproval: candidate.getReactionDispatchApproval
+      ? (candidateId) => candidate.getReactionDispatchApproval!.call(repo, candidateId)
+      : async (candidateId) => approvalFallback.get(candidateId)
   };
 }
 
@@ -946,6 +974,108 @@ async function buildReactionDispatchCandidate(repo: CriptoTipRepository, support
     },
     constraints_summary: constraintsSummary
   };
+}
+
+async function validateCandidateForApproval(repo: CriptoTipRepository, candidate: ReactionDispatchCandidateMetadata) {
+  const support = await repo.getSupportEventById(candidate.support_event_id);
+  if (!support) return { status: "missing_support" as const, reason: "candidate_invalid" as ReactionDispatchApprovalReasonCode };
+  const rebuilt = await buildReactionDispatchCandidate(repo, support);
+  if (candidate.candidate_status === "candidate_invalid" || rebuilt.candidate_status === "candidate_invalid") {
+    return { status: "blocked" as const, support, rebuilt, reason: "candidate_invalid" as ReactionDispatchApprovalReasonCode };
+  }
+  if (candidate.candidate_status === "candidate_blocked" || rebuilt.candidate_status === "candidate_blocked") {
+    return { status: "blocked" as const, support, rebuilt, reason: "candidate_blocked" as ReactionDispatchApprovalReasonCode };
+  }
+  if (candidate.candidate_status === "candidate_superseded" || rebuilt.candidate_status === "candidate_superseded") {
+    return { status: "blocked" as const, support, rebuilt, reason: "candidate_superseded" as ReactionDispatchApprovalReasonCode };
+  }
+  if (
+    rebuilt.validation_status !== "valid" ||
+    rebuilt.safe_context_hash !== candidate.safe_context_hash ||
+    rebuilt.constraints_hash !== candidate.constraints_hash ||
+    rebuilt.persona_version !== candidate.persona_version
+  ) {
+    return { status: "blocked" as const, support, rebuilt, reason: "unsafe_context" as ReactionDispatchApprovalReasonCode };
+  }
+  return { status: "valid" as const, support, rebuilt, reason: "contract_v2_valid" as ReactionDispatchApprovalReasonCode };
+}
+
+function buildReactionDispatchApprovalMetadata(
+  candidate: ReactionDispatchCandidateMetadata,
+  action: "approve" | "reject",
+  reasonCodes: ReactionDispatchApprovalReasonCode[],
+  now = new Date().toISOString()
+): ReactionDispatchApprovalMetadata {
+  const approved = action === "approve";
+  return {
+    candidate_id: candidate.candidate_id,
+    support_event_id: candidate.support_event_id,
+    candidate_status: candidate.candidate_status,
+    approval_status: approved ? "approved_for_dispatch" : "rejected_by_admin",
+    ...(approved ? { approved_at: now, approved_by_actor_type: "admin" as const } : { rejected_at: now, rejected_by_actor_type: "admin" as const }),
+    safe_reason_codes: reasonCodes,
+    contract_validation_status: candidate.validation_status,
+    idempotency_key: `reaction_dispatch_approval:${action}:${candidate.candidate_id}`,
+    created_at: now,
+    updated_at: now
+  };
+}
+
+function toReactionDispatchApprovalAuditMetadata(approval: ReactionDispatchApprovalMetadata, beforeStatus: string) {
+  return {
+    candidate_id: approval.candidate_id,
+    support_event_id: approval.support_event_id,
+    before_status: beforeStatus,
+    after_status: approval.approval_status,
+    reason_code: approval.safe_reason_codes[0] ?? "external_execution_forbidden",
+    contract_validation_status: approval.contract_validation_status
+  };
+}
+
+function toBlockedReactionDispatchApproval(
+  candidate: ReactionDispatchCandidateMetadata,
+  reason: ReactionDispatchApprovalReasonCode,
+  existing?: ReactionDispatchApprovalMetadata
+): ReactionDispatchApprovalMetadata {
+  const now = new Date().toISOString();
+  return {
+    candidate_id: candidate.candidate_id,
+    support_event_id: candidate.support_event_id,
+    candidate_status: candidate.candidate_status,
+    approval_status: existing?.approval_status ?? (candidate.candidate_status === "candidate_invalid" ? "candidate_invalid" : candidate.candidate_status === "candidate_superseded" ? "candidate_superseded" : "approval_blocked"),
+    ...(existing?.approved_at ? { approved_at: existing.approved_at } : {}),
+    ...(existing?.rejected_at ? { rejected_at: existing.rejected_at } : {}),
+    ...(existing?.approved_by_actor_type ? { approved_by_actor_type: existing.approved_by_actor_type } : {}),
+    ...(existing?.rejected_by_actor_type ? { rejected_by_actor_type: existing.rejected_by_actor_type } : {}),
+    safe_reason_codes: existing?.safe_reason_codes ?? [reason, "external_execution_forbidden"],
+    contract_validation_status: candidate.validation_status,
+    idempotency_key: existing?.idempotency_key ?? `reaction_dispatch_approval:blocked:${candidate.candidate_id}:${reason}`,
+    created_at: existing?.created_at ?? now,
+    updated_at: existing?.updated_at ?? now
+  };
+}
+
+function toReactionDispatchApprovalSkippedSideEffects() {
+  return {
+    support_event_mutation: "skipped",
+    reaction_enqueue: "skipped",
+    overlay_enqueue: "skipped",
+    outbox_enqueue: "skipped",
+    iris_core_call: "skipped",
+    voxweave_call: "skipped",
+    real_tts: "skipped",
+    real_live2d: "skipped",
+    real_renderer: "skipped",
+    real_obs: "skipped",
+    real_websocket_delivery: "skipped"
+  };
+}
+
+function toInitialReactionDispatchApprovalStatus(candidate: ReactionDispatchCandidateMetadata): ReactionDispatchApprovalMetadata["approval_status"] {
+  if (candidate.candidate_status === "candidate_ready") return "candidate_ready";
+  if (candidate.candidate_status === "candidate_invalid") return "candidate_invalid";
+  if (candidate.candidate_status === "candidate_superseded") return "candidate_superseded";
+  return "approval_blocked";
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -1820,6 +1950,102 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const candidate = await candidateRepo.getReactionDispatchCandidate(eventId, candidateId);
     if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
     return { candidate };
+  });
+
+  app.post("/admin/reaction-dispatch/candidates/:candidateId/approve", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { candidateId } = z.object({ candidateId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    const existing = await candidateRepo.getReactionDispatchApproval(candidate.candidate_id);
+    if (existing?.approval_status === "approved_for_dispatch") {
+      return { approval: existing, idempotent: true, side_effects: toReactionDispatchApprovalSkippedSideEffects() };
+    }
+    if (existing?.approval_status === "rejected_by_admin") {
+      return reply.code(409).send({ approval: toBlockedReactionDispatchApproval(candidate, "already_rejected", existing), error: "candidate_already_rejected", side_effects: toReactionDispatchApprovalSkippedSideEffects() });
+    }
+    const validation = await validateCandidateForApproval(repo, candidate);
+    if (validation.status !== "valid" || candidate.candidate_status !== "candidate_ready") {
+      const reason = candidate.candidate_status === "candidate_invalid"
+        ? "candidate_invalid"
+        : candidate.candidate_status === "candidate_blocked"
+          ? "candidate_blocked"
+          : candidate.candidate_status === "candidate_superseded"
+            ? "candidate_superseded"
+            : validation.reason;
+      return reply.code(409).send({ approval: toBlockedReactionDispatchApproval(candidate, reason), error: "candidate_approval_blocked", side_effects: toReactionDispatchApprovalSkippedSideEffects() });
+    }
+    const result = await candidateRepo.setReactionDispatchApprovalIfAbsent(buildReactionDispatchApprovalMetadata(candidate, "approve", ["contract_v2_valid", "admin_approved", "external_execution_forbidden"]));
+    if (result.created) {
+      await repo.writeAuditLog({
+        actor_type: "admin",
+        actor_id: "admin_mock",
+        action: "reaction_dispatch_candidate_approved",
+        target_type: "reaction_dispatch_candidate",
+        target_id: candidate.candidate_id,
+        after_json: toReactionDispatchApprovalAuditMetadata(result.approval, "candidate_ready")
+      });
+    }
+    return { approval: result.approval, idempotent: !result.created, side_effects: toReactionDispatchApprovalSkippedSideEffects() };
+  });
+
+  app.post("/admin/reaction-dispatch/candidates/:candidateId/reject", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { candidateId } = z.object({ candidateId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    const existing = await candidateRepo.getReactionDispatchApproval(candidate.candidate_id);
+    if (existing?.approval_status === "rejected_by_admin") {
+      return { approval: existing, idempotent: true, side_effects: toReactionDispatchApprovalSkippedSideEffects() };
+    }
+    if (existing?.approval_status === "approved_for_dispatch") {
+      return reply.code(409).send({ approval: toBlockedReactionDispatchApproval(candidate, "state_transition_blocked", existing), error: "approved_candidate_reject_blocked", side_effects: toReactionDispatchApprovalSkippedSideEffects() });
+    }
+    if (candidate.candidate_status !== "candidate_ready") {
+      const reason = candidate.candidate_status === "candidate_invalid"
+        ? "candidate_invalid"
+        : candidate.candidate_status === "candidate_blocked"
+          ? "candidate_blocked"
+          : "candidate_superseded";
+      return reply.code(409).send({ approval: toBlockedReactionDispatchApproval(candidate, reason), error: "candidate_rejection_blocked", side_effects: toReactionDispatchApprovalSkippedSideEffects() });
+    }
+    const result = await candidateRepo.setReactionDispatchApprovalIfAbsent(buildReactionDispatchApprovalMetadata(candidate, "reject", ["admin_rejected", "external_execution_forbidden"]));
+    if (result.created) {
+      await repo.writeAuditLog({
+        actor_type: "admin",
+        actor_id: "admin_mock",
+        action: "reaction_dispatch_candidate_rejected",
+        target_type: "reaction_dispatch_candidate",
+        target_id: candidate.candidate_id,
+        after_json: toReactionDispatchApprovalAuditMetadata(result.approval, "candidate_ready")
+      });
+    }
+    return { approval: result.approval, idempotent: !result.created, side_effects: toReactionDispatchApprovalSkippedSideEffects() };
+  });
+
+  app.get("/admin/reaction-dispatch/candidates/:candidateId/approval", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { candidateId } = z.object({ candidateId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(candidateId);
+    if (!candidate) return reply.code(404).send({ error: "reaction_dispatch_candidate_not_found" });
+    const approval = await candidateRepo.getReactionDispatchApproval(candidate.candidate_id);
+    return {
+      approval: approval ?? {
+        candidate_id: candidate.candidate_id,
+        support_event_id: candidate.support_event_id,
+        candidate_status: candidate.candidate_status,
+        approval_status: toInitialReactionDispatchApprovalStatus(candidate),
+        safe_reason_codes: candidate.reason_codes.includes("contract_v2_valid") ? ["contract_v2_valid", "external_execution_forbidden"] : ["external_execution_forbidden"],
+        contract_validation_status: candidate.validation_status,
+        idempotency_key: `reaction_dispatch_approval:none:${candidate.candidate_id}`,
+        created_at: candidate.created_at,
+        updated_at: candidate.updated_at
+      },
+      side_effects: toReactionDispatchApprovalSkippedSideEffects()
+    };
   });
 
   app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {
