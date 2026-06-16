@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, SupportEventResolutionMetadata, SupportEventResolutionStatus } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -565,6 +565,15 @@ const AdminSupportEventResolutionSchema = z.object({
   status: z.enum(["open", "resolved", "needs_followup", "blocked"]),
   operator_note: z.string().max(240).optional()
 });
+const AdminSupportEventWorkQueueQuerySchema = z.object({
+  resolution_status: z.enum(["open", "resolved", "needs_followup", "blocked"]).optional(),
+  message_moderation_status: z.enum(moderationStatuses).optional(),
+  stream_id: z.string().optional(),
+  character_id: z.string().optional(),
+  source: z.enum(supportSources).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
@@ -792,6 +801,33 @@ function toResolutionAuditMetadata(support: SupportReceived, resolution: AdminSu
     character_id: support.character_id,
     resolution_status: resolution.status,
     operator_note: resolution.operator_note
+  };
+}
+
+async function toWorkQueueEntry(repo: CriptoTipRepository, support: SupportReceived) {
+  const resolutionRepo = getResolutionRepository(repo);
+  const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
+  const resolutionStatus = resolution?.status ?? "open";
+  const ledger = await repo.getSupportSideEffectLedger(support);
+  const reasonTags = [
+    ...(resolutionStatus !== "open" ? [`resolution:${resolutionStatus}`] : []),
+    ...(support.support.message_moderation_status === "hold" ? ["moderation:hold"] : []),
+    ...(ledger.resend_candidates.overlay_resend > 0 ? ["overlay_resend_candidate"] : []),
+    ...(ledger.resend_candidates.reaction_resend > 0 ? ["reaction_resend_candidate"] : []),
+    ...(ledger.outbox_enqueued && (!ledger.overlay_requested || !ledger.reaction_requested) ? ["side_effect_pending"] : [])
+  ];
+  return {
+    event_id: support.event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    source: support.source,
+    moderation_status: support.support.message_moderation_status,
+    resolution_status: resolutionStatus,
+    created_at: support.created_at,
+    reason_tags: reasonTags,
+    action_plan: {
+      href: `/admin/support-events/${support.event_id}/action-plan`
+    }
   };
 }
 
@@ -1182,6 +1218,38 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return {
       operator_notes: entries.slice(query.offset, query.offset + query.limit),
       page: { limit: query.limit, offset: query.offset, count: Math.max(0, Math.min(entries.length - query.offset, query.limit)) }
+    };
+  });
+
+  app.get("/admin/support-events/work-queue", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminSupportEventWorkQueueQuerySchema.parse(req.query);
+    const searchFilter: SupportEventSearchFilter = {
+      limit: 100,
+      offset: 0
+    };
+    if (query.stream_id) searchFilter.streamId = query.stream_id;
+    if (query.character_id) searchFilter.characterId = query.character_id;
+    if (query.source) searchFilter.source = query.source;
+    if (query.message_moderation_status) searchFilter.moderationStatus = query.message_moderation_status;
+    const summaries = await repo.searchSupportEvents(searchFilter);
+    const entries = [];
+    for (const summary of summaries) {
+      const support = await repo.getSupportEventById(summary.event_id);
+      if (!support) continue;
+      const entry = await toWorkQueueEntry(repo, support);
+      if (query.resolution_status && entry.resolution_status !== query.resolution_status) continue;
+      if (!query.resolution_status && entry.resolution_status === "resolved") continue;
+      entries.push(entry);
+    }
+    const supportEvents = entries.slice(query.offset, query.offset + query.limit);
+    return {
+      support_events: supportEvents,
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        count: supportEvents.length
+      }
     };
   });
 

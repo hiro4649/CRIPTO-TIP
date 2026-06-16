@@ -3,18 +3,18 @@
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
-  "headSha": "e9a0abefddfeaef0f67d2ca6e4a32a41f527765b",
-  "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
+  "headSha": "da9f325233f9a9e6408bebc9ef784fb74537fa3b",
+  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_resolution_status",
+  "changeType": "product_vertical_slice_admin_support_event_work_queue",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support event resolution status",
-  "goal": "Add local/internal admin support event resolution status without mutating support core data or triggering side effects.",
-  "ciRunId": "27590773119",
-  "qualityGateRunId": "27590773126",
-  "qualityGateArtifactId": "7656280764",
+  "title": "feat: add p0 admin support event work queue",
+  "goal": "Add local/internal admin support event work queue visibility without mutating support events or triggering side effects.",
+  "ciRunId": "27591149540",
+  "qualityGateRunId": "27591239485",
+  "qualityGateArtifactId": "7656432437",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,12 +22,10 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/repositories/in-memory.ts",
-      "apps/api/src/repositories/types.ts",
-      "apps/api/src/p0-admin-support-event-resolution-status.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_RESOLUTION_STATUS.md",
-      "docs/pr-p0-admin-support-event-resolution-status.md",
-      ".codex/p0-admin-support-event-resolution-status.json",
+      "apps/api/src/p0-admin-support-event-work-queue.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_WORK_QUEUE.md",
+      "docs/pr-p0-admin-support-event-work-queue.md",
+      ".codex/p0-admin-support-event-work-queue.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -42,8 +40,8 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/repositories/*",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_RESOLUTION_STATUS.md",
-      "docs/pr-p0-admin-support-event-resolution-status.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_WORK_QUEUE.md",
+      "docs/pr-p0-admin-support-event-work-queue.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -60,12 +58,17 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
       "name": "corepack pnpm typecheck",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm install",
       "result": "pass",
       "status": "pass"
     },
@@ -88,31 +91,30 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27590773119",
+      "runId": "27591149540",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27590773126",
+      "runId": "27591239485",
       "result": "success",
-      "artifactId": "7656280764"
+      "artifactId": "7656432437"
     }
   ],
   "allowedScope": [
-    "local/internal admin support event resolution metadata",
+    "local/internal admin support event work queue API",
     "admin auth guard",
-    "allowed resolution statuses",
-    "safe operator note sanitization",
-    "safe audit metadata",
-    "read-only support core behavior",
+    "safe filters",
+    "safe metadata only",
+    "read-only queue visibility",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "support financial/source/wallet/moderation/affinity mutation",
+    "support event mutation",
     "reaction enqueue",
     "overlay enqueue",
-    "public resolution exposure",
+    "public queue exposure",
     "raw message output",
     "raw payload output",
     "secret output",
@@ -148,20 +150,19 @@
     "refund feature"
   ],
   "doneCriteria": [
-    "admin resolution status requires admin bearer token",
-    "admin resolution status supports open resolved needs_followup blocked",
-    "admin resolution status can reopen to open",
-    "admin resolution status enforces max length and sanitization",
-    "admin resolution status writes safe audit metadata",
-    "admin resolution status returns safe metadata only",
-    "admin resolution status does not mutate support amount source wallet moderation or affinity",
-    "admin resolution status does not enqueue reaction or overlay"
+    "admin work queue requires admin bearer token",
+    "admin work queue filters by resolution_status moderation_status stream_id and character_id",
+    "admin work queue applies safe limit",
+    "admin work queue returns safe metadata only",
+    "admin work queue excludes raw message raw payload and secrets",
+    "admin work queue is read-only",
+    "admin work queue does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 76,
-    "passed": 1826,
+    "testFiles": 77,
+    "passed": 1828,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -171,15 +172,15 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
-    "No support financial, source, wallet, moderation, or affinity fields are mutated.",
+    "No support events are mutated.",
     "No reaction or overlay side effects are enqueued.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
+    "Raw messages, raw payloads, secrets, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin resolution metadata only.",
-    "Durable resolution persistence remains future scoped work because migrations and real DB changes are forbidden."
+    "This is local/internal admin work queue visibility only.",
+    "Durable queue persistence remains future scoped work because migrations and real DB changes are forbidden."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -196,10 +197,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event resolution metadata."
+    "statement": "Adds local/internal admin support event work queue visibility."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin support event resolution metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, unsupported mutation, public resolution exposure, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin work queue visibility only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, public queue exposure, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -211,9 +212,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support event resolution metadata, admin auth, safe statuses, sanitization, safe audit metadata, support core read-only behavior, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is unsafe resolution exposure, support core mutation, side effects, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Resolution status tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event work queue visibility, admin auth, safe filters, safe metadata, read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is raw data exposure, support event mutation, side effects, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Work queue tests, existing admin support event tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-resolution-status.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-work-queue.md"
 }

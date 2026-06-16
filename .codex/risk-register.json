@@ -4,14 +4,14 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
+  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
   "risks": [
     {
       "severity": "high",
-      "risk": "resolution status could mutate support core state, expose raw data, enqueue side effects, or imply operational readiness",
+      "risk": "work queue could expose raw data, mutate support events, enqueue side effects, or imply operational readiness",
       "owner": "codex",
       "nextPr": "none",
-      "mitigation": "tests enforce admin auth, allowed statuses, max length, sanitization, safe audit metadata, safe metadata only, read-only support core behavior, no reaction or overlay enqueue, and no readiness claims"
+      "mitigation": "tests enforce admin auth, safe filters, safe metadata only, read-only behavior, no reaction or overlay enqueue, and no readiness claims"
     }
   ]
 }

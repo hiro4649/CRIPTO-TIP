@@ -4,13 +4,13 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "1fecb4e893798f9089ab4fe9bcb4621aee671d3c",
+  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -21,15 +21,15 @@
     }
   ],
   "coverage": [
-    "admin resolution status auth",
-    "unknown support event 404",
-    "allowed resolution statuses",
-    "reopen to open",
-    "max length enforcement",
-    "unsafe note sanitization",
-    "safe audit metadata",
+    "admin work queue auth",
     "safe metadata only",
-    "support core read-only behavior",
+    "resolution status filter",
+    "moderation status filter",
+    "stream filter",
+    "character filter",
+    "safe limit",
+    "raw message and raw payload excluded",
+    "read-only behavior",
     "no reaction or overlay enqueue"
   ],
   "packageVerification": {
