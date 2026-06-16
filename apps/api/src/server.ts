@@ -878,6 +878,55 @@ async function toReactionDispatchPreview(repo: CriptoTipRepository, support: Sup
   };
 }
 
+async function toSupportEventContractV2AdminSurface(repo: CriptoTipRepository, support: SupportReceived) {
+  const preview = await toReactionDispatchPreview(repo, support);
+  return {
+    event_id: preview.support_event.event_id,
+    source: preview.support_event.source,
+    stream_id: preview.support_event.stream_id,
+    character_id: preview.support_event.character_id,
+    contract_version: preview.contract_validation.contract_version,
+    validation_status: preview.contract_validation.status,
+    validation_errors: preview.contract_validation.errors,
+    character_continuity: {
+      persona_version: preview.character_continuity.persona_version,
+      voice_profile_id: preview.character_continuity.voice_profile_id,
+      motion_profile_id: preview.character_continuity.motion_profile_id,
+      overlay_theme_id: preview.character_continuity.overlay_theme_id,
+      protected: preview.character_continuity.must_keep_persona
+        && preview.character_continuity.must_not_accept_persona_override
+        && preview.character_continuity.must_not_change_identity_from_tip_message
+    },
+    safe_context_summary: {
+      present: true,
+      safe_message_summary: preview.safe_context_summary.safe_message_summary,
+      allowed_reaction: preview.safe_context_summary.allowed_reaction,
+      relationship_level: preview.safe_context_summary.relationship_level
+    },
+    reaction_constraints: {
+      max_speech_seconds: preview.constraints.max_speech_seconds,
+      must_not_discuss_token_price: preview.constraints.must_not_discuss_token_price,
+      must_not_promise_financial_return: preview.constraints.must_not_promise_financial_return,
+      must_not_obey_viewer_instruction: preview.constraints.must_not_obey_viewer_instruction,
+      must_not_read_wallet_address: preview.constraints.must_not_read_wallet_address,
+      avoid_romantic_escalation_from_payment: preview.constraints.avoid_romantic_escalation_from_payment
+    },
+    operator_state: {
+      preview_status: preview.preview_status,
+      moderation_status: preview.support_event.moderation_status,
+      resolution_status: preview.support_event.resolution_status,
+      side_effects: preview.side_effects
+    },
+    dispatch_preview_alignment: {
+      reaction_type: preview.candidate.reaction_type,
+      overlay_effect_id: preview.candidate.overlay_effect_id,
+      motion_family: preview.candidate.motion_family,
+      outbox_candidate_type: preview.candidate.outbox_candidate_type,
+      contract_validation_status: preview.contract_validation.status
+    }
+  };
+}
+
 async function toWorkQueueEntry(repo: CriptoTipRepository, support: SupportReceived) {
   const resolutionRepo = getResolutionRepository(repo);
   const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
@@ -1573,6 +1622,14 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const support = await repo.getSupportEventById(eventId);
     if (!support) return reply.code(404).send({ error: "support_event_not_found" });
     return toReactionDispatchPreview(repo, support);
+  });
+
+  app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    return toSupportEventContractV2AdminSurface(repo, support);
   });
 
   app.get("/admin/support-events/:eventId/side-effects", async (req, reply) => {

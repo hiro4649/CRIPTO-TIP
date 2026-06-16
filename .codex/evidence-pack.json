@@ -2,37 +2,36 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 99,
-  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
-  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
+  "prNumber": 0,
+  "headSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
+  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_support_event_contract_v2_validator",
+  "changeType": "product_vertical_slice_support_event_contract_v2_admin_surface",
   "riskLevel": "R3",
-  "title": "feat: add p0 support event contract v2 validator",
-  "goal": "Add a local Support Event Contract v2 validator and prove admin reaction dispatch preview aligns with it without claiming runtime readiness.",
-  "ciRunId": "27611496242",
-  "qualityGateRunId": "27611639378",
-  "qualityGateArtifactId": "7664304271",
+  "title": "feat: add p0 support event contract v2 admin surface",
+  "goal": "Add a local/internal read-only admin endpoint for Support Event Contract v2 validation status without exposing raw data or triggering side effects.",
+  "ciRunId": "27615034765",
+  "qualityGateRunId": "27615181516",
+  "qualityGateArtifactId": "7665786700",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
     "support_event_contract",
-    "reaction_dispatch_safety",
-    "character_continuity",
-    "moderation_safety"
+    "admin_operator_workflow",
+    "safe_visibility",
+    "reaction_dispatch_safety"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/support-event-contract-v2-validator.ts",
       "apps/api/src/server.ts",
-      "apps/api/src/p0-support-event-contract-v2-validator.test.ts",
-      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_VALIDATOR.md",
-      "docs/pr-p0-support-event-contract-v2-validator.md",
-      ".codex/p0-support-event-contract-v2-validator.json",
+      "apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts",
+      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_ADMIN_SURFACE.md",
+      "docs/pr-p0-support-event-contract-v2-admin-surface.md",
+      ".codex/p0-support-event-contract-v2-admin-surface.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -44,10 +43,12 @@
     ],
     "allowedPaths": [
       "apps/api/src/server.ts",
-      "apps/api/src/*.ts",
       "apps/api/src/*.test.ts",
-      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_VALIDATOR.md",
-      "docs/pr-p0-support-event-contract-v2-validator.md",
+      "apps/api/src/*.ts",
+      "apps/api/src/repositories/*",
+      "packages/shared/src/index.ts",
+      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_ADMIN_SURFACE.md",
+      "docs/pr-p0-support-event-contract-v2-admin-surface.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -56,7 +57,6 @@
       "contracts/**",
       "migrations/**",
       ".github/workflows/**",
-      "scripts/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
@@ -64,7 +64,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -97,20 +97,22 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27611496242",
+      "runId": "27615034765",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27611639378",
+      "runId": "27615181516",
       "result": "success",
-      "artifactId": "7664304271"
+      "artifactId": "7665786700"
     }
   ],
   "allowedScope": [
-    "Support Event Contract v2 local validator",
-    "reaction dispatch preview validator alignment",
-    "safe output rejection tests",
+    "Support Event Contract v2 admin visibility endpoint",
+    "admin auth guard",
+    "safe metadata only",
+    "read-only behavior",
+    "validator and reaction dispatch preview alignment",
     "docs",
     ".codex evidence"
   ],
@@ -146,22 +148,24 @@
     "cash-out",
     "custody",
     "internal balance",
-    "investment wording"
+    "investment wording",
+    "refund"
   ],
   "doneCriteria": [
-    "validator accepts valid reaction dispatch preview",
-    "validator rejects missing continuity constraints",
-    "validator rejects unsafe serialized fields",
-    "validator rejects non-skipped side effects",
-    "admin reaction dispatch preview returns valid contract_validation",
-    "existing support events remain compatible",
-    "no package or lockfile changed"
+    "admin contract v2 surface requires admin bearer token",
+    "admin contract v2 surface rejects missing and invalid auth",
+    "admin contract v2 surface returns 404 for unknown support event",
+    "admin contract v2 surface returns safe metadata only",
+    "admin contract v2 surface includes validation status and safe reason codes",
+    "admin contract v2 surface is read-only",
+    "admin contract v2 surface does not enqueue reaction overlay or outbox",
+    "existing contract v2 validator and reaction dispatch preview tests still pass"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 79,
-    "passed": 1836,
+    "testFiles": 80,
+    "passed": 1839,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -174,12 +178,12 @@
     "No support events are mutated.",
     "No reaction, overlay, or outbox side effects are enqueued.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
-    "Validator rejects raw messages, raw payload markers, wallet addresses, authorization strings, stdout, stderr, jobs_url, and logs_url.",
+    "Admin surface excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, stdout, stderr, jobs_url, and logs_url.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is a local validator and preview alignment only.",
-    "Durable contract enforcement and external execution adapters remain future scoped work."
+    "This is local/internal admin Support Event Contract v2 visibility only.",
+    "Actual reaction approval, durable candidate persistence, and external execution adapters remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -188,7 +192,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-admin-surface.test.ts apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
@@ -197,7 +201,7 @@
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-support-event-contract-v2-validator.md: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-support-event-contract-v2-admin-surface.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
@@ -215,10 +219,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal contract validation metadata to admin reaction dispatch preview."
+    "statement": "Adds local/internal read-only admin Support Event Contract v2 visibility endpoint."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local contract validation and admin preview alignment only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal admin visibility only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -230,9 +234,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 Support Event Contract v2 validator, reaction dispatch preview alignment, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accepting unsafe output, non-skipped side effects, or misleading readiness claims; validator tests reject those outcomes.",
-    "verificationOracle": "Validator tests, preview alignment tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 Support Event Contract v2 admin surface, admin auth, safe metadata, read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is raw data exposure, support event mutation, side effects, external runtime execution, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Admin surface tests, validator tests, reaction dispatch preview tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-support-event-contract-v2-validator.md"
+  "prBodyPath": "docs/pr-p0-support-event-contract-v2-admin-surface.md"
 }

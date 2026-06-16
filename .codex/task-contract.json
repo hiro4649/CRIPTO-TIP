@@ -2,15 +2,17 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 99,
-  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
-  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
+  "prNumber": 0,
+  "headSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
+  "baseSha": "8853a8fc171e9dc88bb4fdabf1e3869f0f466fe0",
   "taskMode": "feature",
-  "goal": "Add a local Support Event Contract v2 validator and prove admin reaction dispatch preview aligns with it without claiming runtime readiness.",
+  "goal": "Add a local/internal read-only admin endpoint for Support Event Contract v2 validation status without exposing raw data or triggering side effects.",
   "allowedScope": [
-    "Support Event Contract v2 local validator",
-    "reaction dispatch preview validator alignment",
-    "safe output rejection tests",
+    "Support Event Contract v2 admin visibility endpoint",
+    "admin auth guard",
+    "safe metadata only",
+    "read-only behavior",
+    "validator and reaction dispatch preview alignment",
     "docs",
     ".codex evidence"
   ],
@@ -46,7 +48,8 @@
     "cash-out",
     "custody",
     "internal balance",
-    "investment wording"
+    "investment wording",
+    "refund"
   ],
   "productCodeChanged": true,
   "runtimeReadinessClaimed": false
