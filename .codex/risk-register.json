@@ -2,16 +2,23 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
+  "prNumber": 97,
+  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
+  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
   "risks": [
     {
       "severity": "high",
-      "risk": "work queue could expose raw data, mutate support events, enqueue side effects, or imply operational readiness",
+      "risk": "AI character support specs could imply CRIPTO-TIP executes TTS, Live2D, VOXWEAVE, renderer, OBS, WebSocket, real DB, or production workflows",
       "owner": "codex",
-      "nextPr": "none",
-      "mitigation": "tests enforce admin auth, safe filters, safe metadata only, read-only behavior, no reaction or overlay enqueue, and no readiness claims"
+      "nextPr": "feat/p0-admin-reaction-dispatch-preview",
+      "mitigation": "Docs and evidence explicitly state this PR is spec-only and does not execute external runtimes or claim readiness."
+    },
+    {
+      "severity": "high",
+      "risk": "Support context could accidentally permit token price, investment return, custody, exchange, cash-out, ownership, or romantic escalation claims",
+      "owner": "codex",
+      "nextPr": "feat/p0-admin-reaction-dispatch-preview",
+      "mitigation": "Support Event Contract v2 and Character Continuity Contract define forbidden topics and hard reaction constraints."
     }
   ]
 }

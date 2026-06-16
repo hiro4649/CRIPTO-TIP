@@ -2,35 +2,39 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "c2379f225b8f6a2d588f1eb8e739ef1e39a0e3c3",
+  "prNumber": 97,
+  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
+  "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
+  "productCodeChanged": false,
+  "productValueContribution": [
+    "support_event_contract",
+    "reaction_dispatch_safety",
+    "character_continuity",
+    "admin_operator_workflow"
+  ],
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-work-queue.test.ts apps/api/src/p0-admin-support-event-resolution-status.test.ts apps/api/src/p0-admin-operator-note-search.test.ts apps/api/src/p0-admin-support-event-operator-note-management.test.ts apps/api/src/p0-admin-support-event-operator-notes.test.ts apps/api/src/p0-admin-support-event-action-plan.test.ts apps/api/src/p0-admin-bulk-moderation-apply-controls.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts",
+      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "corepack pnpm typecheck",
+      "name": "corepack pnpm test",
       "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "admin work queue auth",
-    "safe metadata only",
-    "resolution status filter",
-    "moderation status filter",
-    "stream filter",
-    "character filter",
-    "safe limit",
-    "raw message and raw payload excluded",
-    "read-only behavior",
-    "no reaction or overlay enqueue"
+    "Support Event Contract v2 documented",
+    "safe context summary documented",
+    "character continuity documented",
+    "reaction dispatch preview roadmap documented",
+    "admin operator workflow contract documented",
+    "role boundary documented",
+    "runtime execution remains future scoped"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
