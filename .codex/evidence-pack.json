@@ -2,19 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 88,
-  "headSha": "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",
-  "baseSha": "542d896282528f4382cd930d387159a12f4263dc",
+  "prNumber": 89,
+  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
+  "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "changeType": "product_vertical_slice_admin_support_event_search",
+  "changeType": "product_vertical_slice_admin_support_event_bulk_safe_review",
   "riskLevel": "R3",
-  "title": "feat: add p0 admin support event search",
-  "goal": "Add GET /admin/support-events for safe local/internal support event search visibility.",
-  "ciRunId": "27549438817",
-  "qualityGateRunId": "27549606557",
-  "qualityGateArtifactId": "7639494132",
+  "title": "feat: add p0 admin support bulk safe review",
+  "goal": "Add POST /admin/support-events/bulk-review/preview for safe local/internal support event bulk review preflight.",
+  "ciRunId": "27583632129",
+  "qualityGateRunId": "27583725902",
+  "qualityGateArtifactId": "7653675479",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
@@ -22,13 +22,10 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/repositories/types.ts",
-      "apps/api/src/repositories/in-memory.ts",
-      "apps/api/src/repositories/postgres.ts",
-      "apps/api/src/p0-admin-support-event-search.test.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_SEARCH.md",
-      "docs/pr-p0-admin-support-event-search.md",
-      ".codex/p0-admin-support-event-search.json",
+      "apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts",
+      "docs/P0_ADMIN_SUPPORT_EVENT_BULK_SAFE_REVIEW.md",
+      "docs/pr-p0-admin-support-event-bulk-safe-review.md",
+      ".codex/p0-admin-support-event-bulk-safe-review.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -40,11 +37,11 @@
     ],
     "allowedPaths": [
       "apps/api/src/server.ts",
-      "apps/api/src/repositories/**",
       "apps/api/src/*.test.ts",
+      "apps/api/src/repositories/**",
       "packages/shared/src/index.ts",
-      "docs/P0_ADMIN_SUPPORT_EVENT_SEARCH.md",
-      "docs/pr-p0-admin-support-event-search.md",
+      "docs/P0_ADMIN_SUPPORT_EVENT_BULK_SAFE_REVIEW.md",
+      "docs/pr-p0-admin-support-event-bulk-safe-review.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -61,7 +58,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
@@ -69,25 +66,26 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27549438817",
+      "runId": "27583632129",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27549606557",
+      "runId": "27583725902",
       "result": "success",
-      "artifactId": "7639494132"
+      "artifactId": "7653675479"
     }
   ],
   "allowedScope": [
-    "local/internal admin support event search API",
+    "local/internal admin support event bulk review preview API",
     "admin auth guard",
-    "read-only support event search visibility",
-    "safe support event search filters",
+    "read-only support event eligibility preflight",
+    "safe metadata only",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
+    "bulk approve or reject mutation",
     "real TTS call",
     "real Live2D call",
     "real renderer call",
@@ -120,18 +118,20 @@
     "speculative reward"
   ],
   "doneCriteria": [
-    "admin support search requires admin bearer token",
-    "admin support search returns safe metadata only",
-    "admin support search filters by stream, character, source, moderation, delivery, and created-at bounds",
-    "admin support search applies safe pagination",
-    "admin support search is read-only",
-    "admin support search does not enqueue reaction or overlay"
+    "admin bulk review preview requires admin bearer token",
+    "admin bulk review preview rejects empty and oversized event ID lists",
+    "admin bulk review preview rejects duplicate event IDs",
+    "admin bulk review preview handles unknown event IDs safely",
+    "admin bulk review preview returns safe metadata only",
+    "admin bulk review preview returns eligible actions from allowlist",
+    "admin bulk review preview is read-only",
+    "admin bulk review preview does not enqueue reaction or overlay"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 69,
-    "passed": 1799,
+    "testFiles": 70,
+    "passed": 1804,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -141,20 +141,20 @@
     "No migration is changed or executed.",
     "No real YouTube API or OAuth token is used.",
     "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
+    "No support event mutation or bulk moderation approval is performed.",
     "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
     "Raw messages, raw payloads, secrets, URLs, stack output, stdout, stderr, jobs_url, and logs_url are not returned.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal admin support event search visibility only.",
-    "Production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
+    "This is local/internal admin bulk review preview only.",
+    "Actual bulk approve/reject workflow, production Admin Console UI, durable persistence, and operational replay policy remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
     "AI review is not GitHub approval review.",
     "This PR does not create owner approval record.",
-    "This PR does not create merge authority.",
-    "If final same-head checks, committed evidence, PR body evidence, safe artifact, and forbidden scope checks pass, AI Pro review may recommend merge and Codex may squash merge in the same task."
+    "This PR does not create merge authority."
   ],
   "productVerificationCommands": [],
   "packageVerification": {
@@ -165,9 +165,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal admin support event search visibility."
+    "statement": "Adds local/internal admin support event bulk review preview."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only support side-effect visibility only.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal read-only support event eligibility preflight only.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support mutation, side-effect enqueue, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -180,9 +180,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 admin support event search, admin auth, read-only search results, safe metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is exposing raw support data, mutating support state, or implying runtime readiness; tests and docs reject those outcomes.",
-    "verificationOracle": "Admin support event search tests, existing reaction/overlay resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin support event bulk review preview, admin auth, safe eligibility metadata, read-only behavior, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidentally performing bulk moderation, exposing raw support data, mutating state, triggering side effects, or implying runtime readiness; tests and docs reject those outcomes.",
+    "verificationOracle": "Bulk safe review tests, existing search/timeline/ledger/resend tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-admin-support-event-search.md"
+  "prBodyPath": "docs/pr-p0-admin-support-event-bulk-safe-review.md"
 }

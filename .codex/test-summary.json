@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "command": "corepack pnpm test",
-  "testFiles": 69,
-  "passed": 1799,
+  "testFiles": 70,
+  "passed": 1804,
   "skipped": 6
 }

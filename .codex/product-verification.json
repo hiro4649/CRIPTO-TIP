@@ -2,25 +2,28 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 88,
-  "headSha": "da490cf2e7a22dc8e32b5656ba2e1e8dd2bc7be5",
-  "baseSha": "542d896282528f4382cd930d387159a12f4263dc",
+  "prNumber": 89,
+  "headSha": "2cda3998e175a8c742880fe52a520c310968d43d",
+  "baseSha": "4dd664d9c344827fe1b87db28d3a6e3e1ade60a5",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/p0-admin-support-event-bulk-safe-review.test.ts apps/api/src/p0-admin-support-event-search.test.ts apps/api/src/p0-admin-support-event-timeline.test.ts apps/api/src/p0-admin-support-side-effect-ledger.test.ts apps/api/src/p0-admin-reaction-resend-controls.test.ts apps/api/src/p0-admin-overlay-resend-controls.test.ts",
       "result": "pass",
       "status": "pass"
     }
   ],
   "coverage": [
-    "admin support search auth",
+    "admin bulk review preview auth",
+    "empty, duplicate, and oversized event ID rejection",
+    "unknown event safe response",
     "safe metadata only",
-    "read-only search results",
-    "stream, character, source, moderation, delivery, and created-at filters",
-    "safe pagination",
+    "eligible action allowlist",
+    "hold event approve/reject eligibility",
+    "rejected event approve eligibility blocked",
+    "read-only support state",
     "no reaction or overlay enqueue"
   ],
   "packageVerification": {
