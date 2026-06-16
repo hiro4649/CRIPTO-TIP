@@ -45,6 +45,16 @@ evidence, expert review, failure, owner burden, and target footprint fields
 before the v1.1.8 Final Decision authority is applied. It does not replace or
 compete with that authority.
 
+## Compatibility Under Later Active Harnesses
+
+The v1.2.4 self-test is authoritative for v1.2.4 compatibility invariants, not
+for ownership of later active authority tuples.
+
+When a later harness such as v1.2.5 is active, v1.2.4 compatibility remains
+blocking, but the active authority tuple is allowed to be superseded by the
+later active self-test suite. The later self-test is responsible for proving the
+current active authority tuple.
+
 ## Core Principle
 
 AI does not decide instead of the owner. AI operates inside the scope where owner

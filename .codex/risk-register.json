@@ -1,24 +1,15 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
-  "harnessVersion": "1.2.4",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 98,
-  "headSha": "4bb910049674ddcce1db2d35f5af01881bea3bbb",
-  "baseSha": "ffce428f0826f4d225d08a849fbec2708a0f7700",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
   "risks": [
-    {
-      "severity": "high",
-      "risk": "reaction dispatch preview could expose raw support data, wallet addresses, secrets, or prompt-unsafe text",
-      "owner": "codex",
-      "nextPr": "feat/p0-support-event-contract-v2-validator",
-      "mitigation": "tests assert safe metadata only and reject raw message, raw payload, wallet address, secret, stdout, stderr, jobs_url, and logs_url exposure"
-    },
-    {
-      "severity": "high",
-      "risk": "preview endpoint could accidentally enqueue reaction, overlay, or outbox side effects",
-      "owner": "codex",
-      "nextPr": "feat/p0-support-event-contract-v2-validator",
-      "mitigation": "tests assert repository counts remain unchanged and side-effect status remains skipped"
-    }
-  ]
+    "Product PR #99 must be rebased and reverified after this repair merges."
+  ],
+  "forbiddenScopePreserved": true,
+  "productCodeChanged": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false
 }
