@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 112,
-  "headSha": "current_pr_head",
+  "headSha": "77c1de1abc53eb457003f359d5d21de646cd0f00",
   "baseSha": "6da6c4a281a68888c018e2121e60ccd65de36794",
   "title": "feat: add p0 reaction dispatch dry-run adapter boundary",
   "goal": "Add local/internal dry-run adapter boundary preview metadata from an active lease and reviewed attempt plan without external adapter execution.",
@@ -15,11 +15,11 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "2",
-  "qualityGateRunId": "2",
-  "qualityGateArtifactId": "2",
-  "productCiStatus": "local_pre_pr_pass",
-  "qualityGateStatus": "local_pre_pr_not_remote",
+  "ciRunId": "27652421144",
+  "qualityGateRunId": "27652421146",
+  "qualityGateArtifactId": "7681296312",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "riskLevel": "R3",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
@@ -79,14 +79,14 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "2",
-      "result": "local_pre_pr_pass"
+      "runId": "27652421144",
+      "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "2",
-      "result": "local_pre_pr_not_remote",
-      "artifactId": "2"
+      "runId": "27652421146",
+      "result": "success",
+      "artifactId": "7681296312"
     }
   ],
   "allowedScope": [
