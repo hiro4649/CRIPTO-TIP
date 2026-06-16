@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -198,8 +198,8 @@ function toReactionResendAuditMetadata(support: SupportReceived, resendSourceEve
   };
 }
 
-const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded"]);
-const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary"]);
+const ADMIN_AUDIT_ACTIONS = new Set(["approve_tip", "reject_tip", "list_dead_letters", "retry_dead_letter", "list_held_support", "approve_held_support", "reject_held_support", "create_manual_support", "adjust_support_event", "resend_overlay", "resend_reaction", "create_operator_note", "update_operator_note", "archive_operator_note", "reaction_dispatch_candidate_approved", "reaction_dispatch_candidate_rejected", "reaction_dispatch_outbox_boundary_recorded", "reaction_dispatch_internal_outbox_queued"]);
+const ADMIN_AUDIT_TARGET_TYPES = new Set(["support_event", "dlq_list", "dead_letter_event", "held_support_list", "reaction_dispatch_candidate", "reaction_dispatch_outbox_boundary", "reaction_dispatch_internal_outbox"]);
 const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "stream_id",
   "result_count",
@@ -220,6 +220,9 @@ const ADMIN_AUDIT_SAFE_METADATA_KEYS = new Set([
   "boundary_status",
   "approval_status",
   "contract_validation_status",
+  "external_delivery_status",
+  "adapter_execution_status",
+  "dispatch_attempt_count",
   "retry_status",
   "target_id",
   "review_status",
@@ -548,11 +551,17 @@ type ReactionDispatchCandidateRepository = {
   getReactionDispatchApproval?: (candidateId: string) => Promise<ReactionDispatchApprovalMetadata | undefined>;
   setReactionDispatchOutboxBoundaryIfAbsent?: (boundary: ReactionDispatchOutboxBoundaryMetadata) => Promise<ReactionDispatchOutboxBoundaryResult>;
   getReactionDispatchOutboxBoundary?: (candidateId: string) => Promise<ReactionDispatchOutboxBoundaryMetadata | undefined>;
+  getReactionDispatchOutboxBoundaryById?: (boundaryId: string) => Promise<ReactionDispatchOutboxBoundaryMetadata | undefined>;
+  setReactionDispatchInternalOutboxIfAbsent?: (outbox: ReactionDispatchInternalOutboxMetadata) => Promise<ReactionDispatchInternalOutboxResult>;
+  getReactionDispatchInternalOutboxByBoundary?: (boundaryId: string) => Promise<ReactionDispatchInternalOutboxMetadata | undefined>;
+  getReactionDispatchInternalOutbox?: (outboxId: string) => Promise<ReactionDispatchInternalOutboxMetadata | undefined>;
+  listReactionDispatchInternalOutbox?: () => Promise<ReactionDispatchInternalOutboxMetadata[]>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
 const reactionDispatchApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchApprovalMetadata>>();
 const reactionDispatchOutboxBoundaryFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchOutboxBoundaryMetadata>>();
+const reactionDispatchInternalOutboxFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -858,6 +867,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     boundaryFallback = new Map<string, ReactionDispatchOutboxBoundaryMetadata>();
     reactionDispatchOutboxBoundaryFallbackByRepo.set(repo, boundaryFallback);
   }
+  let internalOutboxFallback = reactionDispatchInternalOutboxFallbackByRepo.get(repo);
+  if (!internalOutboxFallback) {
+    internalOutboxFallback = new Map<string, ReactionDispatchInternalOutboxMetadata>();
+    reactionDispatchInternalOutboxFallbackByRepo.set(repo, internalOutboxFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -902,7 +916,29 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       },
     getReactionDispatchOutboxBoundary: candidate.getReactionDispatchOutboxBoundary
       ? (candidateId) => candidate.getReactionDispatchOutboxBoundary!.call(repo, candidateId)
-      : async (candidateId) => boundaryFallback.get(candidateId)
+      : async (candidateId) => boundaryFallback.get(candidateId),
+    getReactionDispatchOutboxBoundaryById: candidate.getReactionDispatchOutboxBoundaryById
+      ? (boundaryId) => candidate.getReactionDispatchOutboxBoundaryById!.call(repo, boundaryId)
+      : async (boundaryId) => [...boundaryFallback.values()].find((boundary) => boundary.boundary_id === boundaryId),
+    setReactionDispatchInternalOutboxIfAbsent: candidate.setReactionDispatchInternalOutboxIfAbsent
+      ? (outbox) => candidate.setReactionDispatchInternalOutboxIfAbsent!.call(repo, outbox)
+      : async (outbox) => {
+        const key = `${outbox.boundary_id}:${outbox.candidate_id}`;
+        const existing = internalOutboxFallback.get(key);
+        if (existing) return { outbox: existing, created: false };
+        internalOutboxFallback.set(key, outbox);
+        return { outbox, created: true };
+      },
+    getReactionDispatchInternalOutboxByBoundary: candidate.getReactionDispatchInternalOutboxByBoundary
+      ? (boundaryId) => candidate.getReactionDispatchInternalOutboxByBoundary!.call(repo, boundaryId)
+      : async (boundaryId) => [...internalOutboxFallback.values()].find((outbox) => outbox.boundary_id === boundaryId),
+    getReactionDispatchInternalOutbox: candidate.getReactionDispatchInternalOutbox
+      ? (outboxId) => candidate.getReactionDispatchInternalOutbox!.call(repo, outboxId)
+      : async (outboxId) => [...internalOutboxFallback.values()].find((outbox) => outbox.outbox_id === outboxId),
+    listReactionDispatchInternalOutbox: candidate.listReactionDispatchInternalOutbox
+      ? () => candidate.listReactionDispatchInternalOutbox!.call(repo)
+      : async () => [...internalOutboxFallback.values()]
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.outbox_id.localeCompare(right.outbox_id))
   };
 }
 
@@ -1151,6 +1187,71 @@ function toReactionDispatchOutboxBoundaryAuditMetadata(boundary: ReactionDispatc
     approval_status: boundary.approval_status,
     reason_code: boundary.safe_reason_codes[0] ?? "external_execution_forbidden",
     contract_validation_status: boundary.contract_validation_status
+  };
+}
+
+function toReactionDispatchInternalOutboxSkippedSideEffects() {
+  return {
+    support_event_mutation: "skipped",
+    reaction_execution: "skipped",
+    overlay_execution: "skipped",
+    external_outbox_dispatch: "skipped",
+    external_adapter_execution: "skipped",
+    iris_core_call: "skipped",
+    voxweave_call: "skipped",
+    real_tts: "skipped",
+    real_live2d: "skipped",
+    real_renderer: "skipped",
+    real_obs: "skipped",
+    real_websocket_delivery: "skipped"
+  };
+}
+
+function buildReactionDispatchInternalOutbox(
+  candidate: ReactionDispatchCandidateMetadata,
+  boundary: ReactionDispatchOutboxBoundaryMetadata,
+  reasonCodes: ReactionDispatchInternalOutboxReasonCode[],
+  status: ReactionDispatchInternalOutboxMetadata["outbox_status"],
+  now = new Date().toISOString()
+): ReactionDispatchInternalOutboxMetadata {
+  const idempotencyKey = `reaction_dispatch_internal_outbox:${boundary.boundary_id}:${candidate.candidate_id}:${candidate.safe_context_hash}:${candidate.constraints_hash}`;
+  return {
+    outbox_id: `rdout_${createHash("sha256").update(idempotencyKey).digest("hex").slice(0, 24)}`,
+    boundary_id: boundary.boundary_id,
+    candidate_id: candidate.candidate_id,
+    support_event_id: candidate.support_event_id,
+    stream_id: candidate.stream_id,
+    character_id: candidate.character_id,
+    source: candidate.source,
+    contract_version: candidate.contract_version,
+    candidate_status: candidate.candidate_status,
+    boundary_status: boundary.boundary_status,
+    outbox_status: status,
+    external_delivery_status: "not_attempted",
+    adapter_execution_status: "not_executed",
+    dispatch_attempt_count: 0,
+    safe_context_hash: candidate.safe_context_hash,
+    constraints_hash: candidate.constraints_hash,
+    idempotency_key: idempotencyKey,
+    created_at: now,
+    updated_at: now,
+    safe_reason_codes: reasonCodes
+  };
+}
+
+function toReactionDispatchInternalOutboxAuditMetadata(outbox: ReactionDispatchInternalOutboxMetadata) {
+  return {
+    outbox_id: outbox.outbox_id,
+    boundary_id: outbox.boundary_id,
+    candidate_id: outbox.candidate_id,
+    support_event_id: outbox.support_event_id,
+    before_status: "boundary_ready",
+    after_status: outbox.outbox_status,
+    outbox_status: outbox.outbox_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    reason_code: outbox.safe_reason_codes[0] ?? "external_execution_forbidden"
   };
 }
 
@@ -2188,6 +2289,81 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const boundary = await candidateRepo.getReactionDispatchOutboxBoundary(candidate.candidate_id);
     if (!boundary) return reply.code(404).send({ error: "reaction_dispatch_outbox_boundary_not_found" });
     return { boundary, side_effects: toReactionDispatchOutboxBoundarySkippedSideEffects() };
+  });
+
+  app.post("/admin/reaction-dispatch/boundaries/:boundaryId/enqueue-internal-outbox", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { boundaryId } = z.object({ boundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const boundary = await candidateRepo.getReactionDispatchOutboxBoundaryById(boundaryId);
+    if (!boundary) return reply.code(404).send({ error: "reaction_dispatch_outbox_boundary_not_found" });
+    const candidate = await candidateRepo.getReactionDispatchCandidateById(boundary.candidate_id);
+    if (!candidate) {
+      return reply.code(409).send({
+        outbox: {
+          boundary_id: boundary.boundary_id,
+          candidate_id: boundary.candidate_id,
+          support_event_id: boundary.support_event_id,
+          outbox_status: "blocked_internal",
+          safe_reason_codes: ["candidate_invalid", "external_execution_forbidden"]
+        },
+        error: "internal_outbox_enqueue_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const approval = await candidateRepo.getReactionDispatchApproval(candidate.candidate_id);
+    const validation = await validateCandidateForApproval(repo, candidate);
+    let blockedReason: ReactionDispatchInternalOutboxReasonCode | undefined;
+    if (boundary.boundary_status !== "boundary_ready") blockedReason = "boundary_not_ready";
+    else if (approval?.approval_status !== "approved_for_dispatch") blockedReason = "candidate_not_approved";
+    else if (candidate.candidate_status === "candidate_invalid" || validation.reason === "candidate_invalid") blockedReason = "candidate_invalid";
+    else if (candidate.candidate_status === "candidate_blocked" || validation.reason === "candidate_blocked") blockedReason = "candidate_blocked";
+    else if (candidate.candidate_status === "candidate_superseded" || validation.reason === "candidate_superseded") blockedReason = "candidate_superseded";
+    else if (validation.status !== "valid" || candidate.candidate_status !== "candidate_ready") blockedReason = "unsafe_context";
+
+    if (blockedReason) {
+      return reply.code(409).send({
+        outbox: buildReactionDispatchInternalOutbox(candidate, boundary, [blockedReason, "external_execution_forbidden"], "blocked_internal"),
+        error: "internal_outbox_enqueue_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+
+    const result = await candidateRepo.setReactionDispatchInternalOutboxIfAbsent(buildReactionDispatchInternalOutbox(
+      candidate,
+      boundary,
+      ["boundary_ready", "approved_for_dispatch", "external_execution_forbidden"],
+      "queued_internal"
+    ));
+    if (result.created) {
+      await repo.writeAuditLog({
+        actor_type: "admin",
+        actor_id: "admin_mock",
+        action: "reaction_dispatch_internal_outbox_queued",
+        target_type: "reaction_dispatch_internal_outbox",
+        target_id: result.outbox.outbox_id,
+        after_json: toReactionDispatchInternalOutboxAuditMetadata(result.outbox)
+      });
+    }
+    return { outbox: result.outbox, idempotent: !result.created, side_effects: toReactionDispatchInternalOutboxSkippedSideEffects() };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    return {
+      outbox: await candidateRepo.listReactionDispatchInternalOutbox(),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/outbox/:outboxId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { outboxId } = z.object({ outboxId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const outbox = await candidateRepo.getReactionDispatchInternalOutbox(outboxId);
+    if (!outbox) return reply.code(404).send({ error: "reaction_dispatch_internal_outbox_not_found" });
+    return { outbox, side_effects: toReactionDispatchInternalOutboxSkippedSideEffects() };
   });
 
   app.get("/admin/support-events/:eventId/contract-v2", async (req, reply) => {

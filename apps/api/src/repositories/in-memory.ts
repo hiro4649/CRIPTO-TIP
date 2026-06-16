@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -33,6 +33,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   reactionDispatchCandidates = new Map<string, ReactionDispatchCandidateMetadata>();
   reactionDispatchApprovals = new Map<string, ReactionDispatchApprovalMetadata>();
   reactionDispatchOutboxBoundaries = new Map<string, ReactionDispatchOutboxBoundaryMetadata>();
+  reactionDispatchInternalOutbox = new Map<string, ReactionDispatchInternalOutboxMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -55,6 +56,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.reactionDispatchCandidates.clear();
     this.reactionDispatchApprovals.clear();
     this.reactionDispatchOutboxBoundaries.clear();
+    this.reactionDispatchInternalOutbox.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -185,6 +187,25 @@ export class InMemoryRepository implements CriptoTipRepository {
   }
   async getReactionDispatchOutboxBoundary(candidateId: string) {
     return this.reactionDispatchOutboxBoundaries.get(candidateId);
+  }
+  async getReactionDispatchOutboxBoundaryById(boundaryId: string) {
+    return [...this.reactionDispatchOutboxBoundaries.values()].find((boundary) => boundary.boundary_id === boundaryId);
+  }
+  async setReactionDispatchInternalOutboxIfAbsent(outbox: ReactionDispatchInternalOutboxMetadata): Promise<ReactionDispatchInternalOutboxResult> {
+    const existing = this.reactionDispatchInternalOutbox.get(`${outbox.boundary_id}:${outbox.candidate_id}`);
+    if (existing) return { outbox: existing, created: false };
+    this.reactionDispatchInternalOutbox.set(`${outbox.boundary_id}:${outbox.candidate_id}`, outbox);
+    return { outbox, created: true };
+  }
+  async getReactionDispatchInternalOutboxByBoundary(boundaryId: string) {
+    return [...this.reactionDispatchInternalOutbox.values()].find((outbox) => outbox.boundary_id === boundaryId);
+  }
+  async getReactionDispatchInternalOutbox(outboxId: string) {
+    return [...this.reactionDispatchInternalOutbox.values()].find((outbox) => outbox.outbox_id === outboxId);
+  }
+  async listReactionDispatchInternalOutbox() {
+    return [...this.reactionDispatchInternalOutbox.values()]
+      .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.outbox_id.localeCompare(right.outbox_id));
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

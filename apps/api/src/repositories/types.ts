@@ -294,6 +294,57 @@ export type ReactionDispatchOutboxBoundaryResult = {
   created: boolean;
 };
 
+export type ReactionDispatchInternalOutboxStatus =
+  | "queued_internal"
+  | "pending_internal_dispatch"
+  | "cancelled_internal"
+  | "blocked_internal"
+  | "superseded_internal";
+
+export type ReactionDispatchExternalDeliveryStatus = "not_attempted";
+export type ReactionDispatchAdapterExecutionStatus = "not_executed";
+
+export type ReactionDispatchInternalOutboxReasonCode =
+  | "boundary_ready"
+  | "approved_for_dispatch"
+  | "boundary_not_found"
+  | "boundary_not_ready"
+  | "candidate_not_approved"
+  | "candidate_invalid"
+  | "candidate_blocked"
+  | "candidate_superseded"
+  | "unsafe_context"
+  | "external_execution_forbidden"
+  | "already_queued";
+
+export type ReactionDispatchInternalOutboxMetadata = {
+  outbox_id: string;
+  boundary_id: string;
+  candidate_id: string;
+  support_event_id: string;
+  stream_id: string;
+  character_id: string;
+  source: SupportReceived["source"];
+  contract_version: string;
+  candidate_status: ReactionDispatchCandidateStatus;
+  boundary_status: ReactionDispatchOutboxBoundaryStatus;
+  outbox_status: ReactionDispatchInternalOutboxStatus;
+  external_delivery_status: ReactionDispatchExternalDeliveryStatus;
+  adapter_execution_status: ReactionDispatchAdapterExecutionStatus;
+  dispatch_attempt_count: number;
+  safe_context_hash: string;
+  constraints_hash: string;
+  idempotency_key: string;
+  created_at: string;
+  updated_at: string;
+  safe_reason_codes: ReactionDispatchInternalOutboxReasonCode[];
+};
+
+export type ReactionDispatchInternalOutboxResult = {
+  outbox: ReactionDispatchInternalOutboxMetadata;
+  created: boolean;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {
