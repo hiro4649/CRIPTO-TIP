@@ -1,7 +1,10 @@
 {
   "schemaVersion": "1.0.0",
   "command": "corepack pnpm test",
-  "testFiles": 78,
-  "passed": 1832,
-  "skipped": 6
+  "testFiles": 79,
+  "passed": 1836,
+  "skipped": 6,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "harnessVersion": "1.2.5",
+  "repository": "hiro4649/CRIPTO-TIP"
 }

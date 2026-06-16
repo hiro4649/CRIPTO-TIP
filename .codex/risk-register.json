@@ -2,14 +2,19 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
+  "prNumber": 99,
+  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
+  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
   "risks": [
-    "Product PR #99 must be rebased and reverified after this repair merges."
+    "This is a local validator and preview alignment only.",
+    "Durable contract enforcement and external execution adapters remain future scoped work."
   ],
   "forbiddenScopePreserved": true,
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "packageJsonChanged": false,
-  "pnpmLockChanged": false
+  "pnpmLockChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
 }

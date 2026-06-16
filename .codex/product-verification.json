@@ -2,31 +2,28 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
+  "prNumber": 99,
+  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
+  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
   "productVerificationStatus": "pass",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "coverage": [
-    "v125 self-test remains active authority owner",
-    "v124 compatibility self-test passes under active v125",
-    "v123 compatibility remains passing"
+    "valid contract v2 preview accepted",
+    "unsafe preview rejected",
+    "non-skipped side effects rejected",
+    "admin reaction dispatch preview alignment",
+    "raw message raw payload wallet address and secrets rejected"
   ],
   "commands": [
     {
-      "name": "node scripts/codex-v125-self-test.mjs",
+      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "node scripts/codex-v124-self-test.mjs",
-      "result": "pass",
-      "status": "pass"
-    },
-    {
-      "name": "node scripts/codex-v123-self-test.mjs",
+      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     }
@@ -34,6 +31,6 @@
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
   }
 }

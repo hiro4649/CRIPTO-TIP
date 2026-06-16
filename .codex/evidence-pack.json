@@ -2,35 +2,37 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "7c11398264e1be352c3ac0e6d51489b020e5358a",
+  "prNumber": 99,
+  "headSha": "c82b1001e4157e252735612a5fbb10cbf1f2c229",
+  "baseSha": "05d28b1ab215da5d33bc8bd082f0774d392efe1e",
   "schemaVersion": "1.0.0",
-  "prProfile": "harness_compatibility_repair",
-  "taskMode": "harness-change",
-  "changeType": "harness_v125_v124_compat_self_test_repair",
+  "prProfile": "product_r3",
+  "taskMode": "feature",
+  "changeType": "product_vertical_slice_support_event_contract_v2_validator",
   "riskLevel": "R3",
-  "title": "fix: repair v124 compatibility self-test under v125",
-  "goal": "Repair v1.2.4 compatibility self-test so it passes when v1.2.5 owns the active authority tuple.",
-  "ciRunId": "pre_pr_remote_pending",
-  "qualityGateRunId": "pre_pr_remote_pending",
-  "qualityGateArtifactId": "pre_pr_remote_pending",
-  "productCiStatus": "pre_pr_remote_pending",
-  "qualityGateStatus": "pre_pr_remote_pending",
+  "title": "feat: add p0 support event contract v2 validator",
+  "goal": "Add a local Support Event Contract v2 validator and prove admin reaction dispatch preview aligns with it without claiming runtime readiness.",
+  "ciRunId": "27611496242",
+  "qualityGateRunId": "27611639378",
+  "qualityGateArtifactId": "7664304271",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "productValueContribution": [
-    "harness_compatibility",
-    "v125_rollout_repair",
-    "self_test_closure"
+    "support_event_contract",
+    "reaction_dispatch_safety",
+    "character_continuity",
+    "moderation_safety"
   ],
   "scope": {
     "changedFiles": [
-      "scripts/codex-v124-self-test.mjs",
-      "docs/process/CODEX_V125_SPEC.md",
-      "docs/process/CODEX_V124_SPEC.md",
-      "docs/pr-harness-v125-v124-compat-self-test-repair.md",
-      ".codex/harness-v125-v124-compat-self-test-repair.json",
+      "apps/api/src/support-event-contract-v2-validator.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/p0-support-event-contract-v2-validator.test.ts",
+      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_VALIDATOR.md",
+      "docs/pr-p0-support-event-contract-v2-validator.md",
+      ".codex/p0-support-event-contract-v2-validator.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -41,21 +43,20 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "scripts/codex-v124-self-test.mjs",
-      "docs/process/CODEX_V125_SPEC.md",
-      "docs/process/CODEX_V124_SPEC.md",
-      "docs/pr-harness-v125-v124-compat-self-test-repair.md",
+      "apps/api/src/server.ts",
+      "apps/api/src/*.ts",
+      "apps/api/src/*.test.ts",
+      "docs/P0_SUPPORT_EVENT_CONTRACT_V2_VALIDATOR.md",
+      "docs/pr-p0-support-event-contract-v2-validator.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/*.ts product runtime files",
-      "apps/api/src/*.test.ts product tests",
       "package.json",
       "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
       ".github/workflows/**",
+      "scripts/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
@@ -63,41 +64,83 @@
   },
   "commands": [
     {
-      "name": "node scripts/codex-v125-self-test.mjs",
+      "name": "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "node scripts/codex-v124-self-test.mjs",
+      "name": "corepack pnpm typecheck",
       "result": "pass",
       "status": "pass"
     },
     {
-      "name": "node scripts/codex-v123-self-test.mjs",
+      "name": "corepack pnpm install",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
+      "result": "pass",
+      "status": "pass"
+    },
+    {
+      "name": "npm test",
       "result": "pass",
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27611496242",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27611639378",
+      "result": "success",
+      "artifactId": "7664304271"
+    }
+  ],
   "allowedScope": [
-    "harness compatibility self-test repair",
-    "v124/v125 spec clarification",
+    "Support Event Contract v2 local validator",
+    "reaction dispatch preview validator alignment",
+    "safe output rejection tests",
     "docs",
     ".codex evidence"
   ],
   "forbiddenScope": [
-    "product runtime behavior change",
-    "package.json change",
-    "pnpm-lock change",
-    "workflow change",
-    "quality-gate weakening",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "owner approval record",
-    "GitHub approval review",
-    "merge authority",
+    "package.json change",
+    "pnpm-lock change",
+    "DB driver dependency",
+    "Redis dependency",
+    "Kafka dependency",
+    "real DB connection",
+    "migration change",
+    "contract change",
+    "workflow change",
+    "real YouTube API",
+    "real OAuth token",
+    "real RPC",
+    "wallet/RPC/deploy changes",
+    "real TTS call",
+    "real Live2D call",
+    "real renderer call",
+    "real OBS delivery",
+    "real WebSocket delivery",
+    "support event mutation",
+    "reaction enqueue",
+    "overlay enqueue",
+    "outbox enqueue",
     "token sale",
     "token exchange",
     "cash-out",
@@ -106,31 +149,37 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "v125 self-test pass",
-    "v124 compatibility self-test pass",
-    "v123 compatibility self-test pass",
-    "no product runtime change",
-    "no package or lockfile change",
-    "no workflow change",
-    "no readiness or compliance claims"
+    "validator accepts valid reaction dispatch preview",
+    "validator rejects missing continuity constraints",
+    "validator rejects unsafe serialized fields",
+    "validator rejects non-skipped side effects",
+    "admin reaction dispatch preview returns valid contract_validation",
+    "existing support events remain compatible",
+    "no package or lockfile changed"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 78,
-    "passed": 1832,
+    "testFiles": 79,
+    "passed": 1836,
     "skipped": 6
   },
   "securityBoundaries": [
-    "No product runtime code is changed.",
     "No package.json or pnpm-lock change.",
-    "No workflow change.",
-    "No raw GitHub logs are read.",
-    "No owner approval, GitHub approval review, or merge authority is created.",
+    "No DB driver, Redis, or Kafka dependency is added.",
+    "No real DB connection is introduced.",
+    "No migration is changed or executed.",
+    "No real YouTube API or OAuth token is used.",
+    "No real TTS, Live2D, renderer, OBS, or WebSocket delivery is performed.",
+    "No support events are mutated.",
+    "No reaction, overlay, or outbox side effects are enqueued.",
+    "No RPC, wallet, deploy, contracts, workflows, web, or overlay app changes.",
+    "Validator rejects raw messages, raw payload markers, wallet addresses, authorization strings, stdout, stderr, jobs_url, and logs_url.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "Product PR #99 must be rebased and reverified after this repair merges."
+    "This is a local validator and preview alignment only.",
+    "Durable contract enforcement and external execution adapters remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -139,35 +188,37 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "node scripts/codex-v125-self-test.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass",
+    "corepack pnpm vitest run apps/api/src/p0-support-event-contract-v2-validator.test.ts apps/api/src/p0-admin-reaction-dispatch-preview.test.ts: pass",
+    "corepack pnpm typecheck: pass",
     "corepack pnpm install: pass",
     "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p0-support-event-contract-v2-validator.md: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
     "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v125-self-test.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
     "cd contracts && forge test || true: unavailable_nonblocking"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "Harness self-test compatibility only; product runtime behavior is unchanged."
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds local/internal contract validation metadata to admin reaction dispatch preview."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is harness compatibility repair only.",
-  "rollbackOrStopCondition": "Stop if product runtime, package, lockfile, workflow, contracts, migrations, web, overlay, readiness, compliance, owner approval, GitHub approval review, or merge authority changes are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local contract validation and admin preview alignment only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, scripts, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, support event mutation, reaction/overlay/outbox enqueue, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -179,9 +230,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "v124 compatibility self-test under active v125, spec docs, and .codex evidence.",
-    "riskSummary": "Main risk is weakening active authority verification; v125 remains owner and v125 self-test still checks current authority.",
-    "verificationOracle": "v125, v124, and v123 self-tests plus repository quality checks."
+    "scope": "P0 Support Event Contract v2 validator, reaction dispatch preview alignment, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accepting unsafe output, non-skipped side effects, or misleading readiness claims; validator tests reject those outcomes.",
+    "verificationOracle": "Validator tests, preview alignment tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-harness-v125-v124-compat-self-test-repair.md"
+  "prBodyPath": "docs/pr-p0-support-event-contract-v2-validator.md"
 }
