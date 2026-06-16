@@ -3,5 +3,8 @@
   "command": "corepack pnpm test",
   "testFiles": 79,
   "passed": 1836,
-  "skipped": 6
+  "skipped": 6,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
+  "harnessVersion": "1.2.5",
+  "repository": "hiro4649/CRIPTO-TIP"
 }

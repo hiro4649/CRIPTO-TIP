@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "harnessVersion": "1.2.4",
+  "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
   "supportEventContractV2ValidatorStatus": "implemented",
   "validPreviewAcceptedStatus": "pass",
@@ -33,5 +33,6 @@
   "realObsCallUsed": false,
   "realWebSocketDeliveryUsed": false,
   "packageJsonChanged": false,
-  "pnpmLockChanged": false
+  "pnpmLockChanged": false,
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5"
 }
