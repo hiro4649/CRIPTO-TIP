@@ -139,6 +139,15 @@ export type SupportModerationReviewSummaryEntry = {
   status: SupportModerationReviewStatus;
 };
 
+export type SupportEventResolutionStatus = "open" | "resolved" | "needs_followup" | "blocked";
+export type SupportEventResolutionMetadata = {
+  event_id: string;
+  status: SupportEventResolutionStatus;
+  operator_note?: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {

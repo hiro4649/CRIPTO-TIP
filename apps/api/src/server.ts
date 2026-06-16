@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, SupportEventResolutionMetadata, SupportEventResolutionStatus } from "./repositories/types.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -526,6 +526,11 @@ type OperatorNoteRepository = {
   getSupportEventOperatorNote?: (eventId: string, noteId: string) => Promise<AdminSupportEventOperatorNote | undefined>;
   updateSupportEventOperatorNote?: (eventId: string, noteId: string, patch: Partial<Pick<AdminSupportEventOperatorNote, "note" | "archived">>) => Promise<AdminSupportEventOperatorNote | undefined>;
 };
+type ResolutionRepository = {
+  getSupportEventResolution?: (eventId: string) => Promise<AdminSupportEventResolution | undefined>;
+  setSupportEventResolution?: (eventId: string, patch: { status: SupportEventResolutionStatus; operator_note?: string }) => Promise<AdminSupportEventResolution>;
+};
+const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -556,6 +561,12 @@ const AdminOperatorNoteSearchQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
+const AdminSupportEventResolutionSchema = z.object({
+  status: z.enum(["open", "resolved", "needs_followup", "blocked"]),
+  operator_note: z.string().max(240).optional()
+});
+
+type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
 const ADMIN_SUPPORT_BULK_REVIEW_PREVIEW_MAX_EVENTS = 50;
 const AdminSupportBulkReviewPreviewRequestSchema = z.object({
@@ -729,6 +740,58 @@ function toOperatorNoteAuditMetadata(support: SupportReceived, note: AdminSuppor
     character_id: support.character_id,
     operator_note_id: note.id,
     operator_note: note.note
+  };
+}
+
+function getResolutionRepository(repo: CriptoTipRepository): Required<ResolutionRepository> {
+  const candidate = repo as CriptoTipRepository & ResolutionRepository;
+  let fallback = resolutionFallbackByRepo.get(repo);
+  if (!fallback) {
+    fallback = new Map<string, AdminSupportEventResolution>();
+    resolutionFallbackByRepo.set(repo, fallback);
+  }
+  return {
+    getSupportEventResolution: candidate.getSupportEventResolution
+      ? (eventId) => candidate.getSupportEventResolution!.call(repo, eventId)
+      : async (eventId) => fallback.get(eventId),
+    setSupportEventResolution: candidate.setSupportEventResolution
+      ? (eventId, patch) => candidate.setSupportEventResolution!.call(repo, eventId, patch)
+      : async (eventId, patch) => {
+        const now = new Date().toISOString();
+        const existing = fallback.get(eventId);
+        const next: AdminSupportEventResolution = {
+          event_id: eventId,
+          status: patch.status,
+          created_at: existing?.created_at ?? now,
+          updated_at: now
+        };
+        if (patch.operator_note !== undefined) next.operator_note = patch.operator_note;
+        else if (existing?.operator_note !== undefined) next.operator_note = existing.operator_note;
+        fallback.set(eventId, next);
+        return next;
+      }
+  };
+}
+
+function toResolutionSafeEntry(resolution: AdminSupportEventResolution) {
+  return {
+    event_id: resolution.event_id,
+    status: resolution.status,
+    operator_note: resolution.operator_note,
+    created_at: resolution.created_at,
+    updated_at: resolution.updated_at
+  };
+}
+
+function toResolutionAuditMetadata(support: SupportReceived, resolution: AdminSupportEventResolution) {
+  return {
+    event_id: support.event_id,
+    source: support.source,
+    source_event_id: support.source_event_id,
+    stream_id: support.stream_id,
+    character_id: support.character_id,
+    resolution_status: resolution.status,
+    operator_note: resolution.operator_note
   };
 }
 
@@ -1379,6 +1442,64 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const support = await repo.getSupportEventById(eventId);
     if (!support) return reply.code(404).send({ error: "support_event_not_found" });
     return toAdminSupportEventActionPlan(repo, support);
+  });
+
+  app.get("/admin/support-events/:eventId/resolution", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const resolutionRepo = getResolutionRepository(repo);
+    const existing = await resolutionRepo.getSupportEventResolution(support.event_id);
+    const resolution: AdminSupportEventResolution = existing ?? {
+      event_id: support.event_id,
+      status: "open",
+      created_at: support.created_at,
+      updated_at: support.created_at
+    };
+    return {
+      resolution: toResolutionSafeEntry(resolution),
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source,
+        moderation_status: support.support.message_moderation_status
+      }
+    };
+  });
+
+  app.patch("/admin/support-events/:eventId/resolution", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { eventId } = z.object({ eventId: z.string() }).parse(req.params);
+    const parsed = AdminSupportEventResolutionSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send({ error: "invalid_resolution" });
+    const support = await repo.getSupportEventById(eventId);
+    if (!support) return reply.code(404).send({ error: "support_event_not_found" });
+    const operatorNote = parsed.data.operator_note === undefined ? undefined : sanitizeOperatorNote(parsed.data.operator_note);
+    const resolutionRepo = getResolutionRepository(repo);
+    const resolution = await resolutionRepo.setSupportEventResolution(support.event_id, {
+      status: parsed.data.status,
+      ...(operatorNote !== undefined ? { operator_note: operatorNote } : {})
+    });
+    await repo.writeAuditLog({
+      actor_type: "admin",
+      actor_id: "admin_mock",
+      action: "support_event_resolution_update",
+      target_type: "support_event",
+      target_id: support.event_id,
+      after_json: toResolutionAuditMetadata(support, resolution)
+    });
+    return {
+      resolution: toResolutionSafeEntry(resolution),
+      support_event: {
+        event_id: support.event_id,
+        stream_id: support.stream_id,
+        character_id: support.character_id,
+        source: support.source,
+        moderation_status: support.support.message_moderation_status
+      }
+    };
   });
 
   app.post("/admin/support-events/:eventId/operator-notes", async (req, reply) => {

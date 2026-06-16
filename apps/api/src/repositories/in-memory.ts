@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -29,6 +29,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   auditLogs: AuditLogInput[] = [];
   supportEventOperatorNotes = new Map<string, { id: string; event_id: string; note: string; archived: boolean; created_at: string; updated_at: string }[]>();
   supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
+  supportEventResolutions = new Map<string, SupportEventResolutionMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -47,6 +48,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.auditLogs = [];
     this.supportEventOperatorNotes.clear();
     this.supportModerationReviewStates.clear();
+    this.supportEventResolutions.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -124,6 +126,23 @@ export class InMemoryRepository implements CriptoTipRepository {
       entries.push({ event_id: eventId, stream_id: event.stream_id, status });
     }
     return entries;
+  }
+  async getSupportEventResolution(eventId: string) {
+    return this.supportEventResolutions.get(eventId);
+  }
+  async setSupportEventResolution(eventId: string, patch: { status: SupportEventResolutionStatus; operator_note?: string }) {
+    const now = new Date().toISOString();
+    const existing = this.supportEventResolutions.get(eventId);
+    const next: SupportEventResolutionMetadata = {
+      event_id: eventId,
+      status: patch.status,
+      created_at: existing?.created_at ?? now,
+      updated_at: now
+    };
+    if (patch.operator_note !== undefined) next.operator_note = patch.operator_note;
+    else if (existing?.operator_note !== undefined) next.operator_note = existing.operator_note;
+    this.supportEventResolutions.set(eventId, next);
+    return next;
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
