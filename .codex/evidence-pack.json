@@ -2,8 +2,8 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.4",
   "harnessVersion": "1.2.4",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
-  "headSha": "current_pr_head",
+  "prNumber": 97,
+  "headSha": "3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1",
   "baseSha": "e011e0724bfeb5a39fe41dc3dc9f404e3c38afed",
   "schemaVersion": "1.0.0",
   "prProfile": "docs_or_spec_r2",
@@ -12,11 +12,11 @@
   "riskLevel": "R2",
   "title": "docs: add AI character support event contracts",
   "goal": "Document Support Event Contract v2, character continuity, safe context summary, reaction dispatch contract, adaptive support policy, admin operator workflow, product-value return gate, and role boundaries without changing runtime behavior.",
-  "ciRunId": "not_created_pre_pr",
-  "qualityGateRunId": "not_created_pre_pr",
-  "qualityGateArtifactId": "not_created_pre_pr",
-  "productCiStatus": "not_created_pre_pr",
-  "qualityGateStatus": "not_created_pre_pr",
+  "ciRunId": "27601460599",
+  "qualityGateRunId": "27601460525",
+  "qualityGateArtifactId": "7660049841",
+  "productCiStatus": "success",
+  "qualityGateStatus": "success",
   "runtimeReadinessClaim": "no",
   "productCodeChanged": false,
   "productValueContribution": [
@@ -88,7 +88,19 @@
       "status": "pass"
     }
   ],
-  "remoteRuns": [],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "27601460599",
+      "result": "success"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "27601460525",
+      "result": "success",
+      "artifactId": "7660049841"
+    }
+  ],
   "allowedScope": [
     "Support Event Contract v2 documentation",
     "Character Continuity Contract documentation",

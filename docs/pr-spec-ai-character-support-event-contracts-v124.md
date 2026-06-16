@@ -21,19 +21,19 @@ Done criteria: support event contract v2 documented; character continuity contra
 
 ## Evidence Integrity
 
-Head SHA: current_pr_head
+Head SHA: 3dfdc0d1dfbcbccb05325eb9cd7870a9f0f12aa1
 
 Base SHA: e011e0724bfeb5a39fe41dc3dc9f404e3c38afed
 
-Product CI: not_created_pre_pr
+Product CI: success
 
-Quality-gate: not_created_pre_pr
+Quality-gate: success
 
-CI run: not_created_pre_pr
+CI run: 27601460599
 
-Quality-gate run: not_created_pre_pr
+Quality-gate run: 27601460525
 
-Quality-gate artifact: not_created_pre_pr
+Quality-gate artifact: 7660049841
 
 Tests: 77 test files, 1828 passed, 6 skipped
 
