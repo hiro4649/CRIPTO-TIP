@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -30,6 +30,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   supportEventOperatorNotes = new Map<string, { id: string; event_id: string; note: string; archived: boolean; created_at: string; updated_at: string }[]>();
   supportModerationReviewStates = new Map<string, SupportModerationReviewStatus>();
   supportEventResolutions = new Map<string, SupportEventResolutionMetadata>();
+  reactionDispatchCandidates = new Map<string, ReactionDispatchCandidateMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -49,6 +50,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.supportEventOperatorNotes.clear();
     this.supportModerationReviewStates.clear();
     this.supportEventResolutions.clear();
+    this.reactionDispatchCandidates.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -143,6 +145,21 @@ export class InMemoryRepository implements CriptoTipRepository {
     else if (existing?.operator_note !== undefined) next.operator_note = existing.operator_note;
     this.supportEventResolutions.set(eventId, next);
     return next;
+  }
+  async createReactionDispatchCandidateIfAbsent(candidate: ReactionDispatchCandidateMetadata): Promise<ReactionDispatchCandidateCreateResult> {
+    const existing = [...this.reactionDispatchCandidates.values()].find((entry) => entry.idempotency_key === candidate.idempotency_key);
+    if (existing) return { candidate: existing, created: false };
+    this.reactionDispatchCandidates.set(candidate.candidate_id, candidate);
+    return { candidate, created: true };
+  }
+  async listReactionDispatchCandidatesBySupportEvent(eventId: string) {
+    return [...this.reactionDispatchCandidates.values()]
+      .filter((candidate) => candidate.support_event_id === eventId)
+      .sort((a, b) => a.created_at.localeCompare(b.created_at) || a.candidate_id.localeCompare(b.candidate_id));
+  }
+  async getReactionDispatchCandidate(eventId: string, candidateId: string) {
+    const candidate = this.reactionDispatchCandidates.get(candidateId);
+    return candidate?.support_event_id === eventId ? candidate : undefined;
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);

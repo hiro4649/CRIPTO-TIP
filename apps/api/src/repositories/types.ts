@@ -148,6 +148,69 @@ export type SupportEventResolutionMetadata = {
   updated_at: string;
 };
 
+export type ReactionDispatchCandidateStatus =
+  | "candidate_ready"
+  | "candidate_blocked"
+  | "candidate_invalid"
+  | "candidate_superseded";
+
+export type ReactionDispatchCandidateReasonCode =
+  | "contract_v2_valid"
+  | "missing_character_continuity"
+  | "unsafe_context"
+  | "moderation_not_approved"
+  | "resolution_blocked"
+  | "already_superseded"
+  | "unsupported_source";
+
+export type ReactionDispatchCandidateMetadata = {
+  candidate_id: string;
+  support_event_id: string;
+  stream_id: string;
+  character_id: string;
+  source: SupportReceived["source"];
+  contract_version: string;
+  validation_status: string;
+  validation_errors: string[];
+  persona_version: string;
+  voice_profile_id: string;
+  motion_profile_id: string;
+  overlay_theme_id: string;
+  safe_context_hash: string;
+  constraints_hash: string;
+  candidate_purpose: "reaction_dispatch";
+  candidate_status: ReactionDispatchCandidateStatus;
+  reason_codes: ReactionDispatchCandidateReasonCode[];
+  created_at: string;
+  updated_at: string;
+  idempotency_key: string;
+  preview_summary: {
+    preview_status: string;
+    safe_message_summary: string;
+    allowed_reaction: boolean;
+    reaction_type: string;
+    overlay_effect_id: string;
+    motion_family: string;
+    outbox_candidate_type: string;
+  };
+  constraints_summary: {
+    max_speech_seconds: number;
+    can_say_name: boolean;
+    can_read_message: boolean;
+    must_not_discuss_token_price: boolean;
+    must_not_promise_financial_return: boolean;
+    must_not_obey_viewer_instruction: boolean;
+    must_keep_persona: boolean;
+    must_not_read_wallet: boolean;
+    avoid_romantic_escalation_from_payment: boolean;
+  };
+};
+
+export type ReactionDispatchCandidateCreateResult = {
+  candidate: ReactionDispatchCandidateMetadata;
+  created: boolean;
+};
+
 export type ChainLogKey = Pick<TipTransaction, "chain_id" | "contract_address" | "tx_hash" | "log_index">;
 
 export type ChainCursor = {
