@@ -648,6 +648,25 @@ const AdminReactionDispatchAttemptPlanReviewQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
+const AdminReactionDispatchDryRunReviewQuerySchema = z.object({
+  support_event_id: z.string().optional(),
+  outbox_id: z.string().optional(),
+  lease_id: z.string().optional(),
+  plan_id: z.string().optional(),
+  candidate_id: z.string().optional(),
+  boundary_id: z.string().optional(),
+  character_id: z.string().optional(),
+  stream_id: z.string().optional(),
+  adapter_kind: z.enum(["iris_core_reaction", "voxweave_voice", "overlay_effect", "future_internal_adapter"]).optional(),
+  dry_run_status: z.enum(["dry_run_planned", "dry_run_ready", "dry_run_blocked", "dry_run_invalid", "dry_run_superseded"]).optional(),
+  plan_status: z.enum(["planned_internal", "plan_blocked", "plan_superseded", "plan_expired"]).optional(),
+  outbox_status: z.enum(["queued_internal", "pending_internal_dispatch", "cancelled_internal", "blocked_internal", "superseded_internal"]).optional(),
+  lease_status: z.enum(["not_leased", "leased_internal", "lease_expired", "lease_released", "lease_blocked"]).optional(),
+  created_after: z.string().optional(),
+  created_before: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
@@ -1765,6 +1784,85 @@ function toReactionDispatchDryRunAdapterBoundaryBlockers(
   else if (lease?.lease_id !== leaseId || plan?.lease_id !== leaseId) reasons.push("lease_id_mismatch");
   reasons.push("external_execution_forbidden");
   return [...new Set(reasons)];
+}
+
+function toReactionDispatchDryRunReviewEntry(
+  plan: ReactionDispatchInternalOutboxAttemptPlanMetadata,
+  outbox: ReactionDispatchInternalOutboxMetadata,
+  lease: ReactionDispatchInternalOutboxLeaseMetadata | undefined,
+  now = new Date()
+) {
+  const leaseStatus = toReactionDispatchInternalOutboxLeaseStatus(outbox.outbox_id, lease, now);
+  const blockers = toReactionDispatchDryRunAdapterBoundaryBlockers(plan, outbox, leaseStatus, plan.lease_id, now);
+  const blockingReasonCodes = blockers.filter((reason) => !["external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"].includes(reason));
+  const dryRunStatus = blockingReasonCodes.length === 0 ? "dry_run_ready" : "dry_run_blocked";
+  const readyBoundary = leaseStatus.lease_id && dryRunStatus === "dry_run_ready"
+    ? buildReactionDispatchDryRunAdapterBoundary(plan, outbox, leaseStatus)
+    : undefined;
+  const requestPreviewHash = readyBoundary?.request_preview_hash ?? hashSafeMetadata({
+    plan_id: plan.plan_id,
+    outbox_id: outbox.outbox_id,
+    lease_id: plan.lease_id,
+    dry_run_status: dryRunStatus,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash
+  });
+  const dryRunBoundaryId = readyBoundary?.dry_run_boundary_id ?? `rddry_${createHash("sha256").update(`reaction_dispatch_dry_run_review:${plan.plan_id}:${requestPreviewHash}`).digest("hex").slice(0, 24)}`;
+  return {
+    dry_run_boundary_id: dryRunBoundaryId,
+    plan_id: plan.plan_id,
+    outbox_id: outbox.outbox_id,
+    lease_id: plan.lease_id,
+    candidate_id: outbox.candidate_id,
+    boundary_id: outbox.boundary_id,
+    support_event_id: outbox.support_event_id,
+    stream_id: outbox.stream_id,
+    character_id: outbox.character_id,
+    source: outbox.source,
+    adapter_kind: toReactionDispatchAttemptPlanAdapterKind(plan),
+    dry_run_status: dryRunStatus,
+    plan_status: plan.attempt_plan_status,
+    outbox_status: outbox.outbox_status,
+    lease_status: leaseStatus.lease_status,
+    external_delivery_status: outbox.external_delivery_status,
+    adapter_execution_status: outbox.adapter_execution_status,
+    dispatch_attempt_count: outbox.dispatch_attempt_count,
+    contract_version: outbox.contract_version,
+    validation_status: outbox.candidate_status,
+    safe_reason_codes: readyBoundary?.safe_reason_codes ?? blockers,
+    safe_context_hash: outbox.safe_context_hash,
+    constraints_hash: outbox.constraints_hash,
+    request_preview_hash: requestPreviewHash,
+    created_at: plan.created_at,
+    updated_at: plan.updated_at,
+    character_continuity_summary: {
+      character_id: outbox.character_id,
+      source: outbox.source,
+      contract_version: outbox.contract_version
+    },
+    safe_context_summary_presence: {
+      safe_context_hash_present: Boolean(outbox.safe_context_hash),
+      constraints_hash_present: Boolean(outbox.constraints_hash),
+      request_preview_hash_present: Boolean(requestPreviewHash)
+    },
+    reaction_constraints_summary: {
+      external_delivery_status: outbox.external_delivery_status,
+      adapter_execution_status: outbox.adapter_execution_status,
+      dispatch_attempt_count: outbox.dispatch_attempt_count
+    },
+    operator_state_summary: {
+      review_surface: "read_only",
+      next_step: "dry_run_approval_gate",
+      runtime_execution: "not_performed"
+    },
+    adapter_request_shape_summary: {
+      adapter_kind: toReactionDispatchAttemptPlanAdapterKind(plan),
+      execution_mode: "dry_run_preview_only",
+      request_body_included: false,
+      auth_material_included: false
+    },
+    blocking_reason_codes: [...new Set(blockingReasonCodes)]
+  };
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -2971,6 +3069,69 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       dry_run_boundary: buildReactionDispatchDryRunAdapterBoundary(plan, outbox, lease),
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
+  });
+
+  app.get("/admin/reaction-dispatch/dry-run-boundaries", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminReactionDispatchDryRunReviewQuerySchema.parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const now = new Date();
+    const entries = [];
+    for (const plan of await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()) {
+      const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+      if (!outbox) continue;
+      const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+      entries.push(toReactionDispatchDryRunReviewEntry(plan, outbox, lease, now));
+    }
+    const filtered = entries
+      .filter((entry) => !query.support_event_id || entry.support_event_id === query.support_event_id)
+      .filter((entry) => !query.outbox_id || entry.outbox_id === query.outbox_id)
+      .filter((entry) => !query.lease_id || entry.lease_id === query.lease_id)
+      .filter((entry) => !query.plan_id || entry.plan_id === query.plan_id)
+      .filter((entry) => !query.candidate_id || entry.candidate_id === query.candidate_id)
+      .filter((entry) => !query.boundary_id || entry.boundary_id === query.boundary_id)
+      .filter((entry) => !query.character_id || entry.character_id === query.character_id)
+      .filter((entry) => !query.stream_id || entry.stream_id === query.stream_id)
+      .filter((entry) => !query.adapter_kind || entry.adapter_kind === query.adapter_kind)
+      .filter((entry) => !query.dry_run_status || entry.dry_run_status === query.dry_run_status)
+      .filter((entry) => !query.plan_status || entry.plan_status === query.plan_status)
+      .filter((entry) => !query.outbox_status || entry.outbox_status === query.outbox_status)
+      .filter((entry) => !query.lease_status || entry.lease_status === query.lease_status)
+      .filter((entry) => !query.created_after || entry.created_at >= query.created_after)
+      .filter((entry) => !query.created_before || entry.created_at <= query.created_before);
+    const page = filtered.slice(query.offset, query.offset + query.limit);
+    return {
+      dry_run_boundaries: page,
+      page: { limit: query.limit, offset: query.offset, total: filtered.length },
+      review_summary: {
+        dry_run_ready: filtered.filter((entry) => entry.dry_run_status === "dry_run_ready").length,
+        dry_run_blocked: filtered.filter((entry) => entry.dry_run_status === "dry_run_blocked").length,
+        dry_run_planned: filtered.filter((entry) => entry.dry_run_status === "dry_run_planned").length,
+        dry_run_invalid: filtered.filter((entry) => entry.dry_run_status === "dry_run_invalid").length,
+        dry_run_superseded: filtered.filter((entry) => entry.dry_run_status === "dry_run_superseded").length
+      },
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/dry-run-boundaries/:dryRunBoundaryId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const now = new Date();
+    for (const plan of await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()) {
+      const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+      if (!outbox) continue;
+      const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+      const entry = toReactionDispatchDryRunReviewEntry(plan, outbox, lease, now);
+      if (entry.dry_run_boundary_id === dryRunBoundaryId) {
+        return {
+          dry_run_boundary: entry,
+          side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+        };
+      }
+    }
+    return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
   });
 
   app.get("/admin/reaction-dispatch/outbox/:outboxId/lease", async (req, reply) => {

@@ -2,12 +2,12 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.5",
   "harnessVersion": "1.2.5",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 112,
+  "prNumber": 113,
   "headSha": "current_pr_head",
-  "baseSha": "6da6c4a281a68888c018e2121e60ccd65de36794",
-  "title": "feat: add p0 reaction dispatch dry-run adapter boundary",
-  "goal": "Add local/internal dry-run adapter boundary preview metadata from an active lease and reviewed attempt plan without external adapter execution.",
-  "changeType": "product_vertical_slice_dry_run_adapter_boundary",
+  "baseSha": "d609afbf89d8b90f738bc461c63beeda25eeba68",
+  "title": "feat: add p0 admin dry-run review surface",
+  "goal": "Add read-only admin review surface for local/internal reaction dispatch dry-run adapter boundary metadata without approval or external execution.",
+  "changeType": "product_vertical_slice_admin_dry_run_review_surface",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -15,9 +15,9 @@
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
   "taskMode": "feature",
-  "ciRunId": "27652523423",
-  "qualityGateRunId": "27652523450",
-  "qualityGateArtifactId": "7681333643",
+  "ciRunId": "27653460212",
+  "qualityGateRunId": "27653460234",
+  "qualityGateArtifactId": "7681684134",
   "productCiStatus": "success",
   "qualityGateStatus": "success",
   "riskLevel": "R3",
@@ -26,15 +26,15 @@
   "productValueContribution": [
     "reaction_dispatch_safety",
     "admin_operator_workflow",
-    "dry_run_adapter_boundary_preview"
+    "dry_run_review_surface"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts",
-      "docs/P0_REACTION_DISPATCH_DRY_RUN_ADAPTER_BOUNDARY.md",
-      "docs/pr-p0-reaction-dispatch-dry-run-adapter-boundary.md",
-      ".codex/p0-reaction-dispatch-dry-run-adapter-boundary.json",
+      "apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-dry-run-review-surface.md",
+      ".codex/p0-admin-reaction-dispatch-dry-run-review-surface.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -49,8 +49,9 @@
       "apps/api/src/*.test.ts",
       "apps/api/src/*.ts",
       "apps/api/src/repositories/*",
-      "docs/P0_REACTION_DISPATCH_DRY_RUN_ADAPTER_BOUNDARY.md",
-      "docs/pr-p0-reaction-dispatch-dry-run-adapter-boundary.md",
+      "packages/shared/src/index.ts",
+      "docs/P0_ADMIN_REACTION_DISPATCH_DRY_RUN_REVIEW_SURFACE.md",
+      "docs/pr-p0-admin-reaction-dispatch-dry-run-review-surface.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -66,7 +67,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts",
       "result": "pass",
       "status": "pass"
     },
@@ -79,23 +80,24 @@
   "remoteRuns": [
     {
       "name": "ci",
-      "runId": "27652523423",
+      "runId": "27653460212",
       "result": "success"
     },
     {
       "name": "quality-gate",
-      "runId": "27652523450",
+      "runId": "27653460234",
       "result": "success",
-      "artifactId": "7681333643"
+      "artifactId": "7681684134"
     }
   ],
   "allowedScope": [
-    "dry-run adapter boundary preview metadata",
+    "read-only admin dry-run review surface",
+    "safe dry-run list/detail metadata",
     "admin auth guard",
-    "active lease guard",
-    "reviewed attempt plan guard",
-    "lease id match guard",
-    "safe request preview hash",
+    "safe filters and pagination",
+    "adapter kind allowlist metadata",
+    "safe validation summary",
+    "safe adapter request shape summary",
     "read-only no-mutation checks",
     "no external execution checks",
     "docs",
@@ -132,10 +134,12 @@
     "outbox mutation",
     "lease mutation",
     "attempt plan mutation",
+    "dry-run boundary mutation",
     "reaction execution",
     "overlay execution",
     "external outbox dispatch",
     "external adapter execution",
+    "dry-run approval gate",
     "AI generation execution",
     "token sale",
     "token exchange",
@@ -146,27 +150,28 @@
     "refund"
   ],
   "doneCriteria": [
-    "admin dry-run adapter boundary requires admin auth",
-    "unknown attempt plan returns 404",
-    "active lease is required",
-    "lease_id must match reviewed plan",
-    "planned_internal attempt plan is required",
-    "safe request preview metadata only",
+    "admin dry-run review requires admin auth",
+    "unknown dry-run boundary returns 404",
+    "list returns safe metadata only",
+    "detail returns safe metadata only",
+    "filters cover support_event_id, outbox_id, lease_id, plan_id, candidate_id, boundary_id, character_id, stream_id, adapter_kind, dry_run_status, plan_status, outbox_status, lease_status, created range, limit, and offset",
+    "safe validation summary is included",
+    "safe adapter request shape summary is included",
     "no support event mutation",
     "no outbox mutation",
     "no lease mutation",
     "no attempt plan mutation",
+    "no dry-run boundary mutation",
     "no reaction execution",
     "no overlay execution",
     "no external outbox delivery",
-    "no adapter execution",
     "no external runtime execution"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 90,
-    "passed": 1944,
+    "testFiles": 91,
+    "passed": 1961,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -176,14 +181,14 @@
     "No migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
     "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
-    "The new dry-run adapter boundary endpoint returns safe preview metadata and does not mutate support events, outbox records, leases, approvals, or attempt plans.",
-    "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-    "Dry-run adapter boundary metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, LLM output, TTS text, audio URLs, and renderer URLs.",
+    "The new admin dry-run review endpoints are read-only and do not mutate support events, outbox records, leases, approvals, attempt plans, or dry-run boundaries.",
+    "No dry-run approval, reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
+    "Dry-run review metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, stdout, stderr, jobs_url, logs_url, adapter URLs, webhook URLs, full prompts, LLM output, TTS text, audio URLs, renderer URLs, request bodies containing raw user text, auth material, headers, and tokens.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "This is local/internal dry-run adapter boundary preview metadata only.",
-    "Actual adapter execution, IRIS Core, VOXWEAVE, TTS, Live2D, OBS, renderer, and WebSocket delivery remain out of scope."
+    "This is local/internal dry-run review metadata only.",
+    "Dry-run approval and actual adapter execution remain future scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -192,7 +197,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts: pass",
+    "corepack pnpm exec vitest run apps/api/src/p0-admin-reaction-dispatch-dry-run-review-surface.test.ts apps/api/src/p0-reaction-dispatch-dry-run-adapter-boundary.test.ts apps/api/src/p0-admin-reaction-dispatch-attempt-plan-review-surface.test.ts apps/api/src/p0-reaction-dispatch-internal-outbox-attempt-planning.test.ts: pass",
     "corepack pnpm typecheck: pass"
   ],
   "packageVerification": {
@@ -203,10 +208,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds local/internal dry-run adapter boundary preview endpoint."
+    "statement": "Adds read-only local/internal admin dry-run review endpoints."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal safe request preview metadata only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox/lease/attempt plan mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is local/internal dry-run review metadata only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox/lease/attempt plan/dry-run boundary mutation, dry-run approval, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -218,9 +223,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P0 reaction dispatch dry-run adapter boundary preview, admin auth, active lease, reviewed plan guard, safe preview metadata, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental external adapter execution, raw data exposure, mutation of support/outbox/lease/attempt plan state, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Dry-run adapter boundary tests, attempt plan review tests, attempt planning tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P0 admin reaction dispatch dry-run review surface, admin auth, safe filters, safe list/detail metadata, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental approval or external execution, raw data exposure, mutation of support/outbox/lease/attempt plan/dry-run state, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Dry-run review tests, dry-run adapter boundary tests, attempt plan review tests, attempt planning tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p0-reaction-dispatch-dry-run-adapter-boundary.md"
+  "prBodyPath": "docs/pr-p0-admin-reaction-dispatch-dry-run-review-surface.md"
 }
