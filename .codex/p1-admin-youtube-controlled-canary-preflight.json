@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "controlledCanaryPreflightStatus": "implemented",
+  "readOnlyStatus": "pass",
+  "dynamicEvaluationStatus": "pass",
+  "listTransportStatus": "pass",
+  "listConnectorServiceStatus": "pass",
+  "streamContractStatus": "pass",
+  "safeConfigHashStatus": "pass",
+  "secretExclusionStatus": "pass",
+  "networkEnabled": false,
+  "oauthConfigured": false,
+  "realApiExecution": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
+}

@@ -35,6 +35,10 @@ import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 import { fakeFixtureCapability } from "./youtube-live-chat-client.js";
+import {
+  defaultYouTubeLiveChatControlledCanaryPreflightInput,
+  evaluateYouTubeLiveChatControlledCanaryPreflight
+} from "./youtube-live-chat-controlled-canary-preflight.js";
 import { parseYouTubeLiveChatPageFixture } from "./youtube-live-chat-page-fixture-parser.js";
 import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-chat-real-connector-readiness-gate.js";
 import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
@@ -3504,6 +3508,37 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.get("/admin/youtube-live-chat/real-connector-readiness", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     return buildYouTubeLiveChatRealConnectorReadinessGate();
+  });
+
+  const controlledCanaryPreflightSchema = z.object({
+    config_status: z.enum(["planning_valid", "preflight_blocked", "controlled_canary_candidate", "config_invalid"]),
+    oauth_contract_status: z.enum(["pass", "blocked"]),
+    credential_provider_status: z.enum(["missing", "opaque_interface_ready"]),
+    kill_switch_status: z.enum(["blocked", "armed_for_fake_transport", "armed_for_controlled_canary"]),
+    quota_planner_status: z.enum(["pass", "blocked"]),
+    direct_rest_transport_status: z.enum(["pass", "blocked"]),
+    list_connector_service_status: z.enum(["pass", "blocked"]),
+    stream_contract_status: z.enum(["pass", "blocked"]),
+    privacy_review_status: z.enum(["required", "pass"]),
+    data_deletion_review_status: z.enum(["required", "pass"]),
+    revocation_runbook_status: z.enum(["documented", "missing"]),
+    network_authorization_status: z.enum(["absent", "present"])
+  }).strict();
+
+  app.get("/admin/youtube-live-chat/controlled-canary-preflight", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    return evaluateYouTubeLiveChatControlledCanaryPreflight(defaultYouTubeLiveChatControlledCanaryPreflightInput());
+  });
+
+  app.post("/admin/youtube-live-chat/controlled-canary-preflight/evaluate", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const parsed = controlledCanaryPreflightSchema.safeParse(req.body ?? {});
+    if (!parsed.success) return reply.code(400).send({ error: "controlled_canary_preflight_invalid", safe_reason_codes: ["safe_status_fields_required"] });
+    const serialized = JSON.stringify(Object.values(parsed.data));
+    if (/Bearer|Authorization|client_secret|refresh_token|access_token|secretref:|https?:\/\/|127\.0\.0\.1|localhost/iu.test(serialized)) {
+      return reply.code(400).send({ error: "controlled_canary_preflight_invalid", safe_reason_codes: ["secret_like_input_forbidden"] });
+    }
+    return evaluateYouTubeLiveChatControlledCanaryPreflight(parsed.data);
   });
 
   app.get("/admin/moderation/held-support", async (req, reply) => {
