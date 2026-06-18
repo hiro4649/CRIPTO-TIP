@@ -631,6 +631,7 @@ type YouTubeLiveChatFixtureCursorState = {
   updated_at: string;
   seen_message_ids: Set<string>;
   page_fingerprints: Set<string>;
+  successful_page_results: Map<string, unknown>;
 };
 const youtubeLiveChatFixtureCursorFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, YouTubeLiveChatFixtureCursorState>>();
 const youtubeLiveChatFixtureCursorIdentityFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, string>>();
@@ -3248,7 +3249,8 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       created_at: now,
       updated_at: now,
       seen_message_ids: new Set<string>(),
-      page_fingerprints: new Set<string>()
+      page_fingerprints: new Set<string>(),
+      successful_page_results: new Map<string, unknown>()
     };
     cursors.set(cursor.cursor_id, cursor);
     identities.set(identity, cursor.cursor_id);
@@ -3332,6 +3334,127 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         },
         skipped_items: parsed.skipped_items
       },
+      idempotent: false
+    };
+  });
+
+  app.post("/internal/fixtures/youtube-live-chat/cursors/:cursorId/pages/ingest", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
+    const input = InternalYouTubeLiveChatFixtureCursorPageSchema.parse(req.body);
+    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
+    const cursor = cursors.get(cursorId);
+    if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
+    const pageToken = input.page_token ?? null;
+    const fingerprint = toYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
+    const replay = cursor.successful_page_results.get(fingerprint);
+    if (replay) return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor), page_result: replay, idempotent: true };
+    const expectedToken = cursor.next_page_token;
+    if ((expectedToken ?? "") !== (pageToken ?? "")) {
+      return reply.code(409).send({
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_status: "page_blocked", safe_reason_codes: ["page_token_mismatch", "page_out_of_order"] }
+      });
+    }
+    let parsed: ReturnType<typeof parseYouTubeLiveChatPageFixture>;
+    try {
+      parsed = parseYouTubeLiveChatPageFixture({
+        context: {
+          stream_id: cursor.stream_id,
+          character_id: cursor.character_id,
+          youtube_video_id: cursor.youtube_video_id,
+          live_chat_id: cursor.live_chat_id,
+          page_token: pageToken ?? ""
+        },
+        page: input.page
+      });
+    } catch {
+      return reply.code(400).send({
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_status: "page_invalid", safe_reason_codes: ["page_invalid"] }
+      });
+    }
+    const eventsToApply: SupportReceived[] = [];
+    let crossPageDuplicates = 0;
+    for (const event of parsed.normalized_events) {
+      if (cursor.seen_message_ids.has(event.source_event_id)) {
+        crossPageDuplicates += 1;
+        continue;
+      }
+      eventsToApply.push(event);
+    }
+    for (const event of eventsToApply) {
+      const preview = await toReactionDispatchPreview(repo, event);
+      if (preview.contract_validation.status !== "valid") {
+        return reply.code(409).send({
+          cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+          page_result: {
+            page_status: "page_blocked",
+            safe_reason_codes: ["contract_v2_invalid", ...preview.contract_validation.errors]
+          }
+        });
+      }
+    }
+    const supportEvents = [];
+    let persistedCount = 0;
+    let idempotentCount = 0;
+    let heldCount = 0;
+    try {
+      for (const event of eventsToApply) {
+        const result = await applySupportReceivedSideEffects(repo, event);
+        const duplicate = "duplicate" in result && result.duplicate === true;
+        if (duplicate) idempotentCount += 1;
+        else persistedCount += 1;
+        if (result.support_event.support.message_moderation_status === "hold") heldCount += 1;
+        supportEvents.push({
+          source_event_id: result.support_event.source_event_id,
+          support_event_id: result.support_event.event_id,
+          moderation_status: result.support_event.support.message_moderation_status,
+          persistence_status: duplicate ? "idempotent" : "persisted"
+        });
+      }
+    } catch {
+      return reply.code(409).send({
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_status: "page_blocked", safe_reason_codes: ["support_received_apply_failed"] }
+      });
+    }
+    for (const event of eventsToApply) {
+      cursor.seen_message_ids.add(event.source_event_id);
+      cursor.last_message_id = event.source_event_id;
+      cursor.last_message_published_at = event.created_at;
+    }
+    for (const messageId of extractSafePageMessageIds(input.page)) {
+      if (messageId !== "unknown") cursor.seen_message_ids.add(messageId);
+    }
+    cursor.current_page_token = pageToken;
+    cursor.next_page_token = parsed.next_page_token;
+    cursor.pages_ingested += 1;
+    cursor.messages_seen = cursor.seen_message_ids.size;
+    cursor.super_chats_normalized += eventsToApply.length;
+    cursor.duplicates_skipped += parsed.page_summary.duplicate_count + crossPageDuplicates;
+    cursor.cursor_status = parsed.next_page_token ? "page_ingested" : "caught_up_fixture";
+    cursor.updated_at = new Date().toISOString();
+    cursor.page_fingerprints.add(fingerprint);
+    const pageResult = {
+      page_fingerprint: fingerprint,
+      page_status: "page_ingested",
+      cursor_id: cursor.cursor_id,
+      page_token: pageToken,
+      next_page_token: parsed.next_page_token,
+      normalized_count: parsed.page_summary.normalized_count,
+      persisted_count: persistedCount,
+      idempotent_count: idempotentCount,
+      held_count: heldCount,
+      duplicate_count: parsed.page_summary.duplicate_count + crossPageDuplicates,
+      skipped_count: parsed.page_summary.skipped_count,
+      support_events: supportEvents,
+      safe_reason_codes: ["page_ingested", "support_received_persisted"]
+    };
+    cursor.successful_page_results.set(fingerprint, pageResult);
+    return {
+      cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+      page_result: pageResult,
       idempotent: false
     };
   });
