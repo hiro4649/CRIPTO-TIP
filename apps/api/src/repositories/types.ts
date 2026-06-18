@@ -554,6 +554,20 @@ export type ReactionDispatchLocalAdapterSimulationResultMetadata = {
   updated_at: string;
 };
 
+export type ReactionDispatchSimulationFailureDlqMetadata = {
+  dlq_id: string;
+  simulation_result_id: string;
+  preview_id: string;
+  support_event_id: string;
+  adapter_kind: "iris_core_reaction" | "voxweave_voice" | "overlay_effect" | "future_internal_adapter";
+  failure_class: "retryable_failure" | "terminal_failure";
+  retry_eligibility: "retry_candidate" | "not_retryable";
+  safe_failure_fingerprint: string;
+  safe_reason_codes: ReactionDispatchLocalAdapterSimulationReasonCode[];
+  created_at: string;
+  updated_at: string;
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;

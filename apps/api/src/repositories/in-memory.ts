@@ -1,5 +1,5 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
-import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
+import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
   return {
@@ -39,6 +39,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   reactionDispatchDryRunApprovals = new Map<string, ReactionDispatchDryRunApprovalMetadata>();
   reactionDispatchAdapterExecutionBoundaryApprovals = new Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>();
   reactionDispatchLocalAdapterSimulationResults = new Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>();
+  reactionDispatchSimulationFailureDlq = new Map<string, ReactionDispatchSimulationFailureDlqMetadata>();
   affinityByUser = new Map<string, number>();
   recentTipsByWallet = new Map<string, number>();
   supportEventDeliveryStatus = new Map<string, "pending" | "retrying" | "delivered" | "failed">();
@@ -67,6 +68,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.reactionDispatchDryRunApprovals.clear();
     this.reactionDispatchAdapterExecutionBoundaryApprovals.clear();
     this.reactionDispatchLocalAdapterSimulationResults.clear();
+    this.reactionDispatchSimulationFailureDlq.clear();
     this.affinityByUser.clear();
     this.recentTipsByWallet.clear();
     this.supportEventDeliveryStatus.clear();
@@ -265,6 +267,17 @@ export class InMemoryRepository implements CriptoTipRepository {
   async listReactionDispatchLocalAdapterSimulationResults() {
     return [...this.reactionDispatchLocalAdapterSimulationResults.values()]
       .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.simulation_result_id.localeCompare(right.simulation_result_id));
+  }
+  async setReactionDispatchSimulationFailureDlq(entry: ReactionDispatchSimulationFailureDlqMetadata) {
+    this.reactionDispatchSimulationFailureDlq.set(entry.dlq_id, entry);
+    return entry;
+  }
+  async getReactionDispatchSimulationFailureDlq(dlqId: string) {
+    return this.reactionDispatchSimulationFailureDlq.get(dlqId);
+  }
+  async listReactionDispatchSimulationFailureDlq() {
+    return [...this.reactionDispatchSimulationFailureDlq.values()]
+      .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.dlq_id.localeCompare(right.dlq_id));
   }
   async recordTipTransaction(transaction: TipTransaction) {
     const key = createIdempotencyKeyForChainLog(transaction);
