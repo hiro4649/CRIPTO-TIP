@@ -36,6 +36,7 @@ import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapt
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 import { fakeFixtureCapability } from "./youtube-live-chat-client.js";
 import { parseYouTubeLiveChatPageFixture } from "./youtube-live-chat-page-fixture-parser.js";
+import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-chat-real-connector-readiness-gate.js";
 import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
 
 loadConfig();
@@ -3498,6 +3499,11 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         "raw_config_hidden"
       ]
     };
+  });
+
+  app.get("/admin/youtube-live-chat/real-connector-readiness", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    return buildYouTubeLiveChatRealConnectorReadinessGate();
   });
 
   app.get("/admin/moderation/held-support", async (req, reply) => {
