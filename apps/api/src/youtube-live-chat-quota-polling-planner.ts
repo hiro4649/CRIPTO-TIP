@@ -15,7 +15,8 @@ export type YouTubeLiveChatPlannerFailureClass =
   | "live_chat_ended"
   | "live_chat_disabled"
   | "live_chat_not_found"
-  | "rate_limit_exceeded";
+  | "rate_limit_exceeded"
+  | "upstream_unavailable";
 
 export type YouTubeLiveChatConnectorExecutionMode = "fake_transport" | "controlled_network_canary";
 export type YouTubeLiveChatConnectorKillSwitchStatus = "blocked" | "armed_for_fake_transport" | "armed_for_controlled_network_canary";
