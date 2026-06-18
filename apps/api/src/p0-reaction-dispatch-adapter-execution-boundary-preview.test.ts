@@ -697,6 +697,110 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     expect(evidence.pnpmLockChanged).toBe(false);
   });
 
+  it("lists and filters local adapter simulation results read-only", async () => {
+    const repo = new InMemoryRepository();
+    const app = buildServer(repo);
+    await app.ready();
+    const success = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_review_success");
+    const retryable = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_review_retryable");
+    const terminal = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_review_terminal");
+
+    const successResponse = await app.inject({
+      method: "POST",
+      url: simulationUrl(success.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "success" }
+    });
+    const retryableResponse = await app.inject({
+      method: "POST",
+      url: simulationUrl(retryable.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "retryable_failure" }
+    });
+    const terminalResponse = await app.inject({
+      method: "POST",
+      url: simulationUrl(terminal.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "terminal_failure" }
+    });
+    expect(successResponse.statusCode).toBe(200);
+    expect(retryableResponse.statusCode).toBe(200);
+    expect(terminalResponse.statusCode).toBe(200);
+    const before = {
+      successSupport: await repo.getSupportEventById(success.support.event_id),
+      retryableOutbox: await repo.getReactionDispatchInternalOutbox(retryable.outbox.outbox_id),
+      terminalLease: await repo.getReactionDispatchInternalOutboxLease(terminal.outbox.outbox_id),
+      auditCount: repo.auditLogs.length
+    };
+
+    const list = await app.inject({
+      method: "GET",
+      url: "/admin/reaction-dispatch/simulation-results",
+      headers: { authorization: adminAuth }
+    });
+    const retryableOnly = await app.inject({
+      method: "GET",
+      url: "/admin/reaction-dispatch/simulation-results?simulation_case=retryable_failure&simulation_status=simulated_retryable_failure",
+      headers: { authorization: adminAuth }
+    });
+    const supportFilter = await app.inject({
+      method: "GET",
+      url: `/admin/reaction-dispatch/simulation-results?support_event_id=${terminal.support.event_id}`,
+      headers: { authorization: adminAuth }
+    });
+    const previewFilter = await app.inject({
+      method: "GET",
+      url: `/admin/reaction-dispatch/simulation-results?preview_id=${success.preview.adapter_execution_boundary_preview_id}&limit=1&offset=0`,
+      headers: { authorization: adminAuth }
+    });
+
+    expect(list.statusCode).toBe(200);
+    expect(retryableOnly.statusCode).toBe(200);
+    expect(supportFilter.statusCode).toBe(200);
+    expect(previewFilter.statusCode).toBe(200);
+    expect(list.json().simulation_results).toHaveLength(3);
+    expect(list.json().review_summary).toEqual({
+      simulated_success: 1,
+      simulated_retryable_failure: 1,
+      simulated_terminal_failure: 1,
+      simulated_blocked: 0
+    });
+    expect(retryableOnly.json().simulation_results).toHaveLength(1);
+    expect(retryableOnly.json().simulation_results[0].simulation_result_id).toBe(retryableResponse.json().simulation_result.simulation_result_id);
+    expect(supportFilter.json().simulation_results).toHaveLength(1);
+    expect(supportFilter.json().simulation_results[0].simulation_result_id).toBe(terminalResponse.json().simulation_result.simulation_result_id);
+    expect(previewFilter.json().simulation_results).toHaveLength(1);
+    expect(previewFilter.json().page).toEqual({ limit: 1, offset: 0, total: 1 });
+    expect(previewFilter.json().simulation_results[0].simulation_result_id).toBe(successResponse.json().simulation_result.simulation_result_id);
+    expectPreviewSafe(list.json());
+    expect(await repo.getSupportEventById(success.support.event_id)).toEqual(before.successSupport);
+    expect(await repo.getReactionDispatchInternalOutbox(retryable.outbox.outbox_id)).toEqual(before.retryableOutbox);
+    expect(await repo.getReactionDispatchInternalOutboxLease(terminal.outbox.outbox_id)).toEqual(before.terminalLease);
+    expect(repo.auditLogs).toHaveLength(before.auditCount);
+
+    await app.close();
+  }, 80_000);
+
+  it("committed simulation review surface evidence preserves read-only boundaries", () => {
+    const evidence = readCodexEvidence("p0-admin-reaction-dispatch-simulation-review-surface.json");
+
+    expect(evidence.adminReactionDispatchSimulationReviewSurfaceStatus).toBe("implemented");
+    expect(evidence.listEndpointStatus).toBe("pass");
+    expect(evidence.detailEndpointStatus).toBe("pass");
+    expect(evidence.filterStatus).toBe("pass");
+    expect(evidence.paginationStatus).toBe("pass");
+    expect(evidence.reviewSummaryStatus).toBe("pass");
+    expect(evidence.readOnlyStatus).toBe("pass");
+    expect(evidence.safeMetadataStatus).toBe("pass");
+    expect(evidence.noExternalExecutionStatus).toBe("pass");
+    expect(evidence.noReactionExecutionStatus).toBe("pass");
+    expect(evidence.noOverlayExecutionStatus).toBe("pass");
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
   it("admin adapter boundary approval requires admin auth and returns 404 for unknown preview", async () => {
     const app = buildServer(new InMemoryRepository());
     await app.ready();

@@ -706,6 +706,21 @@ const AdminAdapterExecutionBoundaryApprovalRequestSchema = z.object({
 const AdminLocalAdapterSimulationRequestSchema = z.object({
   simulation_case: z.enum(["success", "retryable_failure", "terminal_failure"])
 });
+const AdminLocalAdapterSimulationReviewQuerySchema = z.object({
+  support_event_id: z.string().optional(),
+  preview_id: z.string().optional(),
+  dry_run_boundary_id: z.string().optional(),
+  plan_id: z.string().optional(),
+  outbox_id: z.string().optional(),
+  lease_id: z.string().optional(),
+  adapter_kind: z.enum(["iris_core_reaction", "voxweave_voice", "overlay_effect", "future_internal_adapter"]).optional(),
+  simulation_case: z.enum(["success", "retryable_failure", "terminal_failure"]).optional(),
+  simulation_status: z.enum(["simulated_success", "simulated_retryable_failure", "simulated_terminal_failure", "simulated_blocked"]).optional(),
+  created_after: z.string().optional(),
+  created_before: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
@@ -4267,6 +4282,40 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return {
       simulation_result: toLocalAdapterSimulationResponse(saved),
       idempotent: Boolean(existing),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/simulation-results", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminLocalAdapterSimulationReviewQuerySchema.parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const all = (await candidateRepo.listReactionDispatchLocalAdapterSimulationResults())
+      .filter((result) => !query.support_event_id || result.support_event_id === query.support_event_id)
+      .filter((result) => !query.preview_id || result.adapter_execution_boundary_preview_id === query.preview_id)
+      .filter((result) => !query.dry_run_boundary_id || result.dry_run_boundary_id === query.dry_run_boundary_id)
+      .filter((result) => !query.plan_id || result.plan_id === query.plan_id)
+      .filter((result) => !query.outbox_id || result.outbox_id === query.outbox_id)
+      .filter((result) => !query.lease_id || result.lease_id === query.lease_id)
+      .filter((result) => !query.adapter_kind || result.adapter_kind === query.adapter_kind)
+      .filter((result) => !query.simulation_case || result.simulation_case === query.simulation_case)
+      .filter((result) => !query.simulation_status || result.simulation_status === query.simulation_status)
+      .filter((result) => !query.created_after || result.created_at >= query.created_after)
+      .filter((result) => !query.created_before || result.created_at <= query.created_before);
+    const simulationResults = all.slice(query.offset, query.offset + query.limit).map(toLocalAdapterSimulationResponse);
+    return {
+      simulation_results: simulationResults,
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        total: all.length
+      },
+      review_summary: {
+        simulated_success: all.filter((result) => result.simulation_status === "simulated_success").length,
+        simulated_retryable_failure: all.filter((result) => result.simulation_status === "simulated_retryable_failure").length,
+        simulated_terminal_failure: all.filter((result) => result.simulation_status === "simulated_terminal_failure").length,
+        simulated_blocked: all.filter((result) => result.simulation_status === "simulated_blocked").length
+      },
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
   });
