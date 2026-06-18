@@ -448,6 +448,66 @@ export type ReactionDispatchDryRunApprovalMetadata = {
   updated_at: string;
 };
 
+export type ReactionDispatchAdapterExecutionBoundaryApprovalStatus =
+  | "adapter_execution_boundary_preview_ready"
+  | "approved_for_local_simulation"
+  | "rejected_by_admin"
+  | "approval_blocked"
+  | "preview_invalid"
+  | "preview_superseded";
+
+export type ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode =
+  | "admin_approved_for_local_simulation"
+  | "admin_rejected"
+  | "already_approved"
+  | "already_rejected"
+  | "preview_not_found"
+  | "preview_not_ready"
+  | "preview_snapshot_mismatch"
+  | "approval_snapshot_stale"
+  | "lease_not_active"
+  | "lease_expired"
+  | "lease_released"
+  | "outbox_not_queued"
+  | "external_delivery_already_attempted"
+  | "adapter_already_executed"
+  | "dispatch_attempt_count_nonzero"
+  | "candidate_not_approved"
+  | "boundary_not_ready"
+  | "contract_v2_invalid"
+  | "adapter_kind_not_supported_for_simulation"
+  | "state_transition_blocked"
+  | "external_execution_forbidden";
+
+export type ReactionDispatchAdapterExecutionBoundaryApprovalMetadata = {
+  approval_id: string;
+  adapter_execution_boundary_preview_id: string;
+  dry_run_boundary_id: string;
+  plan_id: string;
+  outbox_id: string;
+  lease_id: string;
+  candidate_id: string;
+  boundary_id: string;
+  support_event_id: string;
+  adapter_kind: "iris_core_reaction" | "voxweave_voice" | "overlay_effect" | "future_internal_adapter";
+  approval_status: ReactionDispatchAdapterExecutionBoundaryApprovalStatus;
+  approval_snapshot_hash: string;
+  request_envelope_hash: string;
+  safe_context_hash: string;
+  constraints_hash: string;
+  request_preview_hash: string;
+  external_delivery_status: ReactionDispatchExternalDeliveryStatus;
+  adapter_execution_status: ReactionDispatchAdapterExecutionStatus;
+  dispatch_attempt_count: number;
+  approved_at?: string;
+  rejected_at?: string;
+  approved_by_actor_type?: "admin";
+  rejected_by_actor_type?: "admin";
+  safe_reason_codes: ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode[];
+  created_at: string;
+  updated_at: string;
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;

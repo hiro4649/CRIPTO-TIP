@@ -66,6 +66,32 @@ async function expectPreviewBlocked(app: ReturnType<typeof buildServer>, dryRunB
   expectPreviewSafe(response.json());
 }
 
+async function createReadyAdapterExecutionPreview(app: ReturnType<typeof buildServer>, requestId = "adapter_execution_approval") {
+  const fixture = await createApprovedDryRunBoundary(app, requestId);
+  const response = await app.inject({
+    method: "POST",
+    url: previewUrl(fixture.dryRun.dry_run_boundary_id),
+    headers: { authorization: adminAuth }
+  });
+  expect(response.statusCode).toBe(200);
+  return { ...fixture, preview: response.json().adapter_execution_boundary_preview };
+}
+
+function approvalUrl(dryRunBoundaryId: string, action: "approve" | "reject" | "approval" = "approve") {
+  const base = `/admin/reaction-dispatch/adapter-execution-boundary-previews/${dryRunBoundaryId}`;
+  return action === "approval" ? `${base}/approval` : `${base}/${action}`;
+}
+
+function approvalPayload(preview: Record<string, string>) {
+  return {
+    adapter_execution_boundary_preview_id: preview.adapter_execution_boundary_preview_id,
+    request_envelope_hash: preview.request_envelope_hash,
+    safe_context_hash: preview.safe_context_hash,
+    constraints_hash: preview.constraints_hash,
+    request_preview_hash: preview.request_preview_hash
+  };
+}
+
 function expectPreviewSafe(value: unknown) {
   const serialized = JSON.stringify(value);
   expect(serialized).not.toContain("adapter execution preview raw message");
@@ -88,6 +114,8 @@ function expectPreviewSafe(value: unknown) {
   expect(serialized).not.toContain("tts_text");
   expect(serialized).not.toContain("audio_url");
   expect(serialized).not.toContain("renderer_url");
+  expect(serialized).not.toContain("request_body");
+  expect(serialized).not.toContain("raw_lease_token");
 }
 
 describe("P0 reaction dispatch adapter execution boundary preview", () => {
@@ -425,4 +453,298 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed adapter execution boundary approval gate evidence preserves local-only boundaries", () => {
+    const evidence = readCodexEvidence("p0-admin-adapter-execution-boundary-approval-gate.json");
+
+    expect(evidence.adminAdapterExecutionBoundaryApprovalGateStatus).toBe("implemented");
+    expect(evidence.approvalSnapshotBindingStatus).toBe("pass");
+    expect(evidence.previewIdBindingStatus).toBe("pass");
+    expect(evidence.requestEnvelopeHashBindingStatus).toBe("pass");
+    expect(evidence.leaseGuardStatus).toBe("pass");
+    expect(evidence.outboxGuardStatus).toBe("pass");
+    expect(evidence.candidateGuardStatus).toBe("pass");
+    expect(evidence.adapterKindAllowlistStatus).toBe("pass");
+    expect(evidence.approvalIdempotencyStatus).toBe("pass");
+    expect(evidence.rejectionIdempotencyStatus).toBe("pass");
+    expect(evidence.safeMetadataStatus).toBe("pass");
+    expect(evidence.auditSafeMetadataStatus).toBe("pass");
+    expect(evidence.noExternalExecutionStatus).toBe("pass");
+    expect(evidence.noReactionExecutionStatus).toBe("pass");
+    expect(evidence.noOverlayExecutionStatus).toBe("pass");
+    expect(evidence.rawPayloadExcluded).toBe(true);
+    expect(evidence.rawMessageExcluded).toBe(true);
+    expect(evidence.secretExcluded).toBe(true);
+    expect(evidence.privateUrlExcluded).toBe(true);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.irisCoreCallUsed).toBe(false);
+    expect(evidence.voxweaveCallUsed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("admin adapter boundary approval requires admin auth and returns 404 for unknown preview", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+    const payload = {
+      adapter_execution_boundary_preview_id: "rdexecprev_missing",
+      request_envelope_hash: "a".repeat(64),
+      safe_context_hash: "safe",
+      constraints_hash: "constraints",
+      request_preview_hash: "request"
+    };
+    const url = approvalUrl("rddry_missing");
+
+    expect((await app.inject({ method: "POST", url, payload })).statusCode).toBe(401);
+    expect((await app.inject({ method: "POST", url, headers: { authorization: "Bearer wrong-token" }, payload })).statusCode).toBe(401);
+    expect((await app.inject({ method: "POST", url, headers: { authorization: adminAuth }, payload })).statusCode).toBe(404);
+
+    await app.close();
+  });
+
+  it("admin adapter boundary approval approves current ready snapshot and is idempotent", async () => {
+    const repo = new InMemoryRepository();
+    const app = buildServer(repo);
+    await app.ready();
+    const fixture = await createReadyAdapterExecutionPreview(app);
+    const before = {
+      support: await repo.getSupportEventById(fixture.support.event_id),
+      outbox: await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id),
+      lease: await repo.getReactionDispatchInternalOutboxLease(fixture.outbox.outbox_id),
+      plan: await repo.getReactionDispatchInternalOutboxAttemptPlan(fixture.outbox.outbox_id),
+      auditCount: repo.auditLogs.length
+    };
+
+    const response = await app.inject({
+      method: "POST",
+      url: approvalUrl(fixture.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: approvalPayload(fixture.preview)
+    });
+    const duplicate = await app.inject({
+      method: "POST",
+      url: approvalUrl(fixture.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: approvalPayload(fixture.preview)
+    });
+    const getApproval = await app.inject({
+      method: "GET",
+      url: approvalUrl(fixture.dryRun.dry_run_boundary_id, "approval"),
+      headers: { authorization: adminAuth }
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(duplicate.statusCode).toBe(200);
+    expect(getApproval.statusCode).toBe(200);
+    expect(response.json().approval).toMatchObject({
+      adapter_execution_boundary_preview_id: fixture.preview.adapter_execution_boundary_preview_id,
+      dry_run_boundary_id: fixture.dryRun.dry_run_boundary_id,
+      approval_status: "approved_for_local_simulation",
+      adapter_kind: "iris_core_reaction"
+    });
+    expect(response.json().approval.approval_id).toMatch(/^rdexecapproval_[a-f0-9]{24}$/);
+    expect(response.json().approval.approval_snapshot_hash).toMatch(/^[a-f0-9]{64}$/);
+    expect(duplicate.json().idempotent).toBe(true);
+    expect(duplicate.json().approval.safe_reason_codes).toContain("already_approved");
+    expect(getApproval.json().approval.approval_status).toBe("approved_for_local_simulation");
+    expect(repo.auditLogs).toHaveLength(before.auditCount + 1);
+    expectPreviewSafe(response.json());
+    expectPreviewSafe(getApproval.json());
+    expect(await repo.getSupportEventById(fixture.support.event_id)).toEqual(before.support);
+    expect(await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id)).toEqual(before.outbox);
+    expect(await repo.getReactionDispatchInternalOutboxLease(fixture.outbox.outbox_id)).toEqual(before.lease);
+    expect(await repo.getReactionDispatchInternalOutboxAttemptPlan(fixture.outbox.outbox_id)).toEqual(before.plan);
+
+    await app.close();
+  }, 20_000);
+
+  it.each([
+    ["adapter_execution_boundary_preview_id", "rdexecprev_ffffffffffffffffffffffff"],
+    ["request_envelope_hash", "b".repeat(64)],
+    ["safe_context_hash", "mismatched_safe_context"],
+    ["constraints_hash", "mismatched_constraints"],
+    ["request_preview_hash", "mismatched_request_preview"]
+  ] as const)("admin adapter boundary approval blocks %s mismatch", async (field, value) => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+    const fixture = await createReadyAdapterExecutionPreview(app, `adapter_execution_approval_${field}`);
+    const payload = { ...approvalPayload(fixture.preview), [field]: value };
+
+    const response = await app.inject({
+      method: "POST",
+      url: approvalUrl(fixture.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload
+    });
+
+    expect(response.statusCode).toBe(409);
+    expect(response.json().approval.approval_status).toBe("approval_blocked");
+    expect(response.json().approval.safe_reason_codes).toContain("preview_snapshot_mismatch");
+    expectPreviewSafe(response.json());
+    await app.close();
+  }, 20_000);
+
+  it("admin adapter boundary approval rejects and blocks reversal from approved", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+    const rejected = await createReadyAdapterExecutionPreview(app, "adapter_execution_reject");
+    const reject = await app.inject({
+      method: "POST",
+      url: approvalUrl(rejected.dryRun.dry_run_boundary_id, "reject"),
+      headers: { authorization: adminAuth }
+    });
+    const rejectDuplicate = await app.inject({
+      method: "POST",
+      url: approvalUrl(rejected.dryRun.dry_run_boundary_id, "reject"),
+      headers: { authorization: adminAuth }
+    });
+    const approveRejected = await app.inject({
+      method: "POST",
+      url: approvalUrl(rejected.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: approvalPayload(rejected.preview)
+    });
+
+    expect(reject.statusCode).toBe(200);
+    expect(reject.json().approval.approval_status).toBe("rejected_by_admin");
+    expect(rejectDuplicate.json().idempotent).toBe(true);
+    expect(approveRejected.statusCode).toBe(409);
+
+    const approved = await createReadyAdapterExecutionPreview(app, "adapter_execution_approved_reversal");
+    const approve = await app.inject({
+      method: "POST",
+      url: approvalUrl(approved.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: approvalPayload(approved.preview)
+    });
+    const rejectApproved = await app.inject({
+      method: "POST",
+      url: approvalUrl(approved.dryRun.dry_run_boundary_id, "reject"),
+      headers: { authorization: adminAuth }
+    });
+    expect(approve.statusCode).toBe(200);
+    expect(rejectApproved.statusCode).toBe(409);
+    expectPreviewSafe(rejectApproved.json());
+
+    await app.close();
+  }, 30_000);
+
+  it("admin adapter boundary approval blocks lifecycle drift before local simulation approval", async () => {
+    const cases: Array<{
+      name: string;
+      reason: string;
+      mutate: (repo: InMemoryRepository, fixture: Awaited<ReturnType<typeof createReadyAdapterExecutionPreview>>) => Promise<void> | void;
+    }> = [
+      {
+        name: "expired lease",
+        reason: "lease_expired",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchInternalOutboxLeases.set(fixture.outbox.outbox_id, {
+            ...fixture.lease,
+            lease_status: "leased_internal",
+            lease_expires_at: "2000-01-01T00:00:00.000Z"
+          });
+        }
+      },
+      {
+        name: "released lease",
+        reason: "lease_released",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchInternalOutboxLeases.set(fixture.outbox.outbox_id, {
+            ...fixture.lease,
+            lease_status: "lease_released"
+          });
+        }
+      },
+      {
+        name: "cancelled outbox",
+        reason: "outbox_not_queued",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, outbox_status: "cancelled_internal" });
+        }
+      },
+      {
+        name: "nonqueued outbox",
+        reason: "outbox_not_queued",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, outbox_status: "pending_internal_dispatch" });
+        }
+      },
+      {
+        name: "external delivery drift",
+        reason: "external_delivery_already_attempted",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, external_delivery_status: "attempted" as "not_attempted" });
+        }
+      },
+      {
+        name: "adapter execution drift",
+        reason: "adapter_already_executed",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, adapter_execution_status: "executed" as "not_executed" });
+        }
+      },
+      {
+        name: "nonzero dispatch attempts",
+        reason: "dispatch_attempt_count_nonzero",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, dispatch_attempt_count: 1 });
+        }
+      },
+      {
+        name: "candidate drift",
+        reason: "candidate_not_approved",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, candidate_status: "candidate_blocked" });
+        }
+      },
+      {
+        name: "boundary drift",
+        reason: "outbox_not_queued",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, outbox_status: "superseded_internal" });
+        }
+      },
+      {
+        name: "future internal adapter",
+        reason: "adapter_kind_not_supported_for_simulation",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchInternalOutboxAttemptPlans.set(fixture.outbox.outbox_id, {
+            ...fixture.plan,
+            planned_adapter_type: "future_internal_adapter" as "iris_core_reaction_dispatch"
+          });
+        }
+      }
+    ];
+
+    for (const testCase of cases) {
+      const repo = new InMemoryRepository();
+      const app = buildServer(repo);
+      await app.ready();
+      const fixture = await createReadyAdapterExecutionPreview(app, `adapter_execution_approval_${testCase.name.replaceAll(" ", "_")}`);
+      const beforeAuditCount = repo.auditLogs.length;
+
+      await testCase.mutate(repo, fixture);
+      const response = await app.inject({
+        method: "POST",
+        url: approvalUrl(fixture.dryRun.dry_run_boundary_id),
+        headers: { authorization: adminAuth },
+        payload: approvalPayload(fixture.preview)
+      });
+
+      expect(response.statusCode).toBe(409);
+      expect(response.json().approval.safe_reason_codes).toContain(testCase.reason);
+      expect(repo.auditLogs).toHaveLength(beforeAuditCount);
+      expectPreviewSafe(response.json());
+      await app.close();
+    }
+  }, 120_000);
 });
