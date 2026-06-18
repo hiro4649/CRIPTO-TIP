@@ -3,7 +3,7 @@
   "harnessVersion": "1.2.6",
   "repository": "hiro4649/CRIPTO-TIP",
   "realConnectorConfigContractStatus": "implemented",
-  "defaultConfigStatus": "config_valid_for_planning",
+  "defaultConfigStatus": "planning_valid",
   "secretReferenceContractStatus": "pass",
   "adminSafeProjectionStatus": "pass",
   "candidateCapabilityStatus": "planning_only",

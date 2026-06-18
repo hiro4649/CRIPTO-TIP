@@ -29,7 +29,7 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
     const validation = validateYouTubeLiveChatRealConnectorConfig(config);
 
     expect(validation).toEqual({
-      status: "config_valid_for_planning",
+      status: "planning_valid",
       safe_reason_codes: ["planning_config_safe"],
       network_enabled: false,
       oauth_configured: false,
@@ -45,9 +45,9 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
   it("rejects real execution, OAuth configuration, and network enablement", () => {
     const base = defaultYouTubeLiveChatRealConnectorConfig();
 
-    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, network_enabled: true }).status).toBe("config_blocked");
-    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, oauth_configured: true }).status).toBe("config_blocked");
-    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, real_api_execution: true }).status).toBe("config_blocked");
+    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, network_enabled: true }).status).toBe("preflight_blocked");
+    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, oauth_configured: true }).status).toBe("preflight_blocked");
+    expect(validateYouTubeLiveChatRealConnectorConfig({ ...base, real_api_execution: true }).status).toBe("preflight_blocked");
   });
 
   it("rejects unknown transport and non-readonly OAuth scopes for planning", () => {
@@ -84,9 +84,9 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
       }
     });
 
-    expect(valid.status).toBe("config_valid_for_planning");
-    expect(rawBearer.status).toBe("config_blocked");
-    expect(privateUrl.status).toBe("config_blocked");
+    expect(valid.status).toBe("planning_valid");
+    expect(rawBearer.status).toBe("preflight_blocked");
+    expect(privateUrl.status).toBe("preflight_blocked");
   });
 
   it("admin projection excludes secret references and keeps safe status only", () => {
@@ -101,7 +101,7 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
 
     expect(projection.secret_refs_configured).toBe(true);
     expect("secret_refs" in projection).toBe(false);
-    expect(projection.config_status).toBe("config_valid_for_planning");
+    expect(projection.config_status).toBe("planning_valid");
     expectNoSecretLikeOutput(projection);
   });
 
@@ -124,7 +124,7 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
     const evidence = readCodexEvidence("p1-youtube-live-chat-real-connector-config-contract.json");
 
     expect(evidence.realConnectorConfigContractStatus).toBe("implemented");
-    expect(evidence.defaultConfigStatus).toBe("config_valid_for_planning");
+    expect(evidence.defaultConfigStatus).toBe("planning_valid");
     expect(evidence.secretReferenceContractStatus).toBe("pass");
     expect(evidence.adminSafeProjectionStatus).toBe("pass");
     expect(evidence.networkEnabled).toBe(false);

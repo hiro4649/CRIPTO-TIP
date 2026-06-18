@@ -30,6 +30,7 @@ describe("P1 admin YouTube real connector readiness gate", () => {
     const gate = buildYouTubeLiveChatRealConnectorReadinessGate();
 
     expect(gate.readiness_status).toBe("blocked_pending_owner_scope");
+    expect(gate.preflight_status).toBe("blocked");
     expect(gate.network_enabled).toBe(false);
     expect(gate.oauth_configured).toBe(false);
     expect(gate.real_api_execution).toBe(false);
