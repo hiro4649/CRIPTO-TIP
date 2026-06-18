@@ -317,6 +317,62 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     }
   }, 120_000);
 
+  it("lists and details adapter execution boundary preview review entries read-only", async () => {
+    const repo = new InMemoryRepository();
+    const app = buildServer(repo);
+    await app.ready();
+    const ready = await createApprovedDryRunBoundary(app, "adapter_execution_review_ready");
+    const blocked = await createApprovedDryRunBoundary(app, "adapter_execution_review_blocked");
+    const blockedOutbox = await repo.getReactionDispatchInternalOutbox(blocked.outbox.outbox_id);
+    if (blockedOutbox) await repo.updateReactionDispatchInternalOutbox({ ...blockedOutbox, dispatch_attempt_count: 1 });
+    const before = {
+      supportReady: await repo.getSupportEventById(ready.support.event_id),
+      supportBlocked: await repo.getSupportEventById(blocked.support.event_id),
+      readyOutbox: await repo.getReactionDispatchInternalOutbox(ready.outbox.outbox_id),
+      blockedOutbox: await repo.getReactionDispatchInternalOutbox(blocked.outbox.outbox_id),
+      readyLease: await repo.getReactionDispatchInternalOutboxLease(ready.outbox.outbox_id),
+      blockedLease: await repo.getReactionDispatchInternalOutboxLease(blocked.outbox.outbox_id),
+      auditCount: repo.auditLogs.length
+    };
+
+    const list = await app.inject({
+      method: "GET",
+      url: "/admin/reaction-dispatch/adapter-execution-boundary-previews",
+      headers: { authorization: adminAuth }
+    });
+    const readyOnly = await app.inject({
+      method: "GET",
+      url: "/admin/reaction-dispatch/adapter-execution-boundary-previews?preview_status=adapter_execution_boundary_preview_ready",
+      headers: { authorization: adminAuth }
+    });
+    const detail = await app.inject({
+      method: "GET",
+      url: `/admin/reaction-dispatch/adapter-execution-boundary-previews/${ready.dryRun.dry_run_boundary_id}`,
+      headers: { authorization: adminAuth }
+    });
+
+    expect(list.statusCode).toBe(200);
+    expect(list.json().review_entries).toHaveLength(2);
+    expect(list.json().review_summary).toEqual({ ready: 1, blocked: 1 });
+    expect(readyOnly.statusCode).toBe(200);
+    expect(readyOnly.json().review_entries).toHaveLength(1);
+    expect(readyOnly.json().review_entries[0].dry_run_boundary_id).toBe(ready.dryRun.dry_run_boundary_id);
+    expect(detail.statusCode).toBe(200);
+    expect(detail.json().review_entry.preview_status).toBe("adapter_execution_boundary_preview_ready");
+    expect(detail.json().review_entry.adapter_execution_boundary_preview_id).toMatch(/^rdexecprev_[a-f0-9]{24}$/);
+    expectPreviewSafe(list.json());
+    expectPreviewSafe(detail.json());
+    expect(await repo.getSupportEventById(ready.support.event_id)).toEqual(before.supportReady);
+    expect(await repo.getSupportEventById(blocked.support.event_id)).toEqual(before.supportBlocked);
+    expect(await repo.getReactionDispatchInternalOutbox(ready.outbox.outbox_id)).toEqual(before.readyOutbox);
+    expect(await repo.getReactionDispatchInternalOutbox(blocked.outbox.outbox_id)).toEqual(before.blockedOutbox);
+    expect(await repo.getReactionDispatchInternalOutboxLease(ready.outbox.outbox_id)).toEqual(before.readyLease);
+    expect(await repo.getReactionDispatchInternalOutboxLease(blocked.outbox.outbox_id)).toEqual(before.blockedLease);
+    expect(repo.auditLogs).toHaveLength(before.auditCount);
+
+    await app.close();
+  }, 60_000);
+
   it("committed adapter execution boundary preview evidence preserves no-execution boundaries", () => {
     const evidence = readCodexEvidence("p0-reaction-dispatch-adapter-execution-boundary-preview.json");
 
@@ -342,6 +398,28 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     expect(evidence.webhookUrlExcluded).toBe(true);
     expect(evidence.headersExcluded).toBe(true);
     expect(evidence.tokensExcluded).toBe(true);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed adapter execution boundary review surface evidence preserves read-only boundaries", () => {
+    const evidence = readCodexEvidence("p0-admin-adapter-execution-boundary-review-surface.json");
+
+    expect(evidence.adminAdapterExecutionBoundaryReviewSurfaceStatus).toBe("implemented");
+    expect(evidence.listEndpointStatus).toBe("pass");
+    expect(evidence.detailEndpointStatus).toBe("pass");
+    expect(evidence.readOnlyStatus).toBe("pass");
+    expect(evidence.readyPreviewReviewStatus).toBe("pass");
+    expect(evidence.blockedPreviewReviewStatus).toBe("pass");
+    expect(evidence.safeMetadataStatus).toBe("pass");
+    expect(evidence.noAdapterExecutionStatus).toBe("pass");
+    expect(evidence.noExternalOutboxDispatchStatus).toBe("pass");
+    expect(evidence.noSupportEventMutationStatus).toBe("pass");
+    expect(evidence.noOutboxMutationStatus).toBe("pass");
+    expect(evidence.noLeaseMutationStatus).toBe("pass");
+    expect(evidence.noAttemptPlanMutationStatus).toBe("pass");
     expect(evidence.runtimeReadinessClaimed).toBe(false);
     expect(evidence.productionReadinessClaimed).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
