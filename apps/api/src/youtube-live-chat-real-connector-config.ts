@@ -11,6 +11,8 @@ export type YouTubeLiveChatRealConnectorConfigStatus =
   | "config_blocked"
   | "config_invalid";
 
+export type YouTubeLiveChatConnectorExecutionMode = "planning_only" | "fake_transport" | "controlled_network_canary";
+
 export type YouTubeLiveChatRealConnectorSecretRefs = {
   client_id_ref?: string;
   client_secret_ref?: string;
@@ -31,7 +33,8 @@ export type YouTubeLiveChatRealConnectorConfig = {
   list_mode_enabled?: boolean;
   stream_mode_enabled?: boolean;
   list_fallback_enabled?: boolean;
-  kill_switch_status?: "blocked" | "armed_for_controlled_canary";
+  kill_switch_status?: "blocked" | "armed_for_fake_transport" | "armed_for_controlled_canary";
+  execution_mode?: YouTubeLiveChatConnectorExecutionMode;
   network_authorization_receipt_present?: boolean;
   secret_provider_configured?: boolean;
   estimated_list_request_cost_units?: number | null;
@@ -83,6 +86,7 @@ export function defaultYouTubeLiveChatRealConnectorConfig(): YouTubeLiveChatReal
     stream_mode_enabled: false,
     list_fallback_enabled: false,
     kill_switch_status: "blocked",
+    execution_mode: "planning_only",
     network_authorization_receipt_present: false,
     secret_provider_configured: false,
     estimated_list_request_cost_units: null,
@@ -134,7 +138,10 @@ export function validateYouTubeLiveChatRealConnectorConfig(input: unknown): YouT
   if (config?.list_fallback_enabled === true && config.list_mode_enabled !== true) reasons.push("list_fallback_requires_list_mode");
   if (config?.stream_mode_enabled !== false && config?.stream_mode_enabled !== true && config?.stream_mode_enabled !== undefined) reasons.push("stream_mode_invalid");
   if (config?.list_mode_enabled !== false && config?.list_mode_enabled !== true && config?.list_mode_enabled !== undefined) reasons.push("list_mode_invalid");
-  if (config?.kill_switch_status !== undefined && !["blocked", "armed_for_controlled_canary"].includes(config.kill_switch_status)) reasons.push("kill_switch_status_invalid");
+  if (config?.kill_switch_status !== undefined && !["blocked", "armed_for_fake_transport", "armed_for_controlled_canary"].includes(config.kill_switch_status)) reasons.push("kill_switch_status_invalid");
+  if (config?.execution_mode !== undefined && !["planning_only", "fake_transport", "controlled_network_canary"].includes(config.execution_mode)) reasons.push("execution_mode_invalid");
+  if (config?.execution_mode === "fake_transport" && config.kill_switch_status !== "armed_for_fake_transport") reasons.push("fake_transport_requires_fake_kill_switch");
+  if (config?.execution_mode === "fake_transport" && config.network_enabled !== false) reasons.push("fake_transport_network_must_remain_disabled");
   if (config?.network_authorization_receipt_present === true) reasons.push("network_authorization_not_allowed");
 
   if (config?.secret_refs !== undefined) {
@@ -152,6 +159,7 @@ export function validateYouTubeLiveChatRealConnectorConfig(input: unknown): YouT
     && config?.transport === "direct_rest_fetch_candidate"
     && config?.scope_verification_status === "verified_official"
     && config?.kill_switch_status === "armed_for_controlled_canary"
+    && config?.execution_mode === "controlled_network_canary"
     && config?.list_mode_enabled === true
     && config?.secret_provider_configured === true
     && typeof config?.quota_budget_units_per_day === "number"

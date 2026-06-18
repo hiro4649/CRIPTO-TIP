@@ -1,32 +1,34 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-    "harnessVersion":  "1.2.5",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  0,
-    "headSha":  "current_pr_head",
-    "baseSha":  "de3217c85be021b4b015e89e93424bb7ddbf818c",
-    "title":  "feat: add p0 adapter execution boundary preview",
-    "goal":  "Add local/internal adapter execution boundary preview for approved reaction dispatch dry-run metadata without adapter execution.",
-    "changeType":  "product_vertical_slice_adapter_execution_boundary_preview",
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "legalComplianceClaimed":  false,
-    "youtubePolicyComplianceClaimed":  false,
-    "schemaVersion":  "1.0.0",
-    "prProfile":  "product_r3",
-    "taskMode":  "feature",
-    "testCoverageStatus":  "targeted_pass_full_pending",
-    "covered":  [
-                    "admin adapter execution boundary preview requires admin auth",
-                    "unknown dry-run boundary returns 404",
-                    "approved dry-run boundary creates safe preview",
-                    "preview is deterministic and idempotent",
-                    "unapproved dry-run boundary is blocked",
-                    "rejected dry-run boundary is blocked",
-                    "state drift is blocked",
-                    "preview returns safe metadata only",
-                    "preview does not mutate support event outbox lease or attempt plan",
-                    "preview does not execute adapter reaction overlay or external outbox"
-                ],
-    "targetedTestsPassed":  10
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "a8b2c832bdf2aea691a45eb4ed1a44b09bcb06d6",
+  "title": "fix: harden network-disabled youtube transport",
+  "goal": "Harden network-disabled YouTube Live Chat direct REST fake transport lifecycle and align fake execution mode across planner, config, and kill switch contracts.",
+  "changeType": "p1_youtube_live_chat_network_disabled_transport_hardening",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "schemaVersion": "1.0.0",
+  "testCoverageStatus": "focused_local_pass",
+  "focusedTestsPassed": true,
+  "commands": [
+    {
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "result": "pass"
+    }
+  ],
+  "coveredAreas": [
+    "credential_release",
+    "fetch_exception_safety",
+    "utf8_byte_limit",
+    "safe_page_projection",
+    "input_bounds",
+    "scope_injection",
+    "planner_fake_mode",
+    "config_fake_mode"
+  ]
 }

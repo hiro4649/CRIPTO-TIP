@@ -17,6 +17,9 @@ export type YouTubeLiveChatPlannerFailureClass =
   | "live_chat_not_found"
   | "rate_limit_exceeded";
 
+export type YouTubeLiveChatConnectorExecutionMode = "fake_transport" | "controlled_network_canary";
+export type YouTubeLiveChatConnectorKillSwitchStatus = "blocked" | "armed_for_fake_transport" | "armed_for_controlled_network_canary";
+
 export type YouTubeLiveChatQuotaPollingPlannerInput = {
   cycle_index: number;
   last_polling_interval_ms: number | null;
@@ -32,7 +35,8 @@ export type YouTubeLiveChatQuotaPollingPlannerInput = {
   next_page_token?: string | null;
   polling_interval_ms?: number | null;
   max_results?: number;
-  kill_switch_status?: "blocked" | "armed_for_controlled_canary";
+  execution_mode?: YouTubeLiveChatConnectorExecutionMode;
+  kill_switch_status?: YouTubeLiveChatConnectorKillSwitchStatus;
   network_authorized?: boolean;
 };
 
@@ -59,6 +63,8 @@ export type YouTubeLiveChatQuotaPollingPlan = {
   max_cycles: 5;
   same_failure_repeat_limit: 2;
   network_call_scheduled: false;
+  fake_transport_call_scheduled: boolean;
+  execution_mode: YouTubeLiveChatConnectorExecutionMode;
   timer_started: false;
   safe_reason_codes: string[];
 };
@@ -80,14 +86,21 @@ function backoffForFailure(repeatCount: number) {
 
 export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPollingPlannerInput): YouTubeLiveChatQuotaPollingPlan {
   const reasons: string[] = [];
+  const executionMode = input.execution_mode ?? "fake_transport";
 
   if (!Number.isInteger(input.cycle_index) || input.cycle_index < 0) reasons.push("cycle_index_invalid");
   if (input.cycle_index >= maxCycles) reasons.push("max_cycle_reached");
   if (!Number.isInteger(input.estimated_request_units) || input.estimated_request_units <= 0) reasons.push("estimated_request_units_invalid");
   if (input.quota_remaining_units !== null && input.quota_remaining_units < input.estimated_request_units) reasons.push("quota_budget_insufficient");
   if (input.same_failure_repeat_count >= sameFailureRepeatLimit) reasons.push("same_failure_repeat_limit_reached");
-  if (input.kill_switch_status === "blocked") reasons.push("kill_switch_blocked");
-  if (input.network_authorized === false) reasons.push("network_not_authorized");
+  if (executionMode === "fake_transport") {
+    if (input.kill_switch_status !== undefined && input.kill_switch_status !== "armed_for_fake_transport") reasons.push(input.kill_switch_status === "blocked" ? "kill_switch_blocked" : "kill_switch_mode_mismatch");
+    if (input.network_authorized !== false) reasons.push("fake_transport_requires_network_authorized_false");
+  }
+  if (executionMode === "controlled_network_canary") {
+    reasons.push("controlled_network_canary_out_of_scope");
+    if (input.kill_switch_status === "armed_for_fake_transport") reasons.push("kill_switch_mode_mismatch");
+  }
   if (input.max_results !== undefined && (!Number.isInteger(input.max_results) || input.max_results < 200 || input.max_results > 2000)) reasons.push("max_results_out_of_bounds");
   if (input.last_failure_class === "network_forbidden" || input.last_failure_class === "real_api_not_configured" || input.last_failure_class === "oauth_missing") reasons.push(`${input.last_failure_class}_blocker`);
   if (input.last_failure_class === "live_chat_ended") reasons.push("live_chat_ended_terminal");
@@ -100,6 +113,9 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
     || reasons.includes("quota_budget_insufficient")
     || reasons.includes("same_failure_repeat_limit_reached")
     || reasons.includes("kill_switch_blocked")
+    || reasons.includes("kill_switch_mode_mismatch")
+    || reasons.includes("fake_transport_requires_network_authorized_false")
+    || reasons.includes("controlled_network_canary_out_of_scope")
     || reasons.includes("network_not_authorized")
     || reasons.some((reason) => reason.endsWith("_blocker"));
 
@@ -112,6 +128,8 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
       max_cycles: maxCycles,
       same_failure_repeat_limit: sameFailureRepeatLimit,
       network_call_scheduled: false,
+      fake_transport_call_scheduled: false,
+      execution_mode: executionMode,
       timer_started: false,
       safe_reason_codes: reasons
     };
@@ -122,8 +140,8 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
       : reasons.includes("same_failure_repeat_limit_reached") ? "stop_same_failure_repeat"
       : reasons.includes("quota_budget_insufficient") ? "block_quota"
       : reasons.includes("oauth_missing_blocker") ? "block_oauth"
-      : reasons.includes("network_forbidden_blocker") || reasons.includes("network_not_authorized") ? "block_network"
-      : reasons.includes("kill_switch_blocked") ? "block_kill_switch"
+      : reasons.includes("network_forbidden_blocker") || reasons.includes("controlled_network_canary_out_of_scope") ? "block_network"
+      : reasons.includes("kill_switch_blocked") || reasons.includes("kill_switch_mode_mismatch") ? "block_kill_switch"
       : reasons.includes("live_chat_disabled_blocker") ? "block_live_chat_disabled"
       : reasons.includes("live_chat_not_found_blocker") ? "block_live_chat_not_found"
       : "poll_blocked";
@@ -135,6 +153,8 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
       max_cycles: maxCycles,
       same_failure_repeat_limit: sameFailureRepeatLimit,
       network_call_scheduled: false,
+      fake_transport_call_scheduled: false,
+      execution_mode: executionMode,
       timer_started: false,
       safe_reason_codes: reasons
     };
@@ -157,6 +177,8 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
     max_cycles: maxCycles,
     same_failure_repeat_limit: sameFailureRepeatLimit,
     network_call_scheduled: false,
+    fake_transport_call_scheduled: executionMode === "fake_transport",
+    execution_mode: executionMode,
     timer_started: false,
     safe_reason_codes: backoffFailure ? [`${input.last_failure_class}_backoff_planned`] : ["polling_interval_selected"]
   };

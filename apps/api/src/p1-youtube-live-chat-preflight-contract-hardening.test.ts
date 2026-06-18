@@ -78,6 +78,7 @@ describe("P1 YouTube Live Chat preflight contract hardening", () => {
       scope_verification_status: "verified_official",
       list_mode_enabled: true,
       kill_switch_status: "armed_for_controlled_canary",
+      execution_mode: "controlled_network_canary",
       secret_provider_configured: true,
       quota_budget_units_per_day: 100,
       estimated_list_request_cost_units: 1,
@@ -94,8 +95,9 @@ describe("P1 YouTube Live Chat preflight contract hardening", () => {
       estimated_request_units: 1,
       same_failure_repeat_count: 0,
       last_failure_class: "stream_disconnected" as const,
-      kill_switch_status: "armed_for_controlled_canary" as const,
-      network_authorized: true,
+      execution_mode: "fake_transport" as const,
+      kill_switch_status: "armed_for_fake_transport" as const,
+      network_authorized: false,
       max_results: 200
     };
 
