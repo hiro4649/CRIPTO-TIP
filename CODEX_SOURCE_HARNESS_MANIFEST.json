@@ -915,14 +915,16 @@
     "codex-v122-self-test.mjs",
     "codex-v123-self-test.mjs",
     "codex-v124-self-test.mjs",
-    "codex-v125-self-test.mjs"
+    "codex-v125-self-test.mjs",
+    "codex-v126-self-test.mjs"
   ],
   "optionalFiles": [],
-  "activeHarnessVersion": "1.2.5",
-  "activeSelfTestSuite": "v125",
-  "activeSelfTestStatusKey": "v125SelfTestStatus",
+  "activeHarnessVersion": "1.2.6",
+  "activeSelfTestSuite": "v126",
+  "activeSelfTestStatusKey": "v126SelfTestStatus",
   "legacySelfTestSuites": {
-    "v125": "blocking_current",
+    "v126": "blocking_current",
+    "v125": "blocking_compatibility",
     "v124": "blocking_compatibility",
     "v123": "blocking_compatibility",
     "v122": "blocking_compatibility",
@@ -1596,7 +1598,8 @@
     ]
   },
   "legacySelfTests": {
-    "v125": "blocking_current",
+    "v126": "blocking_current",
+    "v125": "blocking_compatibility",
     "v124": "blocking_compatibility",
     "v123": "blocking_compatibility",
     "v122": "blocking_compatibility",
