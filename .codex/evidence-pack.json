@@ -4,17 +4,17 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "a8b2c832bdf2aea691a45eb4ed1a44b09bcb06d6",
-  "title": "fix: harden network-disabled youtube transport",
-  "goal": "Harden network-disabled YouTube Live Chat direct REST fake transport lifecycle and align fake execution mode across planner, config, and kill switch contracts.",
-  "changeType": "p1_youtube_live_chat_network_disabled_transport_hardening",
+  "baseSha": "3a1ea4c81ab08cfa4b81a503e8aab4eca578bae2",
+  "title": "feat: add youtube live chat list connector service",
+  "goal": "Add a bounded, network-disabled YouTube Live Chat list connector service that uses injected fake transport and cursor gateway interfaces only.",
+  "changeType": "p1_youtube_live_chat_list_connector_service",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
-  "taskMode": "bugfix",
+  "taskMode": "feature",
   "ciRunId": "pre_pr",
   "qualityGateRunId": "pre_pr",
   "qualityGateArtifactId": "pre_pr",
@@ -24,22 +24,17 @@
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
-    "youtube_live_chat_fake_transport_hardening",
-    "credential_lifecycle_safety",
-    "network_disabled_connector_boundary"
+    "youtube_live_chat_fake_list_connector_service",
+    "bounded_connector_loop",
+    "network_disabled_connector_readiness_without_real_execution"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/youtube-live-chat-direct-rest-transport.ts",
-      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
-      "apps/api/src/youtube-live-chat-real-connector-config.ts",
-      "apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts",
-      "apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts",
-      "apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts",
-      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_NETWORK_DISABLED_TRANSPORT_HARDENING.md",
-      "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md",
-      ".codex/p1-youtube-live-chat-network-disabled-transport-hardening.json",
+      "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_LIST_CONNECTOR_SERVICE.md",
+      "docs/pr-p1-youtube-live-chat-list-connector-service.md",
+      ".codex/p1-youtube-live-chat-list-connector-service.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -49,13 +44,10 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "apps/api/src/youtube-live-chat-direct-rest-transport.ts",
-      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
-      "apps/api/src/youtube-live-chat-real-connector-config.ts",
-      "apps/api/src/p1-youtube-live-chat-*.test.ts",
-      "apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_NETWORK_DISABLED_TRANSPORT_HARDENING.md",
-      "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md",
+      "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_LIST_CONNECTOR_SERVICE.md",
+      "docs/pr-p1-youtube-live-chat-list-connector-service.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -71,7 +63,22 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
+      "status": "pass",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "status": "pass",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "status": "pass",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm test",
       "status": "pass",
       "result": "pass"
     }
@@ -90,13 +97,14 @@
     }
   ],
   "allowedScope": [
-    "network-disabled fake transport hardening",
-    "credential release lifecycle",
-    "safe fetch exception handling",
-    "UTF-8 response byte limit",
-    "safe API response projection",
-    "fake execution mode planner alignment",
-    "fake kill-switch alignment",
+    "bounded list connector service",
+    "fake transport only execution",
+    "cursor gateway interface",
+    "page token handoff",
+    "polling metadata capture",
+    "safe failure capsules",
+    "duplicate replay accounting",
+    "held moderation accounting",
     "docs",
     ".codex evidence"
   ],
@@ -113,6 +121,8 @@
     "migration change",
     "contract change",
     "workflow change",
+    "apps/web change",
+    "apps/overlay change",
     "real network call",
     "real YouTube API call",
     "real OAuth execution",
@@ -125,45 +135,23 @@
     "internal balance",
     "investment wording"
   ],
-  "securityBoundary": {
-    "packageJsonChanged": false,
-    "pnpmLockChanged": false,
-    "contractsChanged": false,
-    "migrationsChanged": false,
-    "workflowChanged": false,
-    "appsWebChanged": false,
-    "appsOverlayChanged": false,
-    "realDbConnectionAdded": false,
-    "dbDriverDependencyAdded": false,
-    "googleSdkAdded": false,
-    "globalFetchUsed": false,
-    "networkCallUsed": false,
-    "realYouTubeApiUsed": false,
-    "realOAuthUsed": false,
-    "secretValueUsed": false,
-    "runtimeReadinessClaimed": false,
-    "productionReadinessClaimed": false,
-    "legalComplianceClaimed": false,
-    "youtubePolicyComplianceClaimed": false
-  },
   "doneCriteria": [
-    "credential handles are released after success and safe failure paths",
-    "injected fetch exceptions return safe upstream_unavailable metadata without raw error text",
-    "response size is enforced with UTF-8 byte length",
-    "API responses are projected to safe page fields only",
-    "request bounds are validated before fake fetch calls",
-    "scope IDs are injected and duplicate scopes are rejected",
-    "fake_transport planner mode requires armed fake kill switch and network_authorized false",
-    "controlled network canary remains out of scope",
-    "config contract accepts fake transport planning without network execution",
-    "no package, lockfile, migration, contract, workflow, web, or overlay changes",
-    "no real network, OAuth, YouTube API, secret, or readiness/compliance claim"
+    "cursor missing and caught-up cursors do not call fake fetch",
+    "one-page and multi-page fake list flows complete",
+    "nextPageToken handoff is preserved",
+    "pollingIntervalMillis metadata is captured",
+    "duplicate replay remains idempotent",
+    "held moderation is counted safely",
+    "safe transport failures map to blocked or backoff statuses",
+    "cycle cap is enforced",
+    "constructor bounds reject unsafe loop settings",
+    "no global fetch, timer, sleep, real API, OAuth, secret, package, or lockfile change"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 110,
-    "passed": 2006,
+    "testFiles": 111,
+    "passed": 2012,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -171,15 +159,15 @@
     "No DB driver, Google SDK, Redis, or Kafka dependency is added.",
     "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "The direct REST transport remains injected fake-fetch only; global fetch and real network execution are not used.",
-    "Credential handles are opaque and released without exposing raw values or Authorization headers.",
-    "Response projection excludes raw root metadata and raw response bodies.",
-    "Planner and config changes are network-disabled contract alignment only.",
+    "The service uses injected fake transport and cursor gateway interfaces only.",
+    "The service does not import Fastify server or self-call HTTP endpoints.",
+    "No global fetch, timer, sleep, real network, real OAuth, or secret value is used.",
+    "Service output excludes raw pages, raw comments, display names, credentials, Authorization headers, private URLs, endpoint URLs, and query values.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
     "GitHub same-head checks and safe artifact are pending until PR creation.",
-    "Real credential provider selection and real network canary remain future owner-scoped work."
+    "Real credential provider selection, real network canary, and production monitoring remain future owner-scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -188,25 +176,10 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm install: pass",
-    "corepack pnpm lint: pass",
+    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/write-test-summary.mjs: pass",
-    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass",
-    "node scripts/codex-v126-self-test.mjs: pass",
-    "node scripts/codex-v125-self-test.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass",
-    "cd contracts; forge test: nonblocking unavailable locally"
+    "corepack pnpm lint: pass",
+    "corepack pnpm test: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -216,10 +189,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Hardens internal YouTube Live Chat fake transport lifecycle and planner/config contracts while keeping product runtime network execution disabled."
+    "statement": "Adds an internal network-disabled list connector service interface without changing public product runtime APIs."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this is network-disabled connector contract hardening verified with local fake-fetch tests.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this service is verified with injected fake transport and in-memory cursor gateway tests only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, timers, sleeps, HTTP self-calls, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -231,9 +204,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 YouTube Live Chat network-disabled direct REST transport hardening, fake execution mode planner alignment, config contract alignment, safe projection, credential release lifecycle, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental network/OAuth/secret execution, unreleased credential handles, raw response exposure, stale evidence, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Focused transport/planner/config/kill-switch tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 YouTube Live Chat bounded list connector service, fake transport only, cursor gateway interface, safe counters, safe failure capsules, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental real network/OAuth/secret execution, unbounded looping, timer/sleep usage, raw metadata exposure, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Focused list connector tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-list-connector-service.md"
 }
