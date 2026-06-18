@@ -415,6 +415,7 @@ export type ReactionDispatchDryRunApprovalReasonCode =
   | "dry_run_superseded"
   | "unsafe_context"
   | "adapter_kind_not_allowed"
+  | "lease_required"
   | "external_delivery_not_attempted"
   | "adapter_not_executed"
   | "dispatch_attempt_count_not_zero"
@@ -440,6 +441,9 @@ export type ReactionDispatchDryRunApprovalMetadata = {
   external_delivery_status: ReactionDispatchExternalDeliveryStatus;
   adapter_execution_status: ReactionDispatchAdapterExecutionStatus;
   dispatch_attempt_count: number;
+  safe_context_hash: string;
+  constraints_hash: string;
+  request_preview_hash: string;
   created_at: string;
   updated_at: string;
 };

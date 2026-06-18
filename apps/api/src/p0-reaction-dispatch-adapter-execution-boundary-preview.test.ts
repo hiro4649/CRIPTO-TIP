@@ -54,6 +54,18 @@ async function createApprovedDryRunBoundary(app: ReturnType<typeof buildServer>,
   return { support, candidate, boundary, outbox, lease, plan, dryRun, dryRunApproval: dryRunApprovalResponse.json().approval };
 }
 
+function previewUrl(dryRunBoundaryId: string) {
+  return `/admin/reaction-dispatch/dry-run-boundaries/${dryRunBoundaryId}/adapter-execution-boundary-preview`;
+}
+
+async function expectPreviewBlocked(app: ReturnType<typeof buildServer>, dryRunBoundaryId: string, expectedReason: string) {
+  const response = await app.inject({ method: "POST", url: previewUrl(dryRunBoundaryId), headers: { authorization: adminAuth } });
+  expect(response.statusCode).toBe(409);
+  expect(response.json().adapter_execution_boundary_preview.preview_status).toBe("adapter_execution_boundary_preview_blocked");
+  expect(response.json().adapter_execution_boundary_preview.safe_reason_codes).toContain(expectedReason);
+  expectPreviewSafe(response.json());
+}
+
 function expectPreviewSafe(value: unknown) {
   const serialized = JSON.stringify(value);
   expect(serialized).not.toContain("adapter execution preview raw message");
@@ -95,7 +107,7 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     const repo = new InMemoryRepository();
     const app = buildServer(repo);
     await app.ready();
-    const { support, outbox, lease, plan, dryRun } = await createApprovedDryRunBoundary(app);
+    const { support, outbox, lease, plan, dryRun, dryRunApproval } = await createApprovedDryRunBoundary(app);
     const before = {
       support: await repo.getSupportEventById(support.event_id),
       outbox: await repo.getReactionDispatchInternalOutbox(outbox.outbox_id),
@@ -107,8 +119,8 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
       approvalAudits: repo.auditLogs.filter((log) => log.target_type === "reaction_dispatch_dry_run_boundary").length
     };
 
-    const response = await app.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${dryRun.dry_run_boundary_id}/adapter-execution-boundary-preview`, headers: { authorization: adminAuth } });
-    const duplicate = await app.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${dryRun.dry_run_boundary_id}/adapter-execution-boundary-preview`, headers: { authorization: adminAuth } });
+    const response = await app.inject({ method: "POST", url: previewUrl(dryRun.dry_run_boundary_id), headers: { authorization: adminAuth } });
+    const duplicate = await app.inject({ method: "POST", url: previewUrl(dryRun.dry_run_boundary_id), headers: { authorization: adminAuth } });
 
     expect(response.statusCode).toBe(200);
     expect(duplicate.statusCode).toBe(200);
@@ -129,6 +141,8 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     });
     expect(response.json().adapter_execution_boundary_preview.adapter_execution_boundary_preview_id).toMatch(/^rdexecprev_[a-f0-9]{24}$/);
     expect(response.json().adapter_execution_boundary_preview.request_envelope_hash).toMatch(/^[a-f0-9]{64}$/);
+    expect(response.json().adapter_execution_boundary_preview.snapshot_at).toBe(dryRunApproval.updated_at);
+    expect(response.json().adapter_execution_boundary_preview.derived_from_approval_at).toBe(dryRunApproval.approved_at);
     expect(await repo.getSupportEventById(support.event_id)).toEqual(before.support);
     expect(await repo.getReactionDispatchInternalOutbox(outbox.outbox_id)).toEqual(before.outbox);
     expect(await repo.getReactionDispatchInternalOutboxLease(outbox.outbox_id)).toEqual(before.lease);
@@ -148,7 +162,7 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     await unapprovedApp.ready();
     const unapproved = await createApprovedDryRunBoundary(unapprovedApp, "adapter_execution_unapproved");
     unapprovedRepo.reactionDispatchDryRunApprovals.clear();
-    const unapprovedResponse = await unapprovedApp.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${unapproved.dryRun.dry_run_boundary_id}/adapter-execution-boundary-preview`, headers: { authorization: adminAuth } });
+    const unapprovedResponse = await unapprovedApp.inject({ method: "POST", url: previewUrl(unapproved.dryRun.dry_run_boundary_id), headers: { authorization: adminAuth } });
     expect(unapprovedResponse.statusCode).toBe(409);
     expect(unapprovedResponse.json().adapter_execution_boundary_preview.preview_status).toBe("adapter_execution_boundary_preview_blocked");
     expectPreviewSafe(unapprovedResponse.json());
@@ -161,7 +175,7 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     rejectedRepo.reactionDispatchDryRunApprovals.clear();
     const rejectResponse = await rejectedApp.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${rejected.dryRun.dry_run_boundary_id}/reject`, headers: { authorization: adminAuth } });
     expect(rejectResponse.statusCode).toBe(200);
-    const rejectedPreview = await rejectedApp.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${rejected.dryRun.dry_run_boundary_id}/adapter-execution-boundary-preview`, headers: { authorization: adminAuth } });
+    const rejectedPreview = await rejectedApp.inject({ method: "POST", url: previewUrl(rejected.dryRun.dry_run_boundary_id), headers: { authorization: adminAuth } });
     expect(rejectedPreview.statusCode).toBe(409);
     expect(rejectedPreview.json().adapter_execution_boundary_preview.approval_status).toBe("rejected_by_admin");
     expectPreviewSafe(rejectedPreview.json());
@@ -173,12 +187,135 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     const drift = await createApprovedDryRunBoundary(driftApp, "adapter_execution_drift");
     const outbox = await driftRepo.getReactionDispatchInternalOutbox(drift.outbox.outbox_id);
     if (outbox) await driftRepo.updateReactionDispatchInternalOutbox({ ...outbox, candidate_status: "candidate_blocked", updated_at: new Date().toISOString() });
-    const drifted = await driftApp.inject({ method: "POST", url: `/admin/reaction-dispatch/dry-run-boundaries/${drift.dryRun.dry_run_boundary_id}/adapter-execution-boundary-preview`, headers: { authorization: adminAuth } });
+    const drifted = await driftApp.inject({ method: "POST", url: previewUrl(drift.dryRun.dry_run_boundary_id), headers: { authorization: adminAuth } });
     expect(drifted.statusCode).toBe(409);
     expect(drifted.json().adapter_execution_boundary_preview.safe_reason_codes).toContain("unsafe_context");
     expectPreviewSafe(drifted.json());
     await driftApp.close();
   }, 60_000);
+
+  it("blocks lease, outbox, adapter, and approval snapshot drift without mutation", async () => {
+    const cases: Array<{
+      name: string;
+      reason: string;
+      mutate: (repo: InMemoryRepository, fixture: Awaited<ReturnType<typeof createApprovedDryRunBoundary>>) => Promise<void> | void;
+    }> = [
+      {
+        name: "expired lease",
+        reason: "lease_required",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchInternalOutboxLeases.set(fixture.outbox.outbox_id, {
+          ...fixture.lease,
+          lease_status: "leased_internal",
+          lease_expires_at: "2000-01-01T00:00:00.000Z"
+          });
+        }
+      },
+      {
+        name: "released lease",
+        reason: "lease_required",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchInternalOutboxLeases.set(fixture.outbox.outbox_id, {
+          ...fixture.lease,
+          lease_status: "lease_released"
+          });
+        }
+      },
+      {
+        name: "cancelled outbox",
+        reason: "dry_run_invalid",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, outbox_status: "cancelled_internal" });
+        }
+      },
+      {
+        name: "blocked outbox",
+        reason: "dry_run_not_ready",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, outbox_status: "blocked_internal" });
+        }
+      },
+      {
+        name: "dispatch attempt drift",
+        reason: "dispatch_attempt_count_not_zero",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, dispatch_attempt_count: 1 });
+        }
+      },
+      {
+        name: "external delivery drift",
+        reason: "state_transition_blocked",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, external_delivery_status: "attempted" as "not_attempted" });
+        }
+      },
+      {
+        name: "adapter execution drift",
+        reason: "state_transition_blocked",
+        mutate: async (repo, fixture) => {
+          const outbox = await repo.getReactionDispatchInternalOutbox(fixture.outbox.outbox_id);
+          if (outbox) await repo.updateReactionDispatchInternalOutbox({ ...outbox, adapter_execution_status: "executed" as "not_executed" });
+        }
+      },
+      {
+        name: "unknown adapter",
+        reason: "adapter_kind_not_allowed",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchDryRunApprovals.set(fixture.dryRun.dry_run_boundary_id, {
+          ...fixture.dryRunApproval,
+          adapter_kind: "unknown_adapter" as "iris_core_reaction"
+          });
+        }
+      },
+      {
+        name: "approval safe context hash mismatch",
+        reason: "unsafe_context",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchDryRunApprovals.set(fixture.dryRun.dry_run_boundary_id, {
+          ...fixture.dryRunApproval,
+          safe_context_hash: "mismatched_safe_context_hash"
+          });
+        }
+      },
+      {
+        name: "request preview hash mismatch",
+        reason: "unsafe_context",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchDryRunApprovals.set(fixture.dryRun.dry_run_boundary_id, {
+          ...fixture.dryRunApproval,
+          request_preview_hash: "mismatched_request_preview_hash"
+          });
+        }
+      },
+      {
+        name: "constraints hash mismatch",
+        reason: "unsafe_context",
+        mutate: (repo, fixture) => {
+          repo.reactionDispatchDryRunApprovals.set(fixture.dryRun.dry_run_boundary_id, {
+          ...fixture.dryRunApproval,
+          constraints_hash: "mismatched_constraints_hash"
+          });
+        }
+      }
+    ];
+
+    for (const testCase of cases) {
+      const repo = new InMemoryRepository();
+      const app = buildServer(repo);
+      await app.ready();
+      const fixture = await createApprovedDryRunBoundary(app, `adapter_execution_${testCase.name.replaceAll(" ", "_")}`);
+      const auditCount = repo.auditLogs.length;
+
+      await testCase.mutate(repo, fixture);
+      await expectPreviewBlocked(app, fixture.dryRun.dry_run_boundary_id, testCase.reason);
+      expect(repo.auditLogs).toHaveLength(auditCount);
+      await app.close();
+    }
+  }, 120_000);
 
   it("committed adapter execution boundary preview evidence preserves no-execution boundaries", () => {
     const evidence = readCodexEvidence("p0-reaction-dispatch-adapter-execution-boundary-preview.json");
@@ -186,6 +323,13 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     expect(evidence.reactionDispatchAdapterExecutionBoundaryPreviewStatus).toBe("implemented");
     expect(evidence.approvedDryRunBoundaryRequiredStatus).toBe("pass");
     expect(evidence.adapterExecutionBoundaryPreviewStatus).toBe("pass");
+    expect(evidence.approvalSnapshotBindingStatus).toBe("pass");
+    expect(evidence.leaseValidityGuardStatus).toBe("pass");
+    expect(evidence.outboxLifecycleGuardStatus).toBe("pass");
+    expect(evidence.adapterAllowlistFailClosedStatus).toBe("pass");
+    expect(evidence.deterministicPreviewStatus).toBe("pass");
+    expect(evidence.mutationFreeDuplicatePreviewStatus).toBe("pass");
+    expect(evidence.timestampSemanticsStatus).toBe("pass");
     expect(evidence.noAdapterExecutionStatus).toBe("pass");
     expect(evidence.noExternalOutboxDispatchStatus).toBe("pass");
     expect(evidence.safeMetadataStatus).toBe("pass");

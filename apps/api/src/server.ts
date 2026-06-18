@@ -1897,7 +1897,12 @@ function toReactionDispatchDryRunReviewEntry(
 
 type ReactionDispatchDryRunReviewEntry = ReturnType<typeof toReactionDispatchDryRunReviewEntry>;
 
-const ALLOWED_DRY_RUN_APPROVAL_ADAPTER_KINDS = new Set(["iris_core_reaction"]);
+const ALLOWED_DRY_RUN_APPROVAL_ADAPTER_KINDS = new Set([
+  "iris_core_reaction",
+  "voxweave_voice",
+  "overlay_effect",
+  "future_internal_adapter"
+]);
 
 function toReactionDispatchDryRunApprovalBaseline(entry: ReactionDispatchDryRunReviewEntry): ReactionDispatchDryRunApprovalMetadata {
   return {
@@ -1917,6 +1922,9 @@ function toReactionDispatchDryRunApprovalBaseline(entry: ReactionDispatchDryRunR
     external_delivery_status: entry.external_delivery_status,
     adapter_execution_status: entry.adapter_execution_status,
     dispatch_attempt_count: entry.dispatch_attempt_count,
+    safe_context_hash: entry.safe_context_hash,
+    constraints_hash: entry.constraints_hash,
+    request_preview_hash: entry.request_preview_hash,
     created_at: entry.created_at,
     updated_at: entry.updated_at
   };
@@ -1934,12 +1942,43 @@ function toReactionDispatchDryRunApprovalBlockers(entry: ReactionDispatchDryRunR
   if (entry.adapter_execution_status !== "not_executed") reasons.add("state_transition_blocked");
   if (entry.dispatch_attempt_count !== 0) reasons.add("dispatch_attempt_count_not_zero");
   if (entry.blocking_reason_codes.some((reason) => reason === "unsafe_context")) reasons.add("unsafe_context");
+  if (entry.blocking_reason_codes.some((reason) => reason === "lease_required")) reasons.add("lease_required");
   reasons.add("external_execution_forbidden");
   return [...reasons];
 }
 
 function isReactionDispatchDryRunApprovalSafe(entry: ReactionDispatchDryRunReviewEntry) {
   return toReactionDispatchDryRunApprovalBlockers(entry).filter((reason) => reason !== "external_execution_forbidden").length === 0;
+}
+
+function toReactionDispatchDryRunApprovalSnapshotBlockers(
+  entry: ReactionDispatchDryRunReviewEntry,
+  approval: ReactionDispatchDryRunApprovalMetadata
+): ReactionDispatchDryRunApprovalReasonCode[] {
+  const reasons = new Set<ReactionDispatchDryRunApprovalReasonCode>();
+  if (approval.plan_id !== entry.plan_id) reasons.add("state_transition_blocked");
+  if (approval.outbox_id !== entry.outbox_id) reasons.add("state_transition_blocked");
+  if (approval.lease_id !== entry.lease_id) reasons.add("state_transition_blocked");
+  if (approval.candidate_id !== entry.candidate_id) reasons.add("unsafe_context");
+  if (approval.boundary_id !== entry.boundary_id) reasons.add("unsafe_context");
+  if (approval.support_event_id !== entry.support_event_id) reasons.add("unsafe_context");
+  if (approval.adapter_kind !== entry.adapter_kind) reasons.add("adapter_kind_not_allowed");
+  if (approval.dry_run_status !== "dry_run_ready") reasons.add("dry_run_not_ready");
+  if (approval.external_delivery_status !== entry.external_delivery_status) reasons.add("state_transition_blocked");
+  if (approval.adapter_execution_status !== entry.adapter_execution_status) reasons.add("state_transition_blocked");
+  if (approval.dispatch_attempt_count !== entry.dispatch_attempt_count) reasons.add("dispatch_attempt_count_not_zero");
+  if (approval.safe_context_hash !== entry.safe_context_hash) reasons.add("unsafe_context");
+  if (approval.constraints_hash !== entry.constraints_hash) reasons.add("unsafe_context");
+  if (approval.request_preview_hash !== entry.request_preview_hash) reasons.add("unsafe_context");
+  reasons.add("external_execution_forbidden");
+  return [...reasons];
+}
+
+function isReactionDispatchDryRunApprovalSnapshotCurrent(
+  entry: ReactionDispatchDryRunReviewEntry,
+  approval: ReactionDispatchDryRunApprovalMetadata
+) {
+  return toReactionDispatchDryRunApprovalSnapshotBlockers(entry, approval).filter((reason) => reason !== "external_execution_forbidden").length === 0;
 }
 
 function toReactionDispatchDryRunApprovalResponse(approval: ReactionDispatchDryRunApprovalMetadata) {
@@ -2037,6 +2076,8 @@ function buildReactionDispatchAdapterExecutionBoundaryPreview(entry: ReactionDis
     request_preview_hash: entry.request_preview_hash,
     safe_reason_codes: ["approved_for_adapter_execution", "external_delivery_not_attempted", "adapter_not_executed", "external_execution_forbidden"],
     created_at: approval.updated_at,
+    snapshot_at: approval.updated_at,
+    derived_from_approval_at: approval.approved_at ?? approval.updated_at,
     side_effect_summary: {
       adapter_execution: "skipped",
       external_delivery: "skipped",
@@ -3446,8 +3487,33 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
     const candidateRepo = getReactionDispatchCandidateRepository(repo);
     const found = await findReactionDispatchDryRunReviewEntry(candidateRepo, dryRunBoundaryId);
-    if (!found) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
     const approval = await candidateRepo.getReactionDispatchDryRunApproval(dryRunBoundaryId);
+    if (!found) {
+      if (!approval) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+      const outbox = await candidateRepo.getReactionDispatchInternalOutbox(approval.outbox_id);
+      const plan = await candidateRepo.getReactionDispatchInternalOutboxAttemptPlan(approval.outbox_id);
+      const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(approval.outbox_id);
+      const safeReasonCodes = outbox && plan
+        ? toReactionDispatchDryRunApprovalBlockers(toReactionDispatchDryRunReviewEntry(plan, outbox, lease))
+        : ["unsafe_context", "external_execution_forbidden"] as ReactionDispatchDryRunApprovalReasonCode[];
+      return reply.code(409).send({
+        adapter_execution_boundary_preview: {
+          dry_run_boundary_id: dryRunBoundaryId,
+          plan_id: approval.plan_id,
+          outbox_id: approval.outbox_id,
+          lease_id: approval.lease_id,
+          adapter_kind: approval.adapter_kind,
+          approval_status: approval.approval_status,
+          preview_status: "adapter_execution_boundary_preview_blocked",
+          external_delivery_status: approval.external_delivery_status,
+          adapter_execution_status: approval.adapter_execution_status,
+          dispatch_attempt_count: approval.dispatch_attempt_count,
+          safe_reason_codes: safeReasonCodes
+        },
+        error: "reaction_dispatch_adapter_execution_boundary_preview_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
     if (!approval || approval.approval_status !== "approved_for_adapter_execution") {
       return reply.code(409).send({
         adapter_execution_boundary_preview: {
@@ -3481,6 +3547,25 @@ export function buildServer(repo: CriptoTipRepository = repository) {
           adapter_execution_status: found.entry.adapter_execution_status,
           dispatch_attempt_count: found.entry.dispatch_attempt_count,
           safe_reason_codes: toReactionDispatchDryRunApprovalBlockers(found.entry)
+        },
+        error: "reaction_dispatch_adapter_execution_boundary_preview_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    if (!isReactionDispatchDryRunApprovalSnapshotCurrent(found.entry, approval)) {
+      return reply.code(409).send({
+        adapter_execution_boundary_preview: {
+          dry_run_boundary_id: dryRunBoundaryId,
+          plan_id: found.entry.plan_id,
+          outbox_id: found.entry.outbox_id,
+          lease_id: found.entry.lease_id,
+          adapter_kind: found.entry.adapter_kind,
+          approval_status: approval.approval_status,
+          preview_status: "adapter_execution_boundary_preview_blocked",
+          external_delivery_status: found.entry.external_delivery_status,
+          adapter_execution_status: found.entry.adapter_execution_status,
+          dispatch_attempt_count: found.entry.dispatch_attempt_count,
+          safe_reason_codes: toReactionDispatchDryRunApprovalSnapshotBlockers(found.entry, approval)
         },
         error: "reaction_dispatch_adapter_execution_boundary_preview_blocked",
         side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
