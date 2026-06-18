@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { CriptoTipRepository } from "./repositories/types.js";
 import type { YouTubeLiveChatPlannerFailureClass } from "./youtube-live-chat-quota-polling-planner.js";
 
 export type YouTubeLiveChatFixtureCursorStatus = "not_started" | "page_ingested" | "caught_up_fixture" | "cursor_blocked" | "cursor_superseded";
@@ -42,6 +43,23 @@ export type YouTubeLiveChatFixtureCursorState = {
   page_fingerprints: Set<string>;
   successful_page_results: Map<string, unknown>;
 };
+
+const youtubeLiveChatFixtureCursorFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, YouTubeLiveChatFixtureCursorState>>();
+const youtubeLiveChatFixtureCursorIdentityFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, string>>();
+
+export function getYouTubeLiveChatFixtureCursorStores(repo: CriptoTipRepository) {
+  let cursors = youtubeLiveChatFixtureCursorFallbackByRepo.get(repo);
+  if (!cursors) {
+    cursors = new Map<string, YouTubeLiveChatFixtureCursorState>();
+    youtubeLiveChatFixtureCursorFallbackByRepo.set(repo, cursors);
+  }
+  let identities = youtubeLiveChatFixtureCursorIdentityFallbackByRepo.get(repo);
+  if (!identities) {
+    identities = new Map<string, string>();
+    youtubeLiveChatFixtureCursorIdentityFallbackByRepo.set(repo, identities);
+  }
+  return { cursors, identities };
+}
 
 export const InternalYouTubeLiveChatFixtureCursorFailureStateSchema = z.object({
   failure_class: z.enum(youtubeLiveChatPlannerFailureClasses),

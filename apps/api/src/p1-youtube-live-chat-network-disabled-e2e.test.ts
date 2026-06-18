@@ -381,4 +381,20 @@ describe("P1 YouTube Live Chat network-disabled E2E", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed fixture cursor store helper evidence preserves pre-network stop boundaries", () => {
+    const evidence = readCodexEvidence("p1-youtube-live-chat-fixture-cursor-store-helper.json");
+
+    expect(evidence.fixtureCursorStoreHelperStatus).toBe("pass");
+    expect(evidence.serverWeakMapExtractionStatus).toBe("pass");
+    expect(evidence.storeIdentityMappingStatus).toBe("pass");
+    expect(evidence.behaviorChangeStatus).toBe("none_intended");
+    expect(evidence.networkCallUsed).toBe(false);
+    expect(evidence.globalFetchUsed).toBe(false);
+    expect(evidence.oauthExecutionUsed).toBe(false);
+    expect(evidence.secretValueUsed).toBe(false);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+  });
 });

@@ -41,6 +41,7 @@ import {
 } from "./youtube-live-chat-controlled-canary-preflight.js";
 import {
   clearYouTubeLiveChatFixtureCursorFailureState,
+  getYouTubeLiveChatFixtureCursorStores,
   InternalYouTubeLiveChatFixtureCursorFailureStateSchema,
   toYouTubeLiveChatFixtureCursorResponse,
   type YouTubeLiveChatFixtureCursorState
@@ -623,9 +624,6 @@ const reactionDispatchDryRunApprovalFallbackByRepo = new WeakMap<CriptoTipReposi
 const reactionDispatchAdapterExecutionBoundaryApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>>();
 const reactionDispatchLocalAdapterSimulationResultFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>>();
 const reactionDispatchSimulationFailureDlqFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchSimulationFailureDlqMetadata>>();
-const youtubeLiveChatFixtureCursorFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, YouTubeLiveChatFixtureCursorState>>();
-const youtubeLiveChatFixtureCursorIdentityFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, string>>();
-
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
   message_moderation_status: z.enum(["approved", "hold", "rejected"]).optional(),
@@ -2630,20 +2628,6 @@ function toReactionDispatchSimulationFailureDlqResponse(entry: ReactionDispatchS
     created_at: entry.created_at,
     updated_at: entry.updated_at
   };
-}
-
-function getYouTubeLiveChatFixtureCursorStores(repo: CriptoTipRepository) {
-  let cursors = youtubeLiveChatFixtureCursorFallbackByRepo.get(repo);
-  if (!cursors) {
-    cursors = new Map<string, YouTubeLiveChatFixtureCursorState>();
-    youtubeLiveChatFixtureCursorFallbackByRepo.set(repo, cursors);
-  }
-  let identities = youtubeLiveChatFixtureCursorIdentityFallbackByRepo.get(repo);
-  if (!identities) {
-    identities = new Map<string, string>();
-    youtubeLiveChatFixtureCursorIdentityFallbackByRepo.set(repo, identities);
-  }
-  return { cursors, identities };
 }
 
 function extractSafePageMessageIds(page: unknown) {
