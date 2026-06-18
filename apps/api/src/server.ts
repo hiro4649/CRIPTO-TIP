@@ -34,6 +34,7 @@ import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
+import { parseYouTubeLiveChatPageFixture } from "./youtube-live-chat-page-fixture-parser.js";
 import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
 
 loadConfig();
@@ -610,6 +611,28 @@ const reactionDispatchDryRunApprovalFallbackByRepo = new WeakMap<CriptoTipReposi
 const reactionDispatchAdapterExecutionBoundaryApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>>();
 const reactionDispatchLocalAdapterSimulationResultFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>>();
 const reactionDispatchSimulationFailureDlqFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchSimulationFailureDlqMetadata>>();
+type YouTubeLiveChatFixtureCursorStatus = "not_started" | "page_ingested" | "caught_up_fixture" | "cursor_blocked" | "cursor_superseded";
+type YouTubeLiveChatFixtureCursorState = {
+  cursor_id: string;
+  stream_id: string;
+  youtube_video_id: string;
+  live_chat_id: string;
+  current_page_token: string | null;
+  next_page_token: string | null;
+  last_message_published_at: string | null;
+  last_message_id: string | null;
+  pages_ingested: number;
+  messages_seen: number;
+  super_chats_normalized: number;
+  duplicates_skipped: number;
+  cursor_status: YouTubeLiveChatFixtureCursorStatus;
+  created_at: string;
+  updated_at: string;
+  seen_message_ids: Set<string>;
+  page_fingerprints: Set<string>;
+};
+const youtubeLiveChatFixtureCursorFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, YouTubeLiveChatFixtureCursorState>>();
+const youtubeLiveChatFixtureCursorIdentityFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, string>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -726,6 +749,15 @@ const AdminLocalAdapterSimulationReviewQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
+const InternalYouTubeLiveChatFixtureCursorCreateSchema = z.object({
+  stream_id: z.string().min(1).max(160),
+  youtube_video_id: z.string().min(1).max(160),
+  live_chat_id: z.string().min(1).max(160)
+}).strict();
+const InternalYouTubeLiveChatFixtureCursorPageSchema = z.object({
+  page_token: z.string().min(0).max(240).nullable().optional(),
+  page: z.unknown()
+}).strict();
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
 
@@ -2607,6 +2639,61 @@ function toReactionDispatchSimulationFailureDlqResponse(entry: ReactionDispatchS
   };
 }
 
+function getYouTubeLiveChatFixtureCursorStores(repo: CriptoTipRepository) {
+  let cursors = youtubeLiveChatFixtureCursorFallbackByRepo.get(repo);
+  if (!cursors) {
+    cursors = new Map<string, YouTubeLiveChatFixtureCursorState>();
+    youtubeLiveChatFixtureCursorFallbackByRepo.set(repo, cursors);
+  }
+  let identities = youtubeLiveChatFixtureCursorIdentityFallbackByRepo.get(repo);
+  if (!identities) {
+    identities = new Map<string, string>();
+    youtubeLiveChatFixtureCursorIdentityFallbackByRepo.set(repo, identities);
+  }
+  return { cursors, identities };
+}
+
+function toYouTubeLiveChatFixtureCursorResponse(cursor: YouTubeLiveChatFixtureCursorState) {
+  return {
+    cursor_id: cursor.cursor_id,
+    stream_id: cursor.stream_id,
+    youtube_video_id: cursor.youtube_video_id,
+    live_chat_id: cursor.live_chat_id,
+    current_page_token: cursor.current_page_token,
+    next_page_token: cursor.next_page_token,
+    last_message_published_at: cursor.last_message_published_at,
+    last_message_id: cursor.last_message_id,
+    pages_ingested: cursor.pages_ingested,
+    messages_seen: cursor.messages_seen,
+    super_chats_normalized: cursor.super_chats_normalized,
+    duplicates_skipped: cursor.duplicates_skipped,
+    cursor_status: cursor.cursor_status,
+    created_at: cursor.created_at,
+    updated_at: cursor.updated_at
+  };
+}
+
+function extractSafePageMessageIds(page: unknown) {
+  const record = typeof page === "object" && page !== null && !Array.isArray(page) ? page as Record<string, unknown> : {};
+  const items = Array.isArray(record.items) ? record.items : [];
+  return items
+    .map((item) => {
+      const itemRecord = typeof item === "object" && item !== null && !Array.isArray(item) ? item as Record<string, unknown> : {};
+      return typeof itemRecord.id === "string" ? itemRecord.id : "unknown";
+    })
+    .sort();
+}
+
+function toYouTubeLiveChatFixturePageFingerprint(cursorId: string, pageToken: string | null, page: unknown) {
+  const record = typeof page === "object" && page !== null && !Array.isArray(page) ? page as Record<string, unknown> : {};
+  return hashSafeMetadata({
+    cursor_id: cursorId,
+    input_page_token: pageToken ?? null,
+    next_page_token: typeof record.nextPageToken === "string" ? record.nextPageToken : null,
+    message_ids: extractSafePageMessageIds(page)
+  });
+}
+
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
   const resolutionRepo = getResolutionRepository(repo);
   const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
@@ -3123,6 +3210,131 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         }
       });
     }
+  });
+
+  app.post("/internal/fixtures/youtube-live-chat/cursors", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const input = InternalYouTubeLiveChatFixtureCursorCreateSchema.parse(req.body);
+    const { cursors, identities } = getYouTubeLiveChatFixtureCursorStores(repo);
+    const identity = `${input.stream_id}:${input.live_chat_id}`;
+    const existingId = identities.get(identity);
+    if (existingId) {
+      const existing = cursors.get(existingId);
+      if (existing) return { cursor: toYouTubeLiveChatFixtureCursorResponse(existing), idempotent: true, safe_reason_codes: ["cursor_created"] };
+    }
+    const now = new Date().toISOString();
+    const cursor: YouTubeLiveChatFixtureCursorState = {
+      cursor_id: stableId("ytcursor", identity),
+      stream_id: input.stream_id,
+      youtube_video_id: input.youtube_video_id,
+      live_chat_id: input.live_chat_id,
+      current_page_token: null,
+      next_page_token: null,
+      last_message_published_at: null,
+      last_message_id: null,
+      pages_ingested: 0,
+      messages_seen: 0,
+      super_chats_normalized: 0,
+      duplicates_skipped: 0,
+      cursor_status: "not_started",
+      created_at: now,
+      updated_at: now,
+      seen_message_ids: new Set<string>(),
+      page_fingerprints: new Set<string>()
+    };
+    cursors.set(cursor.cursor_id, cursor);
+    identities.set(identity, cursor.cursor_id);
+    return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor), idempotent: false, safe_reason_codes: ["cursor_created"] };
+  });
+
+  app.post("/internal/fixtures/youtube-live-chat/cursors/:cursorId/pages", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
+    const input = InternalYouTubeLiveChatFixtureCursorPageSchema.parse(req.body);
+    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
+    const cursor = cursors.get(cursorId);
+    if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
+    const pageToken = input.page_token ?? null;
+    const fingerprint = toYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
+    if (cursor.page_fingerprints.has(fingerprint)) {
+      return {
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_fingerprint: fingerprint, page_status: "page_replayed", safe_reason_codes: ["page_replayed"] },
+        idempotent: true
+      };
+    }
+    const expectedToken = cursor.next_page_token;
+    if ((expectedToken ?? "") !== (pageToken ?? "")) {
+      return reply.code(409).send({
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_status: "page_blocked", safe_reason_codes: ["page_token_mismatch", "page_out_of_order"] }
+      });
+    }
+    let parsed: ReturnType<typeof parseYouTubeLiveChatPageFixture>;
+    try {
+      parsed = parseYouTubeLiveChatPageFixture({
+        context: {
+          stream_id: cursor.stream_id,
+          character_id: "char_mio",
+          youtube_video_id: cursor.youtube_video_id,
+          live_chat_id: cursor.live_chat_id,
+          page_token: pageToken ?? ""
+        },
+        page: input.page
+      });
+    } catch {
+      return reply.code(400).send({
+        cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+        page_result: { page_status: "page_invalid", safe_reason_codes: ["page_invalid"] }
+      });
+    }
+    let crossPageDuplicates = 0;
+    let acceptedNormalized = 0;
+    for (const event of parsed.normalized_events) {
+      if (cursor.seen_message_ids.has(event.source_event_id)) {
+        crossPageDuplicates += 1;
+        continue;
+      }
+      cursor.seen_message_ids.add(event.source_event_id);
+      acceptedNormalized += 1;
+      cursor.last_message_id = event.source_event_id;
+      cursor.last_message_published_at = event.created_at;
+    }
+    for (const messageId of extractSafePageMessageIds(input.page)) {
+      if (messageId !== "unknown") cursor.seen_message_ids.add(messageId);
+    }
+    cursor.current_page_token = pageToken;
+    cursor.next_page_token = parsed.next_page_token;
+    cursor.pages_ingested += 1;
+    cursor.messages_seen = cursor.seen_message_ids.size;
+    cursor.super_chats_normalized += acceptedNormalized;
+    cursor.duplicates_skipped += parsed.page_summary.duplicate_count + crossPageDuplicates;
+    cursor.cursor_status = parsed.next_page_token ? "page_ingested" : "caught_up_fixture";
+    cursor.updated_at = new Date().toISOString();
+    cursor.page_fingerprints.add(fingerprint);
+    return {
+      cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
+      page_result: {
+        page_fingerprint: fingerprint,
+        page_status: "page_ingested",
+        safe_reason_codes: ["page_ingested"],
+        page_summary: {
+          ...parsed.page_summary,
+          cross_page_duplicate_count: crossPageDuplicates
+        },
+        skipped_items: parsed.skipped_items
+      },
+      idempotent: false
+    };
+  });
+
+  app.get("/internal/fixtures/youtube-live-chat/cursors/:cursorId", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
+    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
+    const cursor = cursors.get(cursorId);
+    if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
+    return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor) };
   });
 
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
