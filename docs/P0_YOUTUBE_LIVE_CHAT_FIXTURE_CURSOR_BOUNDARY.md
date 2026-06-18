@@ -6,7 +6,8 @@ It tracks safe fixture cursor metadata for page replay, out-of-order page reject
 
 ## Scope
 
-- Creates cursors idempotently by stream and live chat identity.
+- Creates cursors idempotently by stream, YouTube video, live chat, and character identity.
+- Requires explicit `character_id`; the cursor path does not use a default character.
 - Ingests local page fixtures only when the expected page token matches.
 - Treats first page as an initial null-token page.
 - Replays the same page idempotently.

@@ -16,7 +16,8 @@ function cursorPayload() {
   return {
     stream_id: "stream_cursor_fixture",
     youtube_video_id: "yt_video_cursor_fixture",
-    live_chat_id: "live_chat_cursor_fixture"
+    live_chat_id: "live_chat_cursor_fixture",
+    character_id: "char_cursor_fixture"
   };
 }
 
@@ -65,12 +66,41 @@ describe("P0 YouTube live chat fixture cursor boundary", () => {
 
     const unauthorized = await app.inject({ method: "POST", url: "/internal/fixtures/youtube-live-chat/cursors", payload: cursorPayload() });
     expect(unauthorized.statusCode).toBe(401);
+    const missingCharacter = await app.inject({
+      method: "POST",
+      url: "/internal/fixtures/youtube-live-chat/cursors",
+      headers: { authorization: internalAuth },
+      payload: {
+        stream_id: "stream_cursor_fixture",
+        youtube_video_id: "yt_video_cursor_fixture",
+        live_chat_id: "live_chat_cursor_fixture"
+      }
+    });
     const create = await app.inject({ method: "POST", url: "/internal/fixtures/youtube-live-chat/cursors", headers: { authorization: internalAuth }, payload: cursorPayload() });
     const duplicateCreate = await app.inject({ method: "POST", url: "/internal/fixtures/youtube-live-chat/cursors", headers: { authorization: internalAuth }, payload: cursorPayload() });
+    const differentVideo = await app.inject({
+      method: "POST",
+      url: "/internal/fixtures/youtube-live-chat/cursors",
+      headers: { authorization: internalAuth },
+      payload: { ...cursorPayload(), youtube_video_id: "yt_video_cursor_fixture_two" }
+    });
+    const differentCharacter = await app.inject({
+      method: "POST",
+      url: "/internal/fixtures/youtube-live-chat/cursors",
+      headers: { authorization: internalAuth },
+      payload: { ...cursorPayload(), character_id: "char_cursor_fixture_two" }
+    });
     expect(create.statusCode).toBe(200);
+    expect(missingCharacter.statusCode).toBe(400);
+    expect(missingCharacter.json().safe_reason_codes).toContain("character_id_required");
     expect(duplicateCreate.statusCode).toBe(200);
+    expect(differentVideo.statusCode).toBe(200);
+    expect(differentCharacter.statusCode).toBe(200);
     expect(duplicateCreate.json().idempotent).toBe(true);
     const cursorId = create.json().cursor.cursor_id;
+    expect(create.json().cursor.character_id).toBe("char_cursor_fixture");
+    expect(differentVideo.json().cursor.cursor_id).not.toBe(cursorId);
+    expect(differentCharacter.json().cursor.cursor_id).not.toBe(cursorId);
     expect(create.json().cursor.cursor_status).toBe("not_started");
 
     const firstPage = await app.inject({
@@ -123,6 +153,7 @@ describe("P0 YouTube live chat fixture cursor boundary", () => {
     expect(malformed.statusCode).toBe(400);
     expect(detail.statusCode).toBe(200);
     expect(detail.json().cursor.pages_ingested).toBe(2);
+    expect(detail.json().cursor.character_id).toBe("char_cursor_fixture");
     expectSafeOutput(firstPage.json());
     expectSafeOutput(secondPage.json());
     expectSafeOutput(malformed.json());
@@ -149,5 +180,12 @@ describe("P0 YouTube live chat fixture cursor boundary", () => {
     expect(evidence.rawPayloadExcluded).toBe(true);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed cursor path keeps character context explicit and does not persist support events", () => {
+    const serverSource = fs.readFileSync(path.join(root, "apps", "api", "src", "server.ts"), "utf8");
+
+    expect(serverSource).toContain("character_id: cursor.character_id");
+    expect(serverSource).not.toContain('character_id: "char_mio",\n          youtube_video_id: cursor.youtube_video_id');
   });
 });
