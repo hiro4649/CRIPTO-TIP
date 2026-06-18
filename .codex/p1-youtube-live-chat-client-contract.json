@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "youtubeLiveChatClientContractStatus": "implemented",
+  "fakeClientStatus": "implemented",
+  "capabilityBoundaryStatus": "pass",
+  "streamReadContractStatus": "pass",
+  "listFallbackContractStatus": "pass",
+  "cursorHandoffStatus": "pass",
+  "safeFailureStatus": "pass",
+  "networkEnabled": false,
+  "oauthConfigured": false,
+  "realApiExecution": false,
+  "fixtureOnly": true,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
+}
