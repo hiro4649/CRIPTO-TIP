@@ -4,10 +4,10 @@
     "repository":  "hiro4649/CRIPTO-TIP",
     "prNumber":  0,
     "headSha":  "current_pr_head",
-    "baseSha":  "8a499a0c5fe94add12e2d341be763df3afe9ea95",
-    "title":  "feat: add p0 admin dry-run approval gate",
-    "goal":  "Add local/internal admin approval and rejection gate for reaction dispatch dry-run boundary metadata without external execution.",
-    "changeType":  "product_vertical_slice_admin_dry_run_approval_gate",
+    "baseSha":  "de3217c85be021b4b015e89e93424bb7ddbf818c",
+    "title":  "feat: add p0 adapter execution boundary preview",
+    "goal":  "Add local/internal adapter execution boundary preview for approved reaction dispatch dry-run metadata without adapter execution.",
+    "changeType":  "product_vertical_slice_adapter_execution_boundary_preview",
     "runtimeReadinessClaimed":  false,
     "productionReadinessClaimed":  false,
     "legalComplianceClaimed":  false,
@@ -18,31 +18,24 @@
     "risks":  [
                   {
                       "nextPr":  "current",
-                      "mitigation":  "Handlers only write local approval metadata and safe audit metadata; tests assert no reaction, overlay, external outbox, IRIS Core, VOXWEAVE, TTS, Live2D, renderer, OBS, WebSocket, or adapter execution.",
+                      "mitigation":  "Endpoint returns preview metadata only; tests assert no external execution and no dispatch count increment.",
                       "owner":  "codex",
-                      "risk":  "Approval gate accidentally executes adapter or downstream runtime work.",
+                      "risk":  "Preview accidentally executes adapter or downstream runtime work.",
                       "severity":  "medium"
                   },
                   {
                       "nextPr":  "current",
-                      "mitigation":  "Approval re-checks dry-run status, candidate validation, adapter allowlist, external delivery, adapter execution, and dispatch count before writing approval metadata.",
+                      "mitigation":  "Preview re-checks current dry-run safety and blocks drift before returning an execution boundary preview.",
                       "owner":  "codex",
-                      "risk":  "Unsafe dry-run context is approved after state drift.",
+                      "risk":  "Approved dry-run boundary is used after unsafe state drift.",
                       "severity":  "medium"
                   },
                   {
                       "nextPr":  "current",
-                      "mitigation":  "Responses and audit metadata expose only IDs, statuses, reason codes, timestamps, and counters; tests assert forbidden raw strings are absent.",
+                      "mitigation":  "Preview exposes only IDs, statuses, hashes, reason codes, and counters; tests assert forbidden raw strings are absent.",
                       "owner":  "codex",
-                      "risk":  "Raw message, payload, wallet, secret, private URL, adapter URL, webhook URL, header, or token exposure.",
+                      "risk":  "Raw payload or secret-like material is exposed in preview.",
                       "severity":  "medium"
-                  },
-                  {
-                      "nextPr":  "current",
-                      "mitigation":  "Refresh PR evidence after PR creation, then confirm same-head CI, contracts, quality-gate, and safe artifact.",
-                      "owner":  "codex",
-                      "risk":  "Committed local evidence must be refreshed with PR current-head GitHub run and artifact IDs.",
-                      "severity":  "low"
                   }
               ]
 }
