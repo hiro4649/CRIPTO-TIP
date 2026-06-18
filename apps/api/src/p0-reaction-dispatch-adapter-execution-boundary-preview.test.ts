@@ -801,6 +801,127 @@ describe("P0 reaction dispatch adapter execution boundary preview", () => {
     expect(evidence.pnpmLockChanged).toBe(false);
   });
 
+  it("creates simulation failure DLQ entries idempotently without retry or external execution", async () => {
+    const repo = new InMemoryRepository();
+    const app = buildServer(repo);
+    await app.ready();
+    const retryable = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_dlq_retryable");
+    const terminal = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_dlq_terminal");
+    const success = await createApprovedAdapterExecutionBoundary(app, "adapter_execution_dlq_success");
+    const retryableSimulation = await app.inject({
+      method: "POST",
+      url: simulationUrl(retryable.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "retryable_failure" }
+    });
+    const terminalSimulation = await app.inject({
+      method: "POST",
+      url: simulationUrl(terminal.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "terminal_failure" }
+    });
+    const successSimulation = await app.inject({
+      method: "POST",
+      url: simulationUrl(success.dryRun.dry_run_boundary_id),
+      headers: { authorization: adminAuth },
+      payload: { simulation_case: "success" }
+    });
+    const before = {
+      retryableOutbox: await repo.getReactionDispatchInternalOutbox(retryable.outbox.outbox_id),
+      terminalLease: await repo.getReactionDispatchInternalOutboxLease(terminal.outbox.outbox_id),
+      successSupport: await repo.getSupportEventById(success.support.event_id),
+      auditCount: repo.auditLogs.length,
+      reactionCount: repo.reactionRequests.size,
+      overlayCount: repo.overlayEvents.size
+    };
+
+    const retryableDlq = await app.inject({
+      method: "POST",
+      url: `/admin/reaction-dispatch/simulation-results/${retryableSimulation.json().simulation_result.simulation_result_id}/dlq`,
+      headers: { authorization: adminAuth }
+    });
+    const retryableDuplicate = await app.inject({
+      method: "POST",
+      url: `/admin/reaction-dispatch/simulation-results/${retryableSimulation.json().simulation_result.simulation_result_id}/dlq`,
+      headers: { authorization: adminAuth }
+    });
+    const terminalDlq = await app.inject({
+      method: "POST",
+      url: `/admin/reaction-dispatch/simulation-results/${terminalSimulation.json().simulation_result.simulation_result_id}/dlq`,
+      headers: { authorization: adminAuth }
+    });
+    const successBlocked = await app.inject({
+      method: "POST",
+      url: `/admin/reaction-dispatch/simulation-results/${successSimulation.json().simulation_result.simulation_result_id}/dlq`,
+      headers: { authorization: adminAuth }
+    });
+
+    expect(retryableDlq.statusCode).toBe(200);
+    expect(retryableDuplicate.statusCode).toBe(200);
+    expect(terminalDlq.statusCode).toBe(200);
+    expect(successBlocked.statusCode).toBe(409);
+    expect(retryableDuplicate.json().idempotent).toBe(true);
+    expect(retryableDuplicate.json().dlq_entry).toEqual(retryableDlq.json().dlq_entry);
+    expect(retryableDlq.json().dlq_entry).toMatchObject({
+      simulation_result_id: retryableSimulation.json().simulation_result.simulation_result_id,
+      preview_id: retryable.preview.adapter_execution_boundary_preview_id,
+      support_event_id: retryable.support.event_id,
+      adapter_kind: "iris_core_reaction",
+      failure_class: "retryable_failure",
+      retry_eligibility: "retry_candidate"
+    });
+    expect(terminalDlq.json().dlq_entry).toMatchObject({
+      simulation_result_id: terminalSimulation.json().simulation_result.simulation_result_id,
+      failure_class: "terminal_failure",
+      retry_eligibility: "not_retryable"
+    });
+    expect(retryableDlq.json().dlq_entry.dlq_id).toMatch(/^rdsimdlq_[a-f0-9]{24}$/);
+    expect(retryableDlq.json().dlq_entry.safe_failure_fingerprint).toMatch(/^[a-f0-9]{64}$/);
+    expect(successBlocked.json().dlq_status.safe_reason_codes).toContain("simulation_success");
+
+    const list = await app.inject({ method: "GET", url: "/admin/reaction-dispatch/simulation-dlq", headers: { authorization: adminAuth } });
+    const retryableOnly = await app.inject({ method: "GET", url: "/admin/reaction-dispatch/simulation-dlq?failure_class=retryable_failure", headers: { authorization: adminAuth } });
+    const detail = await app.inject({ method: "GET", url: `/admin/reaction-dispatch/simulation-dlq/${retryableDlq.json().dlq_entry.dlq_id}`, headers: { authorization: adminAuth } });
+    expect(list.statusCode).toBe(200);
+    expect(retryableOnly.statusCode).toBe(200);
+    expect(detail.statusCode).toBe(200);
+    expect(list.json().dlq_entries).toHaveLength(2);
+    expect(list.json().dlq_summary).toEqual({ retry_candidate: 1, not_retryable: 1 });
+    expect(retryableOnly.json().dlq_entries).toHaveLength(1);
+    expect(detail.json().dlq_entry).toEqual(retryableDlq.json().dlq_entry);
+    expect(await repo.getReactionDispatchInternalOutbox(retryable.outbox.outbox_id)).toEqual(before.retryableOutbox);
+    expect(await repo.getReactionDispatchInternalOutboxLease(terminal.outbox.outbox_id)).toEqual(before.terminalLease);
+    expect(await repo.getSupportEventById(success.support.event_id)).toEqual(before.successSupport);
+    expect(repo.auditLogs).toHaveLength(before.auditCount);
+    expect(repo.reactionRequests.size).toBe(before.reactionCount);
+    expect(repo.overlayEvents.size).toBe(before.overlayCount);
+    expectPreviewSafe(retryableDlq.json());
+    expectPreviewSafe(list.json());
+
+    await app.close();
+  }, 80_000);
+
+  it("committed simulation failure DLQ evidence preserves no-retry boundaries", () => {
+    const evidence = readCodexEvidence("p0-reaction-dispatch-simulation-failure-dlq.json");
+
+    expect(evidence.reactionDispatchSimulationFailureDlqStatus).toBe("implemented");
+    expect(evidence.retryableFailureDlqStatus).toBe("pass");
+    expect(evidence.terminalFailureDlqStatus).toBe("pass");
+    expect(evidence.successSimulationBlockedStatus).toBe("pass");
+    expect(evidence.idempotencyStatus).toBe("pass");
+    expect(evidence.safeMetadataStatus).toBe("pass");
+    expect(evidence.noRetryExecutionStatus).toBe("pass");
+    expect(evidence.noExternalExecutionStatus).toBe("pass");
+    expect(evidence.noReactionExecutionStatus).toBe("pass");
+    expect(evidence.noOverlayExecutionStatus).toBe("pass");
+    expect(evidence.rawPayloadExcluded).toBe(true);
+    expect(evidence.secretExcluded).toBe(true);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
   it("admin adapter boundary approval requires admin auth and returns 404 for unknown preview", async () => {
     const app = buildServer(new InMemoryRepository());
     await app.ready();

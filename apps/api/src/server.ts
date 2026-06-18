@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -594,6 +594,9 @@ type ReactionDispatchCandidateRepository = {
   setReactionDispatchLocalAdapterSimulationResult?: (result: ReactionDispatchLocalAdapterSimulationResultMetadata) => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata>;
   getReactionDispatchLocalAdapterSimulationResult?: (simulationResultId: string) => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata | undefined>;
   listReactionDispatchLocalAdapterSimulationResults?: () => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata[]>;
+  setReactionDispatchSimulationFailureDlq?: (entry: ReactionDispatchSimulationFailureDlqMetadata) => Promise<ReactionDispatchSimulationFailureDlqMetadata>;
+  getReactionDispatchSimulationFailureDlq?: (dlqId: string) => Promise<ReactionDispatchSimulationFailureDlqMetadata | undefined>;
+  listReactionDispatchSimulationFailureDlq?: () => Promise<ReactionDispatchSimulationFailureDlqMetadata[]>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
@@ -605,6 +608,7 @@ const reactionDispatchInternalOutboxAttemptPlanFallbackByRepo = new WeakMap<Crip
 const reactionDispatchDryRunApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchDryRunApprovalMetadata>>();
 const reactionDispatchAdapterExecutionBoundaryApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>>();
 const reactionDispatchLocalAdapterSimulationResultFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>>();
+const reactionDispatchSimulationFailureDlqFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchSimulationFailureDlqMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -1013,6 +1017,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     localSimulationResultFallback = new Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>();
     reactionDispatchLocalAdapterSimulationResultFallbackByRepo.set(repo, localSimulationResultFallback);
   }
+  let simulationFailureDlqFallback = reactionDispatchSimulationFailureDlqFallbackByRepo.get(repo);
+  if (!simulationFailureDlqFallback) {
+    simulationFailureDlqFallback = new Map<string, ReactionDispatchSimulationFailureDlqMetadata>();
+    reactionDispatchSimulationFailureDlqFallbackByRepo.set(repo, simulationFailureDlqFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -1140,7 +1149,20 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     listReactionDispatchLocalAdapterSimulationResults: candidate.listReactionDispatchLocalAdapterSimulationResults
       ? () => candidate.listReactionDispatchLocalAdapterSimulationResults!.call(repo)
       : async () => [...localSimulationResultFallback.values()]
-        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.simulation_result_id.localeCompare(right.simulation_result_id))
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.simulation_result_id.localeCompare(right.simulation_result_id)),
+    setReactionDispatchSimulationFailureDlq: candidate.setReactionDispatchSimulationFailureDlq
+      ? (entry) => candidate.setReactionDispatchSimulationFailureDlq!.call(repo, entry)
+      : async (entry) => {
+        simulationFailureDlqFallback.set(entry.dlq_id, entry);
+        return entry;
+      },
+    getReactionDispatchSimulationFailureDlq: candidate.getReactionDispatchSimulationFailureDlq
+      ? (dlqId) => candidate.getReactionDispatchSimulationFailureDlq!.call(repo, dlqId)
+      : async (dlqId) => simulationFailureDlqFallback.get(dlqId),
+    listReactionDispatchSimulationFailureDlq: candidate.listReactionDispatchSimulationFailureDlq
+      ? () => candidate.listReactionDispatchSimulationFailureDlq!.call(repo)
+      : async () => [...simulationFailureDlqFallback.values()]
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.dlq_id.localeCompare(right.dlq_id))
   };
 }
 
@@ -2535,6 +2557,52 @@ function toLocalAdapterSimulationResponse(result: ReactionDispatchLocalAdapterSi
     safe_reason_codes: result.safe_reason_codes,
     created_at: result.created_at,
     updated_at: result.updated_at
+  };
+}
+
+function buildReactionDispatchSimulationFailureDlq(
+  result: ReactionDispatchLocalAdapterSimulationResultMetadata,
+  now = new Date().toISOString()
+): ReactionDispatchSimulationFailureDlqMetadata | undefined {
+  if (result.simulation_status !== "simulated_retryable_failure" && result.simulation_status !== "simulated_terminal_failure") return undefined;
+  const failureClass = result.simulation_status === "simulated_retryable_failure" ? "retryable_failure" : "terminal_failure";
+  const safeFailureFingerprint = hashSafeMetadata({
+    simulation_result_id: result.simulation_result_id,
+    preview_id: result.adapter_execution_boundary_preview_id,
+    support_event_id: result.support_event_id,
+    adapter_kind: result.adapter_kind,
+    failure_class: failureClass,
+    simulation_snapshot_hash: result.simulation_snapshot_hash,
+    safe_reason_codes: result.safe_reason_codes
+  });
+  return {
+    dlq_id: `rdsimdlq_${createHash("sha256").update(`reaction_dispatch_simulation_failure_dlq:${safeFailureFingerprint}`).digest("hex").slice(0, 24)}`,
+    simulation_result_id: result.simulation_result_id,
+    preview_id: result.adapter_execution_boundary_preview_id,
+    support_event_id: result.support_event_id,
+    adapter_kind: result.adapter_kind,
+    failure_class: failureClass,
+    retry_eligibility: failureClass === "retryable_failure" ? "retry_candidate" : "not_retryable",
+    safe_failure_fingerprint: safeFailureFingerprint,
+    safe_reason_codes: result.safe_reason_codes,
+    created_at: now,
+    updated_at: now
+  };
+}
+
+function toReactionDispatchSimulationFailureDlqResponse(entry: ReactionDispatchSimulationFailureDlqMetadata) {
+  return {
+    dlq_id: entry.dlq_id,
+    simulation_result_id: entry.simulation_result_id,
+    preview_id: entry.preview_id,
+    support_event_id: entry.support_event_id,
+    adapter_kind: entry.adapter_kind,
+    failure_class: entry.failure_class,
+    retry_eligibility: entry.retry_eligibility,
+    safe_failure_fingerprint: entry.safe_failure_fingerprint,
+    safe_reason_codes: entry.safe_reason_codes,
+    created_at: entry.created_at,
+    updated_at: entry.updated_at
   };
 }
 
@@ -4328,6 +4396,74 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!result) return reply.code(404).send({ error: "reaction_dispatch_local_adapter_simulation_result_not_found" });
     return {
       simulation_result: toLocalAdapterSimulationResponse(result),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/simulation-results/:simulationResultId/dlq", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { simulationResultId } = z.object({ simulationResultId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const result = await candidateRepo.getReactionDispatchLocalAdapterSimulationResult(simulationResultId);
+    if (!result) return reply.code(404).send({ error: "reaction_dispatch_local_adapter_simulation_result_not_found" });
+    const entry = buildReactionDispatchSimulationFailureDlq(result);
+    if (!entry) {
+      return reply.code(409).send({
+        error: "reaction_dispatch_simulation_failure_dlq_blocked",
+        dlq_status: {
+          simulation_result_id: simulationResultId,
+          dlq_status: "dlq_blocked",
+          safe_reason_codes: ["simulation_success", "external_execution_forbidden"]
+        },
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const existing = await candidateRepo.getReactionDispatchSimulationFailureDlq(entry.dlq_id);
+    const saved = existing ?? await candidateRepo.setReactionDispatchSimulationFailureDlq(entry);
+    return {
+      dlq_entry: toReactionDispatchSimulationFailureDlqResponse(saved),
+      idempotent: Boolean(existing),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/simulation-dlq", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = z.object({
+      failure_class: z.enum(["retryable_failure", "terminal_failure"]).optional(),
+      retry_eligibility: z.enum(["retry_candidate", "not_retryable"]).optional(),
+      adapter_kind: z.enum(["iris_core_reaction", "voxweave_voice", "overlay_effect", "future_internal_adapter"]).optional(),
+      limit: z.coerce.number().int().min(1).max(100).default(50),
+      offset: z.coerce.number().int().min(0).default(0)
+    }).parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const all = (await candidateRepo.listReactionDispatchSimulationFailureDlq())
+      .filter((entry) => !query.failure_class || entry.failure_class === query.failure_class)
+      .filter((entry) => !query.retry_eligibility || entry.retry_eligibility === query.retry_eligibility)
+      .filter((entry) => !query.adapter_kind || entry.adapter_kind === query.adapter_kind);
+    return {
+      dlq_entries: all.slice(query.offset, query.offset + query.limit).map(toReactionDispatchSimulationFailureDlqResponse),
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        total: all.length
+      },
+      dlq_summary: {
+        retry_candidate: all.filter((entry) => entry.retry_eligibility === "retry_candidate").length,
+        not_retryable: all.filter((entry) => entry.retry_eligibility === "not_retryable").length
+      },
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/simulation-dlq/:dlqId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dlqId } = z.object({ dlqId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const entry = await candidateRepo.getReactionDispatchSimulationFailureDlq(dlqId);
+    if (!entry) return reply.code(404).send({ error: "reaction_dispatch_simulation_failure_dlq_not_found" });
+    return {
+      dlq_entry: toReactionDispatchSimulationFailureDlqResponse(entry),
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
   });
