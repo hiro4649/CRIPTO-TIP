@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "quotaPollingPlannerStatus": "implemented",
+  "quotaBudgetDecisionStatus": "pending_owner_scope",
+  "pollingPolicyStatus": "planner_ready",
+  "backoffPolicyStatus": "planner_ready",
+  "listFallbackPolicyStatus": "planner_ready",
+  "maxCycles": 5,
+  "sameFailureRepeatLimit": 2,
+  "networkCallScheduled": false,
+  "timerStarted": false,
+  "sleepCalled": false,
+  "realApiExecution": false,
+  "oauthConfigured": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
+}
