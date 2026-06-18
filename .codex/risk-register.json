@@ -4,10 +4,10 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "20aff57808bac6a73ece42b486d2039e24f7ad5d",
-  "title": "feat: add youtube live chat stream contract",
-  "goal": "Add a network-free YouTube Live Chat streamList contract and fake AsyncIterable transport.",
-  "changeType": "p1_youtube_live_chat_stream_contract",
+  "baseSha": "5ad3981577e3b2ad04a38a9ab3a22f58c7cd67a6",
+  "title": "feat: add admin youtube controlled canary preflight",
+  "goal": "Add read-only admin controlled canary preflight evaluation for future YouTube network canary planning without enabling real network execution.",
+  "changeType": "p1_admin_youtube_controlled_canary_preflight",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -18,24 +18,24 @@
   "risks": [
     {
       "severity": "medium",
-      "risk": "Fake stream consumer becomes unbounded.",
+      "risk": "Preflight endpoint is mistaken for network authorization.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Consumer enforces max chunk and same failure limits; tests cover bounds."
+      "mitigation": "Result remains network_enabled false and code_ready_network_blocked requires absent network authorization."
     },
     {
       "severity": "medium",
-      "risk": "Stream contract accidentally implies real streaming/network authority.",
+      "risk": "Sensitive configuration or credential material leaks through admin output.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Docs, evidence, and tests assert fake AsyncIterable only and no gRPC/HTTP streaming/network/OAuth/secret usage."
+      "mitigation": "Endpoint accepts enum statuses only and tests reject secret-like output."
     },
     {
       "severity": "medium",
-      "risk": "Raw stream frames or sensitive request fields leak from results.",
+      "risk": "Read-only preflight mutates repository state.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Chunk/result types expose safe projections and metadata only; tests reject raw values."
+      "mitigation": "Implementation only evaluates pure input and tests use app.inject without write calls."
     }
   ]
 }

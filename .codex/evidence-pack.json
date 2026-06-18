@@ -4,10 +4,10 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "20aff57808bac6a73ece42b486d2039e24f7ad5d",
-  "title": "feat: add youtube live chat stream contract",
-  "goal": "Add a network-free YouTube Live Chat streamList contract and fake AsyncIterable transport.",
-  "changeType": "p1_youtube_live_chat_stream_contract",
+  "baseSha": "5ad3981577e3b2ad04a38a9ab3a22f58c7cd67a6",
+  "title": "feat: add admin youtube controlled canary preflight",
+  "goal": "Add read-only admin controlled canary preflight evaluation for future YouTube network canary planning without enabling real network execution.",
+  "changeType": "p1_admin_youtube_controlled_canary_preflight",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -24,18 +24,18 @@
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
-    "youtube_live_chat_stream_contract",
-    "network_free_fake_stream",
-    "bounded_stream_consumption"
+    "admin_controlled_canary_preflight",
+    "network_authorization_boundary",
+    "safe_preflight_evaluation"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/youtube-live-chat-stream-contract.ts",
-      "apps/api/src/youtube-live-chat-fake-stream.ts",
-      "apps/api/src/p1-youtube-live-chat-stream-contract.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_STREAM_CONTRACT.md",
-      "docs/pr-p1-youtube-live-chat-stream-contract.md",
-      ".codex/p1-youtube-live-chat-stream-contract.json",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "docs/P1_ADMIN_YOUTUBE_CONTROLLED_CANARY_PREFLIGHT.md",
+      "docs/pr-p1-admin-youtube-controlled-canary-preflight.md",
+      ".codex/p1-admin-youtube-controlled-canary-preflight.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -45,11 +45,11 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "apps/api/src/youtube-live-chat-stream-contract.ts",
-      "apps/api/src/youtube-live-chat-fake-stream.ts",
-      "apps/api/src/p1-youtube-live-chat-stream-contract.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_STREAM_CONTRACT.md",
-      "docs/pr-p1-youtube-live-chat-stream-contract.md",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "docs/P1_ADMIN_YOUTUBE_CONTROLLED_CANARY_PREFLIGHT.md",
+      "docs/pr-p1-admin-youtube-controlled-canary-preflight.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -65,7 +65,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-client-contract.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
       "status": "pass",
       "result": "pass"
     }
@@ -84,12 +84,11 @@
     }
   ],
   "allowedScope": [
-    "network-free streamList contract",
-    "fake AsyncIterable transport",
-    "resume token validation",
-    "bounded stream consumption",
-    "safe stream status mapping",
-    "parser compatibility",
+    "read-only admin preflight surface",
+    "controlled canary safe status evaluation",
+    "safe config hash",
+    "secret-looking input rejection",
+    "existing readiness endpoint preservation",
     "docs",
     ".codex evidence"
   ],
@@ -112,9 +111,12 @@
     "real YouTube API call",
     "real OAuth execution",
     "secret value read",
-    "gRPC execution",
-    "HTTP streaming execution",
-    "wallet/RPC/deploy change",
+    "credential handle exposure",
+    "endpoint URL exposure",
+    "state mutation",
+    "owner approval creation",
+    "GitHub approval review creation",
+    "merge authority creation",
     "token sale",
     "token exchange",
     "cash-out",
@@ -123,22 +125,21 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "fake AsyncIterable yields safe stream chunks",
-    "resume tokens are validated",
-    "wrong resume token is blocked safely",
-    "disconnect and rate limit map to backoff",
-    "ended and fixture exhausted map to completion",
-    "disabled and not found map to blocked",
-    "abort returns safe status",
-    "max chunk and same failure limits are bounded",
-    "projected pages remain parser compatible",
-    "no network, global fetch, timer, sleep, gRPC, HTTP streaming, Google SDK, package, or lockfile change"
+    "admin auth required",
+    "GET returns deterministic safe blocked preflight",
+    "POST returns code_ready_network_blocked only when code contracts pass and network authorization is absent",
+    "unknown fields are rejected",
+    "unsafe input is rejected",
+    "safe config hash is deterministic",
+    "existing readiness endpoint remains blocked pending owner scope",
+    "no state mutation",
+    "no network, OAuth, secret, credential handle, endpoint URL, package, or lockfile change"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 112,
-    "passed": 2018,
+    "testFiles": 113,
+    "passed": 2022,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -146,14 +147,13 @@
     "No DB driver, Google SDK, Redis, or Kafka dependency is added.",
     "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "The stream contract uses fake AsyncIterable only.",
-    "No global fetch, timer, sleep, gRPC, HTTP streaming, real network, real OAuth, or secret value is used.",
-    "Stream output excludes raw frames, raw response bodies, credentials, Authorization headers, private URLs, endpoint URLs, and query values.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
+    "Admin preflight evaluates safe statuses only and does not mutate state.",
+    "No global fetch, real network, real OAuth, secret value, credential handle, endpoint URL, raw config, or private URL is exposed.",
+    "No owner approval, GitHub approval review, merge authority, runtime readiness, production readiness, legal compliance, or YouTube policy compliance is created."
   ],
   "residualRisks": [
     "GitHub same-head checks and safe artifact are pending until PR creation.",
-    "Real streamList transport, quota observation, and canary monitoring remain future owner-scoped work."
+    "Actual controlled canary still requires future owner-scoped network authorization, credential provider selection, privacy review, data deletion review, and operational runbook approval."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -162,7 +162,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-client-contract.test.ts: pass"
+    "corepack pnpm exec vitest run apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -172,10 +172,10 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds internal stream contract and fake stream helpers without real network streaming."
+    "statement": "Adds read-only admin preflight endpoints that expose safe status metadata only."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; this PR verifies fake AsyncIterable behavior and bounded consumption only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, gRPC, HTTP streaming, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, timers, sleeps, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; app.inject verifies local admin preflight routing without network execution.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, credential handles, endpoint values, state mutation, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -187,9 +187,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 YouTube Live Chat stream contract, fake AsyncIterable, request bounds, resume tokens, bounded consumer, parser compatibility, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental real streaming/network/OAuth/secret execution, unbounded stream consumption, raw frame exposure, or readiness claims; tests and docs reject those outcomes.",
-    "verificationOracle": "Focused stream contract tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 admin YouTube controlled canary preflight evaluator, admin GET/POST routes, safe validation, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidentally authorizing real network/OAuth/secret execution, exposing sensitive configuration, mutating state, or creating approval authority; tests and docs reject those outcomes.",
+    "verificationOracle": "Focused admin preflight tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-stream-contract.md"
+  "prBodyPath": "docs/pr-p1-admin-youtube-controlled-canary-preflight.md"
 }
