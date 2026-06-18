@@ -1,7 +1,8 @@
 export type YouTubeLiveChatPlannerStatus =
   | "poll_planned"
   | "poll_backoff_planned"
-  | "poll_blocked";
+  | "poll_blocked"
+  | "poll_terminal";
 
 export type YouTubeLiveChatPlannerFailureClass =
   | "none"
@@ -10,7 +11,11 @@ export type YouTubeLiveChatPlannerFailureClass =
   | "page_token_invalid"
   | "network_forbidden"
   | "real_api_not_configured"
-  | "oauth_missing";
+  | "oauth_missing"
+  | "live_chat_ended"
+  | "live_chat_disabled"
+  | "live_chat_not_found"
+  | "rate_limit_exceeded";
 
 export type YouTubeLiveChatQuotaPollingPlannerInput = {
   cycle_index: number;
@@ -19,12 +24,38 @@ export type YouTubeLiveChatQuotaPollingPlannerInput = {
   estimated_request_units: number;
   same_failure_repeat_count: number;
   last_failure_class: YouTubeLiveChatPlannerFailureClass;
+  preferred_mode?: "stream" | "list";
+  stream_mode_enabled?: boolean;
+  list_mode_enabled?: boolean;
+  list_fallback_enabled?: boolean;
+  stream_connected?: boolean;
+  next_page_token?: string | null;
+  polling_interval_ms?: number | null;
+  max_results?: number;
+  kill_switch_status?: "blocked" | "armed_for_controlled_canary";
+  network_authorized?: boolean;
 };
 
 export type YouTubeLiveChatQuotaPollingPlan = {
   status: YouTubeLiveChatPlannerStatus;
   next_poll_after_ms: number | null;
   selected_source_mode: "stream" | "list" | null;
+  action:
+    | "open_stream_contract"
+    | "resume_stream_contract"
+    | "read_list_after_ms"
+    | "reconcile_cursor"
+    | "stop_live_chat_ended"
+    | "block_live_chat_disabled"
+    | "block_live_chat_not_found"
+    | "block_rate_limited"
+    | "block_quota"
+    | "block_oauth"
+    | "block_network"
+    | "block_kill_switch"
+    | "stop_cycle_budget"
+    | "stop_same_failure_repeat"
+    | "poll_blocked";
   max_cycles: 5;
   same_failure_repeat_limit: 2;
   network_call_scheduled: false;
@@ -55,20 +86,52 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
   if (!Number.isInteger(input.estimated_request_units) || input.estimated_request_units <= 0) reasons.push("estimated_request_units_invalid");
   if (input.quota_remaining_units !== null && input.quota_remaining_units < input.estimated_request_units) reasons.push("quota_budget_insufficient");
   if (input.same_failure_repeat_count >= sameFailureRepeatLimit) reasons.push("same_failure_repeat_limit_reached");
+  if (input.kill_switch_status === "blocked") reasons.push("kill_switch_blocked");
+  if (input.network_authorized === false) reasons.push("network_not_authorized");
+  if (input.max_results !== undefined && (!Number.isInteger(input.max_results) || input.max_results < 200 || input.max_results > 2000)) reasons.push("max_results_out_of_bounds");
   if (input.last_failure_class === "network_forbidden" || input.last_failure_class === "real_api_not_configured" || input.last_failure_class === "oauth_missing") reasons.push(`${input.last_failure_class}_blocker`);
+  if (input.last_failure_class === "live_chat_ended") reasons.push("live_chat_ended_terminal");
+  if (input.last_failure_class === "live_chat_disabled") reasons.push("live_chat_disabled_blocker");
+  if (input.last_failure_class === "live_chat_not_found") reasons.push("live_chat_not_found_blocker");
 
   const invalid = reasons.some((reason) => reason.endsWith("_invalid"));
   const blocked = invalid
     || reasons.includes("max_cycle_reached")
     || reasons.includes("quota_budget_insufficient")
     || reasons.includes("same_failure_repeat_limit_reached")
+    || reasons.includes("kill_switch_blocked")
+    || reasons.includes("network_not_authorized")
     || reasons.some((reason) => reason.endsWith("_blocker"));
 
+  if (reasons.includes("live_chat_ended_terminal")) {
+    return {
+      status: "poll_terminal",
+      next_poll_after_ms: null,
+      selected_source_mode: null,
+      action: "stop_live_chat_ended",
+      max_cycles: maxCycles,
+      same_failure_repeat_limit: sameFailureRepeatLimit,
+      network_call_scheduled: false,
+      timer_started: false,
+      safe_reason_codes: reasons
+    };
+  }
+
   if (blocked) {
+    const action = reasons.includes("max_cycle_reached") ? "stop_cycle_budget"
+      : reasons.includes("same_failure_repeat_limit_reached") ? "stop_same_failure_repeat"
+      : reasons.includes("quota_budget_insufficient") ? "block_quota"
+      : reasons.includes("oauth_missing_blocker") ? "block_oauth"
+      : reasons.includes("network_forbidden_blocker") || reasons.includes("network_not_authorized") ? "block_network"
+      : reasons.includes("kill_switch_blocked") ? "block_kill_switch"
+      : reasons.includes("live_chat_disabled_blocker") ? "block_live_chat_disabled"
+      : reasons.includes("live_chat_not_found_blocker") ? "block_live_chat_not_found"
+      : "poll_blocked";
     return {
       status: "poll_blocked",
       next_poll_after_ms: null,
       selected_source_mode: null,
+      action,
       max_cycles: maxCycles,
       same_failure_repeat_limit: sameFailureRepeatLimit,
       network_call_scheduled: false,
@@ -78,10 +141,19 @@ export function planYouTubeLiveChatQuotaPolling(input: YouTubeLiveChatQuotaPolli
   }
 
   const backoffFailure = input.last_failure_class !== "none";
+  const selectedMode = input.preferred_mode === "list" ? "list"
+    : input.preferred_mode === "stream" && input.next_page_token ? "stream"
+    : input.last_failure_class === "stream_disconnected" && input.list_fallback_enabled === true ? "list"
+    : "stream";
+  const action = input.last_failure_class === "page_token_invalid" ? "reconcile_cursor"
+    : selectedMode === "list" ? "read_list_after_ms"
+    : input.next_page_token ? "resume_stream_contract"
+    : "open_stream_contract";
   return {
     status: backoffFailure ? "poll_backoff_planned" : "poll_planned",
-    next_poll_after_ms: backoffFailure ? backoffForFailure(input.same_failure_repeat_count) : clampPollingInterval(input.last_polling_interval_ms),
-    selected_source_mode: input.last_failure_class === "stream_disconnected" ? "list" : "stream",
+    next_poll_after_ms: backoffFailure ? backoffForFailure(input.same_failure_repeat_count) : clampPollingInterval(input.polling_interval_ms ?? input.last_polling_interval_ms),
+    selected_source_mode: selectedMode,
+    action,
     max_cycles: maxCycles,
     same_failure_repeat_limit: sameFailureRepeatLimit,
     network_call_scheduled: false,

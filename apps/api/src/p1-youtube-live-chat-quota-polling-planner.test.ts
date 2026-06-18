@@ -22,6 +22,7 @@ describe("P1 YouTube Live Chat quota polling planner", () => {
       status: "poll_planned",
       next_poll_after_ms: 5000,
       selected_source_mode: "stream",
+      action: "open_stream_contract",
       max_cycles: 5,
       same_failure_repeat_limit: 2,
       network_call_scheduled: false,
@@ -41,7 +42,8 @@ describe("P1 YouTube Live Chat quota polling planner", () => {
     });
 
     expect(plan.status).toBe("poll_backoff_planned");
-    expect(plan.selected_source_mode).toBe("list");
+    expect(plan.selected_source_mode).toBe("stream");
+    expect(plan.action).toBe("open_stream_contract");
     expect(plan.next_poll_after_ms).toBe(10000);
     expect(plan.network_call_scheduled).toBe(false);
   });
