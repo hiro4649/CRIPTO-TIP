@@ -1,41 +1,41 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.5",
-    "harnessVersion":  "1.2.5",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  0,
-    "headSha":  "current_pr_head",
-    "baseSha":  "de3217c85be021b4b015e89e93424bb7ddbf818c",
-    "title":  "feat: add p0 adapter execution boundary preview",
-    "goal":  "Add local/internal adapter execution boundary preview for approved reaction dispatch dry-run metadata without adapter execution.",
-    "changeType":  "product_vertical_slice_adapter_execution_boundary_preview",
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "legalComplianceClaimed":  false,
-    "youtubePolicyComplianceClaimed":  false,
-    "schemaVersion":  "1.0.0",
-    "prProfile":  "product_r3",
-    "taskMode":  "feature",
-    "risks":  [
-                  {
-                      "nextPr":  "current",
-                      "mitigation":  "Endpoint returns preview metadata only; tests assert no external execution and no dispatch count increment.",
-                      "owner":  "codex",
-                      "risk":  "Preview accidentally executes adapter or downstream runtime work.",
-                      "severity":  "medium"
-                  },
-                  {
-                      "nextPr":  "current",
-                      "mitigation":  "Preview re-checks current dry-run safety and blocks drift before returning an execution boundary preview.",
-                      "owner":  "codex",
-                      "risk":  "Approved dry-run boundary is used after unsafe state drift.",
-                      "severity":  "medium"
-                  },
-                  {
-                      "nextPr":  "current",
-                      "mitigation":  "Preview exposes only IDs, statuses, hashes, reason codes, and counters; tests assert forbidden raw strings are absent.",
-                      "owner":  "codex",
-                      "risk":  "Raw payload or secret-like material is exposed in preview.",
-                      "severity":  "medium"
-                  }
-              ]
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "a8b2c832bdf2aea691a45eb4ed1a44b09bcb06d6",
+  "title": "fix: harden network-disabled youtube transport",
+  "goal": "Harden network-disabled YouTube Live Chat direct REST fake transport lifecycle and align fake execution mode across planner, config, and kill switch contracts.",
+  "changeType": "p1_youtube_live_chat_network_disabled_transport_hardening",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "bugfix",
+  "risks": [
+    {
+      "severity": "medium",
+      "risk": "Credential handle release is skipped on a safe failure path.",
+      "owner": "codex",
+      "nextPr": "current",
+      "mitigation": "Focused tests cover success, HTTP error, redirect, content type, oversized body, invalid JSON, projection failure, fetch exception, acquisition failure, and release failure."
+    },
+    {
+      "severity": "medium",
+      "risk": "Fake transport path accidentally authorizes real network execution.",
+      "owner": "codex",
+      "nextPr": "current",
+      "mitigation": "Planner requires fake kill switch and network_authorized false; transport uses injected fetch only and records network_call_used false."
+    },
+    {
+      "severity": "medium",
+      "risk": "Raw API response metadata or unsafe error text is exposed.",
+      "owner": "codex",
+      "nextPr": "current",
+      "mitigation": "Safe projection retains only items, nextPageToken, and pollingIntervalMillis; tests reject raw error reflection and root metadata exposure."
+    }
+  ]
 }

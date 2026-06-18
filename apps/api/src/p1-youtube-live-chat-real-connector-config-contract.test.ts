@@ -89,6 +89,32 @@ describe("P1 YouTube Live Chat real connector config contract", () => {
     expect(privateUrl.status).toBe("preflight_blocked");
   });
 
+  it("accepts network-disabled fake transport planning without treating it as controlled canary", () => {
+    const validation = validateYouTubeLiveChatRealConnectorConfig({
+      ...defaultYouTubeLiveChatRealConnectorConfig(),
+      execution_mode: "fake_transport",
+      kill_switch_status: "armed_for_fake_transport",
+      network_enabled: false,
+      real_api_execution: false,
+      list_mode_enabled: true,
+      max_results: 200,
+      timeout_budget_ms: 1000
+    });
+
+    expect(validation.status).toBe("planning_valid");
+    expect(validation.safe_reason_codes).toEqual(["planning_config_safe"]);
+    expect(validation.network_enabled).toBe(false);
+    expect(validation.real_api_execution).toBe(false);
+  });
+
+  it("rejects fake transport when kill switch mode is not fake transport", () => {
+    expect(validateYouTubeLiveChatRealConnectorConfig({
+      ...defaultYouTubeLiveChatRealConnectorConfig(),
+      execution_mode: "fake_transport",
+      kill_switch_status: "blocked"
+    }).safe_reason_codes).toContain("fake_transport_requires_fake_kill_switch");
+  });
+
   it("admin projection excludes secret references and keeps safe status only", () => {
     const projection = toYouTubeLiveChatRealConnectorAdminProjection({
       ...defaultYouTubeLiveChatRealConnectorConfig(),

@@ -1,232 +1,239 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.6",
-    "harnessVersion":  "1.2.6",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  0,
-    "headSha":  "current_pr_head",
-    "baseSha":  "dd592a2b99329089978f6f53a1b9be87f5c5cccf",
-    "title":  "feat: add p0 adapter execution boundary preview",
-    "goal":  "Add local/internal adapter execution boundary preview for approved reaction dispatch dry-run metadata without adapter execution.",
-    "changeType":  "product_vertical_slice_adapter_execution_boundary_preview",
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "legalComplianceClaimed":  false,
-    "youtubePolicyComplianceClaimed":  false,
-    "schemaVersion":  "1.0.0",
-    "prProfile":  "product_r3",
-    "taskMode":  "feature",
-    "ciRunId":  "pre_pr",
-    "qualityGateRunId":  "pre_pr",
-    "qualityGateArtifactId":  "pre_pr",
-    "productCiStatus":  "local_pre_pr",
-    "qualityGateStatus":  "local_pre_pr",
-    "riskLevel":  "R3",
-    "runtimeReadinessClaim":  "no",
-    "productCodeChanged":  true,
-    "productValueContribution":  [
-                                     "reaction_dispatch_safety",
-                                     "admin_operator_workflow",
-                                     "adapter_execution_boundary_preview"
-                                 ],
-    "scope":  {
-                  "changedFiles":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/repositories/types.ts",
-                                       "apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts",
-                                       "docs/P0_REACTION_DISPATCH_ADAPTER_EXECUTION_BOUNDARY_PREVIEW.md",
-                                       "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md",
-                                       ".codex/p0-reaction-dispatch-adapter-execution-boundary-preview.json",
-                                       ".codex/evidence-pack.json",
-                                       ".codex/product-verification.json",
-                                       ".codex/quality-gate-evidence.json",
-                                       ".codex/test-coverage-evidence.json",
-                                       ".codex/task-contract.json",
-                                       ".codex/risk-register.json",
-                                       ".codex/review-independence.json"
-                                   ],
-                  "allowedPaths":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/*.test.ts",
-                                       "apps/api/src/*.ts",
-                                       "apps/api/src/repositories/*",
-                                       "docs/P0_REACTION_DISPATCH_ADAPTER_EXECUTION_BOUNDARY_PREVIEW.md",
-                                       "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md",
-                                       ".codex/**"
-                                   ],
-                  "forbiddenPaths":  [
-                                         "package.json",
-                                         "pnpm-lock.yaml",
-                                         "contracts/**",
-                                         "migrations/**",
-                                         ".github/workflows/**",
-                                         "apps/web/**",
-                                         "apps/overlay/**",
-                                         ".env.example"
-                                     ]
-              },
-    "commands":  [
-                     {
-                         "status":  "pass",
-                         "result":  "pass",
-                         "name":  "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts apps/api/src/p0-admin-reaction-dispatch-dry-run-approval-gate.test.ts"
-                     },
-                     {
-                         "status":  "pass",
-                         "result":  "pass",
-                         "name":  "corepack pnpm typecheck"
-                     }
-                 ],
-    "remoteRuns":  [
-                       {
-                           "result":  "local_pre_pr",
-                           "name":  "ci",
-                           "runId":  "pre_pr"
-                       },
-                       {
-                           "artifactId":  "pre_pr",
-                           "result":  "local_pre_pr",
-                           "name":  "quality-gate",
-                           "runId":  "pre_pr"
-                       }
-                   ],
-    "allowedScope":  [
-                         "local/internal adapter execution boundary preview",
-                         "approved dry-run boundary requirement",
-                         "approval snapshot binding",
-                         "lease validity guards",
-                         "outbox lifecycle guards",
-                         "adapter allowlist fail-closed behavior",
-                         "safe envelope hashes",
-                         "admin auth guard",
-                         "state drift guards",
-                         "read-only support/outbox/lease/attempt-plan checks",
-                         "no external execution checks",
-                         "docs",
-                         ".codex evidence"
-                     ],
-    "forbiddenScope":  [
-                           "runtime readiness claim",
-                           "production readiness claim",
-                           "legal compliance claim",
-                           "YouTube policy compliance claim",
-                           "package.json change",
-                           "pnpm-lock change",
-                           "DB driver dependency",
-                           "Redis dependency",
-                           "Kafka dependency",
-                           "real DB connection",
-                           "migration change",
-                           "contract change",
-                           "workflow change",
-                           "apps/web change",
-                           "apps/overlay change",
-                           "real YouTube API",
-                           "real OAuth token",
-                           "real RPC",
-                           "wallet/RPC/deploy changes",
-                           "real TTS call",
-                           "real Live2D call",
-                           "real renderer call",
-                           "real OBS delivery",
-                           "real WebSocket delivery",
-                           "IRIS Core call",
-                           "VOXWEAVE call",
-                           "support event mutation",
-                           "outbox delivery mutation",
-                           "lease mutation",
-                           "attempt plan mutation",
-                           "reaction execution",
-                           "overlay execution",
-                           "external outbox dispatch",
-                           "external adapter execution",
-                           "AI generation execution",
-                           "token sale",
-                           "token exchange",
-                           "cash-out",
-                           "custody",
-                           "internal balance",
-                           "investment wording",
-                           "refund"
-                       ],
-    "doneCriteria":  [
-                         "admin auth required",
-                         "unknown dry-run boundary returns 404",
-                         "approved dry-run boundary creates safe preview",
-                         "unapproved or rejected dry-run boundary is blocked",
-                         "approval snapshot hash drift is blocked",
-                         "expired or released lease is blocked",
-                         "cancelled blocked superseded or attempted outbox lifecycle drift is blocked",
-                         "unknown adapter kind is blocked fail-closed",
-                         "duplicate preview is deterministic and mutation-free",
-                         "timestamp semantics are explicit",
-                         "no support event mutation",
-                         "no outbox delivery mutation",
-                         "no lease mutation",
-                         "no attempt plan mutation",
-                         "no adapter execution",
-                         "no external runtime execution"
-                     ],
-    "testSummary":  {
-                        "schemaVersion":  "1.0.0",
-                        "command":  "corepack pnpm test",
-                        "testFiles":  91,
-                        "passed":  1961,
-                        "skipped":  6
-                    },
-    "securityBoundaries":  [
-                               "No package.json or pnpm-lock change.",
-                               "No DB driver, Redis, or Kafka dependency is added.",
-                               "No real DB connection is introduced.",
-                               "No migration, contract, workflow, web, or overlay path is changed.",
-                               "No real YouTube API, OAuth token, RPC, wallet, or deploy change is used.",
-                               "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core call, VOXWEAVE call, or external adapter execution is performed.",
-                               "The new endpoint returns adapter execution boundary preview metadata only.",
-                               "The endpoint does not mutate support events, outbox delivery state, leases, or attempt plans.",
-                               "The endpoint blocks stale approval snapshots, expired or released leases, unsafe outbox lifecycle drift, and unknown adapter kinds.",
-                               "No reaction, overlay, external outbox delivery, or runtime dispatch is executed.",
-                               "Preview metadata excludes raw messages, raw payloads, wallet addresses, authorization strings, secrets, private URLs, adapter URLs, webhook URLs, request bodies, auth material, headers, and tokens.",
-                               "No runtime, production, legal, or YouTube policy readiness is claimed."
-                           ],
-    "residualRisks":  [
-                          "This is local/internal adapter execution boundary preview metadata only.",
-                          "Actual adapter execution remains future scoped work."
-                      ],
-    "humanConfirmation":  [
-                              "AI review is not human approval.",
-                              "AI review is not GitHub approval review.",
-                              "This PR does not create owner approval record.",
-                              "This PR does not create merge authority."
-                          ],
-    "productVerificationCommands":  [
-                                        "corepack pnpm exec vitest run apps/api/src/p0-reaction-dispatch-adapter-execution-boundary-preview.test.ts: pass",
-                                        "corepack pnpm typecheck: pass"
-                                    ],
-    "packageVerification":  {
-                                "packageScriptsChanged":  false,
-                                "runtimeDependenciesAdded":  false,
-                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Redis/Kafka dependency, package.json, or pnpm-lock changes are introduced."
-                            },
-    "apiCompatibilitySummary":  {
-                                    "publicApiChanged":  false,
-                                    "internalRuntimeApiChanged":  true,
-                                    "statement":  "Adds local/internal adapter execution boundary preview endpoint with approval snapshot binding and fail-closed drift guards."
-                                },
-    "runtimeSmokeRationale":  "No runtime readiness is claimed; this is local/internal preview metadata only.",
-    "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real RPC, real DB, DB driver dependency, Redis/Kafka dependency, wallet/RPC/deploy changes, real TTS/Live2D/renderer/OBS/WebSocket delivery, IRIS Core/VOXWEAVE calls, support event/outbox delivery/lease/attempt plan mutation, reaction/overlay/external outbox dispatch, external adapter execution, or readiness/compliance claims are introduced.",
-    "safeOutput":  {
-                       "status":  "pass"
-                   },
-    "productionClaims":  {
-                             "runtimeReady":  false,
-                             "productionReady":  false,
-                             "deploymentApplied":  false,
-                             "legalComplianceClaimed":  false,
-                             "youtubePolicyComplianceClaimed":  false
-                         },
-    "reviewScope":  {
-                        "scope":  "P0 adapter execution boundary preview, approval snapshot binding, lease validity, outbox lifecycle drift guards, adapter allowlist fail-closed behavior, deterministic preview, safe metadata, tests, docs, and .codex evidence.",
-                        "riskSummary":  "Main risk is accidental external execution, stale approval snapshot use, unsafe state approval, raw data exposure, mutation of support/outbox/lease/attempt plan, or readiness claims; tests and docs reject those outcomes.",
-                        "verificationOracle":  "Adapter execution boundary preview tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
-                    },
-    "prBodyPath":  "docs/pr-p0-reaction-dispatch-adapter-execution-boundary-preview.md"
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "a8b2c832bdf2aea691a45eb4ed1a44b09bcb06d6",
+  "title": "fix: harden network-disabled youtube transport",
+  "goal": "Harden network-disabled YouTube Live Chat direct REST fake transport lifecycle and align fake execution mode across planner, config, and kill switch contracts.",
+  "changeType": "p1_youtube_live_chat_network_disabled_transport_hardening",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "bugfix",
+  "ciRunId": "pre_pr",
+  "qualityGateRunId": "pre_pr",
+  "qualityGateArtifactId": "pre_pr",
+  "productCiStatus": "local_pre_pr",
+  "qualityGateStatus": "local_pre_pr",
+  "riskLevel": "R3",
+  "runtimeReadinessClaim": "no",
+  "productCodeChanged": true,
+  "productValueContribution": [
+    "youtube_live_chat_fake_transport_hardening",
+    "credential_lifecycle_safety",
+    "network_disabled_connector_boundary"
+  ],
+  "scope": {
+    "changedFiles": [
+      "apps/api/src/youtube-live-chat-direct-rest-transport.ts",
+      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
+      "apps/api/src/youtube-live-chat-real-connector-config.ts",
+      "apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts",
+      "apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts",
+      "apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts",
+      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_NETWORK_DISABLED_TRANSPORT_HARDENING.md",
+      "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md",
+      ".codex/p1-youtube-live-chat-network-disabled-transport-hardening.json",
+      ".codex/evidence-pack.json",
+      ".codex/product-verification.json",
+      ".codex/quality-gate-evidence.json",
+      ".codex/test-coverage-evidence.json",
+      ".codex/task-contract.json",
+      ".codex/risk-register.json",
+      ".codex/review-independence.json"
+    ],
+    "allowedPaths": [
+      "apps/api/src/youtube-live-chat-direct-rest-transport.ts",
+      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
+      "apps/api/src/youtube-live-chat-real-connector-config.ts",
+      "apps/api/src/p1-youtube-live-chat-*.test.ts",
+      "apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_NETWORK_DISABLED_TRANSPORT_HARDENING.md",
+      "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md",
+      ".codex/**"
+    ],
+    "forbiddenPaths": [
+      "package.json",
+      "pnpm-lock.yaml",
+      "contracts/**",
+      "migrations/**",
+      ".github/workflows/**",
+      "apps/web/**",
+      "apps/overlay/**",
+      ".env.example"
+    ]
+  },
+  "commands": [
+    {
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "status": "pass",
+      "result": "pass"
+    }
+  ],
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "pre_pr",
+      "result": "local_pre_pr"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "pre_pr",
+      "artifactId": "pre_pr",
+      "result": "local_pre_pr"
+    }
+  ],
+  "allowedScope": [
+    "network-disabled fake transport hardening",
+    "credential release lifecycle",
+    "safe fetch exception handling",
+    "UTF-8 response byte limit",
+    "safe API response projection",
+    "fake execution mode planner alignment",
+    "fake kill-switch alignment",
+    "docs",
+    ".codex evidence"
+  ],
+  "forbiddenScope": [
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "package.json change",
+    "pnpm-lock change",
+    "DB driver dependency",
+    "Google SDK dependency",
+    "real DB connection",
+    "migration change",
+    "contract change",
+    "workflow change",
+    "real network call",
+    "real YouTube API call",
+    "real OAuth execution",
+    "secret value read",
+    "wallet/RPC/deploy change",
+    "token sale",
+    "token exchange",
+    "cash-out",
+    "custody",
+    "internal balance",
+    "investment wording"
+  ],
+  "securityBoundary": {
+    "packageJsonChanged": false,
+    "pnpmLockChanged": false,
+    "contractsChanged": false,
+    "migrationsChanged": false,
+    "workflowChanged": false,
+    "appsWebChanged": false,
+    "appsOverlayChanged": false,
+    "realDbConnectionAdded": false,
+    "dbDriverDependencyAdded": false,
+    "googleSdkAdded": false,
+    "globalFetchUsed": false,
+    "networkCallUsed": false,
+    "realYouTubeApiUsed": false,
+    "realOAuthUsed": false,
+    "secretValueUsed": false,
+    "runtimeReadinessClaimed": false,
+    "productionReadinessClaimed": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
+  },
+  "doneCriteria": [
+    "credential handles are released after success and safe failure paths",
+    "injected fetch exceptions return safe upstream_unavailable metadata without raw error text",
+    "response size is enforced with UTF-8 byte length",
+    "API responses are projected to safe page fields only",
+    "request bounds are validated before fake fetch calls",
+    "scope IDs are injected and duplicate scopes are rejected",
+    "fake_transport planner mode requires armed fake kill switch and network_authorized false",
+    "controlled network canary remains out of scope",
+    "config contract accepts fake transport planning without network execution",
+    "no package, lockfile, migration, contract, workflow, web, or overlay changes",
+    "no real network, OAuth, YouTube API, secret, or readiness/compliance claim"
+  ],
+  "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 110,
+    "passed": 2006,
+    "skipped": 6
+  },
+  "securityBoundaries": [
+    "No package.json or pnpm-lock change.",
+    "No DB driver, Google SDK, Redis, or Kafka dependency is added.",
+    "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
+    "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
+    "The direct REST transport remains injected fake-fetch only; global fetch and real network execution are not used.",
+    "Credential handles are opaque and released without exposing raw values or Authorization headers.",
+    "Response projection excludes raw root metadata and raw response bodies.",
+    "Planner and config changes are network-disabled contract alignment only.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
+  ],
+  "residualRisks": [
+    "GitHub same-head checks and safe artifact are pending until PR creation.",
+    "Real credential provider selection and real network canary remain future owner-scoped work."
+  ],
+  "humanConfirmation": [
+    "AI review is not human approval.",
+    "AI review is not GitHub approval review.",
+    "This PR does not create owner approval record.",
+    "This PR does not create merge authority."
+  ],
+  "productVerificationCommands": [
+    "corepack pnpm install: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-direct-rest-list-transport.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts apps/api/src/p1-youtube-live-chat-real-connector-config-contract.test.ts apps/api/src/p1-youtube-credential-provider-kill-switch.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/write-test-summary.mjs: pass",
+    "node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v126-self-test.mjs: pass",
+    "node scripts/codex-v125-self-test.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
+    "cd contracts; forge test: nonblocking unavailable locally"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
+  },
+  "apiCompatibilitySummary": {
+    "publicApiChanged": false,
+    "internalRuntimeApiChanged": true,
+    "statement": "Hardens internal YouTube Live Chat fake transport lifecycle and planner/config contracts while keeping product runtime network execution disabled."
+  },
+  "runtimeSmokeRationale": "No runtime readiness is claimed; this is network-disabled connector contract hardening verified with local fake-fetch tests.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
+  "safeOutput": {
+    "status": "pass"
+  },
+  "productionClaims": {
+    "runtimeReady": false,
+    "productionReady": false,
+    "deploymentApplied": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
+  },
+  "reviewScope": {
+    "scope": "P1 YouTube Live Chat network-disabled direct REST transport hardening, fake execution mode planner alignment, config contract alignment, safe projection, credential release lifecycle, tests, docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental network/OAuth/secret execution, unreleased credential handles, raw response exposure, stale evidence, or readiness claims; tests and docs reject those outcomes.",
+    "verificationOracle": "Focused transport/planner/config/kill-switch tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+  },
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-network-disabled-transport-hardening.md"
 }
