@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "directRestListTransportStatus": "implemented",
+  "globalFetchUsed": false,
+  "fakeFetchOnly": true,
+  "networkEnabled": false,
+  "realApiExecution": false,
+  "googleSdkAdded": false,
+  "authorizationHeaderExposed": false,
+  "rawTokenExposed": false,
+  "rawBodyStored": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
+}
