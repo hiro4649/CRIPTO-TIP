@@ -69,7 +69,7 @@ proposal-only and owner-approval-required.
 ## Local Task Discipline
 
 Start from clean default branch or clean worktree. Preserve user changes.
-Run v125 self-test and the local quality gate for harness rollout. For product
+Run v126 self-test and the local quality gate for harness rollout. For product
 work, use the repo-specific commands above and keep product evidence separate
 from harness evidence.
 <!-- CODEX_QUALITY_HARNESS_END -->
