@@ -4,33 +4,32 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "5ad3981577e3b2ad04a38a9ab3a22f58c7cd67a6",
-  "title": "feat: add admin youtube controlled canary preflight",
-  "goal": "Add read-only admin controlled canary preflight evaluation for future YouTube network canary planning without enabling real network execution.",
-  "changeType": "p1_admin_youtube_controlled_canary_preflight",
+  "baseSha": "e1bec9effcc89af39d9448c0105d31f23d344718",
+  "title": "test: add youtube live chat network-disabled e2e",
+  "goal": "Add network-disabled local E2E coverage and pre-network completion audit for YouTube Live Chat connector lifecycle.",
+  "changeType": "p1_youtube_live_chat_network_disabled_e2e",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
-  "taskMode": "feature",
+  "taskMode": "test",
   "testCoverageStatus": "focused_local_pass",
   "focusedTestsPassed": true,
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "result": "pass"
     }
   ],
   "coveredAreas": [
-    "admin_auth",
-    "get_preflight",
-    "post_evaluate",
-    "unknown_field_rejection",
-    "unsafe_input_rejection",
-    "code_ready_network_blocked",
-    "existing_readiness_preserved",
+    "global_fetch_zero",
+    "direct_rest_fake_transport",
+    "cursor_ingest",
+    "support_received",
+    "fake_stream",
+    "controlled_canary_preflight",
     "safe_output"
   ]
 }

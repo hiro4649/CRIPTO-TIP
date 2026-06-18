@@ -4,17 +4,17 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "5ad3981577e3b2ad04a38a9ab3a22f58c7cd67a6",
-  "title": "feat: add admin youtube controlled canary preflight",
-  "goal": "Add read-only admin controlled canary preflight evaluation for future YouTube network canary planning without enabling real network execution.",
-  "changeType": "p1_admin_youtube_controlled_canary_preflight",
+  "baseSha": "e1bec9effcc89af39d9448c0105d31f23d344718",
+  "title": "test: add youtube live chat network-disabled e2e",
+  "goal": "Add network-disabled local E2E coverage and pre-network completion audit for YouTube Live Chat connector lifecycle.",
+  "changeType": "p1_youtube_live_chat_network_disabled_e2e",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
-  "taskMode": "feature",
+  "taskMode": "test",
   "ciRunId": "pre_pr",
   "qualityGateRunId": "pre_pr",
   "qualityGateArtifactId": "pre_pr",
@@ -22,20 +22,18 @@
   "qualityGateStatus": "local_pre_pr",
   "riskLevel": "R3",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
+  "productCodeChanged": false,
   "productValueContribution": [
-    "admin_controlled_canary_preflight",
-    "network_authorization_boundary",
-    "safe_preflight_evaluation"
+    "network_disabled_connector_e2e",
+    "pre_network_completion_audit",
+    "global_fetch_zero_verification"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
-      "apps/api/src/server.ts",
-      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
-      "docs/P1_ADMIN_YOUTUBE_CONTROLLED_CANARY_PREFLIGHT.md",
-      "docs/pr-p1-admin-youtube-controlled-canary-preflight.md",
-      ".codex/p1-admin-youtube-controlled-canary-preflight.json",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_PRENETWORK_COMPLETION_AUDIT.md",
+      "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md",
+      ".codex/p1-youtube-live-chat-network-disabled-e2e.json",
       ".codex/evidence-pack.json",
       ".codex/product-verification.json",
       ".codex/quality-gate-evidence.json",
@@ -45,11 +43,9 @@
       ".codex/review-independence.json"
     ],
     "allowedPaths": [
-      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
-      "apps/api/src/server.ts",
-      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
-      "docs/P1_ADMIN_YOUTUBE_CONTROLLED_CANARY_PREFLIGHT.md",
-      "docs/pr-p1-admin-youtube-controlled-canary-preflight.md",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "docs/P1_YOUTUBE_LIVE_CHAT_PRENETWORK_COMPLETION_AUDIT.md",
+      "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md",
       ".codex/**"
     ],
     "forbiddenPaths": [
@@ -65,7 +61,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "status": "pass",
       "result": "pass"
     }
@@ -84,11 +80,14 @@
     }
   ],
   "allowedScope": [
-    "read-only admin preflight surface",
-    "controlled canary safe status evaluation",
-    "safe config hash",
-    "secret-looking input rejection",
-    "existing readiness endpoint preservation",
+    "network-disabled local E2E",
+    "global fetch throw spy",
+    "fake direct REST transport",
+    "cursor ingest",
+    "support.received persistence",
+    "fake stream contract",
+    "controlled canary preflight",
+    "pre-network completion audit",
     "docs",
     ".codex evidence"
   ],
@@ -111,12 +110,12 @@
     "real YouTube API call",
     "real OAuth execution",
     "secret value read",
-    "credential handle exposure",
-    "endpoint URL exposure",
-    "state mutation",
-    "owner approval creation",
-    "GitHub approval review creation",
-    "merge authority creation",
+    "real TTS",
+    "real Live2D",
+    "renderer",
+    "OBS",
+    "real WebSocket delivery",
+    "wallet/RPC/deploy change",
     "token sale",
     "token exchange",
     "cash-out",
@@ -125,21 +124,20 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "admin auth required",
-    "GET returns deterministic safe blocked preflight",
-    "POST returns code_ready_network_blocked only when code contracts pass and network authorization is absent",
-    "unknown fields are rejected",
-    "unsafe input is rejected",
-    "safe config hash is deterministic",
-    "existing readiness endpoint remains blocked pending owner scope",
-    "no state mutation",
-    "no network, OAuth, secret, credential handle, endpoint URL, package, or lockfile change"
+    "global fetch call count remains zero",
+    "fake direct REST transport ingests two pages",
+    "support.received events persist through local cursor ingest",
+    "fake stream contract returns safe backoff metadata",
+    "controlled canary preflight remains code_ready_network_blocked",
+    "safe output excludes auth and token material",
+    "pre-network completion audit lists complete and incomplete areas",
+    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 113,
-    "passed": 2022,
+    "testFiles": 114,
+    "passed": 2024,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -147,13 +145,14 @@
     "No DB driver, Google SDK, Redis, or Kafka dependency is added.",
     "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "Admin preflight evaluates safe statuses only and does not mutate state.",
-    "No global fetch, real network, real OAuth, secret value, credential handle, endpoint URL, raw config, or private URL is exposed.",
-    "No owner approval, GitHub approval review, merge authority, runtime readiness, production readiness, legal compliance, or YouTube policy compliance is created."
+    "Global fetch is replaced by a throwing spy and verified not called.",
+    "Injected fake fetch is used for direct REST transport only.",
+    "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core, VOXWEAVE, secret value, credential handle, or Authorization header is used.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
     "GitHub same-head checks and safe artifact are pending until PR creation.",
-    "Actual controlled canary still requires future owner-scoped network authorization, credential provider selection, privacy review, data deletion review, and operational runbook approval."
+    "Real credential provider, secret manager integration, OAuth consent, token lifecycle, network authorization, real list/stream calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -162,7 +161,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-stream-contract.test.ts apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts: pass"
+    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -171,11 +170,11 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds read-only admin preflight endpoints that expose safe status metadata only."
+    "internalRuntimeApiChanged": false,
+    "statement": "Adds local E2E coverage and audit docs only."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; app.inject verifies local admin preflight routing without network execution.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, credential handles, endpoint values, state mutation, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; app.inject and injected fake transports verify local network-disabled behavior only.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -187,9 +186,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 admin YouTube controlled canary preflight evaluator, admin GET/POST routes, safe validation, tests, docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidentally authorizing real network/OAuth/secret execution, exposing sensitive configuration, mutating state, or creating approval authority; tests and docs reject those outcomes.",
-    "verificationOracle": "Focused admin preflight tests, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 network-disabled local E2E across fake direct transport, list connector service, cursor ingest, support.received, fake stream contract, controlled canary preflight, audit docs, and .codex evidence.",
+    "riskSummary": "Main risk is accidental real network/OAuth/secret execution or overstating readiness; the test replaces global fetch with a throwing spy and audit docs stop before real network.",
+    "verificationOracle": "Focused network-disabled E2E, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-admin-youtube-controlled-canary-preflight.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md"
 }
