@@ -33,7 +33,7 @@ export type YouTubeLiveChatReadResult = {
   observed_at: string;
 };
 
-export type YouTubeLiveChatClientCapability = {
+export type YouTubeLiveChatFakeClientCapability = {
   client_kind: "fake_fixture";
   network_enabled: false;
   oauth_configured: false;
@@ -43,6 +43,20 @@ export type YouTubeLiveChatClientCapability = {
   supports_fixture_pages: true;
   supports_cursor_handoff: true;
 };
+
+export type YouTubeLiveChatCandidateClientCapability = {
+  client_kind: "youtube_api_candidate";
+  network_enabled: false;
+  oauth_configured: false;
+  real_api_execution: false;
+  supports_stream_list: boolean;
+  supports_list_fallback: boolean;
+  supports_fixture_pages: false;
+  supports_cursor_handoff: false;
+  planning_only: true;
+};
+
+export type YouTubeLiveChatClientCapability = YouTubeLiveChatFakeClientCapability | YouTubeLiveChatCandidateClientCapability;
 
 export interface YouTubeLiveChatClient {
   getCapability(): YouTubeLiveChatClientCapability;
@@ -60,5 +74,19 @@ export function fakeFixtureCapability(): YouTubeLiveChatClientCapability {
     supports_list_fallback: false,
     supports_fixture_pages: true,
     supports_cursor_handoff: true
+  };
+}
+
+export function youtubeApiCandidateCapability(input?: { supports_stream_list?: boolean; supports_list_fallback?: boolean }): YouTubeLiveChatCandidateClientCapability {
+  return {
+    client_kind: "youtube_api_candidate",
+    network_enabled: false,
+    oauth_configured: false,
+    real_api_execution: false,
+    supports_stream_list: input?.supports_stream_list ?? true,
+    supports_list_fallback: input?.supports_list_fallback ?? true,
+    supports_fixture_pages: false,
+    supports_cursor_handoff: false,
+    planning_only: true
   };
 }
