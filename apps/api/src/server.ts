@@ -34,6 +34,7 @@ import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
+import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
 
 loadConfig();
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
@@ -3048,6 +3049,41 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       viewer: { ...normalized.viewer, iris_user_id: irisUserId }
     };
     return applySupportReceivedSideEffects(repo, support);
+  });
+
+  app.post("/internal/fixtures/youtube-superchat/normalize", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    try {
+      const normalization = normalizeYouTubeSuperChatFixture(req.body);
+      const contractPreview = await toReactionDispatchPreview(repo, normalization.normalized_event);
+      if (contractPreview.contract_validation.status !== "valid") {
+        return reply.code(409).send({
+          error: "youtube_superchat_fixture_invalid",
+          safe_reason_codes: contractPreview.contract_validation.errors,
+          side_effects: normalization.side_effects
+        });
+      }
+      return {
+        ...normalization,
+        contract_validation: contractPreview.contract_validation
+      };
+    } catch (error) {
+      const issuePaths = error instanceof z.ZodError
+        ? error.issues.map((issue) => issue.path.join(".")).filter(Boolean)
+        : [];
+      return reply.code(400).send({
+        error: "youtube_superchat_fixture_invalid",
+        safe_reason_codes: issuePaths.length ? issuePaths.map((issue) => `invalid_${issue}`) : ["youtube_superchat_fixture_invalid"],
+        side_effects: {
+          support_event_persisted: "skipped",
+          affinity_update: "skipped",
+          reaction_enqueue: "skipped",
+          overlay_enqueue: "skipped",
+          outbox_enqueue: "skipped",
+          external_execution: "skipped"
+        }
+      });
+    }
   });
 
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
