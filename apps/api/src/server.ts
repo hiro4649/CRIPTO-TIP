@@ -3086,6 +3086,45 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     }
   });
 
+  app.post("/internal/fixtures/youtube-superchat/ingest", async (req, reply) => {
+    if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    try {
+      const normalization = normalizeYouTubeSuperChatFixture(req.body);
+      const contractPreview = await toReactionDispatchPreview(repo, normalization.normalized_event);
+      if (contractPreview.contract_validation.status !== "valid") {
+        return reply.code(409).send({
+          error: "youtube_superchat_fixture_invalid",
+          safe_reason_codes: contractPreview.contract_validation.errors,
+          side_effects: normalization.side_effects
+        });
+      }
+      const result = await applySupportReceivedSideEffects(repo, normalization.normalized_event);
+      return {
+        ...result,
+        normalization_status: normalization.normalization_status,
+        idempotency_key: normalization.idempotency_key,
+        safe_reason_codes: normalization.safe_reason_codes,
+        contract_validation: contractPreview.contract_validation
+      };
+    } catch (error) {
+      const issuePaths = error instanceof z.ZodError
+        ? error.issues.map((issue) => issue.path.join(".")).filter(Boolean)
+        : [];
+      return reply.code(400).send({
+        error: "youtube_superchat_fixture_invalid",
+        safe_reason_codes: issuePaths.length ? issuePaths.map((issue) => `invalid_${issue}`) : ["youtube_superchat_fixture_invalid"],
+        side_effects: {
+          support_event_persisted: "skipped",
+          affinity_update: "skipped",
+          reaction_enqueue: "skipped",
+          overlay_enqueue: "skipped",
+          outbox_enqueue: "skipped",
+          external_execution: "skipped"
+        }
+      });
+    }
+  });
+
   app.get("/admin/live-sessions/:streamId/tips", async (req, reply) => {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
