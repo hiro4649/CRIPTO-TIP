@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -591,6 +591,9 @@ type ReactionDispatchCandidateRepository = {
   getReactionDispatchDryRunApproval?: (dryRunBoundaryId: string) => Promise<ReactionDispatchDryRunApprovalMetadata | undefined>;
   setReactionDispatchAdapterExecutionBoundaryApproval?: (approval: ReactionDispatchAdapterExecutionBoundaryApprovalMetadata) => Promise<ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>;
   getReactionDispatchAdapterExecutionBoundaryApproval?: (dryRunBoundaryId: string) => Promise<ReactionDispatchAdapterExecutionBoundaryApprovalMetadata | undefined>;
+  setReactionDispatchLocalAdapterSimulationResult?: (result: ReactionDispatchLocalAdapterSimulationResultMetadata) => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata>;
+  getReactionDispatchLocalAdapterSimulationResult?: (simulationResultId: string) => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata | undefined>;
+  listReactionDispatchLocalAdapterSimulationResults?: () => Promise<ReactionDispatchLocalAdapterSimulationResultMetadata[]>;
 };
 const resolutionFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, AdminSupportEventResolution>>();
 const reactionDispatchCandidateFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchCandidateMetadata>>();
@@ -601,6 +604,7 @@ const reactionDispatchInternalOutboxLeaseFallbackByRepo = new WeakMap<CriptoTipR
 const reactionDispatchInternalOutboxAttemptPlanFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchInternalOutboxAttemptPlanMetadata>>();
 const reactionDispatchDryRunApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchDryRunApprovalMetadata>>();
 const reactionDispatchAdapterExecutionBoundaryApprovalFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>>();
+const reactionDispatchLocalAdapterSimulationResultFallbackByRepo = new WeakMap<CriptoTipRepository, Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>>();
 
 const SupportEventAdjustmentSchema = z.object({
   display_name_sanitized: z.string().min(1).max(120).optional(),
@@ -698,6 +702,9 @@ const AdminAdapterExecutionBoundaryApprovalRequestSchema = z.object({
   safe_context_hash: z.string().min(1).max(160),
   constraints_hash: z.string().min(1).max(160),
   request_preview_hash: z.string().min(1).max(160)
+});
+const AdminLocalAdapterSimulationRequestSchema = z.object({
+  simulation_case: z.enum(["success", "retryable_failure", "terminal_failure"])
 });
 
 type AdminSupportEventResolution = SupportEventResolutionMetadata;
@@ -986,6 +993,11 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
     adapterExecutionApprovalFallback = new Map<string, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata>();
     reactionDispatchAdapterExecutionBoundaryApprovalFallbackByRepo.set(repo, adapterExecutionApprovalFallback);
   }
+  let localSimulationResultFallback = reactionDispatchLocalAdapterSimulationResultFallbackByRepo.get(repo);
+  if (!localSimulationResultFallback) {
+    localSimulationResultFallback = new Map<string, ReactionDispatchLocalAdapterSimulationResultMetadata>();
+    reactionDispatchLocalAdapterSimulationResultFallbackByRepo.set(repo, localSimulationResultFallback);
+  }
   return {
     createReactionDispatchCandidateIfAbsent: candidate.createReactionDispatchCandidateIfAbsent
       ? (entry) => candidate.createReactionDispatchCandidateIfAbsent!.call(repo, entry)
@@ -1100,7 +1112,20 @@ function getReactionDispatchCandidateRepository(repo: CriptoTipRepository): Requ
       },
     getReactionDispatchAdapterExecutionBoundaryApproval: candidate.getReactionDispatchAdapterExecutionBoundaryApproval
       ? (dryRunBoundaryId) => candidate.getReactionDispatchAdapterExecutionBoundaryApproval!.call(repo, dryRunBoundaryId)
-      : async (dryRunBoundaryId) => adapterExecutionApprovalFallback.get(dryRunBoundaryId)
+      : async (dryRunBoundaryId) => adapterExecutionApprovalFallback.get(dryRunBoundaryId),
+    setReactionDispatchLocalAdapterSimulationResult: candidate.setReactionDispatchLocalAdapterSimulationResult
+      ? (result) => candidate.setReactionDispatchLocalAdapterSimulationResult!.call(repo, result)
+      : async (result) => {
+        localSimulationResultFallback.set(result.simulation_result_id, result);
+        return result;
+      },
+    getReactionDispatchLocalAdapterSimulationResult: candidate.getReactionDispatchLocalAdapterSimulationResult
+      ? (simulationResultId) => candidate.getReactionDispatchLocalAdapterSimulationResult!.call(repo, simulationResultId)
+      : async (simulationResultId) => localSimulationResultFallback.get(simulationResultId),
+    listReactionDispatchLocalAdapterSimulationResults: candidate.listReactionDispatchLocalAdapterSimulationResults
+      ? () => candidate.listReactionDispatchLocalAdapterSimulationResults!.call(repo)
+      : async () => [...localSimulationResultFallback.values()]
+        .sort((left, right) => left.created_at.localeCompare(right.created_at) || left.simulation_result_id.localeCompare(right.simulation_result_id))
   };
 }
 
@@ -2385,6 +2410,117 @@ function toAdapterExecutionBoundaryApprovalBlockersFromReviewEntry(
   }
   reasons.add("external_execution_forbidden");
   return [...reasons];
+}
+
+function toLocalAdapterSimulationStatus(simulationCase: ReactionDispatchLocalAdapterSimulationCase) {
+  if (simulationCase === "success") return "simulated_success" as const;
+  if (simulationCase === "retryable_failure") return "simulated_retryable_failure" as const;
+  return "simulated_terminal_failure" as const;
+}
+
+function toLocalAdapterSimulationReasonCodes(simulationCase: ReactionDispatchLocalAdapterSimulationCase): ReactionDispatchLocalAdapterSimulationReasonCode[] {
+  if (simulationCase === "success") return ["simulation_success", "external_execution_forbidden"];
+  if (simulationCase === "retryable_failure") return ["simulation_retryable_failure", "external_execution_forbidden"];
+  return ["simulation_terminal_failure", "external_execution_forbidden"];
+}
+
+function toLocalAdapterSimulationSnapshotHash(
+  approval: ReactionDispatchAdapterExecutionBoundaryApprovalMetadata,
+  simulationCase: ReactionDispatchLocalAdapterSimulationCase
+) {
+  return hashSafeMetadata({
+    approval_id: approval.approval_id,
+    adapter_execution_boundary_preview_id: approval.adapter_execution_boundary_preview_id,
+    dry_run_boundary_id: approval.dry_run_boundary_id,
+    plan_id: approval.plan_id,
+    outbox_id: approval.outbox_id,
+    lease_id: approval.lease_id,
+    candidate_id: approval.candidate_id,
+    adapter_kind: approval.adapter_kind,
+    approval_snapshot_hash: approval.approval_snapshot_hash,
+    request_envelope_hash: approval.request_envelope_hash,
+    safe_context_hash: approval.safe_context_hash,
+    constraints_hash: approval.constraints_hash,
+    request_preview_hash: approval.request_preview_hash,
+    simulation_case: simulationCase
+  });
+}
+
+function buildLocalAdapterSimulationResult(
+  approval: ReactionDispatchAdapterExecutionBoundaryApprovalMetadata,
+  simulationCase: ReactionDispatchLocalAdapterSimulationCase,
+  now = new Date().toISOString()
+): ReactionDispatchLocalAdapterSimulationResultMetadata {
+  const simulationSnapshotHash = toLocalAdapterSimulationSnapshotHash(approval, simulationCase);
+  return {
+    simulation_result_id: `rdsim_${createHash("sha256").update(`reaction_dispatch_local_adapter_simulation:${simulationSnapshotHash}`).digest("hex").slice(0, 24)}`,
+    approval_id: approval.approval_id,
+    adapter_execution_boundary_preview_id: approval.adapter_execution_boundary_preview_id,
+    dry_run_boundary_id: approval.dry_run_boundary_id,
+    plan_id: approval.plan_id,
+    outbox_id: approval.outbox_id,
+    lease_id: approval.lease_id,
+    candidate_id: approval.candidate_id,
+    support_event_id: approval.support_event_id,
+    adapter_kind: approval.adapter_kind,
+    simulation_case: simulationCase,
+    simulation_status: toLocalAdapterSimulationStatus(simulationCase),
+    simulation_snapshot_hash: simulationSnapshotHash,
+    approval_snapshot_hash: approval.approval_snapshot_hash,
+    request_envelope_hash: approval.request_envelope_hash,
+    safe_context_hash: approval.safe_context_hash,
+    constraints_hash: approval.constraints_hash,
+    request_preview_hash: approval.request_preview_hash,
+    simulation_attempt_count: 1,
+    safe_reason_codes: toLocalAdapterSimulationReasonCodes(simulationCase),
+    created_at: now,
+    updated_at: now
+  };
+}
+
+function toLocalAdapterSimulationBlocked(
+  dryRunBoundaryId: string,
+  reasonCodes: ReactionDispatchLocalAdapterSimulationReasonCode[]
+) {
+  return {
+    dry_run_boundary_id: dryRunBoundaryId,
+    simulation_status: "simulated_blocked" as const,
+    safe_reason_codes: reasonCodes,
+    side_effect_summary: {
+      adapter_execution: "skipped",
+      external_delivery: "skipped",
+      dispatch_attempt_count_increment: "skipped",
+      outbox_mutation: "skipped",
+      support_event_mutation: "skipped"
+    }
+  };
+}
+
+function toLocalAdapterSimulationResponse(result: ReactionDispatchLocalAdapterSimulationResultMetadata) {
+  return {
+    simulation_result_id: result.simulation_result_id,
+    approval_id: result.approval_id,
+    adapter_execution_boundary_preview_id: result.adapter_execution_boundary_preview_id,
+    dry_run_boundary_id: result.dry_run_boundary_id,
+    plan_id: result.plan_id,
+    outbox_id: result.outbox_id,
+    lease_id: result.lease_id,
+    candidate_id: result.candidate_id,
+    support_event_id: result.support_event_id,
+    adapter_kind: result.adapter_kind,
+    simulation_case: result.simulation_case,
+    simulation_status: result.simulation_status,
+    simulation_snapshot_hash: result.simulation_snapshot_hash,
+    approval_snapshot_hash: result.approval_snapshot_hash,
+    request_envelope_hash: result.request_envelope_hash,
+    safe_context_hash: result.safe_context_hash,
+    constraints_hash: result.constraints_hash,
+    request_preview_hash: result.request_preview_hash,
+    simulation_attempt_count: result.simulation_attempt_count,
+    safe_reason_codes: result.safe_reason_codes,
+    created_at: result.created_at,
+    updated_at: result.updated_at
+  };
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -4072,6 +4208,77 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return {
       approval: toAdapterExecutionBoundaryApprovalResponse(approval),
       idempotent: false,
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.post("/admin/reaction-dispatch/adapter-execution-boundary-previews/:dryRunBoundaryId/simulate", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const input = AdminLocalAdapterSimulationRequestSchema.parse(req.body);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const approval = await candidateRepo.getReactionDispatchAdapterExecutionBoundaryApproval(dryRunBoundaryId);
+    if (!approval || approval.approval_status !== "approved_for_local_simulation") {
+      return reply.code(409).send({
+        simulation_result: toLocalAdapterSimulationBlocked(dryRunBoundaryId, ["approval_required", "external_execution_forbidden"]),
+        error: "reaction_dispatch_local_adapter_simulation_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const current = await findAdapterExecutionBoundaryReadyPreview(candidateRepo, dryRunBoundaryId);
+    if (!current?.preview) {
+      return reply.code(409).send({
+        simulation_result: toLocalAdapterSimulationBlocked(dryRunBoundaryId, ["approval_snapshot_stale", "external_execution_forbidden"]),
+        error: "reaction_dispatch_local_adapter_simulation_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    if (approval.approval_snapshot_hash !== toAdapterExecutionBoundaryApprovalSnapshotHash(current.preview)) {
+      return reply.code(409).send({
+        simulation_result: toLocalAdapterSimulationBlocked(dryRunBoundaryId, ["approval_snapshot_stale", "external_execution_forbidden"]),
+        error: "reaction_dispatch_local_adapter_simulation_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const preconditionReasons = toAdapterExecutionBoundaryApprovalPreconditionReasons(current.found.entry, current.preview)
+      .filter((reason) => reason !== "external_execution_forbidden")
+      .map((reason): ReactionDispatchLocalAdapterSimulationReasonCode => {
+        if (reason === "adapter_kind_not_supported_for_simulation") return "adapter_kind_not_supported_for_simulation";
+        if (reason === "candidate_not_approved") return "candidate_not_approved";
+        if (reason === "boundary_not_ready") return "boundary_not_ready";
+        if (reason === "outbox_not_queued") return "outbox_not_queued";
+        if (reason === "lease_expired" || reason === "lease_released" || reason === "lease_not_active") return "lease_not_active";
+        return "state_transition_blocked";
+      });
+    if (preconditionReasons.length > 0) {
+      const blockedReasons: ReactionDispatchLocalAdapterSimulationReasonCode[] = [...new Set<ReactionDispatchLocalAdapterSimulationReasonCode>([
+        ...preconditionReasons,
+        "external_execution_forbidden"
+      ])];
+      return reply.code(409).send({
+        simulation_result: toLocalAdapterSimulationBlocked(dryRunBoundaryId, blockedReasons),
+        error: "reaction_dispatch_local_adapter_simulation_blocked",
+        side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+      });
+    }
+    const result = buildLocalAdapterSimulationResult(approval, input.simulation_case);
+    const existing = await candidateRepo.getReactionDispatchLocalAdapterSimulationResult(result.simulation_result_id);
+    const saved = existing ?? await candidateRepo.setReactionDispatchLocalAdapterSimulationResult(result);
+    return {
+      simulation_result: toLocalAdapterSimulationResponse(saved),
+      idempotent: Boolean(existing),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/simulation-results/:simulationResultId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { simulationResultId } = z.object({ simulationResultId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const result = await candidateRepo.getReactionDispatchLocalAdapterSimulationResult(simulationResultId);
+    if (!result) return reply.code(404).send({ error: "reaction_dispatch_local_adapter_simulation_result_not_found" });
+    return {
+      simulation_result: toLocalAdapterSimulationResponse(result),
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
   });

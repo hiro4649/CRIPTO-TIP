@@ -508,6 +508,52 @@ export type ReactionDispatchAdapterExecutionBoundaryApprovalMetadata = {
   updated_at: string;
 };
 
+export type ReactionDispatchLocalAdapterSimulationCase = "success" | "retryable_failure" | "terminal_failure";
+export type ReactionDispatchLocalAdapterSimulationStatus =
+  | "simulated_success"
+  | "simulated_retryable_failure"
+  | "simulated_terminal_failure"
+  | "simulated_blocked";
+
+export type ReactionDispatchLocalAdapterSimulationReasonCode =
+  | "simulation_success"
+  | "simulation_retryable_failure"
+  | "simulation_terminal_failure"
+  | "approval_required"
+  | "approval_snapshot_stale"
+  | "lease_not_active"
+  | "outbox_not_queued"
+  | "candidate_not_approved"
+  | "boundary_not_ready"
+  | "adapter_kind_not_supported_for_simulation"
+  | "state_transition_blocked"
+  | "external_execution_forbidden";
+
+export type ReactionDispatchLocalAdapterSimulationResultMetadata = {
+  simulation_result_id: string;
+  approval_id: string;
+  adapter_execution_boundary_preview_id: string;
+  dry_run_boundary_id: string;
+  plan_id: string;
+  outbox_id: string;
+  lease_id: string;
+  candidate_id: string;
+  support_event_id: string;
+  adapter_kind: "iris_core_reaction" | "voxweave_voice" | "overlay_effect" | "future_internal_adapter";
+  simulation_case: ReactionDispatchLocalAdapterSimulationCase;
+  simulation_status: ReactionDispatchLocalAdapterSimulationStatus;
+  simulation_snapshot_hash: string;
+  approval_snapshot_hash: string;
+  request_envelope_hash: string;
+  safe_context_hash: string;
+  constraints_hash: string;
+  request_preview_hash: string;
+  simulation_attempt_count: number;
+  safe_reason_codes: ReactionDispatchLocalAdapterSimulationReasonCode[];
+  created_at: string;
+  updated_at: string;
+};
+
 export type ReactionDispatchInternalOutboxMetadata = {
   outbox_id: string;
   boundary_id: string;
