@@ -4,38 +4,38 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "5ad3981577e3b2ad04a38a9ab3a22f58c7cd67a6",
-  "title": "feat: add admin youtube controlled canary preflight",
-  "goal": "Add read-only admin controlled canary preflight evaluation for future YouTube network canary planning without enabling real network execution.",
-  "changeType": "p1_admin_youtube_controlled_canary_preflight",
+  "baseSha": "e1bec9effcc89af39d9448c0105d31f23d344718",
+  "title": "test: add youtube live chat network-disabled e2e",
+  "goal": "Add network-disabled local E2E coverage and pre-network completion audit for YouTube Live Chat connector lifecycle.",
+  "changeType": "p1_youtube_live_chat_network_disabled_e2e",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
-  "taskMode": "feature",
+  "taskMode": "test",
   "risks": [
     {
       "severity": "medium",
-      "risk": "Preflight endpoint is mistaken for network authorization.",
+      "risk": "Network-disabled E2E is mistaken for real network readiness.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Result remains network_enabled false and code_ready_network_blocked requires absent network authorization."
+      "mitigation": "Audit explicitly lists real-network prerequisites as incomplete and evidence keeps readiness claims false."
     },
     {
       "severity": "medium",
-      "risk": "Sensitive configuration or credential material leaks through admin output.",
+      "risk": "Global fetch or real network is accidentally used in local E2E.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Endpoint accepts enum statuses only and tests reject secret-like output."
+      "mitigation": "Test replaces global fetch with throwing spy and asserts it is never called."
     },
     {
       "severity": "medium",
-      "risk": "Read-only preflight mutates repository state.",
+      "risk": "Sensitive auth material leaks through E2E output.",
       "owner": "codex",
       "nextPr": "current",
-      "mitigation": "Implementation only evaluates pure input and tests use app.inject without write calls."
+      "mitigation": "Test asserts no Authorization, Bearer, access token, refresh token, or client secret strings are present."
     }
   ]
 }
