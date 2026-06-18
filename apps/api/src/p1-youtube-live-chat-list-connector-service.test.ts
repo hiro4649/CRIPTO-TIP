@@ -9,6 +9,7 @@ import {
   type YouTubeLiveChatListTransport,
   type YouTubeLiveChatSafePageIngestResult
 } from "./youtube-live-chat-list-connector-service.js";
+import type { YouTubeLiveChatPlannerFailureClass } from "./youtube-live-chat-quota-polling-planner.js";
 
 const root = path.resolve(__dirname, "..", "..", "..");
 
@@ -78,6 +79,22 @@ class MemoryCursorGateway implements YouTubeLiveChatCursorGateway {
 
   async getCursor(): Promise<YouTubeLiveChatCursorSnapshot | null> {
     return this.snapshot;
+  }
+
+  async updateConnectorFailureState(input: { failure_class: YouTubeLiveChatPlannerFailureClass; failure_count: number; safe_failure_fingerprint: string }): Promise<void> {
+    if (!this.snapshot) throw new Error("missing test cursor");
+    this.snapshot = {
+      ...this.snapshot,
+      connector_failure_class: input.failure_class,
+      connector_failure_count: input.failure_count,
+      connector_failure_fingerprint: input.safe_failure_fingerprint
+    };
+  }
+
+  async clearConnectorFailureState(): Promise<void> {
+    if (!this.snapshot) throw new Error("missing test cursor");
+    const { connector_failure_class: _failureClass, connector_failure_count: _failureCount, connector_failure_fingerprint: _fingerprint, ...snapshot } = this.snapshot;
+    this.snapshot = snapshot;
   }
 
   async ingestPage(input: { cursor_id: string; page_token: string | null; page: YouTubeLiveChatSafePageProjection }): Promise<YouTubeLiveChatSafePageIngestResult> {
@@ -247,6 +264,47 @@ describe("P1 YouTube Live Chat list connector service", () => {
     ]), max_cycles: 2 }).run(runInput)).resolves.toMatchObject({ service_status: "cycle_budget_exhausted", cycles_completed: 2 });
   });
 
+  it("persists same-failure state through the cursor gateway across service runs", async () => {
+    const gateway = new MemoryCursorGateway(cursor());
+
+    await expect(service({ gateway, transport: new SequenceTransport([failure("upstream_unavailable", "injected_fetch_exception")]), same_failure_repeat_limit: 2 }).run(runInput)).resolves.toMatchObject({
+      service_status: "backoff_required",
+      safe_failure_capsule: {
+        safe_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+      }
+    });
+    expect(gateway.snapshot).toMatchObject({
+      connector_failure_class: "upstream_unavailable",
+      connector_failure_count: 1,
+      connector_failure_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+    });
+
+    await expect(service({ gateway, transport: new SequenceTransport([failure("upstream_unavailable", "injected_fetch_exception")]), same_failure_repeat_limit: 2 }).run(runInput)).resolves.toMatchObject({
+      service_status: "same_failure_repeated",
+      cycles_completed: 1
+    });
+    expect(gateway.snapshot).toMatchObject({
+      connector_failure_class: "upstream_unavailable",
+      connector_failure_count: 2
+    });
+  });
+
+  it("clears persisted same-failure state after a successful page ingest", async () => {
+    const gateway = new MemoryCursorGateway(cursor({
+      connector_failure_class: "upstream_unavailable",
+      connector_failure_count: 1,
+      connector_failure_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+    }));
+
+    await expect(service({ gateway, transport: new SequenceTransport([successPage({ items: [{ id: "msg_after_failure" }] })]) }).run(runInput)).resolves.toMatchObject({
+      service_status: "completed_fixture",
+      pages_read: 1
+    });
+    expect(gateway.snapshot?.connector_failure_class).toBeUndefined();
+    expect(gateway.snapshot?.connector_failure_count).toBeUndefined();
+    expect(gateway.snapshot?.connector_failure_fingerprint).toBeUndefined();
+  });
+
   it("rejects unsafe constructor bounds and non-fake execution mode", () => {
     expect(() => new YouTubeLiveChatListConnectorService({ transport: new SequenceTransport([]), cursor_gateway: new MemoryCursorGateway(cursor()), execution_mode: "controlled_network_canary" as never })).toThrow("fake_transport_required");
     expect(() => service({ gateway: new MemoryCursorGateway(cursor()), transport: new SequenceTransport([]), max_cycles: 6 })).toThrow("max_cycles_out_of_bounds");
@@ -274,6 +332,25 @@ describe("P1 YouTube Live Chat list connector service", () => {
 
     expect(evidence.quotaBudgetConsumptionStatus).toBe("pass");
     expect(evidence.quotaBudgetDecrementsPerPageStatus).toBe("pass");
+    expect(evidence.realNetworkExecutionUsed).toBe(false);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.oauthExecutionUsed).toBe(false);
+    expect(evidence.secretValueUsed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.legalComplianceClaimed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimed).toBe(false);
+  });
+
+  it("committed same-failure state evidence preserves pre-network boundaries", () => {
+    const evidence = readCodexEvidence("p1-youtube-live-chat-same-failure-state.json");
+
+    expect(evidence.sameFailureStateStatus).toBe("pass");
+    expect(evidence.sameFailurePersistsAcrossRunsStatus).toBe("pass");
+    expect(evidence.successClearsFailureStateStatus).toBe("pass");
+    expect(evidence.upstreamUnavailableClassificationStatus).toBe("pass");
     expect(evidence.realNetworkExecutionUsed).toBe(false);
     expect(evidence.realYouTubeApiUsed).toBe(false);
     expect(evidence.oauthExecutionUsed).toBe(false);

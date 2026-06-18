@@ -4,10 +4,10 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "97c97c2e41635b5fc7cb288ee3a16297143e0978",
-  "title": "fix: enforce youtube list connector quota budget consumption",
-  "goal": "Enforce per-page quota budget consumption in the fake YouTube Live Chat list connector before a next page can be read.",
-  "changeType": "p1_youtube_live_chat_list_quota_budget_consumption",
+  "baseSha": "1346a2ecad2bbb6ce65983834d09a0cc26a03718",
+  "title": "fix: persist youtube list connector same-failure state",
+  "goal": "Persist safe same-failure state through the fake YouTube Live Chat cursor gateway so repeated connector failures can stop across service runs.",
+  "changeType": "p1_youtube_live_chat_same_failure_state",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -24,23 +24,26 @@
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
-    "quota_budget_consumption_guard",
+    "same_failure_state_guard",
     "pre_network_connector_safety",
-    "fake_transport_budget_overrun_prevention"
+    "safe_backoff_stop_condition"
   ],
   "scope": {
     "changedFiles": [
       "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
       "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
-      ".codex/p1-youtube-live-chat-list-quota-budget-consumption.json",
+      ".codex/p1-youtube-live-chat-same-failure-state.json",
       ".codex/evidence-pack.json",
-      "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
+      ".codex/test-summary.json",
+      "docs/pr-p1-youtube-live-chat-same-failure-state.md"
     ],
     "allowedPaths": [
       "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
       "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
       ".codex/**",
-      "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
+      "docs/pr-p1-youtube-live-chat-same-failure-state.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -55,7 +58,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts",
       "status": "pass",
       "result": "pass"
     }
@@ -74,9 +77,9 @@
     }
   ],
   "allowedScope": [
-    "fake YouTube Live Chat list connector quota budget accounting",
-    "per-page quota decrement before next-page planning",
-    "safe polling metadata preservation",
+    "fake YouTube Live Chat list connector same-failure state",
+    "optional cursor gateway failure-state hooks",
+    "upstream_unavailable safe failure classification",
     "focused unit tests",
     ".codex evidence",
     "PR evidence docs"
@@ -114,10 +117,10 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "quota budget is decremented after each planned fake list page read",
-    "second page is blocked when the remaining quota cannot cover another estimated request",
-    "transport does not read a next page after quota is exhausted",
-    "safe polling metadata from the last successful page is preserved on quota block",
+    "same failure state can be persisted through the cursor gateway after a safe transport failure",
+    "a repeated same failure across service runs reaches same_failure_repeated without reading additional pages indefinitely",
+    "a successful page ingest clears persisted failure state",
+    "upstream_unavailable is classified as a safe backoff failure class instead of a real-api-not-configured blocker",
     "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim",
     "token sale, token exchange, cash-out, custody, internal balance, and investment wording remain forbidden"
   ],
@@ -125,7 +128,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 114,
-    "passed": 2026,
+    "passed": 2029,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -137,8 +140,8 @@
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "Same-failure counting across scheduler runs remains a separate design item.",
-    "Real quota cost must still be calibrated under future owner-scoped real YouTube canary work.",
+    "Production repository persistence for connector failure state remains future owner-scoped work.",
+    "Real quota cost and real failure fingerprints must still be calibrated under future owner-scoped real YouTube canary work.",
     "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
   ],
   "humanConfirmation": [
@@ -148,7 +151,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts: pass"
+    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -158,9 +161,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "The fake list connector now decrements quota budget per page before planning another list read; public API shape is unchanged."
+    "statement": "Adds optional cursor gateway failure-state hooks and upstream_unavailable classification for fake list connector control; public API shape is unchanged."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; focused fake_transport unit tests verify quota-budget behavior without real network or OAuth.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; focused fake_transport unit tests verify same-failure state without real network or OAuth.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -173,9 +176,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 fake YouTube Live Chat list connector quota budget accounting and evidence.",
-    "riskSummary": "Main risk is allowing multi-page fake connector runs to ignore quota budget; fix keeps quota accounting local and pre-network.",
-    "verificationOracle": "Focused list connector service tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 fake YouTube Live Chat list connector same-failure state and evidence.",
+    "riskSummary": "Main risk is repeated connector failures being forgotten between service runs; fix adds optional safe failure-state persistence hooks and clears state on success.",
+    "verificationOracle": "Focused list connector and planner tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-same-failure-state.md"
 }

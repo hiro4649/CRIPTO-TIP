@@ -15,6 +15,9 @@ export type YouTubeLiveChatCursorSnapshot = {
   next_page_token: string | null;
   cursor_status: YouTubeLiveChatCursorStatus;
   pages_ingested: number;
+  connector_failure_class?: YouTubeLiveChatPlannerFailureClass;
+  connector_failure_count?: number;
+  connector_failure_fingerprint?: string;
 };
 
 export type YouTubeLiveChatSafePageIngestResult = {
@@ -29,6 +32,13 @@ export type YouTubeLiveChatSafePageIngestResult = {
 
 export interface YouTubeLiveChatCursorGateway {
   getCursor(cursorId: string): Promise<YouTubeLiveChatCursorSnapshot | null>;
+  updateConnectorFailureState?(input: {
+    cursor_id: string;
+    failure_class: YouTubeLiveChatPlannerFailureClass;
+    failure_count: number;
+    safe_failure_fingerprint: string;
+  }): Promise<void>;
+  clearConnectorFailureState?(cursorId: string): Promise<void>;
   ingestPage(input: {
     cursor_id: string;
     page_token: string | null;
@@ -133,8 +143,8 @@ export class YouTubeLiveChatListConnectorService {
     let eventsPersisted = 0;
     let duplicatesSkipped = 0;
     let heldCount = 0;
-    let sameFailureCount = 0;
-    let lastFailureClass: YouTubeLiveChatPlannerFailureClass = "none";
+    let sameFailureCount = boundedFailureCount(cursor.connector_failure_count);
+    let lastFailureClass: YouTubeLiveChatPlannerFailureClass = cursor.connector_failure_class ?? "none";
     let nextPollAfterMs: number | null = null;
     let quotaRemainingUnits = input.quota_budget_remaining;
 
@@ -172,6 +182,12 @@ export class YouTubeLiveChatListConnectorService {
         const mapped = mapTransportFailure(transportResult.status, transportResult.safe_reason_codes);
         sameFailureCount = mapped.failureClass === (lastFailureClass as YouTubeLiveChatPlannerFailureClass) ? sameFailureCount + 1 : 1;
         lastFailureClass = mapped.failureClass;
+        await this.#cursorGateway.updateConnectorFailureState?.({
+          cursor_id: input.cursor_id,
+          failure_class: mapped.failureClass,
+          failure_count: sameFailureCount,
+          safe_failure_fingerprint: safeFailureFingerprint(mapped.failureClass, mapped.safeReasonCodes[0] ?? "unknown")
+        });
         if (sameFailureCount >= this.#sameFailureRepeatLimit) return result("same_failure_repeated", input.cursor_id, mapped.safeReasonCodes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status, safe_failure_capsule: failureCapsule(mapped.failureClass, mapped.safeReasonCodes[0] ?? "unknown") });
         if (mapped.serviceStatus === "backoff_required") return result("backoff_required", input.cursor_id, mapped.safeReasonCodes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status, next_poll_after_ms: 5000, safe_failure_capsule: failureCapsule(mapped.failureClass, mapped.safeReasonCodes[0] ?? "unknown") });
         return result(mapped.serviceStatus, input.cursor_id, mapped.safeReasonCodes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status, safe_failure_capsule: failureCapsule(mapped.failureClass, mapped.safeReasonCodes[0] ?? "unknown") });
@@ -195,6 +211,7 @@ export class YouTubeLiveChatListConnectorService {
       nextPollAfterMs = transportResult.polling_interval_ms;
       lastFailureClass = "none";
       sameFailureCount = 0;
+      await this.#cursorGateway.clearConnectorFailureState?.(input.cursor_id);
 
       if (!cursor.next_page_token || cursor.cursor_status === "caught_up_fixture") {
         return result("completed_fixture", input.cursor_id, ["fixture_completed"], { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status, next_page_token_present: Boolean(cursor.next_page_token), next_poll_after_ms: nextPollAfterMs });
@@ -208,6 +225,12 @@ export class YouTubeLiveChatListConnectorService {
 function boundedInteger(value: number, min: number, max: number, name: string) {
   if (!Number.isInteger(value) || value < min || value > max) throw new Error(`${name}_out_of_bounds`);
   return value;
+}
+
+function boundedFailureCount(value: number | undefined) {
+  if (value === undefined) return 0;
+  if (!Number.isInteger(value) || value < 0) return 0;
+  return Math.min(value, 2);
 }
 
 function result(status: YouTubeLiveChatListConnectorServiceStatus, cursorId: string, safeReasonCodes: string[], overrides: Partial<YouTubeLiveChatListConnectorServiceResult> = {}): YouTubeLiveChatListConnectorServiceResult {
@@ -244,6 +267,7 @@ function mapTransportFailure(status: Exclude<YouTubeLiveChatDirectRestListTransp
     : status === "quota_unavailable" ? "quota_unavailable"
     : status === "oauth_missing" ? "oauth_missing"
     : status === "network_forbidden" ? "network_forbidden"
+    : status === "upstream_unavailable" ? "upstream_unavailable"
     : "real_api_not_configured";
   const serviceStatus: YouTubeLiveChatListConnectorServiceStatus = status === "live_chat_ended" ? "completed_fixture"
     : status === "rate_limit_exceeded" || status === "upstream_unavailable" ? "backoff_required"
@@ -254,7 +278,7 @@ function mapTransportFailure(status: Exclude<YouTubeLiveChatDirectRestListTransp
 function failureCapsule(failureClass: string, reason: string): NonNullable<YouTubeLiveChatListConnectorServiceResult["safe_failure_capsule"]> {
   return {
     failure_class: failureClass,
-    safe_fingerprint: `p1_list_connector:${reason}`,
+    safe_fingerprint: safeFailureFingerprint(failureClass, reason),
     repository: "hiro4649/CRIPTO-TIP",
     branch: "feat/p1-youtube-live-chat-list-connector-service",
     test_file: "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
@@ -263,4 +287,8 @@ function failureCapsule(failureClass: string, reason: string): NonNullable<YouTu
     raw_logs_read: false,
     scope_expansion: false
   };
+}
+
+function safeFailureFingerprint(failureClass: string, reason: string) {
+  return `p1_list_connector:${failureClass}:${reason}`;
 }
