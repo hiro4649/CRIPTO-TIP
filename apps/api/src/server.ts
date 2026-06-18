@@ -32,7 +32,7 @@ import {
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
+import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 
 loadConfig();
@@ -674,6 +674,12 @@ const AdminReactionDispatchDryRunReviewQuerySchema = z.object({
   lease_status: z.enum(["not_leased", "leased_internal", "lease_expired", "lease_released", "lease_blocked"]).optional(),
   created_after: z.string().optional(),
   created_before: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
+const AdminAdapterExecutionBoundaryPreviewReviewQuerySchema = z.object({
+  preview_status: z.enum(["adapter_execution_boundary_preview_ready", "adapter_execution_boundary_preview_blocked"]).optional(),
+  adapter_kind: z.enum(["iris_core_reaction", "voxweave_voice", "overlay_effect", "future_internal_adapter"]).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0)
 });
@@ -2086,6 +2092,67 @@ function buildReactionDispatchAdapterExecutionBoundaryPreview(entry: ReactionDis
       support_event_mutation: "skipped"
     }
   };
+}
+
+function buildReactionDispatchAdapterExecutionBoundaryPreviewBlocked(
+  entry: ReactionDispatchDryRunReviewEntry,
+  approvalStatus: ReactionDispatchDryRunApprovalStatus,
+  safeReasonCodes: ReactionDispatchDryRunApprovalReasonCode[]
+) {
+  return {
+    dry_run_boundary_id: entry.dry_run_boundary_id,
+    plan_id: entry.plan_id,
+    outbox_id: entry.outbox_id,
+    lease_id: entry.lease_id,
+    candidate_id: entry.candidate_id,
+    boundary_id: entry.boundary_id,
+    support_event_id: entry.support_event_id,
+    adapter_kind: entry.adapter_kind,
+    approval_status: approvalStatus,
+    preview_status: "adapter_execution_boundary_preview_blocked" as const,
+    execution_mode: "preview_only" as const,
+    external_delivery_status: entry.external_delivery_status,
+    adapter_execution_status: entry.adapter_execution_status,
+    dispatch_attempt_count: entry.dispatch_attempt_count,
+    safe_context_hash: entry.safe_context_hash,
+    constraints_hash: entry.constraints_hash,
+    request_preview_hash: entry.request_preview_hash,
+    safe_reason_codes: safeReasonCodes,
+    side_effect_summary: {
+      adapter_execution: "skipped",
+      external_delivery: "skipped",
+      dispatch_attempt_count_increment: "skipped",
+      outbox_mutation: "skipped",
+      support_event_mutation: "skipped"
+    }
+  };
+}
+
+function buildReactionDispatchAdapterExecutionBoundaryPreviewReviewEntry(
+  entry: ReactionDispatchDryRunReviewEntry,
+  approval: ReactionDispatchDryRunApprovalMetadata | undefined
+) {
+  if (!approval || approval.approval_status !== "approved_for_adapter_execution") {
+    return buildReactionDispatchAdapterExecutionBoundaryPreviewBlocked(entry, approval?.approval_status ?? "approval_blocked", [
+      "state_transition_blocked",
+      "external_execution_forbidden"
+    ]);
+  }
+  if (!isReactionDispatchDryRunApprovalSafe(entry)) {
+    return buildReactionDispatchAdapterExecutionBoundaryPreviewBlocked(
+      entry,
+      approval.approval_status,
+      toReactionDispatchDryRunApprovalBlockers(entry)
+    );
+  }
+  if (!isReactionDispatchDryRunApprovalSnapshotCurrent(entry, approval)) {
+    return buildReactionDispatchAdapterExecutionBoundaryPreviewBlocked(
+      entry,
+      approval.approval_status,
+      toReactionDispatchDryRunApprovalSnapshotBlockers(entry, approval)
+    );
+  }
+  return buildReactionDispatchAdapterExecutionBoundaryPreview(entry, approval);
 }
 
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
@@ -3573,6 +3640,51 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     }
     return {
       adapter_execution_boundary_preview: buildReactionDispatchAdapterExecutionBoundaryPreview(found.entry, approval),
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/adapter-execution-boundary-previews", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const query = AdminAdapterExecutionBoundaryPreviewReviewQuerySchema.parse(req.query);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const now = new Date();
+    const entries = [];
+    for (const plan of await candidateRepo.listReactionDispatchInternalOutboxAttemptPlans()) {
+      const outbox = await candidateRepo.getReactionDispatchInternalOutbox(plan.outbox_id);
+      if (!outbox) continue;
+      const lease = await candidateRepo.getReactionDispatchInternalOutboxLease(plan.outbox_id);
+      const entry = toReactionDispatchDryRunReviewEntry(plan, outbox, lease, now);
+      const approval = await candidateRepo.getReactionDispatchDryRunApproval(entry.dry_run_boundary_id);
+      entries.push(buildReactionDispatchAdapterExecutionBoundaryPreviewReviewEntry(entry, approval));
+    }
+    const filtered = entries
+      .filter((entry) => !query.preview_status || entry.preview_status === query.preview_status)
+      .filter((entry) => !query.adapter_kind || entry.adapter_kind === query.adapter_kind);
+    return {
+      review_entries: filtered.slice(query.offset, query.offset + query.limit),
+      page: {
+        limit: query.limit,
+        offset: query.offset,
+        total: filtered.length
+      },
+      review_summary: {
+        ready: filtered.filter((entry) => entry.preview_status === "adapter_execution_boundary_preview_ready").length,
+        blocked: filtered.filter((entry) => entry.preview_status === "adapter_execution_boundary_preview_blocked").length
+      },
+      side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
+    };
+  });
+
+  app.get("/admin/reaction-dispatch/adapter-execution-boundary-previews/:dryRunBoundaryId", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const { dryRunBoundaryId } = z.object({ dryRunBoundaryId: z.string() }).parse(req.params);
+    const candidateRepo = getReactionDispatchCandidateRepository(repo);
+    const found = await findReactionDispatchDryRunReviewEntry(candidateRepo, dryRunBoundaryId);
+    if (!found) return reply.code(404).send({ error: "reaction_dispatch_dry_run_boundary_not_found" });
+    const approval = await candidateRepo.getReactionDispatchDryRunApproval(dryRunBoundaryId);
+    return {
+      review_entry: buildReactionDispatchAdapterExecutionBoundaryPreviewReviewEntry(found.entry, approval),
       side_effects: toReactionDispatchInternalOutboxSkippedSideEffects()
     };
   });
