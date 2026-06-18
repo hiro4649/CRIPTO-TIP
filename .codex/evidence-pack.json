@@ -4,10 +4,10 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "1346a2ecad2bbb6ce65983834d09a0cc26a03718",
-  "title": "fix: persist youtube list connector same-failure state",
-  "goal": "Persist safe same-failure state through the fake YouTube Live Chat cursor gateway so repeated connector failures can stop across service runs.",
-  "changeType": "p1_youtube_live_chat_same_failure_state",
+  "baseSha": "6794c90740351d19a9764e0aea3c7244ea11a382",
+  "title": "fix: persist youtube fixture cursor failure state",
+  "goal": "Persist safe connector same-failure state on internal YouTube Live Chat fixture cursors and wire the app cursor gateway to the optional service hooks.",
+  "changeType": "p1_youtube_live_chat_fixture_cursor_failure_state",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -24,26 +24,26 @@
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
-    "same_failure_state_guard",
-    "pre_network_connector_safety",
-    "safe_backoff_stop_condition"
+    "fixture_cursor_failure_state_persistence",
+    "app_cursor_gateway_same_failure_hooks",
+    "pre_network_connector_stop_condition"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/youtube-live-chat-list-connector-service.ts",
-      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
-      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
-      ".codex/p1-youtube-live-chat-same-failure-state.json",
+      "apps/api/src/server.ts",
+      "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      ".codex/p1-youtube-live-chat-fixture-cursor-failure-state.json",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/pr-p1-youtube-live-chat-same-failure-state.md"
+      "docs/pr-p1-youtube-live-chat-fixture-cursor-failure-state.md"
     ],
     "allowedPaths": [
-      "apps/api/src/youtube-live-chat-list-connector-service.ts",
-      "apps/api/src/youtube-live-chat-quota-polling-planner.ts",
-      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       ".codex/**",
-      "docs/pr-p1-youtube-live-chat-same-failure-state.md"
+      "docs/pr-p1-youtube-live-chat-fixture-cursor-failure-state.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -58,7 +58,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "status": "pass",
       "result": "pass"
     }
@@ -77,10 +77,10 @@
     }
   ],
   "allowedScope": [
-    "fake YouTube Live Chat list connector same-failure state",
-    "optional cursor gateway failure-state hooks",
-    "upstream_unavailable safe failure classification",
-    "focused unit tests",
+    "internal fixture cursor failure-state metadata",
+    "AppCursorGateway optional same-failure hooks",
+    "safe failure-state validation",
+    "network-disabled E2E tests",
     ".codex evidence",
     "PR evidence docs"
   ],
@@ -117,10 +117,11 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "same failure state can be persisted through the cursor gateway after a safe transport failure",
-    "a repeated same failure across service runs reaches same_failure_repeated without reading additional pages indefinitely",
-    "a successful page ingest clears persisted failure state",
-    "upstream_unavailable is classified as a safe backoff failure class instead of a real-api-not-configured blocker",
+    "internal fixture cursor can store safe connector failure state",
+    "invalid failure state returns safe 400 instead of raw error behavior",
+    "internal fixture cursor can clear connector failure state",
+    "AppCursorGateway persists same-failure state through service hooks",
+    "network-disabled E2E reaches same_failure_repeated across service runs without real network execution",
     "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim",
     "token sale, token exchange, cash-out, custody, internal balance, and investment wording remain forbidden"
   ],
@@ -128,7 +129,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 114,
-    "passed": 2029,
+    "passed": 2032,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -151,7 +152,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts apps/api/src/p1-youtube-live-chat-quota-polling-planner.test.ts: pass"
+    "corepack pnpm exec vitest run apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -161,9 +162,9 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": true,
-    "statement": "Adds optional cursor gateway failure-state hooks and upstream_unavailable classification for fake list connector control; public API shape is unchanged."
+    "statement": "Adds internal fixture cursor failure-state endpoints and app cursor gateway hooks for fake connector control; external public API shape is unchanged."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; focused fake_transport unit tests verify same-failure state without real network or OAuth.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; app.inject and fake_transport tests verify failure-state persistence without real network or OAuth.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
@@ -176,9 +177,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 fake YouTube Live Chat list connector same-failure state and evidence.",
-    "riskSummary": "Main risk is repeated connector failures being forgotten between service runs; fix adds optional safe failure-state persistence hooks and clears state on success.",
-    "verificationOracle": "Focused list connector and planner tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 internal fixture cursor failure-state persistence and network-disabled E2E hook wiring.",
+    "riskSummary": "Main risk is repeated connector failures being forgotten when using app-backed cursor gateway; fix stores safe failure-state metadata on internal fixture cursor and clears it on success.",
+    "verificationOracle": "Focused cursor boundary and network-disabled E2E tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-same-failure-state.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-fixture-cursor-failure-state.md"
 }

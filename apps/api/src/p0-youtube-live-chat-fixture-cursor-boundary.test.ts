@@ -182,6 +182,52 @@ describe("P0 YouTube live chat fixture cursor boundary", () => {
     expect(evidence.pnpmLockChanged).toBe(false);
   });
 
+  it("stores and clears safe connector failure state on fixture cursors", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+
+    const create = await app.inject({ method: "POST", url: "/internal/fixtures/youtube-live-chat/cursors", headers: { authorization: internalAuth }, payload: cursorPayload() });
+    const cursorId = create.json().cursor.cursor_id;
+    const storeFailure = await app.inject({
+      method: "POST",
+      url: `/internal/fixtures/youtube-live-chat/cursors/${cursorId}/failure-state`,
+      headers: { authorization: internalAuth },
+      payload: {
+        failure_class: "upstream_unavailable",
+        failure_count: 1,
+        safe_failure_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+      }
+    });
+    const detail = await app.inject({ method: "GET", url: `/internal/fixtures/youtube-live-chat/cursors/${cursorId}`, headers: { authorization: internalAuth } });
+    const invalidFailure = await app.inject({
+      method: "POST",
+      url: `/internal/fixtures/youtube-live-chat/cursors/${cursorId}/failure-state`,
+      headers: { authorization: internalAuth },
+      payload: {
+        failure_class: "upstream_unavailable",
+        failure_count: 3,
+        safe_failure_fingerprint: "not-safe"
+      }
+    });
+    const clearFailure = await app.inject({ method: "DELETE", url: `/internal/fixtures/youtube-live-chat/cursors/${cursorId}/failure-state`, headers: { authorization: internalAuth } });
+
+    expect(storeFailure.statusCode).toBe(200);
+    expect(storeFailure.json().safe_reason_codes).toContain("connector_failure_state_stored");
+    expect(detail.json().cursor).toMatchObject({
+      connector_failure_class: "upstream_unavailable",
+      connector_failure_count: 1,
+      connector_failure_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+    });
+    expect(invalidFailure.statusCode).toBe(400);
+    expect(clearFailure.statusCode).toBe(200);
+    expect(clearFailure.json().cursor.connector_failure_class).toBe("none");
+    expect(clearFailure.json().cursor.connector_failure_count).toBe(0);
+    expect(clearFailure.json().cursor.connector_failure_fingerprint).toBeNull();
+    expectSafeOutput(storeFailure.json());
+    expectSafeOutput(detail.json());
+    await app.close();
+  });
+
   it("committed cursor path keeps character context explicit and does not persist support events", () => {
     const serverSource = fs.readFileSync(path.join(root, "apps", "api", "src", "server.ts"), "utf8");
 

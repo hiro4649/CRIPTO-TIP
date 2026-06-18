@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { buildServer } from "./server.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
-import { YouTubeLiveChatDirectRestListTransport, type YouTubeDirectRestFetch } from "./youtube-live-chat-direct-rest-transport.js";
+import { YouTubeLiveChatDirectRestListTransport, type YouTubeDirectRestFetch, type YouTubeLiveChatDirectRestListTransportResult } from "./youtube-live-chat-direct-rest-transport.js";
 import { FakeOpaqueYouTubeCredentialProvider } from "./youtube-credential-provider.js";
 import { armYouTubeConnectorKillSwitchForFakeTransport } from "./youtube-connector-kill-switch.js";
 import {
@@ -12,6 +12,7 @@ import {
   type YouTubeLiveChatCursorSnapshot,
   type YouTubeLiveChatSafePageIngestResult
 } from "./youtube-live-chat-list-connector-service.js";
+import type { YouTubeLiveChatPlannerFailureClass } from "./youtube-live-chat-quota-polling-planner.js";
 import { YouTubeLiveChatFakeStreamTransport, streamPage, streamStatus } from "./youtube-live-chat-fake-stream.js";
 import { consumeYouTubeLiveChatStream } from "./youtube-live-chat-stream-contract.js";
 
@@ -45,6 +46,25 @@ function page(items: unknown[], nextPageToken?: string) {
   };
 }
 
+function upstreamUnavailableFailure(): YouTubeLiveChatDirectRestListTransportResult {
+  return {
+    status: "upstream_unavailable",
+    page: null,
+    next_page_token: null,
+    polling_interval_ms: null,
+    fetch_called: true,
+    fake_fetch_called: true,
+    network_call_used: false,
+    global_fetch_used: false,
+    raw_body_stored: false,
+    authorization_header_exposed: false,
+    credential_handle_acquired: true,
+    credential_handle_release_attempted: true,
+    credential_handle_released: true,
+    safe_reason_codes: ["injected_fetch_exception"]
+  };
+}
+
 class AppCursorGateway implements YouTubeLiveChatCursorGateway {
   readonly #app: ReturnType<typeof buildServer>;
 
@@ -64,8 +84,34 @@ class AppCursorGateway implements YouTubeLiveChatCursorGateway {
       character_id: cursor.character_id,
       next_page_token: cursor.next_page_token,
       cursor_status: cursor.cursor_status,
-      pages_ingested: cursor.pages_ingested
+      pages_ingested: cursor.pages_ingested,
+      connector_failure_class: cursor.connector_failure_class,
+      connector_failure_count: cursor.connector_failure_count,
+      connector_failure_fingerprint: cursor.connector_failure_fingerprint
     };
+  }
+
+  async updateConnectorFailureState(input: { cursor_id: string; failure_class: YouTubeLiveChatPlannerFailureClass; failure_count: number; safe_failure_fingerprint: string }): Promise<void> {
+    const response = await this.#app.inject({
+      method: "POST",
+      url: `/internal/fixtures/youtube-live-chat/cursors/${input.cursor_id}/failure-state`,
+      headers: { authorization: internalAuth },
+      payload: {
+        failure_class: input.failure_class,
+        failure_count: input.failure_count,
+        safe_failure_fingerprint: input.safe_failure_fingerprint
+      }
+    });
+    expect(response.statusCode).toBe(200);
+  }
+
+  async clearConnectorFailureState(cursorId: string): Promise<void> {
+    const response = await this.#app.inject({
+      method: "DELETE",
+      url: `/internal/fixtures/youtube-live-chat/cursors/${cursorId}/failure-state`,
+      headers: { authorization: internalAuth }
+    });
+    expect(response.statusCode).toBe(200);
   }
 
   async ingestPage(input: { cursor_id: string; page_token: string | null; page: { items: unknown[]; nextPageToken?: string; pollingIntervalMillis?: number } }): Promise<YouTubeLiveChatSafePageIngestResult> {
@@ -86,7 +132,10 @@ class AppCursorGateway implements YouTubeLiveChatCursorGateway {
         character_id: body.cursor?.character_id ?? "unknown",
         next_page_token: body.cursor?.next_page_token ?? null,
         cursor_status: body.cursor?.cursor_status ?? "not_started",
-        pages_ingested: body.cursor?.pages_ingested ?? 0
+        pages_ingested: body.cursor?.pages_ingested ?? 0,
+        connector_failure_class: body.cursor?.connector_failure_class,
+        connector_failure_count: body.cursor?.connector_failure_count,
+        connector_failure_fingerprint: body.cursor?.connector_failure_fingerprint
       },
       events_normalized: body.page_result?.normalized_count ?? 0,
       events_persisted: body.page_result?.support_events?.length ?? 0,
@@ -208,6 +257,76 @@ describe("P1 YouTube Live Chat network-disabled E2E", () => {
     }
   });
 
+  it("persists connector same-failure state through the app cursor gateway without network execution", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+    try {
+      const cursorCreate = await app.inject({
+        method: "POST",
+        url: "/internal/fixtures/youtube-live-chat/cursors",
+        headers: { authorization: internalAuth },
+        payload: {
+          stream_id: "stream_failure_state_e2e",
+          youtube_video_id: "yt_failure_state_e2e",
+          live_chat_id: "live_chat_failure_state_e2e",
+          character_id: "char_failure_state_e2e"
+        }
+      });
+      const cursorId = cursorCreate.json().cursor.cursor_id as string;
+      const gateway = new AppCursorGateway(app);
+      const failingTransport = {
+        executeList: vi.fn(async () => upstreamUnavailableFailure())
+      };
+      const firstRun = await new YouTubeLiveChatListConnectorService({
+        transport: failingTransport,
+        cursor_gateway: gateway,
+        execution_mode: "fake_transport",
+        clock: () => new Date("2026-06-18T00:02:00.000Z")
+      }).run({
+        cursor_id: cursorId,
+        max_results: 200,
+        timeout_budget_ms: 1000,
+        quota_budget_remaining: 100,
+        estimated_request_units: 1
+      });
+      const persisted = await gateway.getCursor(cursorId);
+      const secondRun = await new YouTubeLiveChatListConnectorService({
+        transport: failingTransport,
+        cursor_gateway: gateway,
+        execution_mode: "fake_transport",
+        clock: () => new Date("2026-06-18T00:03:00.000Z")
+      }).run({
+        cursor_id: cursorId,
+        max_results: 200,
+        timeout_budget_ms: 1000,
+        quota_budget_remaining: 100,
+        estimated_request_units: 1
+      });
+
+      expect(firstRun).toMatchObject({
+        service_status: "backoff_required",
+        network_call_used: false,
+        global_fetch_used: false,
+        real_api_execution: false
+      });
+      expect(persisted).toMatchObject({
+        connector_failure_class: "upstream_unavailable",
+        connector_failure_count: 1,
+        connector_failure_fingerprint: "p1_list_connector:upstream_unavailable:injected_fetch_exception"
+      });
+      expect(secondRun).toMatchObject({
+        service_status: "same_failure_repeated",
+        cycles_completed: 1,
+        network_call_used: false,
+        global_fetch_used: false,
+        real_api_execution: false
+      });
+      expect(failingTransport.executeList).toHaveBeenCalledTimes(2);
+    } finally {
+      await app.close();
+    }
+  });
+
   it("committed network-disabled E2E evidence preserves pre-network stop boundaries", () => {
     const evidence = readCodexEvidence("p1-youtube-live-chat-network-disabled-e2e.json");
 
@@ -224,5 +343,25 @@ describe("P1 YouTube Live Chat network-disabled E2E", () => {
     expect(evidence.realYouTubeApiUsed).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed fixture cursor failure-state evidence preserves pre-network stop boundaries", () => {
+    const evidence = readCodexEvidence("p1-youtube-live-chat-fixture-cursor-failure-state.json");
+
+    expect(evidence.fixtureCursorFailureStateStatus).toBe("pass");
+    expect(evidence.appCursorGatewayFailureStateStatus).toBe("pass");
+    expect(evidence.sameFailureRepeatedAcrossRunsStatus).toBe("pass");
+    expect(evidence.successClearHookStatus).toBe("pass");
+    expect(evidence.networkCallUsed).toBe(false);
+    expect(evidence.globalFetchUsed).toBe(false);
+    expect(evidence.oauthExecutionUsed).toBe(false);
+    expect(evidence.secretValueUsed).toBe(false);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.legalComplianceClaimed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimed).toBe(false);
   });
 });
