@@ -4,10 +4,10 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "ed95c68972d2b243865c219742d4ae6f17461187",
-  "title": "refactor: extract youtube fixture cursor boundary helper",
-  "goal": "Extract internal YouTube Live Chat fixture cursor boundary types, safe response projection, and failure-state schema from server.ts without changing external runtime behavior.",
-  "changeType": "p1_youtube_live_chat_fixture_cursor_boundary_helper_refactor",
+  "baseSha": "25551500cf26e7b15743ee84105acb251be1926f",
+  "title": "refactor: extract youtube fixture cursor store helper",
+  "goal": "Move internal YouTube Live Chat fixture cursor WeakMap stores and store lookup helper out of server.ts without changing route behavior.",
+  "changeType": "p1_youtube_live_chat_fixture_cursor_store_helper_refactor",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -24,8 +24,8 @@
   "runtimeReadinessClaim": "no",
   "productCodeChanged": true,
   "productValueContribution": [
-    "server_ts_boundary_reduction",
-    "fixture_cursor_helper_extraction",
+    "server_ts_store_surface_reduction",
+    "fixture_cursor_store_helper_extraction",
     "pre_network_connector_maintainability"
   ],
   "scope": {
@@ -33,10 +33,10 @@
       "apps/api/src/server.ts",
       "apps/api/src/youtube-live-chat-fixture-cursor-boundary.ts",
       "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
-      ".codex/p1-youtube-live-chat-fixture-cursor-boundary-helper.json",
+      ".codex/p1-youtube-live-chat-fixture-cursor-store-helper.json",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/pr-p1-youtube-live-chat-fixture-cursor-boundary-helper.md"
+      "docs/pr-p1-youtube-live-chat-fixture-cursor-store-helper.md"
     ],
     "allowedPaths": [
       "apps/api/src/server.ts",
@@ -44,7 +44,7 @@
       "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
       "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       ".codex/**",
-      "docs/pr-p1-youtube-live-chat-fixture-cursor-boundary-helper.md"
+      "docs/pr-p1-youtube-live-chat-fixture-cursor-store-helper.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -83,9 +83,9 @@
     }
   ],
   "allowedScope": [
-    "internal fixture cursor helper extraction",
-    "safe response projection relocation",
-    "failure-state schema relocation",
+    "internal fixture cursor store helper extraction",
+    "WeakMap store relocation",
+    "identity mapping relocation",
     "network-disabled evidence test",
     ".codex evidence",
     "PR evidence docs"
@@ -123,9 +123,9 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "fixture cursor state type is no longer defined inline in server.ts",
-    "failure-state validation schema is reusable outside server.ts",
-    "cursor response projection and failure-state clear helper are reusable outside server.ts",
+    "fixture cursor WeakMap stores are no longer defined inline in server.ts",
+    "fixture cursor store lookup helper is reusable outside server.ts",
+    "identity mapping behavior remains covered by focused cursor tests",
     "existing fixture cursor and network-disabled E2E tests continue to pass",
     "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim",
     "token sale, token exchange, cash-out, custody, internal balance, and investment wording remain forbidden"
@@ -134,7 +134,7 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 114,
-    "passed": 2033,
+    "passed": 2034,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -168,7 +168,7 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "Moves internal fixture cursor helper definitions out of server.ts; route behavior and external public API shape are unchanged."
+    "statement": "Moves internal fixture cursor store helpers out of server.ts; route behavior and external public API shape are unchanged."
   },
   "runtimeSmokeRationale": "No runtime readiness is claimed; focused fixture cursor and network-disabled tests verify unchanged local behavior without real network or OAuth.",
   "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
@@ -183,9 +183,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 internal YouTube fixture cursor boundary helper extraction and evidence.",
-    "riskSummary": "Main risk is behavior drift while reducing server.ts surface; focused tests cover cursor boundary and network-disabled E2E paths.",
+    "scope": "P1 internal YouTube fixture cursor store helper extraction and evidence.",
+    "riskSummary": "Main risk is behavior drift while reducing server.ts store surface; focused tests cover cursor identity and network-disabled E2E paths.",
     "verificationOracle": "Focused cursor boundary and network-disabled E2E tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-fixture-cursor-boundary-helper.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-fixture-cursor-store-helper.md"
 }
