@@ -617,6 +617,7 @@ type YouTubeLiveChatFixtureCursorState = {
   stream_id: string;
   youtube_video_id: string;
   live_chat_id: string;
+  character_id: string;
   current_page_token: string | null;
   next_page_token: string | null;
   last_message_published_at: string | null;
@@ -752,7 +753,8 @@ const AdminLocalAdapterSimulationReviewQuerySchema = z.object({
 const InternalYouTubeLiveChatFixtureCursorCreateSchema = z.object({
   stream_id: z.string().min(1).max(160),
   youtube_video_id: z.string().min(1).max(160),
-  live_chat_id: z.string().min(1).max(160)
+  live_chat_id: z.string().min(1).max(160),
+  character_id: z.string().min(1).max(160)
 }).strict();
 const InternalYouTubeLiveChatFixtureCursorPageSchema = z.object({
   page_token: z.string().min(0).max(240).nullable().optional(),
@@ -2659,6 +2661,7 @@ function toYouTubeLiveChatFixtureCursorResponse(cursor: YouTubeLiveChatFixtureCu
     stream_id: cursor.stream_id,
     youtube_video_id: cursor.youtube_video_id,
     live_chat_id: cursor.live_chat_id,
+    character_id: cursor.character_id,
     current_page_token: cursor.current_page_token,
     next_page_token: cursor.next_page_token,
     last_message_published_at: cursor.last_message_published_at,
@@ -3214,9 +3217,13 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
   app.post("/internal/fixtures/youtube-live-chat/cursors", async (req, reply) => {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
-    const input = InternalYouTubeLiveChatFixtureCursorCreateSchema.parse(req.body);
+    const parsedInput = InternalYouTubeLiveChatFixtureCursorCreateSchema.safeParse(req.body);
+    if (!parsedInput.success) {
+      return reply.code(400).send({ error: "youtube_live_chat_fixture_cursor_invalid", safe_reason_codes: ["character_id_required"] });
+    }
+    const input = parsedInput.data;
     const { cursors, identities } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const identity = `${input.stream_id}:${input.live_chat_id}`;
+    const identity = `${input.stream_id}:${input.youtube_video_id}:${input.live_chat_id}:${input.character_id}`;
     const existingId = identities.get(identity);
     if (existingId) {
       const existing = cursors.get(existingId);
@@ -3228,6 +3235,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       stream_id: input.stream_id,
       youtube_video_id: input.youtube_video_id,
       live_chat_id: input.live_chat_id,
+      character_id: input.character_id,
       current_page_token: null,
       next_page_token: null,
       last_message_published_at: null,
@@ -3275,7 +3283,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       parsed = parseYouTubeLiveChatPageFixture({
         context: {
           stream_id: cursor.stream_id,
-          character_id: "char_mio",
+          character_id: cursor.character_id,
           youtube_video_id: cursor.youtube_video_id,
           live_chat_id: cursor.live_chat_id,
           page_token: pageToken ?? ""
