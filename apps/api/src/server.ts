@@ -34,6 +34,7 @@ import { loadConfig } from "./config/env.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
+import { fakeFixtureCapability } from "./youtube-live-chat-client.js";
 import { parseYouTubeLiveChatPageFixture } from "./youtube-live-chat-page-fixture-parser.js";
 import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
 
@@ -3472,6 +3473,31 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
     return repo.listSupportEventsByStream(streamId);
+  });
+
+  app.get("/admin/youtube-live-chat/connector-capability", async (req, reply) => {
+    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
+    const capability = fakeFixtureCapability();
+    return {
+      client_kind: capability.client_kind,
+      fixture_only: true,
+      network_enabled: capability.network_enabled,
+      oauth_configured: capability.oauth_configured,
+      real_api_execution: capability.real_api_execution,
+      supports_stream_list: capability.supports_stream_list,
+      supports_list_fallback: capability.supports_list_fallback,
+      supports_fixture_pages: capability.supports_fixture_pages,
+      supports_cursor_handoff: capability.supports_cursor_handoff,
+      max_cycles: 5,
+      same_failure_repeat_limit: 2,
+      safe_reason_codes: [
+        "fake_fixture_only",
+        "network_disabled",
+        "oauth_not_configured",
+        "real_api_execution_false",
+        "raw_config_hidden"
+      ]
+    };
   });
 
   app.get("/admin/moderation/held-support", async (req, reply) => {
