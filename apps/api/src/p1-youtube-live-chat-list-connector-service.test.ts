@@ -207,6 +207,30 @@ describe("P1 YouTube Live Chat list connector service", () => {
     });
   });
 
+  it("decrements quota budget per page before reading another list page", async () => {
+    const gateway = new MemoryCursorGateway(cursor());
+    const transport = new SequenceTransport([
+      successPage({ nextPageToken: "page_2", pollingIntervalMillis: 5000, items: [{ id: "msg_1" }] }),
+      successPage({ pollingIntervalMillis: 7000, items: [{ id: "msg_2" }] })
+    ]);
+    const result = await service({ gateway, transport }).run({
+      ...runInput,
+      quota_budget_remaining: 1,
+      estimated_request_units: 1
+    });
+
+    expect(result).toMatchObject({
+      service_status: "blocked",
+      cycles_completed: 1,
+      pages_read: 1,
+      pages_ingested: 1,
+      next_poll_after_ms: 5000,
+      safe_reason_codes: ["quota_budget_insufficient"]
+    });
+    expect(transport.requests.map((request) => request.page_token ?? null)).toEqual([null]);
+    expect(gateway.ingestedTokens).toEqual([null]);
+  });
+
   it("maps safe transport failures to backoff, blocked, completed, same-failure, and cycle cap statuses", async () => {
     await expect(service({ gateway: new MemoryCursorGateway(cursor()), transport: new SequenceTransport([failure("rate_limit_exceeded", "rate_limit_exceeded")]) }).run(runInput)).resolves.toMatchObject({
       service_status: "backoff_required",
@@ -243,5 +267,22 @@ describe("P1 YouTube Live Chat list connector service", () => {
     expect(evidence.realApiExecution).toBe(false);
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
+  });
+
+  it("committed quota budget consumption evidence preserves pre-network boundaries", () => {
+    const evidence = readCodexEvidence("p1-youtube-live-chat-list-quota-budget-consumption.json");
+
+    expect(evidence.quotaBudgetConsumptionStatus).toBe("pass");
+    expect(evidence.quotaBudgetDecrementsPerPageStatus).toBe("pass");
+    expect(evidence.realNetworkExecutionUsed).toBe(false);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.oauthExecutionUsed).toBe(false);
+    expect(evidence.secretValueUsed).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.legalComplianceClaimed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimed).toBe(false);
   });
 });

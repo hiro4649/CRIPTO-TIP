@@ -136,12 +136,13 @@ export class YouTubeLiveChatListConnectorService {
     let sameFailureCount = 0;
     let lastFailureClass: YouTubeLiveChatPlannerFailureClass = "none";
     let nextPollAfterMs: number | null = null;
+    let quotaRemainingUnits = input.quota_budget_remaining;
 
     while (cyclesCompleted < this.#maxCycles) {
       const plan = planYouTubeLiveChatQuotaPolling({
         cycle_index: cyclesCompleted,
         last_polling_interval_ms: nextPollAfterMs,
-        quota_remaining_units: input.quota_budget_remaining,
+        quota_remaining_units: quotaRemainingUnits,
         estimated_request_units: input.estimated_request_units,
         same_failure_repeat_count: sameFailureCount,
         last_failure_class: lastFailureClass,
@@ -153,8 +154,9 @@ export class YouTubeLiveChatListConnectorService {
         next_page_token: cursor.next_page_token,
         max_results: input.max_results
       });
-      if (plan.status === "poll_blocked") return result("blocked", input.cursor_id, plan.safe_reason_codes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status });
+      if (plan.status === "poll_blocked") return result("blocked", input.cursor_id, plan.safe_reason_codes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status, next_poll_after_ms: nextPollAfterMs });
       if (plan.status === "poll_terminal") return result("completed_fixture", input.cursor_id, plan.safe_reason_codes, { cycles_completed: cyclesCompleted, pages_read: pagesRead, pages_ingested: pagesIngested, events_normalized: eventsNormalized, events_persisted: eventsPersisted, duplicates_skipped: duplicatesSkipped, held_count: heldCount, last_cursor_status: cursor.cursor_status });
+      quotaRemainingUnits = quotaRemainingUnits === null ? null : quotaRemainingUnits - input.estimated_request_units;
 
       const transportResult = await this.#transport.executeList({
         live_chat_id: cursor.live_chat_id,

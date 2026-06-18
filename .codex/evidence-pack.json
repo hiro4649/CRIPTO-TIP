@@ -4,17 +4,17 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "e1bec9effcc89af39d9448c0105d31f23d344718",
-  "title": "test: add youtube live chat network-disabled e2e",
-  "goal": "Add network-disabled local E2E coverage and pre-network completion audit for YouTube Live Chat connector lifecycle.",
-  "changeType": "p1_youtube_live_chat_network_disabled_e2e",
+  "baseSha": "97c97c2e41635b5fc7cb288ee3a16297143e0978",
+  "title": "fix: enforce youtube list connector quota budget consumption",
+  "goal": "Enforce per-page quota budget consumption in the fake YouTube Live Chat list connector before a next page can be read.",
+  "changeType": "p1_youtube_live_chat_list_quota_budget_consumption",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
   "prProfile": "product_r3",
-  "taskMode": "test",
+  "taskMode": "bugfix",
   "ciRunId": "pre_pr",
   "qualityGateRunId": "pre_pr",
   "qualityGateArtifactId": "pre_pr",
@@ -22,31 +22,25 @@
   "qualityGateStatus": "local_pre_pr",
   "riskLevel": "R3",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "productValueContribution": [
-    "network_disabled_connector_e2e",
-    "pre_network_completion_audit",
-    "global_fetch_zero_verification"
+    "quota_budget_consumption_guard",
+    "pre_network_connector_safety",
+    "fake_transport_budget_overrun_prevention"
   ],
   "scope": {
     "changedFiles": [
-      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_PRENETWORK_COMPLETION_AUDIT.md",
-      "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md",
-      ".codex/p1-youtube-live-chat-network-disabled-e2e.json",
+      "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      ".codex/p1-youtube-live-chat-list-quota-budget-consumption.json",
       ".codex/evidence-pack.json",
-      ".codex/product-verification.json",
-      ".codex/quality-gate-evidence.json",
-      ".codex/test-coverage-evidence.json",
-      ".codex/task-contract.json",
-      ".codex/risk-register.json",
-      ".codex/review-independence.json"
+      "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
     ],
     "allowedPaths": [
-      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
-      "docs/P1_YOUTUBE_LIVE_CHAT_PRENETWORK_COMPLETION_AUDIT.md",
-      "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md",
-      ".codex/**"
+      "apps/api/src/youtube-live-chat-list-connector-service.ts",
+      "apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
+      ".codex/**",
+      "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -61,7 +55,7 @@
   },
   "commands": [
     {
-      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "name": "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts",
       "status": "pass",
       "result": "pass"
     }
@@ -80,16 +74,12 @@
     }
   ],
   "allowedScope": [
-    "network-disabled local E2E",
-    "global fetch throw spy",
-    "fake direct REST transport",
-    "cursor ingest",
-    "support.received persistence",
-    "fake stream contract",
-    "controlled canary preflight",
-    "pre-network completion audit",
-    "docs",
-    ".codex evidence"
+    "fake YouTube Live Chat list connector quota budget accounting",
+    "per-page quota decrement before next-page planning",
+    "safe polling metadata preservation",
+    "focused unit tests",
+    ".codex evidence",
+    "PR evidence docs"
   ],
   "forbiddenScope": [
     "runtime readiness claim",
@@ -110,12 +100,12 @@
     "real YouTube API call",
     "real OAuth execution",
     "secret value read",
+    "wallet/RPC/deploy change",
     "real TTS",
     "real Live2D",
     "renderer",
     "OBS",
     "real WebSocket delivery",
-    "wallet/RPC/deploy change",
     "token sale",
     "token exchange",
     "cash-out",
@@ -124,35 +114,32 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "global fetch call count remains zero",
-    "fake direct REST transport ingests two pages",
-    "support.received events persist through local cursor ingest",
-    "fake stream contract returns safe backoff metadata",
-    "controlled canary preflight remains code_ready_network_blocked",
-    "safe output excludes auth and token material",
-    "pre-network completion audit lists complete and incomplete areas",
-    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+    "quota budget is decremented after each planned fake list page read",
+    "second page is blocked when the remaining quota cannot cover another estimated request",
+    "transport does not read a next page after quota is exhausted",
+    "safe polling metadata from the last successful page is preserved on quota block",
+    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim",
+    "token sale, token exchange, cash-out, custody, internal balance, and investment wording remain forbidden"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 114,
-    "passed": 2024,
+    "passed": 2026,
     "skipped": 6
   },
   "securityBoundaries": [
     "No package.json or pnpm-lock change.",
-    "No DB driver, Google SDK, Redis, or Kafka dependency is added.",
+    "No DB driver or Google SDK dependency is added.",
     "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "Global fetch is replaced by a throwing spy and verified not called.",
-    "Injected fake fetch is used for direct REST transport only.",
-    "No real TTS, Live2D, renderer, OBS, WebSocket delivery, IRIS Core, VOXWEAVE, secret value, credential handle, or Authorization header is used.",
+    "The connector remains fake_transport only.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "GitHub same-head checks and safe artifact are pending until PR creation.",
-    "Real credential provider, secret manager integration, OAuth consent, token lifecycle, network authorization, real list/stream calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
+    "Same-failure counting across scheduler runs remains a separate design item.",
+    "Real quota cost must still be calibrated under future owner-scoped real YouTube canary work.",
+    "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -161,7 +148,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass"
+    "corepack pnpm exec vitest run apps/api/src/p1-youtube-live-chat-list-connector-service.test.ts: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -170,11 +157,11 @@
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "Adds local E2E coverage and audit docs only."
+    "internalRuntimeApiChanged": true,
+    "statement": "The fake list connector now decrements quota budget per page before planning another list read; public API shape is unchanged."
   },
-  "runtimeSmokeRationale": "No runtime readiness is claimed; app.inject and injected fake transports verify local network-disabled behavior only.",
-  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, real TTS/Live2D/renderer/OBS/WebSocket delivery, or readiness/compliance claims are introduced.",
+  "runtimeSmokeRationale": "No runtime readiness is claimed; focused fake_transport unit tests verify quota-budget behavior without real network or OAuth.",
+  "rollbackOrStopCondition": "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
   "safeOutput": {
     "status": "pass"
   },
@@ -186,9 +173,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 network-disabled local E2E across fake direct transport, list connector service, cursor ingest, support.received, fake stream contract, controlled canary preflight, audit docs, and .codex evidence.",
-    "riskSummary": "Main risk is accidental real network/OAuth/secret execution or overstating readiness; the test replaces global fetch with a throwing spy and audit docs stop before real network.",
-    "verificationOracle": "Focused network-disabled E2E, full repository tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+    "scope": "P1 fake YouTube Live Chat list connector quota budget accounting and evidence.",
+    "riskSummary": "Main risk is allowing multi-page fake connector runs to ignore quota budget; fix keeps quota accounting local and pre-network.",
+    "verificationOracle": "Focused list connector service tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
   },
-  "prBodyPath": "docs/pr-p1-youtube-live-chat-network-disabled-e2e.md"
+  "prBodyPath": "docs/pr-p1-youtube-live-chat-list-quota-budget-consumption.md"
 }
