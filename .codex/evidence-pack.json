@@ -1,106 +1,104 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
-  "harnessVersion": "1.2.6",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.7",
+  "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 0,
-  "headSha": "current_pr_head",
-  "baseSha": "95122d3fe27537652691f8aea85c72dae77271ad",
-  "title": "refactor: extract admin moderation read routes",
-  "goal": "Move read-only Admin moderation list and summary routes from server.ts into a dedicated dependency-injected route module without changing behavior.",
-  "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, forbidden paths change, raw logs are required, or evidence cannot be refreshed for the current head.",
-  "changeType": "p1_api_admin_moderation_read_routes_refactor",
+  "headSha": "6fa0c116bdb1ee4abd2a56e29ecda684a5590e18",
+  "baseSha": "d516c603f63c8512d2b96a46444bb215d88db0fc",
+  "title": "fix: enforce quality-gate safe-summary coherence",
+  "goal": "Make the quality-gate workflow fail when the load-bearing safe summary reports technical failure, technicalChecksReady false, or blocking technical statuses.",
+  "rollbackOrStopCondition": "Stop without merge if same-head checks fail, the safe summary remains inconsistent with workflow conclusion, forbidden product paths change, raw logs are required, or evidence cannot be refreshed for the current head.",
+  "changeType": "h0_v127_quality_gate_safe_summary_coherence",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "refactor",
+  "prProfile": "harness_h0",
+  "taskMode": "bugfix",
   "ciRunId": "pre_pr",
   "qualityGateRunId": "pre_pr",
   "qualityGateArtifactId": "pre_pr",
   "productCiStatus": "local_pre_pr",
   "qualityGateStatus": "local_pre_pr",
-  "riskLevel": "R3",
+  "riskLevel": "H0",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
+  "productCodeChanged": false,
+  "workflowChanged": true,
   "scope": {
     "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-moderation-read-routes.ts",
-      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
-      ".codex/p1-api-admin-moderation-read-routes.json",
+      ".github/workflows/quality-gate.yml",
+      "scripts/codex-workflow-quality-runner.mjs",
+      "scripts/check-quality-gate-self-protection.mjs",
+      "scripts/validate-quality-gate-safe-summary.mjs",
+      "apps/api/src/evidence-rendering.test.ts",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
-      "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-moderation-read-routes.md"
+      ".codex/h0-v127-quality-gate-safe-summary-coherence.json",
+      "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
     ],
     "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-moderation-read-routes.ts",
-      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
-      ".codex/p1-api-admin-moderation-read-routes.json",
+      ".github/workflows/quality-gate.yml",
+      "scripts/codex-workflow-quality-runner.mjs",
+      "scripts/check-quality-gate-self-protection.mjs",
+      "scripts/validate-quality-gate-safe-summary.mjs",
+      "apps/api/src/evidence-rendering.test.ts",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
-      "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-moderation-read-routes.md"
+      ".codex/h0-v127-quality-gate-safe-summary-coherence.json",
+      "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
     ],
     "forbiddenPaths": [
       "package.json",
       "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
-      ".github/workflows/**",
+      "apps/api/src/product-runtime/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
     ]
   },
   "commands": [
-    { "name": "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts", "status": "pass", "result": "118 files, 2049 passed, 6 skipped" },
-    { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
+    { "name": "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts", "status": "pass", "result": "44 passed" },
     { "name": "corepack pnpm lint", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
-    { "name": "npm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
+    { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
+    { "name": "corepack pnpm test", "status": "pass", "result": "119 files, 2093 passed, 6 skipped" },
+    { "name": "npm test", "status": "pass", "result": "119 files, 2093 passed, 6 skipped" },
     { "name": "corepack pnpm evidence:ci", "status": "pass", "result": "pass" },
     { "name": "corepack pnpm quality:self-protection", "status": "pass", "result": "pass" },
+    { "name": "node scripts/check-evidence-placeholders.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/validate-evidence-freshness.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/check-quality-gate-self-protection.mjs", "status": "pass", "result": "pass" },
     { "name": "node scripts/codex-secret-safety-scan.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-v127-self-test.mjs", "status": "pass", "result": "pass" },
     { "name": "node scripts/codex-v126-self-test.mjs", "status": "pass", "result": "pass" },
     { "name": "node scripts/codex-v125-self-test.mjs", "status": "pass", "result": "pass" },
     { "name": "node scripts/codex-v124-self-test.mjs", "status": "pass", "result": "pass" },
     { "name": "node scripts/codex-v123-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "cd contracts && forge test", "status": "unavailable_nonblocking_local", "result": "forge_not_installed" }
+    { "name": "node scripts/codex-local-quality-gate.mjs", "status": "fail_local_pre_evidence_remote", "result": "safe summary failed before H0 PR remote evidence refresh" }
   ],
   "remoteRuns": [
     { "name": "ci", "runId": "pre_pr", "result": "local_pre_pr" },
     { "name": "quality-gate", "runId": "pre_pr", "artifactId": "pre_pr", "result": "local_pre_pr" }
   ],
   "allowedScope": [
-    "read-only Admin moderation route extraction",
-    "dependency-injected route registration",
-    "route parity tests",
-    "static route dependency assertions",
-    "product completion audit update",
+    "quality-gate workflow safe-summary validator",
+    "workflow quality runner exit coherence",
+    "quality-gate self-protection assertions",
+    "safe summary validator script",
+    "harness regression tests",
     ".codex evidence",
     "PR evidence docs"
   ],
   "forbiddenScope": [
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
+    "product runtime change",
     "package.json change",
     "pnpm-lock change",
     "DB driver dependency",
-    "Google SDK dependency",
     "real DB connection",
     "migration change",
     "contract change",
-    "workflow change",
     "apps/web change",
     "apps/overlay change",
     "real network call",
@@ -108,74 +106,75 @@
     "real OAuth execution",
     "secret value read",
     "wallet/RPC/deploy change",
-    "real TTS",
-    "real Live2D",
-    "renderer",
-    "OBS",
-    "real WebSocket delivery",
-    "token sale",
-    "token exchange",
-    "cash-out",
-    "custody",
-    "internal balance",
-    "investment wording"
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "owner approval creation",
+    "GitHub approval review creation",
+    "merge authority creation"
   ],
   "doneCriteria": [
-    "Admin moderation read routes are no longer implemented inline in server.ts",
-    "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
-    "read-only behavior, auth, held-support list, moderation summary, and safe audit metadata remain covered",
-    "existing Admin moderation tests continue to pass",
-    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+    "workflow success cannot coexist with safe summary status fail",
+    "workflow success cannot coexist with technicalChecksReady false",
+    "workflow success cannot coexist with technical blockingStatuses",
+    "owner-only authority absence does not become a technical failure by itself",
+    "safe artifacts still upload before the final validator",
+    "raw logs are not required for diagnosis"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 118,
-    "passed": 2049,
-    "skipped": 6
+    "testFiles": 119,
+    "passed": 2093,
+    "skipped": 6,
+    "testedHeadSha": "6fa0c116bdb1ee4abd2a56e29ecda684a5590e18",
+    "currentRunEvidence": true
   },
   "securityBoundaries": [
+    "No product runtime path is changed.",
     "No package.json or pnpm-lock change.",
-    "No DB driver or Google SDK dependency is added.",
-    "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
-    "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "The extracted moderation routes remain read-only.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
+    "No DB driver, Google SDK dependency, real DB, real YouTube API, OAuth execution, secret read, RPC, wallet, deploy, contract, migration, web, or overlay change.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed.",
+    "No owner approval, GitHub approval review, or merge authority is created."
   ],
   "residualRisks": [
-    "Admin moderation approve/reject write routes and broader admin route families still live in server.ts.",
-    "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
+    "H0 remote quality-gate must prove the new validator fails closed while still uploading safe artifacts.",
+    "PR #172 remains blocked until H0 is merged and PR #172 is refreshed against updated main."
   ],
   "humanConfirmation": [
-    "AI review is not human approval.",
-    "AI review is not GitHub approval review.",
+    "AI technical review is not human approval.",
+    "AI technical review is not GitHub approval review.",
     "This PR does not create owner approval record.",
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts: pass",
-    "corepack pnpm typecheck: pass",
+    "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass",
     "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
     "npm test: pass",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
+    "node scripts/check-evidence-placeholders.mjs: pass",
+    "node scripts/validate-evidence-freshness.mjs: pass",
+    "node scripts/check-quality-gate-self-protection.mjs: pass",
     "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v127-self-test.mjs: pass",
     "node scripts/codex-v126-self-test.mjs: pass",
     "node scripts/codex-v125-self-test.mjs: pass",
     "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass",
-    "cd contracts && forge test: unavailable_nonblocking_local"
+    "node scripts/codex-v123-self-test.mjs: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package scripts, runtime dependencies, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "Moves read-only Admin moderation list and summary routes out of server.ts; route behavior and external public API shape are unchanged."
+    "statement": "H0 changes only the quality-gate harness workflow and validation scripts; product runtime API behavior is unchanged."
   },
   "safeOutput": { "status": "pass" },
   "productionClaims": {
@@ -186,10 +185,9 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 read-only Admin moderation route extraction and evidence.",
-    "riskSummary": "Main risk is route parity drift while reducing server.ts route surface; focused tests cover auth, held list, summary, dependency boundaries, and existing admin moderation behavior.",
-    "verificationOracle": "Focused route parity and existing Admin moderation tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
+    "scope": "H0 quality-gate safe-summary coherence.",
+    "riskSummary": "Main risk is a workflow success masking technical safe-summary failure; regression tests cover failed safe summary, owner-only boundary, and validator protection.",
+    "verificationOracle": "Focused evidence-rendering tests, lint, typecheck, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
   },
-  "serverLineCount": { "afterPhaseE": 5216 },
-  "prBodyPath": "docs/pr-p1-api-admin-moderation-read-routes.md"
+  "prBodyPath": "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
 }
