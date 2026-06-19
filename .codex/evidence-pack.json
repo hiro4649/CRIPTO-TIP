@@ -4,10 +4,10 @@
     "repository":  "hiro4649/CRIPTO-TIP",
     "prNumber":  0,
     "headSha":  "current_pr_head",
-    "baseSha":  "eecafd43fa471f9bd89e77eef6244c34b0ee940e",
-    "title":  "refactor: extract youtube fixture cursor operations",
-    "goal":  "Extract internal YouTube Live Chat fixture cursor operations from server.ts without changing route behavior.",
-    "changeType":  "p1_youtube_live_chat_fixture_cursor_operations_refactor",
+    "baseSha":  "8b23146aea8ee5f3f19beee0dfa70276bb531696",
+    "title":  "refactor: extract youtube fixture routes",
+    "goal":  "Move internal YouTube fixture routes from server.ts into a dedicated dependency-injected route module without changing route behavior.",
+    "changeType":  "p1_api_youtube_fixture_routes_refactor",
     "runtimeReadinessClaimed":  false,
     "productionReadinessClaimed":  false,
     "legalComplianceClaimed":  false,
@@ -24,31 +24,36 @@
     "runtimeReadinessClaim":  "no",
     "productCodeChanged":  true,
     "productValueContribution":  [
-                                     "server_ts_cursor_operation_surface_reduction",
-                                     "fixture_cursor_operation_helper_extraction",
+                                     "server_ts_fixture_route_surface_reduction",
+                                     "youtube_fixture_route_module_extraction",
                                      "pre_network_connector_maintainability"
                                  ],
     "scope":  {
                   "changedFiles":  [
                                        "apps/api/src/server.ts",
-                                       "apps/api/src/youtube-live-chat-fixture-cursor-operations.ts",
-                                       "apps/api/src/p1-youtube-fixture-cursor-operations.test.ts",
-                                       ".codex/p1-youtube-fixture-cursor-operations.json",
+                                       "apps/api/src/routes/youtube-fixture-routes.ts",
+                                       "apps/api/src/routes/youtube-fixture-route-dependencies.ts",
+                                       "apps/api/src/p1-api-youtube-fixture-routes.test.ts",
+                                       "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
+                                       ".codex/p1-api-youtube-fixture-routes.json",
                                        ".codex/evidence-pack.json",
                                        ".codex/test-summary.json",
-                                       "docs/P1_YOUTUBE_FIXTURE_CURSOR_OPERATIONS.md",
-                                       "docs/pr-p1-youtube-fixture-cursor-operations.md"
+                                       "docs/P1_API_YOUTUBE_FIXTURE_ROUTES.md",
+                                       "docs/pr-p1-api-youtube-fixture-routes.md"
                                    ],
                   "allowedPaths":  [
                                        "apps/api/src/server.ts",
-                                       "apps/api/src/youtube-live-chat-fixture-cursor-boundary.ts",
-                                       "apps/api/src/youtube-live-chat-fixture-cursor-operations.ts",
-                                       "apps/api/src/p1-youtube-fixture-cursor-operations.test.ts",
+                                       "apps/api/src/routes/youtube-fixture-routes.ts",
+                                       "apps/api/src/routes/youtube-fixture-route-dependencies.ts",
+                                       "apps/api/src/p1-api-youtube-fixture-routes.test.ts",
                                        "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
+                                       "apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts",
+                                       "apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts",
+                                       "apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts",
                                        "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
                                        ".codex/**",
-                                       "docs/P1_YOUTUBE_FIXTURE_CURSOR_OPERATIONS.md",
-                                       "docs/pr-p1-youtube-fixture-cursor-operations.md"
+                                       "docs/P1_API_YOUTUBE_FIXTURE_ROUTES.md",
+                                       "docs/pr-p1-api-youtube-fixture-routes.md"
                                    ],
                   "forbiddenPaths":  [
                                          "package.json",
@@ -63,9 +68,9 @@
               },
     "commands":  [
                      {
-                         "name":  "corepack pnpm exec vitest run apps/api/src/p1-youtube-fixture-cursor-operations.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+                         "name":  "corepack pnpm exec vitest run apps/api/src/p1-api-youtube-fixture-routes.test.ts apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
                          "status":  "pass",
-                         "result":  "pass"
+                         "result":  "40 passed"
                      },
                      {
                          "name":  "corepack pnpm typecheck",
@@ -80,12 +85,12 @@
                      {
                          "name":  "corepack pnpm test",
                          "status":  "pass",
-                         "result":  "115 files, 2040 passed, 6 skipped"
+                         "result":  "116 files, 2043 passed, 6 skipped"
                      },
                      {
                          "name":  "npm test",
                          "status":  "pass",
-                         "result":  "115 files, 2040 passed, 6 skipped"
+                         "result":  "116 files, 2043 passed, 6 skipped"
                      },
                      {
                          "name":  "corepack pnpm evidence:ci",
@@ -101,6 +106,31 @@
                          "name":  "node scripts/codex-secret-safety-scan.mjs",
                          "status":  "pass",
                          "result":  "pass"
+                     },
+                     {
+                         "name":  "node scripts/codex-v126-self-test.mjs",
+                         "status":  "pass",
+                         "result":  "pass"
+                     },
+                     {
+                         "name":  "node scripts/codex-v125-self-test.mjs",
+                         "status":  "pass",
+                         "result":  "pass"
+                     },
+                     {
+                         "name":  "node scripts/codex-v124-self-test.mjs",
+                         "status":  "pass",
+                         "result":  "pass"
+                     },
+                     {
+                         "name":  "node scripts/codex-v123-self-test.mjs",
+                         "status":  "pass",
+                         "result":  "pass"
+                     },
+                     {
+                         "name":  "cd contracts \u0026\u0026 forge test",
+                         "status":  "unavailable_nonblocking_local",
+                         "result":  "forge_not_installed"
                      }
                  ],
     "remoteRuns":  [
@@ -117,12 +147,10 @@
                        }
                    ],
     "allowedScope":  [
-                         "internal fixture cursor operation extraction",
-                         "safe page fingerprint helper extraction",
-                         "page token guard extraction",
-                         "failure state transition helper extraction",
-                         "page advance mutation helper extraction",
-                         "focused operation tests",
+                         "internal YouTube fixture route extraction",
+                         "dependency-injected route registration",
+                         "route parity tests",
+                         "static route dependency assertions",
                          ".codex evidence",
                          "PR evidence docs"
                      ],
@@ -159,18 +187,17 @@
                            "investment wording"
                        ],
     "doneCriteria":  [
-                         "fixture cursor operations are no longer implemented inline in server.ts",
-                         "fixture cursor operation helper is reusable outside server.ts",
-                         "safe message id extraction excludes unknown placeholders and duplicate ids",
-                         "existing fixture cursor behavior remains covered by focused route tests",
-                         "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim",
-                         "token sale, token exchange, cash-out, custody, internal balance, and investment wording remain forbidden"
+                         "internal YouTube fixture routes are no longer implemented inline in server.ts",
+                         "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
+                         "route paths, auth, status codes, response fields, idempotency, cursor behavior, support side effects, and failure-state behavior remain covered",
+                         "existing fixture route and network-disabled E2E tests continue to pass",
+                         "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
                      ],
     "testSummary":  {
                         "schemaVersion":  "1.0.0",
                         "command":  "corepack pnpm test",
-                        "testFiles":  115,
-                        "passed":  2040,
+                        "testFiles":  116,
+                        "passed":  2043,
                         "skipped":  6
                     },
     "securityBoundaries":  [
@@ -182,8 +209,8 @@
                                "No runtime, production, legal, or YouTube policy readiness is claimed."
                            ],
     "residualRisks":  [
-                          "The fixture cursor HTTP routes still live in server.ts and can be extracted in a later PR.",
-                          "Production repository persistence for cursor operations remains future owner-scoped work.",
+                          "Admin YouTube connector routes still live in server.ts and are scheduled for the next phase.",
+                          "Production repository persistence and real connector authorization remain future owner-scoped work.",
                           "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
                       ],
     "humanConfirmation":  [
@@ -193,8 +220,14 @@
                               "This PR does not create merge authority."
                           ],
     "productVerificationCommands":  [
-                                        "corepack pnpm exec vitest run apps/api/src/p1-youtube-fixture-cursor-operations.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass",
-                                        "corepack pnpm typecheck: pass"
+                                        "corepack pnpm exec vitest run apps/api/src/p1-api-youtube-fixture-routes.test.ts apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass",
+                                        "corepack pnpm typecheck: pass",
+                                        "corepack pnpm lint: pass",
+                                        "corepack pnpm test: pass",
+                                        "npm test: pass",
+                                        "corepack pnpm evidence:ci: pass",
+                                        "corepack pnpm quality:self-protection: pass",
+                                        "node scripts/codex-secret-safety-scan.mjs: pass"
                                     ],
     "packageVerification":  {
                                 "packageScriptsChanged":  false,
@@ -204,9 +237,9 @@
     "apiCompatibilitySummary":  {
                                     "publicApiChanged":  false,
                                     "internalRuntimeApiChanged":  false,
-                                    "statement":  "Moves internal fixture cursor operations out of server.ts; route behavior and external public API shape are unchanged."
+                                    "statement":  "Moves internal YouTube fixture routes out of server.ts; route behavior and external public API shape are unchanged."
                                 },
-    "runtimeSmokeRationale":  "No runtime readiness is claimed; focused fixture cursor and network-disabled tests verify unchanged local behavior without real network or OAuth.",
+    "runtimeSmokeRationale":  "No runtime readiness is claimed; focused fixture route and network-disabled tests verify unchanged local behavior without real network or OAuth.",
     "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
     "safeOutput":  {
                        "status":  "pass"
@@ -219,9 +252,12 @@
                              "youtubePolicyComplianceClaimed":  false
                          },
     "reviewScope":  {
-                        "scope":  "P1 internal YouTube fixture cursor operations extraction and evidence.",
-                        "riskSummary":  "Main risk is behavior drift while reducing server.ts cursor mutation surface; focused tests cover operation helpers and existing route paths.",
-                        "verificationOracle":  "Focused operations, cursor boundary, and network-disabled E2E tests, typecheck, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
+                        "scope":  "P1 internal YouTube fixture route extraction and evidence.",
+                        "riskSummary":  "Main risk is route parity drift while reducing server.ts route surface; focused tests cover representative route behavior and existing fixture E2E paths.",
+                        "verificationOracle":  "Focused route parity and existing fixture tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
                     },
-    "prBodyPath":  "docs/pr-p1-youtube-fixture-cursor-operations.md"
+    "serverLineCount":  {
+                            "afterPhaseC":  5045
+                        },
+    "prBodyPath":  "docs/pr-p1-api-youtube-fixture-routes.md"
 }
