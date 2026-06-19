@@ -1,263 +1,182 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.6",
-    "harnessVersion":  "1.2.6",
-    "repository":  "hiro4649/CRIPTO-TIP",
-    "prNumber":  0,
-    "headSha":  "current_pr_head",
-    "baseSha":  "8b23146aea8ee5f3f19beee0dfa70276bb531696",
-    "title":  "refactor: extract youtube fixture routes",
-    "goal":  "Move internal YouTube fixture routes from server.ts into a dedicated dependency-injected route module without changing route behavior.",
-    "changeType":  "p1_api_youtube_fixture_routes_refactor",
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "legalComplianceClaimed":  false,
-    "youtubePolicyComplianceClaimed":  false,
-    "schemaVersion":  "1.0.0",
-    "prProfile":  "product_r3",
-    "taskMode":  "refactor",
-    "ciRunId":  "pre_pr",
-    "qualityGateRunId":  "pre_pr",
-    "qualityGateArtifactId":  "pre_pr",
-    "productCiStatus":  "local_pre_pr",
-    "qualityGateStatus":  "local_pre_pr",
-    "riskLevel":  "R3",
-    "runtimeReadinessClaim":  "no",
-    "productCodeChanged":  true,
-    "productValueContribution":  [
-                                     "server_ts_fixture_route_surface_reduction",
-                                     "youtube_fixture_route_module_extraction",
-                                     "pre_network_connector_maintainability"
-                                 ],
-    "scope":  {
-                  "changedFiles":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/routes/youtube-fixture-routes.ts",
-                                       "apps/api/src/routes/youtube-fixture-route-dependencies.ts",
-                                       "apps/api/src/p1-api-youtube-fixture-routes.test.ts",
-                                       "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
-                                       ".codex/p1-api-youtube-fixture-routes.json",
-                                       ".codex/evidence-pack.json",
-                                       ".codex/test-summary.json",
-                                       "docs/P1_API_YOUTUBE_FIXTURE_ROUTES.md",
-                                       "docs/pr-p1-api-youtube-fixture-routes.md"
-                                   ],
-                  "allowedPaths":  [
-                                       "apps/api/src/server.ts",
-                                       "apps/api/src/routes/youtube-fixture-routes.ts",
-                                       "apps/api/src/routes/youtube-fixture-route-dependencies.ts",
-                                       "apps/api/src/p1-api-youtube-fixture-routes.test.ts",
-                                       "apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts",
-                                       "apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts",
-                                       "apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts",
-                                       "apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts",
-                                       "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
-                                       ".codex/**",
-                                       "docs/P1_API_YOUTUBE_FIXTURE_ROUTES.md",
-                                       "docs/pr-p1-api-youtube-fixture-routes.md"
-                                   ],
-                  "forbiddenPaths":  [
-                                         "package.json",
-                                         "pnpm-lock.yaml",
-                                         "contracts/**",
-                                         "migrations/**",
-                                         ".github/workflows/**",
-                                         "apps/web/**",
-                                         "apps/overlay/**",
-                                         ".env.example"
-                                     ]
-              },
-    "commands":  [
-                     {
-                         "name":  "corepack pnpm exec vitest run apps/api/src/p1-api-youtube-fixture-routes.test.ts apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
-                         "status":  "pass",
-                         "result":  "40 passed"
-                     },
-                     {
-                         "name":  "corepack pnpm typecheck",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm lint",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm test",
-                         "status":  "pass",
-                         "result":  "116 files, 2043 passed, 6 skipped"
-                     },
-                     {
-                         "name":  "npm test",
-                         "status":  "pass",
-                         "result":  "116 files, 2043 passed, 6 skipped"
-                     },
-                     {
-                         "name":  "corepack pnpm evidence:ci",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "corepack pnpm quality:self-protection",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-secret-safety-scan.mjs",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-v126-self-test.mjs",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-v125-self-test.mjs",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-v124-self-test.mjs",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "node scripts/codex-v123-self-test.mjs",
-                         "status":  "pass",
-                         "result":  "pass"
-                     },
-                     {
-                         "name":  "cd contracts \u0026\u0026 forge test",
-                         "status":  "unavailable_nonblocking_local",
-                         "result":  "forge_not_installed"
-                     }
-                 ],
-    "remoteRuns":  [
-                       {
-                           "name":  "ci",
-                           "runId":  "pre_pr",
-                           "result":  "local_pre_pr"
-                       },
-                       {
-                           "name":  "quality-gate",
-                           "runId":  "pre_pr",
-                           "artifactId":  "pre_pr",
-                           "result":  "local_pre_pr"
-                       }
-                   ],
-    "allowedScope":  [
-                         "internal YouTube fixture route extraction",
-                         "dependency-injected route registration",
-                         "route parity tests",
-                         "static route dependency assertions",
-                         ".codex evidence",
-                         "PR evidence docs"
-                     ],
-    "forbiddenScope":  [
-                           "runtime readiness claim",
-                           "production readiness claim",
-                           "legal compliance claim",
-                           "YouTube policy compliance claim",
-                           "package.json change",
-                           "pnpm-lock change",
-                           "DB driver dependency",
-                           "Google SDK dependency",
-                           "real DB connection",
-                           "migration change",
-                           "contract change",
-                           "workflow change",
-                           "apps/web change",
-                           "apps/overlay change",
-                           "real network call",
-                           "real YouTube API call",
-                           "real OAuth execution",
-                           "secret value read",
-                           "wallet/RPC/deploy change",
-                           "real TTS",
-                           "real Live2D",
-                           "renderer",
-                           "OBS",
-                           "real WebSocket delivery",
-                           "token sale",
-                           "token exchange",
-                           "cash-out",
-                           "custody",
-                           "internal balance",
-                           "investment wording"
-                       ],
-    "doneCriteria":  [
-                         "internal YouTube fixture routes are no longer implemented inline in server.ts",
-                         "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
-                         "route paths, auth, status codes, response fields, idempotency, cursor behavior, support side effects, and failure-state behavior remain covered",
-                         "existing fixture route and network-disabled E2E tests continue to pass",
-                         "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
-                     ],
-    "testSummary":  {
-                        "schemaVersion":  "1.0.0",
-                        "command":  "corepack pnpm test",
-                        "testFiles":  116,
-                        "passed":  2043,
-                        "skipped":  6
-                    },
-    "securityBoundaries":  [
-                               "No package.json or pnpm-lock change.",
-                               "No DB driver or Google SDK dependency is added.",
-                               "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
-                               "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-                               "The connector remains fake_transport only.",
-                               "No runtime, production, legal, or YouTube policy readiness is claimed."
-                           ],
-    "residualRisks":  [
-                          "Admin YouTube connector routes still live in server.ts and are scheduled for the next phase.",
-                          "Production repository persistence and real connector authorization remain future owner-scoped work.",
-                          "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
-                      ],
-    "humanConfirmation":  [
-                              "AI review is not human approval.",
-                              "AI review is not GitHub approval review.",
-                              "This PR does not create owner approval record.",
-                              "This PR does not create merge authority."
-                          ],
-    "productVerificationCommands":  [
-                                        "corepack pnpm exec vitest run apps/api/src/p1-api-youtube-fixture-routes.test.ts apps/api/src/p0-youtube-superchat-fixture-normalizer.test.ts apps/api/src/p0-youtube-superchat-support-received-local-e2e.test.ts apps/api/src/p0-youtube-live-chat-fixture-cursor-boundary.test.ts apps/api/src/p0-youtube-live-chat-page-support-received-ingest.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass",
-                                        "corepack pnpm typecheck: pass",
-                                        "corepack pnpm lint: pass",
-                                        "corepack pnpm test: pass",
-                                        "npm test: pass",
-                                        "corepack pnpm evidence:ci: pass",
-                                        "corepack pnpm quality:self-protection: pass",
-                                        "node scripts/codex-secret-safety-scan.mjs: pass"
-                                    ],
-    "packageVerification":  {
-                                "packageScriptsChanged":  false,
-                                "runtimeDependenciesAdded":  false,
-                                "verification":  "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
-                            },
-    "apiCompatibilitySummary":  {
-                                    "publicApiChanged":  false,
-                                    "internalRuntimeApiChanged":  false,
-                                    "statement":  "Moves internal YouTube fixture routes out of server.ts; route behavior and external public API shape are unchanged."
-                                },
-    "runtimeSmokeRationale":  "No runtime readiness is claimed; focused fixture route and network-disabled tests verify unchanged local behavior without real network or OAuth.",
-    "rollbackOrStopCondition":  "Stop if package.json, pnpm-lock, contracts, migrations, workflows, apps/web, apps/overlay, real YouTube API, real OAuth, real network, real DB, DB driver dependency, Google SDK dependency, wallet/RPC/deploy changes, secret reads, or readiness/compliance claims are introduced.",
-    "safeOutput":  {
-                       "status":  "pass"
-                   },
-    "productionClaims":  {
-                             "runtimeReady":  false,
-                             "productionReady":  false,
-                             "deploymentApplied":  false,
-                             "legalComplianceClaimed":  false,
-                             "youtubePolicyComplianceClaimed":  false
-                         },
-    "reviewScope":  {
-                        "scope":  "P1 internal YouTube fixture route extraction and evidence.",
-                        "riskSummary":  "Main risk is route parity drift while reducing server.ts route surface; focused tests cover representative route behavior and existing fixture E2E paths.",
-                        "verificationOracle":  "Focused route parity and existing fixture tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, and GitHub same-head checks."
-                    },
-    "serverLineCount":  {
-                            "afterPhaseC":  5045
-                        },
-    "prBodyPath":  "docs/pr-p1-api-youtube-fixture-routes.md"
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
+  "harnessVersion": "1.2.6",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "f46e7415e34117c26f46649a466d80eca43db589",
+  "title": "refactor: extract admin youtube connector routes",
+  "goal": "Move read-only Admin YouTube connector routes from server.ts into a dedicated dependency-injected route module without changing behavior.",
+  "changeType": "p1_api_admin_youtube_connector_routes_refactor",
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "schemaVersion": "1.0.0",
+  "prProfile": "product_r3",
+  "taskMode": "refactor",
+  "ciRunId": "pre_pr",
+  "qualityGateRunId": "pre_pr",
+  "qualityGateArtifactId": "pre_pr",
+  "productCiStatus": "local_pre_pr",
+  "qualityGateStatus": "local_pre_pr",
+  "riskLevel": "R3",
+  "runtimeReadinessClaim": "no",
+  "productCodeChanged": true,
+  "scope": {
+    "changedFiles": [
+      "apps/api/src/server.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
+      ".codex/p1-api-admin-youtube-connector-routes.json",
+      ".codex/evidence-pack.json",
+      ".codex/test-summary.json",
+      "docs/P1_API_ADMIN_YOUTUBE_CONNECTOR_ROUTES.md",
+      "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
+      "docs/pr-p1-api-admin-youtube-connector-routes.md"
+    ],
+    "forbiddenPaths": [
+      "package.json",
+      "pnpm-lock.yaml",
+      "contracts/**",
+      "migrations/**",
+      ".github/workflows/**",
+      "apps/web/**",
+      "apps/overlay/**",
+      ".env.example"
+    ]
+  },
+  "commands": [
+    { "name": "corepack pnpm exec vitest run apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-admin-youtube-live-chat-connector-capability.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts", "status": "pass", "result": "12 passed" },
+    { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
+    { "name": "corepack pnpm lint", "status": "pass", "result": "pass" },
+    { "name": "corepack pnpm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
+    { "name": "npm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
+    { "name": "corepack pnpm evidence:ci", "status": "pass", "result": "pass" },
+    { "name": "corepack pnpm quality:self-protection", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-secret-safety-scan.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-v126-self-test.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-v125-self-test.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-v124-self-test.mjs", "status": "pass", "result": "pass" },
+    { "name": "node scripts/codex-v123-self-test.mjs", "status": "pass", "result": "pass" },
+    { "name": "cd contracts && forge test", "status": "unavailable_nonblocking_local", "result": "forge_not_installed" }
+  ],
+  "remoteRuns": [
+    { "name": "ci", "runId": "pre_pr", "result": "local_pre_pr" },
+    { "name": "quality-gate", "runId": "pre_pr", "artifactId": "pre_pr", "result": "local_pre_pr" }
+  ],
+  "allowedScope": [
+    "read-only Admin YouTube connector route extraction",
+    "dependency-injected route registration",
+    "route parity tests",
+    "static route dependency assertions",
+    "product completion audit update",
+    ".codex evidence",
+    "PR evidence docs"
+  ],
+  "forbiddenScope": [
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
+    "package.json change",
+    "pnpm-lock change",
+    "DB driver dependency",
+    "Google SDK dependency",
+    "real DB connection",
+    "migration change",
+    "contract change",
+    "workflow change",
+    "apps/web change",
+    "apps/overlay change",
+    "real network call",
+    "real YouTube API call",
+    "real OAuth execution",
+    "secret value read",
+    "wallet/RPC/deploy change",
+    "real TTS",
+    "real Live2D",
+    "renderer",
+    "OBS",
+    "real WebSocket delivery",
+    "token sale",
+    "token exchange",
+    "cash-out",
+    "custody",
+    "internal balance",
+    "investment wording"
+  ],
+  "doneCriteria": [
+    "Admin YouTube connector routes are no longer implemented inline in server.ts",
+    "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
+    "read-only behavior, auth, strict schema, blocked network state, and safe validation remain covered",
+    "existing Admin YouTube connector tests continue to pass",
+    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+  ],
+  "testSummary": {
+    "schemaVersion": "1.0.0",
+    "command": "corepack pnpm test",
+    "testFiles": 117,
+    "passed": 2046,
+    "skipped": 6
+  },
+  "securityBoundaries": [
+    "No package.json or pnpm-lock change.",
+    "No DB driver or Google SDK dependency is added.",
+    "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
+    "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
+    "The connector remains fake_transport only.",
+    "No runtime, production, legal, or YouTube policy readiness is claimed."
+  ],
+  "residualRisks": [
+    "Public wallet and live session mock truthfulness, runtime repository selection, support numeric identity, and support data fidelity remain future phases.",
+    "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
+  ],
+  "humanConfirmation": [
+    "AI review is not human approval.",
+    "AI review is not GitHub approval review.",
+    "This PR does not create owner approval record.",
+    "This PR does not create merge authority."
+  ],
+  "productVerificationCommands": [
+    "corepack pnpm exec vitest run apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-admin-youtube-live-chat-connector-capability.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts: pass",
+    "corepack pnpm typecheck: pass",
+    "corepack pnpm lint: pass",
+    "corepack pnpm test: pass",
+    "npm test: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "node scripts/codex-v126-self-test.mjs: pass",
+    "node scripts/codex-v125-self-test.mjs: pass",
+    "node scripts/codex-v124-self-test.mjs: pass",
+    "node scripts/codex-v123-self-test.mjs: pass",
+    "cd contracts && forge test: unavailable_nonblocking_local"
+  ],
+  "packageVerification": {
+    "packageScriptsChanged": false,
+    "runtimeDependenciesAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
+  },
+  "apiCompatibilitySummary": {
+    "publicApiChanged": false,
+    "internalRuntimeApiChanged": false,
+    "statement": "Moves read-only Admin YouTube connector routes out of server.ts; route behavior and external public API shape are unchanged."
+  },
+  "safeOutput": { "status": "pass" },
+  "productionClaims": {
+    "runtimeReady": false,
+    "productionReady": false,
+    "deploymentApplied": false,
+    "legalComplianceClaimed": false,
+    "youtubePolicyComplianceClaimed": false
+  },
+  "reviewScope": {
+    "scope": "P1 read-only Admin YouTube connector route extraction and evidence.",
+    "riskSummary": "Main risk is route parity drift while reducing server.ts route surface; focused tests cover auth, strict schema, safe validation, blocked readiness, and existing admin connector behavior.",
+    "verificationOracle": "Focused route parity and existing Admin YouTube connector tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
+  },
+  "serverLineCount": { "afterPhaseD": 4997 },
+  "prBodyPath": "docs/pr-p1-api-admin-youtube-connector-routes.md"
 }
