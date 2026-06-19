@@ -24,6 +24,8 @@ function assertWorkflowProtected(workflowPath) {
     "Run Codex quality gate",
     "Write safe quality summary",
     "Upload safe quality artifacts",
+    "Validate load-bearing technical safe summary",
+    "validate-quality-gate-safe-summary.mjs",
     "codex-quality-gate-safe-artifacts"
   ];
   for (const snippet of requiredSnippets) {
@@ -37,6 +39,15 @@ function assertWorkflowProtected(workflowPath) {
   }
   if (/codex-quality-gate-safe-artifacts[\s\S]*if-no-files-found:\s*error/i.test(text) === false) {
     throw new Error("safe quality artifact upload must fail when artifacts are missing");
+  }
+  if (/Validate load-bearing technical safe summary[\s\S]*continue-on-error\s*:\s*true/i.test(text)) {
+    throw new Error("safe summary validator must not use continue-on-error: true");
+  }
+  if (/validate-quality-gate-safe-summary\.mjs[\s\S]*\|\|\s*true/i.test(text)) {
+    throw new Error("safe summary validator must not be made optional");
+  }
+  if (!/Upload safe quality artifacts[\s\S]*Validate load-bearing technical safe summary/i.test(text)) {
+    throw new Error("safe summary validator must run after safe artifact upload");
   }
 }
 

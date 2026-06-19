@@ -286,7 +286,9 @@ describe("evidence single source of truth scripts", () => {
       "        uses: actions/upload-artifact@v4",
       "        with:",
       "          name: codex-quality-gate-safe-artifacts",
-      "          if-no-files-found: error"
+      "          if-no-files-found: error",
+      "      - name: Validate load-bearing technical safe summary",
+      "        run: node scripts/validate-quality-gate-safe-summary.mjs --input codex-quality-gate-safe-summary.json --technical-only"
     ].join("\n"));
     const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
     expect(result.stderr).toMatch(/Run Codex quality gate/);
@@ -308,7 +310,9 @@ describe("evidence single source of truth scripts", () => {
       "        uses: actions/upload-artifact@v4",
       "        with:",
       "          name: codex-quality-gate-safe-artifacts",
-      "          if-no-files-found: ignore"
+      "          if-no-files-found: ignore",
+      "      - name: Validate load-bearing technical safe summary",
+      "        run: node scripts/validate-quality-gate-safe-summary.mjs --input codex-quality-gate-safe-summary.json --technical-only"
     ].join("\n"));
     const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
     expect(result.stderr).toMatch(/artifact upload/);
@@ -331,11 +335,93 @@ describe("evidence single source of truth scripts", () => {
       "        uses: actions/upload-artifact@v4",
       "        with:",
       "          name: codex-quality-gate-safe-artifacts",
-      "          if-no-files-found: error"
+      "          if-no-files-found: error",
+      "      - name: Validate load-bearing technical safe summary",
+      "        run: node scripts/validate-quality-gate-safe-summary.mjs --input codex-quality-gate-safe-summary.json --technical-only"
     ].join("\n"));
     fs.writeFileSync(script, "export const note = 'always pass';\n");
     const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
     expect(result.stderr).toMatch(/always pass/);
+  });
+
+  it("quality-gate self-protection requires the load-bearing safe summary validator", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "cripto-tip-qg-validator-"));
+    const workflow = path.join(dir, "quality-gate.yml");
+    fs.writeFileSync(workflow, [
+      "name: quality-gate",
+      "jobs:",
+      "  quality-gate:",
+      "    steps:",
+      "      - name: Run Codex quality gate",
+      "        run: node scripts/codex-local-quality-gate.mjs",
+      "      - name: Write safe quality summary",
+      "        run: echo summary",
+      "      - name: Upload safe quality artifacts",
+      "        uses: actions/upload-artifact@v4",
+      "        with:",
+      "          name: codex-quality-gate-safe-artifacts",
+      "          if-no-files-found: error"
+    ].join("\n"));
+    const result = runScriptResult("check-quality-gate-self-protection.mjs", ["--workflow", workflow, "--scripts-dir", dir]);
+    expect(result.stderr).toMatch(/Validate load-bearing technical safe summary/);
+  });
+
+  it("safe summary validator rejects workflow-success safe-summary failure", () => {
+    const file = writeJsonFixture("safe-summary-fail", {
+      status: "fail",
+      technicalChecksReady: false,
+      qualityScoreStatus: {
+        status: "fail",
+        blockingStatuses: [{ key: "securityLifecycleStatus", status: "fail" }]
+      },
+      securityLifecycleStatus: { status: "fail" },
+      safeSummaryOnly: true
+    });
+    const result = runScriptResult("validate-quality-gate-safe-summary.mjs", ["--input", file, "--technical-only"]);
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("safe_summary_validation_failed");
+  });
+
+  it("safe summary validator accepts owner-only merge boundary when technical checks pass", () => {
+    const file = writeJsonFixture("safe-summary-pass", {
+      status: "pass",
+      technicalChecksReady: true,
+      mergeReady: false,
+      ownerMergeAuthorized: false,
+      qualityScoreStatus: {
+        status: "pass",
+        blockingStatuses: [],
+        manualStatuses: []
+      },
+      securityLifecycleStatus: { status: "pass" },
+      bestOfNEvidenceStatus: { status: "pass" },
+      requiredHeadingHintStatus: { status: "pass" },
+      taskModeStatus: { status: "pass" },
+      prProfileStatus: { status: "pass" },
+      safeSummaryOnly: true
+    });
+    expect(runScript("validate-quality-gate-safe-summary.mjs", ["--input", file, "--technical-only"])).toContain("pass");
+  });
+
+  it("workflow quality runner does not let final decision bypass technical safe-summary failures", () => {
+    const report = writeJsonFixture("workflow-runner-bypass", {
+      harnessVersion: "1.2.7",
+      status: "fail",
+      mergeReady: false,
+      technicalChecksReady: false,
+      finalDecision: { exitCode: 0, safeNextAction: "owner_merge_decision_only" },
+      targetQualityScoreStatus: {
+        status: "fail",
+        blockingStatuses: [{ key: "securityLifecycleStatus", status: "fail" }]
+      },
+      securityLifecycleStatus: { status: "fail" },
+      bestOfNEvidenceStatus: { status: "fail" },
+      safeArtifactValidation: { status: "pass" },
+      safeSummaryOnly: true
+    });
+    const result = runScriptResult("codex-workflow-quality-runner.mjs", ["--report", report, "--gate-exit", "0"]);
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("codex-quality-gate");
   });
 
   it("marks remote npm diagnostic as executed when npm exit code is present", async () => {
