@@ -9,6 +9,7 @@ This audit records the P1 route modularization progress after the YouTube fixtur
 - Cursor operations extraction: complete.
 - Internal YouTube fixture route extraction: complete.
 - Admin YouTube connector route extraction: complete.
+- Admin moderation read route extraction: complete.
 
 ## Server Composition Root
 
@@ -20,7 +21,7 @@ Current `server.ts` line count after this phase is recorded in PR evidence. The 
 
 ## Remaining Route Families
 
-Admin moderation, support event work queue, reaction dispatch, DLQ, audit, overlay WebSocket, public wallet, and live session routes still live in `server.ts`.
+Admin moderation write routes, support event work queue, reaction dispatch, DLQ, audit, overlay WebSocket, public wallet, and live session routes still live in `server.ts`.
 
 ## Production Blockers
 

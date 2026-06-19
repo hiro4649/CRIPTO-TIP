@@ -40,6 +40,7 @@ import {
   evaluateYouTubeLiveChatControlledCanaryPreflight
 } from "./youtube-live-chat-controlled-canary-preflight.js";
 import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-chat-real-connector-readiness-gate.js";
+import { registerAdminModerationReadRoutes } from "./routes/admin-moderation-read-routes.js";
 import { registerAdminYouTubeConnectorRoutes } from "./routes/admin-youtube-connector-routes.js";
 import { registerYouTubeFixtureRoutes } from "./routes/youtube-fixture-routes.js";
 
@@ -3078,26 +3079,11 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     evaluateControlledCanary: evaluateYouTubeLiveChatControlledCanaryPreflight
   });
 
-  app.get("/admin/moderation/held-support", async (req, reply) => {
-    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
-    const query = z.object({ stream_id: z.string().optional() }).parse(req.query);
-    const held = await repo.listHeldSupportEvents(query.stream_id ? { streamId: query.stream_id } : undefined);
-    await repo.writeAuditLog({
-      actor_type: "admin",
-      actor_id: "admin_mock",
-      action: "list_held_support",
-      target_type: "held_support_list",
-      target_id: query.stream_id ?? "all",
-      after_json: { stream_id: query.stream_id ?? "all", result_count: held.length }
-    });
-    return { held_support: held.map(toAdminHeldSupportEntry) };
-  });
-
-  app.get("/admin/moderation/summary", async (req, reply) => {
-    if (!requireBearer(req, ADMIN_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
-    const held = await repo.listHeldSupportEvents();
-    const reviewed = await repo.listSupportModerationReviewStatuses();
-    return buildModerationQueueSummary(held, reviewed);
+  registerAdminModerationReadRoutes(app, {
+    repo,
+    requireAdminAuth: (request) => requireBearer(request, ADMIN_TOKEN),
+    toHeldSupportEntry: toAdminHeldSupportEntry,
+    buildSummary: buildModerationQueueSummary
   });
 
   app.get("/admin/support-events", async (req, reply) => {
