@@ -381,6 +381,42 @@ describe("evidence single source of truth scripts", () => {
     expect(JSON.stringify({ typecheck, test })).not.toMatch(/stdout|stderr|stack_trace/);
   });
 
+  it("safe pnpm test summary records Vitest counts without failure messages", () => {
+    const summary = path.join(os.tmpdir(), `cripto-tip-vitest-safe-summary-${Date.now()}.json`);
+    const output = path.join(os.tmpdir(), `cripto-tip-test-safe-counts-${Date.now()}.json`);
+    fs.writeFileSync(summary, JSON.stringify({
+      numTotalTestSuites: 2,
+      numPassedTestSuites: 1,
+      numFailedTestSuites: 1,
+      numPendingTestSuites: 0,
+      numTotalTests: 3,
+      numPassedTests: 2,
+      numFailedTests: 1,
+      numPendingTests: 0,
+      numTodoTests: 0,
+      testResults: [
+        {
+          name: path.join(process.cwd(), "apps/api/src/failing-safe-summary.test.ts"),
+          status: "failed",
+          assertionResults: [
+            {
+              title: "does not leak failure body",
+              status: "failed",
+              failureMessages: ["raw failure detail must not be copied"]
+            }
+          ]
+        }
+      ]
+    }));
+    runScript("safe-pnpm-test-summary.mjs", ["--simulate-exit", "1", "--summary", summary, "--typecheck-result", "success", "--no-exit", "--output", output]);
+    const test = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(test.test_counts).toEqual({ testFiles: 2, passed: 2, failed: 1, skipped: 0 });
+    expect(test.failed_test_files).toEqual(["apps/api/src/failing-safe-summary.test.ts"]);
+    expect(test.failed_test_names).toEqual(["does not leak failure body"]);
+    expect(test.raw_log_required).toBe(false);
+    expect(JSON.stringify(test)).not.toMatch(/raw failure detail|failureMessages|stdout|stderr|stack_trace/);
+  });
+
   it("records a safe not-run test summary when typecheck already failed", () => {
     const testOutput = path.join(os.tmpdir(), `cripto-tip-test-not-run-${Date.now()}.json`);
     runScript("safe-pnpm-test-summary.mjs", ["--typecheck-result", "failure", "--not-run-due-to-typecheck", "--no-exit", "--output", testOutput]);
@@ -401,6 +437,22 @@ describe("evidence single source of truth scripts", () => {
     expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
   });
 
+  it("keeps fixture required-check metadata independent from CI head environment", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-required-checks-env-${Date.now()}.json`);
+    execFileSync("node", [path.join(root, "scripts", "export-required-checks-metadata.mjs"), "--fixture", "fixtures/ci-safe/all-pass-same-head.json", "--output", output], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_PR_HEAD_SHA: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        GITHUB_SHA: "cccccccccccccccccccccccccccccccccccccccc"
+      }
+    });
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(metadata.target_head_sha).toBe("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    expect(metadata.same_head_required_checks_passed).toBe(true);
+  });
+
   it("rejects mixed-head, missing, or failed required checks", () => {
     const mixed = path.join(os.tmpdir(), `cripto-tip-mixed-checks-${Date.now()}.json`);
     const qgPassTsFail = path.join(os.tmpdir(), `cripto-tip-qg-pass-ts-fail-${Date.now()}.json`);
@@ -415,6 +467,36 @@ describe("evidence single source of truth scripts", () => {
     const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
     runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
+  }, 30000);
+
+  it("keeps required check metadata faithful for running checks and PR158 contradiction", () => {
+    const running = path.join(os.tmpdir(), `cripto-tip-running-checks-${Date.now()}.json`);
+    const pr158 = path.join(os.tmpdir(), `cripto-tip-pr158-contradiction-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/running-required-checks.json", "--output", running]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/pr158-required-check-contradiction.json", "--output", pr158]);
+
+    const runningMetadata = JSON.parse(fs.readFileSync(running, "utf8"));
+    const pr158Metadata = JSON.parse(fs.readFileSync(pr158, "utf8"));
+
+    expect(runningMetadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.status).toBe("in_progress");
+    expect(runningMetadata.same_head_required_checks_passed).toBe(false);
+    expect(pr158Metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.conclusion).toBe("failure");
+    expect(pr158Metadata.checks.some((check: { workflow_run_id: string }) => check.workflow_run_id === "")).toBe(true);
+    expect(pr158Metadata.same_head_required_checks_passed).toBe(false);
+    expect(pr158Metadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
+  }, 30000);
+
+  it("uses the latest same-head completed required check attempt deterministically", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-duplicate-checks-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/duplicate-stale-attempt-checks.json", "--output", output]);
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    const selected = metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript");
+
+    expect(selected?.workflow_run_id).toBe("3");
+    expect(selected?.run_attempt).toBe(2);
+    expect(selected?.conclusion).toBe("failure");
+    expect(metadata.same_head_required_checks_passed).toBe(false);
+    expect(metadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
   }, 30000);
 
   it("requires safe CI artifacts to fail closed when upload files are missing", () => {

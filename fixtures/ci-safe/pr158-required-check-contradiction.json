@@ -1,0 +1,38 @@
+{
+  "target_head_sha": "89fcb009ae9dab88b2fa6c854b961cdd22d1884e",
+  "checks": [
+    {
+      "check_name": "typescript",
+      "workflow_name": "ci",
+      "status": "completed",
+      "conclusion": "failure",
+      "head_sha": "89fcb009ae9dab88b2fa6c854b961cdd22d1884e",
+      "workflow_run_id": "",
+      "check_run_id": "82329916663",
+      "run_attempt": 1,
+      "completed_at": "2026-06-19T10:19:20.000Z"
+    },
+    {
+      "check_name": "quality-gate",
+      "workflow_name": "quality-gate",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "89fcb009ae9dab88b2fa6c854b961cdd22d1884e",
+      "workflow_run_id": "",
+      "check_run_id": "82329916692",
+      "run_attempt": 1,
+      "completed_at": "2026-06-19T10:18:32.000Z"
+    },
+    {
+      "check_name": "contracts",
+      "workflow_name": "ci",
+      "status": "completed",
+      "conclusion": "success",
+      "head_sha": "89fcb009ae9dab88b2fa6c854b961cdd22d1884e",
+      "workflow_run_id": "",
+      "check_run_id": "82329916696",
+      "run_attempt": 1,
+      "completed_at": "2026-06-19T10:18:02.000Z"
+    }
+  ]
+}
