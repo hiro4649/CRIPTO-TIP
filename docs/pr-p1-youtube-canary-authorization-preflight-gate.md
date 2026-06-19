@@ -18,7 +18,7 @@ Forbidden scope: package or lockfile change, DB driver dependency, real DB, migr
 
 Head SHA: current_pr_head
 
-Base SHA: 8f6087920b7ecdd30d2c640926f15ca1f49459f3
+Base SHA: 20a002c3ca7ebf32494cf9bb66593c1939fa3503
 
 CI run: metadata_limited
 

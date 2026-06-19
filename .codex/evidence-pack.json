@@ -5,7 +5,7 @@
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 172,
   "headSha": "current_pr_head",
-  "baseSha": "8f6087920b7ecdd30d2c640926f15ca1f49459f3",
+  "baseSha": "20a002c3ca7ebf32494cf9bb66593c1939fa3503",
   "title": "feat: add youtube canary authorization preflight gate",
   "goal": "Canonicalize owner authorization evaluation while keeping YouTube canary execution forbidden and admin preflight routes read-only.",
   "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, evidence is stale, owner fields are inferred from coarse statuses, readiness emits execution-candidate wording, or quality gates weaken.",
