@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "phase": "h0-current-test-summary-source",
+  "status": "implemented",
+  "currentRunInputRequired": true,
+  "evidencePackFallbackAllowed": false,
+  "supportedSources": [
+    "vitest_text_summary",
+    "vitest_json_summary",
+    "safe_pnpm_test_summary"
+  ],
+  "missingInputFailure": "test_summary_current_run_input_required",
+  "failedTestSummaryAcceptedAsPass": false,
+  "currentRunEvidence": true,
+  "rawStdoutStored": false,
+  "rawStderrStored": false,
+  "rawFailureMessagesStored": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "workflowChanged": false,
+  "productRuntimeChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false
+}
