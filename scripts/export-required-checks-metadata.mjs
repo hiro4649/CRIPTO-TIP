@@ -8,6 +8,9 @@ const output = valueAfter(args, "--output") || "reports/ci-required-checks-metad
 let input;
 if (fixture) {
   input = readJson(fixture);
+  if (!input.target_head_sha && Array.isArray(input.checks) && input.checks[0]?.head_sha) {
+    input = { ...input, target_head_sha: input.checks[0].head_sha };
+  }
 } else {
   const pr = valueAfter(args, "--pr");
   const repo = valueAfter(args, "--repo") || process.env.GITHUB_REPOSITORY;

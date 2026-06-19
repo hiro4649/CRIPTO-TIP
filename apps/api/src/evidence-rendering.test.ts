@@ -437,6 +437,22 @@ describe("evidence single source of truth scripts", () => {
     expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
   });
 
+  it("keeps fixture required-check metadata independent from CI head environment", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-required-checks-env-${Date.now()}.json`);
+    execFileSync("node", [path.join(root, "scripts", "export-required-checks-metadata.mjs"), "--fixture", "fixtures/ci-safe/all-pass-same-head.json", "--output", output], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        CODEX_PR_HEAD_SHA: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        GITHUB_SHA: "cccccccccccccccccccccccccccccccccccccccc"
+      }
+    });
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(metadata.target_head_sha).toBe("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    expect(metadata.same_head_required_checks_passed).toBe(true);
+  });
+
   it("rejects mixed-head, missing, or failed required checks", () => {
     const mixed = path.join(os.tmpdir(), `cripto-tip-mixed-checks-${Date.now()}.json`);
     const qgPassTsFail = path.join(os.tmpdir(), `cripto-tip-qg-pass-ts-fail-${Date.now()}.json`);
