@@ -162,6 +162,7 @@ export function classifyChange(files = changedFiles(), env = process.env) {
     harnessOnly: false,
     docsOnly: false,
     productSourceChanged: false,
+    productTestChanged: false,
     testsChanged: false,
     specsChanged: false,
     packageChanged: false,
@@ -190,7 +191,8 @@ export function classifyChange(files = changedFiles(), env = process.env) {
     const runtimeAsset = matches(file, rules.runtimeAssetFiles);
     const config = matches(file, rules.configFiles) || /\bconfig\b/i.test(file);
     if (workflow) flags.workflowChanged = true;
-    if (product) flags.productSourceChanged = true;
+    if (product && !test && !harness) flags.productSourceChanged = true;
+    if (test && !harness) flags.productTestChanged = true;
     if (test) flags.testsChanged = true;
     if (spec) flags.specsChanged = true;
     if (authority) flags.authorityChanged = true;
@@ -204,10 +206,11 @@ export function classifyChange(files = changedFiles(), env = process.env) {
     }
   }
 
-  const productRelevantChanged = flags.productSourceChanged || flags.testsChanged || flags.specsChanged ||
+  let productRelevantChanged = flags.productSourceChanged || flags.productTestChanged || flags.specsChanged ||
     flags.packageChanged || flags.lockfileChanged || flags.runtimeAssetsChanged || flags.configChanged ||
     flags.authorityChanged;
   flags.harnessOnly = files.length > 0 && files.every((file) => matches(normalizePath(file), rules.harnessFiles));
+  if (flags.harnessOnly) productRelevantChanged = false;
   flags.docsOnly = files.length > 0 && !productRelevantChanged && files.every((file) => matches(normalizePath(file), rules.docsFiles) || matches(normalizePath(file), rules.harnessFiles));
   flags.unknownRisk = unknownFiles.length > 0;
 

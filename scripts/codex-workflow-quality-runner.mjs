@@ -6328,8 +6328,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
       productionReadinessClaimed: loaded.report.productionReadinessClaimed === true,
     },
   });
-  if (finalDecision.exitCode === 0) process.exit(0);
-
   if (result.failures.length) {
 
 
@@ -6373,6 +6371,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
 
 
   }
+
+  if (finalDecision.exitCode === 0) process.exit(0);
 
 
 

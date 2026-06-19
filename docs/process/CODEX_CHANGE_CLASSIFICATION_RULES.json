@@ -26,7 +26,9 @@
     "scripts/export-required-checks-metadata.mjs",
     "scripts/validate-same-head-required-checks.mjs",
     "scripts/safe-pnpm-typecheck-summary.mjs",
-    "scripts/safe-pnpm-test-summary.mjs"
+    "scripts/safe-pnpm-test-summary.mjs",
+    "scripts/validate-quality-gate-safe-summary.mjs",
+    "apps/api/src/evidence-rendering.test.ts"
   ],
   "docsFiles": [
     "README.md",

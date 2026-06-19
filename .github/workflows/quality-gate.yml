@@ -430,6 +430,15 @@ jobs:
             codex-runtime-latency-measurement.safe.json
             codex-owner-decision-digest.safe.json
           if-no-files-found: error
+      - name: Validate load-bearing technical safe summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/validate-quality-gate-safe-summary.mjs \
+            --input codex-quality-gate-safe-summary.json \
+            --technical-only \
+            --expected-head "${{ github.event.pull_request.head.sha || github.sha }}"
 
   required-check-evidence:
     needs: [quality-gate]
