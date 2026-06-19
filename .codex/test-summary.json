@@ -1,7 +1,12 @@
 {
   "schemaVersion": "1.0.0",
   "command": "corepack pnpm test",
-  "testFiles": 118,
-  "passed": 2049,
-  "skipped": 6
+  "headSha": "701a40bf06555dfb9b4ea0aef33125d5094c6dc7",
+  "testFiles": 119,
+  "passed": 2089,
+  "failed": 0,
+  "skipped": 6,
+  "sourceType": "vitest_json_summary",
+  "createdAt": "2026-06-19T14:51:30.420Z",
+  "currentRunEvidence": true
 }

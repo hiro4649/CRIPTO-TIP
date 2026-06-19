@@ -121,6 +121,56 @@ describe("evidence single source of truth scripts", () => {
     }
   });
 
+  it("writes test summary from current Vitest JSON output", () => {
+    const file = path.join(os.tmpdir(), `cripto-tip-vitest-json-${Date.now()}.json`);
+    const summaryPath = path.join(root, ".codex", "test-summary.json");
+    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
+    fs.writeFileSync(file, JSON.stringify({
+      numTotalTestSuites: 3,
+      numPassedTests: 11,
+      numFailedTests: 0,
+      numPendingTests: 2,
+      numTodoTests: 1
+    }));
+    try {
+      expect(runScript("write-test-summary.mjs", ["--from-json", file])).toContain("11 passed");
+      const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+      expect(summary).toMatchObject({
+        testFiles: 3,
+        passed: 11,
+        failed: 0,
+        skipped: 3,
+        sourceType: "vitest_json_summary",
+        currentRunEvidence: true
+      });
+    } finally {
+      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
+      else fs.writeFileSync(summaryPath, previousSummary);
+    }
+  });
+
+  it("writes test summary from same-run safe pnpm summary", () => {
+    const file = path.join(os.tmpdir(), `cripto-tip-safe-test-summary-${Date.now()}.json`);
+    const summaryPath = path.join(root, ".codex", "test-summary.json");
+    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
+    fs.writeFileSync(file, JSON.stringify({ test_counts: { testFiles: 4, passed: 12, failed: 0, skipped: 1 } }));
+    try {
+      expect(runScript("write-test-summary.mjs", ["--safe-summary", file])).toContain("12 passed");
+      const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+      expect(summary.sourceType).toBe("safe_pnpm_test_summary");
+      expect(summary.currentRunEvidence).toBe(true);
+      expect(JSON.stringify(summary)).not.toMatch(/stdout|stderr|stack_trace|failureMessages/);
+    } finally {
+      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
+      else fs.writeFileSync(summaryPath, previousSummary);
+    }
+  });
+
+  it("fails closed when no current-run test summary input is provided", () => {
+    const result = runScriptResult("write-test-summary.mjs");
+    expect(result.stderr).toContain("test_summary_current_run_input_required");
+  });
+
   it("renders risk register and manual gate sections", () => {
     const output = path.join(os.tmpdir(), `cripto-tip-pr-evidence-render-${Date.now()}.md`);
     const riskOutput = path.join(os.tmpdir(), `cripto-tip-risk-${Date.now()}.md`);
