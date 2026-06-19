@@ -82,6 +82,9 @@ describe("evidence single source of truth scripts", () => {
   });
 
   it("resolves current_pr_head in the strict evidence pack validator", () => {
+    const resolvedHead = evidencePack.headSha === "current_pr_head"
+      ? "1234567890abcdef1234567890abcdef12345678"
+      : evidencePack.headSha;
     const result = execFileSync("node", [path.join(root, "scripts", "codex-evidence-pack-validate.mjs"), "--json"], {
       cwd: root,
       encoding: "utf8",
@@ -89,13 +92,13 @@ describe("evidence single source of truth scripts", () => {
         ...process.env,
         CODEX_EVENT_NAME: "pull_request",
         CODEX_PR_NUMBER: "20",
-        CODEX_PR_HEAD_SHA: evidencePack.headSha,
+        CODEX_PR_HEAD_SHA: resolvedHead,
         CODEX_PR_BASE_SHA: evidencePack.baseSha,
         CODEX_HARNESS_SOURCE_REPO: "1"
       }
     });
     expect(JSON.parse(result).evidencePackStatus.status).toBe("pass");
-    expect(JSON.parse(result).normalizedEvidencePack.headSha).toBe(evidencePack.headSha);
+    expect(JSON.parse(result).normalizedEvidencePack.headSha).toBe(resolvedHead);
   });
 
   it("rejects forbidden evidence placeholders", () => {
