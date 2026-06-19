@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import pg from "pg";
 import { PostgresRepository, type QueryClient } from "./postgres.js";
-import { normalizeTokenTipToSupportReceived, type TipTransaction } from "@cripto-tip/shared";
+import { normalizeTokenTipToSupportReceived, normalizeYouTubeSuperChatToSupportReceived, type TipTransaction } from "@cripto-tip/shared";
 
 class RecordingClient implements QueryClient {
   queries: Array<{ sql: string; params?: unknown[] }> = [];
@@ -51,6 +51,47 @@ describe("PostgresRepository", () => {
     await repo.getChainCursor({ chain_id: 1, contract_address: "0x1111111111111111111111111111111111111111" });
     expect(client.queries.every((query) => query.sql.includes("$1"))).toBe(true);
     expect(client.queries.every((query) => Array.isArray(query.params))).toBe(true);
+  });
+
+  it("persists support currency metadata instead of replacing it with source", async () => {
+    const client = new RecordingClient();
+    const support = normalizeYouTubeSuperChatToSupportReceived({
+      live_chat_message_id: "yt_currency_fidelity",
+      stream_id: "str_currency",
+      character_id: "char_mio",
+      author_channel_id: "UC_CURRENCY",
+      author_display_name: "Akira",
+      amount_micros: "1000000",
+      currency: "JPY",
+      amount_display_string: "JPY 1,000",
+      tier: 3,
+      user_comment: "thanks",
+      published_at: "2026-06-19T00:00:00.000Z"
+    });
+
+    await new PostgresRepository(client).createSupportEventIfAbsent(support);
+
+    const insert = client.queries.find((query) => query.sql.includes("insert into support_events"));
+    expect(insert?.params?.[13]).toBe("JPY");
+    expect(insert?.params?.[13]).not.toBe("youtube_super_chat");
+  });
+
+  it("committed P1 support event data fidelity evidence preserves safe boundaries", () => {
+    const evidence = JSON.parse(readFileSync(resolve(here, "../../../../.codex/p1-support-event-data-fidelity.json"), "utf8"));
+
+    expect(evidence.supportEventDataFidelityStatus).toBe("implemented");
+    expect(evidence.youtubeCurrencyPreservedStatus).toBe("pass");
+    expect(evidence.postgresCurrencyPersistenceStatus).toBe("pass");
+    expect(evidence.sourceNotUsedAsCurrencyWhenCurrencyExists).toBe(true);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.realDbConnectionUsed).toBe(false);
+    expect(evidence.dbDriverDependencyAdded).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.legalComplianceClaimed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimed).toBe(false);
   });
 });
 

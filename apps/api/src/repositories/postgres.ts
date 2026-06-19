@@ -19,6 +19,7 @@ type SupportEventRow = {
   display_name_llm_safe: string;
   amount_raw?: string;
   amount_display?: string;
+  currency_or_token?: string;
   tier: SupportReceived["support"]["tier"];
   message_sanitized?: string;
   message_moderation_status: SupportReceived["support"]["message_moderation_status"];
@@ -124,6 +125,7 @@ function rowToSupportReceived(row: SupportEventRow): SupportReceived {
     support: {
       amount_raw: row.amount_raw ?? "0",
       amount_display: row.amount_display ?? "",
+      currency_or_token: optionalString(row.currency_or_token),
       tier: row.tier,
       message: row.message_sanitized ?? "",
       message_moderation_status: row.message_moderation_status
@@ -388,7 +390,7 @@ export class PostgresRepository implements CriptoTipRepository {
         amount_display, currency_or_token, tier, message_sanitized, message_moderation_status, affinity_delta, delivery_status, created_at)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
        on conflict (source, source_event_id) do nothing`,
-      [event.event_id, event.source, event.source_event_id, event.stream_id, event.youtube_video_id, event.character_id, event.viewer.iris_user_id, event.viewer.youtube_author_channel_id, event.viewer.wallet_address, event.viewer.display_name, event.viewer.display_name, event.support.amount_raw, event.support.amount_display, event.source, event.support.tier, event.support.message, event.support.message_moderation_status, event.relationship.affinity_delta, "pending", event.created_at]
+      [event.event_id, event.source, event.source_event_id, event.stream_id, event.youtube_video_id, event.character_id, event.viewer.iris_user_id, event.viewer.youtube_author_channel_id, event.viewer.wallet_address, event.viewer.display_name, event.viewer.display_name, event.support.amount_raw, event.support.amount_display, event.support.currency_or_token ?? event.source, event.support.tier, event.support.message, event.support.message_moderation_status, event.relationship.affinity_delta, "pending", event.created_at]
     );
     return { event: (await this.getSupportEventBySource(event.source, event.source_event_id)) ?? event, created: true };
   }
