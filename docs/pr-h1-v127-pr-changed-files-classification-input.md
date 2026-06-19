@@ -5,6 +5,7 @@ Make the quality-gate workflow pass a stable pull-request changed-file list into
 PR profile: harness_workflow_r3
 Risk level: H1
 Task mode: bugfix
+Skip reason: harness-only workflow repair with no product runtime behavior.
 
 ## Task Contract
 
