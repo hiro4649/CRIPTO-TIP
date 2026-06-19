@@ -86,6 +86,24 @@ function buildV092SelfTestReport() {
   const permissionEscalationWouldFail = /permissions:[\s\S]*\bwrite\b/i.test('permissions:\n  contents: write');
   assertCase('security_lifecycle_workflow_permission_escalation_fails', permissionEscalationWouldFail, failures, cases, 'fail', ['workflow_permission_escalation_unjustified']);
   assertCase('security_lifecycle_test_fixture_pattern_warns', report.securityLifecycleStatus.status === 'pass', failures, cases, report.securityLifecycleStatus.status, report.securityLifecycleStatus.reasonCodes);
+  report = buildSecurityLifecycleReport({ CODEX_CHANGED_FILES: JSON.stringify(['apps/api/src/youtube-oauth-lifecycle-contract.ts']) });
+  assertCase('security_lifecycle_runtime_surface_requires_oracle', report.securityLifecycleStatus.status === 'fail' && report.securityLifecycleStatus.reasonCodes.includes('security_lifecycle_failed'), failures, cases, report.securityLifecycleStatus.status, report.securityLifecycleStatus.reasonCodes);
+  report = buildSecurityLifecycleReport({
+    CODEX_CHANGED_FILES: JSON.stringify(['apps/api/src/youtube-oauth-lifecycle-contract.ts']),
+    CODEX_SECURITY_ORACLE_EVIDENCE_JSON: JSON.stringify({
+      coveredFiles: ['apps/api/src/youtube-oauth-lifecycle-contract.ts'],
+      authenticationBoundaryTested: true,
+      untrustedInputTested: true,
+      negativePathsTested: true,
+      unsafeInputNoEchoTested: true,
+      authorityCreationBlocked: true,
+      networkExecutionBlocked: true,
+      oauthExecutionBlocked: true,
+      secretAccessBlocked: true,
+      runtimeExecutionBlocked: true,
+    }),
+  });
+  assertCase('security_lifecycle_accepts_machine_readable_oracle', report.securityLifecycleStatus.status === 'pass', failures, cases, report.securityLifecycleStatus.status, report.securityLifecycleStatus.reasonCodes);
 
   report = buildReviewIndependenceReport(prEnv({ CODEX_REVIEW_BODY: 'Writer evidence: present\nProduct code changed: no\nRuntime readiness claimed: no' }));
   assertCase('review_independence_writer_only_fails', report.reviewIndependenceStatus.status === 'fail', failures, cases, report.reviewIndependenceStatus.status, report.reviewIndependenceStatus.reasonCodes);
