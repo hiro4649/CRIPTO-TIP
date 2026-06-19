@@ -40,12 +40,21 @@ import {
   evaluateYouTubeLiveChatControlledCanaryPreflight
 } from "./youtube-live-chat-controlled-canary-preflight.js";
 import {
-  clearYouTubeLiveChatFixtureCursorFailureState,
-  getYouTubeLiveChatFixtureCursorStores,
   InternalYouTubeLiveChatFixtureCursorFailureStateSchema,
-  toYouTubeLiveChatFixtureCursorResponse,
-  type YouTubeLiveChatFixtureCursorState
+  toYouTubeLiveChatFixtureCursorResponse
 } from "./youtube-live-chat-fixture-cursor-boundary.js";
+import {
+  advanceYouTubeLiveChatFixtureCursorPage,
+  clearYouTubeLiveChatFixtureCursorFailureState,
+  createOrGetYouTubeLiveChatFixtureCursor,
+  createYouTubeLiveChatFixturePageFingerprint,
+  extractSafeYouTubeLiveChatMessageIds,
+  getYouTubeLiveChatFixtureCursor,
+  getYouTubeLiveChatFixtureSuccessfulPageResult,
+  guardYouTubeLiveChatFixturePageToken,
+  hasYouTubeLiveChatFixturePageFingerprint,
+  setYouTubeLiveChatFixtureCursorFailureState
+} from "./youtube-live-chat-fixture-cursor-operations.js";
 import { parseYouTubeLiveChatPageFixture } from "./youtube-live-chat-page-fixture-parser.js";
 import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-chat-real-connector-readiness-gate.js";
 import { normalizeYouTubeSuperChatFixture } from "./youtube-superchat-fixture-normalizer.js";
@@ -2630,27 +2639,6 @@ function toReactionDispatchSimulationFailureDlqResponse(entry: ReactionDispatchS
   };
 }
 
-function extractSafePageMessageIds(page: unknown) {
-  const record = typeof page === "object" && page !== null && !Array.isArray(page) ? page as Record<string, unknown> : {};
-  const items = Array.isArray(record.items) ? record.items : [];
-  return items
-    .map((item) => {
-      const itemRecord = typeof item === "object" && item !== null && !Array.isArray(item) ? item as Record<string, unknown> : {};
-      return typeof itemRecord.id === "string" ? itemRecord.id : "unknown";
-    })
-    .sort();
-}
-
-function toYouTubeLiveChatFixturePageFingerprint(cursorId: string, pageToken: string | null, page: unknown) {
-  const record = typeof page === "object" && page !== null && !Array.isArray(page) ? page as Record<string, unknown> : {};
-  return hashSafeMetadata({
-    cursor_id: cursorId,
-    input_page_token: pageToken ?? null,
-    next_page_token: typeof record.nextPageToken === "string" ? record.nextPageToken : null,
-    message_ids: extractSafePageMessageIds(page)
-  });
-}
-
 async function toReactionDispatchPreview(repo: CriptoTipRepository, support: SupportReceived) {
   const resolutionRepo = getResolutionRepository(repo);
   const resolution = await resolutionRepo.getSupportEventResolution(support.event_id);
@@ -3175,39 +3163,8 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!parsedInput.success) {
       return reply.code(400).send({ error: "youtube_live_chat_fixture_cursor_invalid", safe_reason_codes: ["character_id_required"] });
     }
-    const input = parsedInput.data;
-    const { cursors, identities } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const identity = `${input.stream_id}:${input.youtube_video_id}:${input.live_chat_id}:${input.character_id}`;
-    const existingId = identities.get(identity);
-    if (existingId) {
-      const existing = cursors.get(existingId);
-      if (existing) return { cursor: toYouTubeLiveChatFixtureCursorResponse(existing), idempotent: true, safe_reason_codes: ["cursor_created"] };
-    }
-    const now = new Date().toISOString();
-    const cursor: YouTubeLiveChatFixtureCursorState = {
-      cursor_id: stableId("ytcursor", identity),
-      stream_id: input.stream_id,
-      youtube_video_id: input.youtube_video_id,
-      live_chat_id: input.live_chat_id,
-      character_id: input.character_id,
-      current_page_token: null,
-      next_page_token: null,
-      last_message_published_at: null,
-      last_message_id: null,
-      pages_ingested: 0,
-      messages_seen: 0,
-      super_chats_normalized: 0,
-      duplicates_skipped: 0,
-      cursor_status: "not_started",
-      created_at: now,
-      updated_at: now,
-      seen_message_ids: new Set<string>(),
-      page_fingerprints: new Set<string>(),
-      successful_page_results: new Map<string, unknown>()
-    };
-    cursors.set(cursor.cursor_id, cursor);
-    identities.set(identity, cursor.cursor_id);
-    return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor), idempotent: false, safe_reason_codes: ["cursor_created"] };
+    const result = createOrGetYouTubeLiveChatFixtureCursor(repo, parsedInput.data, new Date().toISOString());
+    return { cursor: toYouTubeLiveChatFixtureCursorResponse(result.cursor), idempotent: result.idempotent, safe_reason_codes: ["cursor_created"] };
   });
 
   app.post("/internal/fixtures/youtube-live-chat/cursors/:cursorId/failure-state", async (req, reply) => {
@@ -3217,14 +3174,9 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!parsedFailureState.success) {
       return reply.code(400).send({ error: "youtube_live_chat_fixture_cursor_failure_state_invalid", safe_reason_codes: ["connector_failure_state_invalid"] });
     }
-    const input = parsedFailureState.data;
-    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const cursor = cursors.get(cursorId);
+    const cursor = getYouTubeLiveChatFixtureCursor(repo, cursorId);
     if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
-    cursor.connector_failure_class = input.failure_class;
-    cursor.connector_failure_count = input.failure_count;
-    cursor.connector_failure_fingerprint = input.safe_failure_fingerprint;
-    cursor.updated_at = new Date().toISOString();
+    setYouTubeLiveChatFixtureCursorFailureState(cursor, parsedFailureState.data, new Date().toISOString());
     return {
       cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
       failure_state_status: "stored",
@@ -3235,11 +3187,9 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.delete("/internal/fixtures/youtube-live-chat/cursors/:cursorId/failure-state", async (req, reply) => {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
-    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const cursor = cursors.get(cursorId);
+    const cursor = getYouTubeLiveChatFixtureCursor(repo, cursorId);
     if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
-    clearYouTubeLiveChatFixtureCursorFailureState(cursor);
-    cursor.updated_at = new Date().toISOString();
+    clearYouTubeLiveChatFixtureCursorFailureState(cursor, new Date().toISOString());
     return {
       cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
       failure_state_status: "cleared",
@@ -3251,23 +3201,22 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
     const input = InternalYouTubeLiveChatFixtureCursorPageSchema.parse(req.body);
-    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const cursor = cursors.get(cursorId);
+    const cursor = getYouTubeLiveChatFixtureCursor(repo, cursorId);
     if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
     const pageToken = input.page_token ?? null;
-    const fingerprint = toYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
-    if (cursor.page_fingerprints.has(fingerprint)) {
+    const fingerprint = createYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
+    if (hasYouTubeLiveChatFixturePageFingerprint(cursor, fingerprint)) {
       return {
         cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
         page_result: { page_fingerprint: fingerprint, page_status: "page_replayed", safe_reason_codes: ["page_replayed"] },
         idempotent: true
       };
     }
-    const expectedToken = cursor.next_page_token;
-    if ((expectedToken ?? "") !== (pageToken ?? "")) {
+    const tokenGuard = guardYouTubeLiveChatFixturePageToken(cursor, pageToken);
+    if (!tokenGuard.allowed) {
       return reply.code(409).send({
         cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
-        page_result: { page_status: "page_blocked", safe_reason_codes: ["page_token_mismatch", "page_out_of_order"] }
+        page_result: { page_status: "page_blocked", safe_reason_codes: tokenGuard.safe_reason_codes }
       });
     }
     let parsed: ReturnType<typeof parseYouTubeLiveChatPageFixture>;
@@ -3289,30 +3238,31 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       });
     }
     let crossPageDuplicates = 0;
-    let acceptedNormalized = 0;
+    const acceptedEventIds: string[] = [];
+    let lastMessageId = cursor.last_message_id;
+    let lastMessagePublishedAt = cursor.last_message_published_at;
     for (const event of parsed.normalized_events) {
       if (cursor.seen_message_ids.has(event.source_event_id)) {
         crossPageDuplicates += 1;
         continue;
       }
-      cursor.seen_message_ids.add(event.source_event_id);
-      acceptedNormalized += 1;
-      cursor.last_message_id = event.source_event_id;
-      cursor.last_message_published_at = event.created_at;
+      acceptedEventIds.push(event.source_event_id);
+      lastMessageId = event.source_event_id;
+      lastMessagePublishedAt = event.created_at;
     }
-    for (const messageId of extractSafePageMessageIds(input.page)) {
-      if (messageId !== "unknown") cursor.seen_message_ids.add(messageId);
-    }
-    cursor.current_page_token = pageToken;
-    cursor.next_page_token = parsed.next_page_token;
-    cursor.pages_ingested += 1;
-    cursor.messages_seen = cursor.seen_message_ids.size;
-    cursor.super_chats_normalized += acceptedNormalized;
-    cursor.duplicates_skipped += parsed.page_summary.duplicate_count + crossPageDuplicates;
-    cursor.cursor_status = parsed.next_page_token ? "page_ingested" : "caught_up_fixture";
-    clearYouTubeLiveChatFixtureCursorFailureState(cursor);
-    cursor.updated_at = new Date().toISOString();
-    cursor.page_fingerprints.add(fingerprint);
+    advanceYouTubeLiveChatFixtureCursorPage(cursor, {
+      page_token: pageToken,
+      next_page_token: parsed.next_page_token,
+      accepted_event_ids: acceptedEventIds,
+      safe_message_ids: extractSafeYouTubeLiveChatMessageIds(input.page),
+      last_message_id: lastMessageId,
+      last_message_published_at: lastMessagePublishedAt,
+      normalized_count: acceptedEventIds.length,
+      duplicate_count: parsed.page_summary.duplicate_count + crossPageDuplicates,
+      page_fingerprint: fingerprint,
+      clear_failure_state: true,
+      now: new Date().toISOString()
+    });
     return {
       cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
       page_result: {
@@ -3333,18 +3283,17 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
     const input = InternalYouTubeLiveChatFixtureCursorPageSchema.parse(req.body);
-    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const cursor = cursors.get(cursorId);
+    const cursor = getYouTubeLiveChatFixtureCursor(repo, cursorId);
     if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
     const pageToken = input.page_token ?? null;
-    const fingerprint = toYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
-    const replay = cursor.successful_page_results.get(fingerprint);
+    const fingerprint = createYouTubeLiveChatFixturePageFingerprint(cursor.cursor_id, pageToken, input.page);
+    const replay = getYouTubeLiveChatFixtureSuccessfulPageResult(cursor, fingerprint);
     if (replay) return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor), page_result: replay, idempotent: true };
-    const expectedToken = cursor.next_page_token;
-    if ((expectedToken ?? "") !== (pageToken ?? "")) {
+    const tokenGuard = guardYouTubeLiveChatFixturePageToken(cursor, pageToken);
+    if (!tokenGuard.allowed) {
       return reply.code(409).send({
         cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
-        page_result: { page_status: "page_blocked", safe_reason_codes: ["page_token_mismatch", "page_out_of_order"] }
+        page_result: { page_status: "page_blocked", safe_reason_codes: tokenGuard.safe_reason_codes }
       });
     }
     let parsed: ReturnType<typeof parseYouTubeLiveChatPageFixture>;
@@ -3410,24 +3359,12 @@ export function buildServer(repo: CriptoTipRepository = repository) {
         page_result: { page_status: "page_blocked", safe_reason_codes: ["support_received_apply_failed"] }
       });
     }
+    let lastMessageId = cursor.last_message_id;
+    let lastMessagePublishedAt = cursor.last_message_published_at;
     for (const event of eventsToApply) {
-      cursor.seen_message_ids.add(event.source_event_id);
-      cursor.last_message_id = event.source_event_id;
-      cursor.last_message_published_at = event.created_at;
+      lastMessageId = event.source_event_id;
+      lastMessagePublishedAt = event.created_at;
     }
-    for (const messageId of extractSafePageMessageIds(input.page)) {
-      if (messageId !== "unknown") cursor.seen_message_ids.add(messageId);
-    }
-    cursor.current_page_token = pageToken;
-    cursor.next_page_token = parsed.next_page_token;
-    cursor.pages_ingested += 1;
-    cursor.messages_seen = cursor.seen_message_ids.size;
-    cursor.super_chats_normalized += eventsToApply.length;
-    cursor.duplicates_skipped += parsed.page_summary.duplicate_count + crossPageDuplicates;
-    cursor.cursor_status = parsed.next_page_token ? "page_ingested" : "caught_up_fixture";
-    clearYouTubeLiveChatFixtureCursorFailureState(cursor);
-    cursor.updated_at = new Date().toISOString();
-    cursor.page_fingerprints.add(fingerprint);
     const pageResult = {
       page_fingerprint: fingerprint,
       page_status: "page_ingested",
@@ -3443,7 +3380,20 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       support_events: supportEvents,
       safe_reason_codes: ["page_ingested", "support_received_persisted"]
     };
-    cursor.successful_page_results.set(fingerprint, pageResult);
+    advanceYouTubeLiveChatFixtureCursorPage(cursor, {
+      page_token: pageToken,
+      next_page_token: parsed.next_page_token,
+      accepted_event_ids: eventsToApply.map((event) => event.source_event_id),
+      safe_message_ids: extractSafeYouTubeLiveChatMessageIds(input.page),
+      last_message_id: lastMessageId,
+      last_message_published_at: lastMessagePublishedAt,
+      normalized_count: eventsToApply.length,
+      duplicate_count: parsed.page_summary.duplicate_count + crossPageDuplicates,
+      page_fingerprint: fingerprint,
+      successful_page_result: pageResult,
+      clear_failure_state: true,
+      now: new Date().toISOString()
+    });
     return {
       cursor: toYouTubeLiveChatFixtureCursorResponse(cursor),
       page_result: pageResult,
@@ -3454,8 +3404,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.get("/internal/fixtures/youtube-live-chat/cursors/:cursorId", async (req, reply) => {
     if (!requireBearer(req, INTERNAL_TOKEN)) return reply.code(401).send({ error: "unauthorized" });
     const { cursorId } = z.object({ cursorId: z.string() }).parse(req.params);
-    const { cursors } = getYouTubeLiveChatFixtureCursorStores(repo);
-    const cursor = cursors.get(cursorId);
+    const cursor = getYouTubeLiveChatFixtureCursor(repo, cursorId);
     if (!cursor) return reply.code(404).send({ error: "youtube_live_chat_fixture_cursor_not_found" });
     return { cursor: toYouTubeLiveChatFixtureCursorResponse(cursor) };
   });
