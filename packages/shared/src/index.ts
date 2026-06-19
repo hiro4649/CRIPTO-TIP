@@ -6,6 +6,11 @@ export const tiers = ["small", "medium", "large", "high"] as const;
 export type Tier = (typeof tiers)[number];
 export type ModerationStatus = (typeof moderationStatuses)[number];
 
+export const NonNegativeDecimalStringSchema = z.string().regex(/^(0|[1-9][0-9]{0,77})$/);
+export const PositiveDecimalStringSchema = z.string().regex(/^[1-9][0-9]{0,77}$/);
+export const YouTubeAmountMicrosSchema = z.string().regex(/^[1-9][0-9]{0,17}$/);
+export const CurrencyCodeSchema = z.string().regex(/^[A-Z]{3}$/);
+export const SourceEventIdSchema = z.string().min(1).max(200);
 export const WalletAddressSchema = z.string().regex(/^0x[a-fA-F0-9]{40}$/);
 export const LiveSessionSchema = z.object({
   id: z.string().min(1),
@@ -68,7 +73,7 @@ export const SupportReceivedSchema = z.object({
   event_type: z.literal("support.received"),
   event_id: z.string(),
   source: z.enum(supportSources),
-  source_event_id: z.string(),
+  source_event_id: SourceEventIdSchema,
   stream_id: z.string(),
   youtube_video_id: z.string().optional(),
   character_id: z.string(),
@@ -80,7 +85,7 @@ export const SupportReceivedSchema = z.object({
     wallet_address: WalletAddressSchema.optional()
   }),
   support: z.object({
-    amount_raw: z.string(),
+    amount_raw: NonNegativeDecimalStringSchema,
     amount_display: z.string(),
     tier: z.enum(tiers),
     message: z.string(),
@@ -134,11 +139,11 @@ export type YouTubeViewerVerified = z.infer<typeof YouTubeViewerVerifiedSchema>;
 export const ModerationDecisionSchema = z.object({ status: z.enum(moderationStatuses), reasons: z.array(z.string()) });
 export type ModerationDecision = z.infer<typeof ModerationDecisionSchema>;
 export const AffinityScoreSchema = z.object({ previous: z.number(), delta: z.number(), next: z.number(), daily_remaining: z.number(), stream_remaining: z.number() });
-export const YouTubeSuperChatInputSchema = z.object({ live_chat_message_id: z.string(), stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: z.string(), currency: z.string(), amount_display_string: z.string(), tier: z.number().int(), user_comment: z.string().default(""), published_at: z.string() });
+export const YouTubeSuperChatInputSchema = z.object({ live_chat_message_id: SourceEventIdSchema, stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: YouTubeAmountMicrosSchema, currency: CurrencyCodeSchema, amount_display_string: z.string(), tier: z.number().int(), user_comment: z.string().default(""), published_at: z.string() });
 export type YouTubeSuperChatInput = z.infer<typeof YouTubeSuperChatInputSchema>;
-export const YouTubeSuperStickerInputSchema = z.object({ live_chat_message_id: z.string(), stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: z.string(), currency: z.string(), amount_display_string: z.string(), tier: z.number().int(), sticker_display_text: z.string().default("Super Sticker"), published_at: z.string() });
+export const YouTubeSuperStickerInputSchema = z.object({ live_chat_message_id: SourceEventIdSchema, stream_id: z.string(), youtube_video_id: z.string().optional(), character_id: z.string(), author_channel_id: z.string(), author_display_name: z.string(), amount_micros: YouTubeAmountMicrosSchema, currency: CurrencyCodeSchema, amount_display_string: z.string(), tier: z.number().int(), sticker_display_text: z.string().default("Super Sticker"), published_at: z.string() });
 export type YouTubeSuperStickerInput = z.infer<typeof YouTubeSuperStickerInputSchema>;
-export const TokenTipInputSchema = z.object({ chain_id: z.number().int(), contract_address: WalletAddressSchema, tx_hash: z.string(), log_index: z.number().int().nonnegative(), stream_id: z.string(), character_id: z.string(), iris_user_id: z.string().optional(), wallet_address: WalletAddressSchema, display_name: z.string(), amount_raw: z.string(), amount_display: z.string(), tier: z.enum(tiers), message: z.string(), moderation_status: z.enum(moderationStatuses), created_at: z.string() });
+export const TokenTipInputSchema = z.object({ chain_id: z.number().int(), contract_address: WalletAddressSchema, tx_hash: z.string(), log_index: z.number().int().nonnegative(), stream_id: z.string(), character_id: z.string(), iris_user_id: z.string().optional(), wallet_address: WalletAddressSchema, display_name: z.string(), amount_raw: PositiveDecimalStringSchema, amount_display: z.string(), tier: z.enum(tiers), message: z.string(), moderation_status: z.enum(moderationStatuses), created_at: z.string() });
 export type TokenTipInput = z.infer<typeof TokenTipInputSchema>;
 
 const walletRegex = /0x[a-fA-F0-9]{40}/g;

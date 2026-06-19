@@ -289,4 +289,29 @@ describe("P0 YouTube Super Chat fixture normalizer", () => {
     expect(evidence.packageJsonChanged).toBe(false);
     expect(evidence.pnpmLockChanged).toBe(false);
   });
+
+  it("committed P1 support numeric identity evidence preserves safe boundaries", () => {
+    const evidence = readCodexEvidence("p1-support-domain-numeric-identity-correctness.json");
+
+    expect(evidence.supportDomainNumericIdentityStatus).toBe("implemented");
+    expect(evidence.positiveDecimalAmountStatus).toBe("pass");
+    expect(evidence.youtubeAmountMicrosStatus).toBe("pass");
+    expect(evidence.currencyCodeStatus).toBe("pass");
+    expect(evidence.sourceEventIdStatus).toBe("pass");
+    expect(evidence.ambiguousNumericRejected).toBe(true);
+    expect(evidence.leadingZeroAmountRejected).toBe(true);
+    expect(evidence.exponentAmountRejected).toBe(true);
+    expect(evidence.decimalAmountRejected).toBe(true);
+    expect(evidence.zeroAmountRejected).toBe(true);
+    expect(evidence.emptySourceEventIdRejected).toBe(true);
+    expect(evidence.realYouTubeApiUsed).toBe(false);
+    expect(evidence.realDbConnectionUsed).toBe(false);
+    expect(evidence.dbDriverDependencyAdded).toBe(false);
+    expect(evidence.packageJsonChanged).toBe(false);
+    expect(evidence.pnpmLockChanged).toBe(false);
+    expect(evidence.runtimeReadinessClaimed).toBe(false);
+    expect(evidence.productionReadinessClaimed).toBe(false);
+    expect(evidence.legalComplianceClaimed).toBe(false);
+    expect(evidence.youtubePolicyComplianceClaimed).toBe(false);
+  });
 });
