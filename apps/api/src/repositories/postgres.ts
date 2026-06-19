@@ -24,7 +24,13 @@ type SupportEventRow = {
   tier: SupportReceived["support"]["tier"];
   message_sanitized?: string;
   message_moderation_status: SupportReceived["support"]["message_moderation_status"];
+  previous_affinity?: number;
   affinity_delta: number;
+  new_affinity?: number;
+  relationship_level?: number;
+  reaction_can_say_name?: boolean;
+  reaction_can_read_message?: boolean;
+  reaction_max_speech_seconds?: number;
   delivery_status: "pending" | "retrying" | "delivered" | "failed";
   created_at: string;
 };
@@ -132,15 +138,15 @@ function rowToSupportReceived(row: SupportEventRow): SupportReceived {
       message_moderation_status: row.message_moderation_status
     },
     relationship: {
-      previous_affinity: 0,
+      previous_affinity: Number(row.previous_affinity ?? 0),
       affinity_delta: row.affinity_delta,
-      new_affinity: row.affinity_delta,
-      relationship_level: 0
+      new_affinity: Number(row.new_affinity ?? row.affinity_delta),
+      relationship_level: Number(row.relationship_level ?? 0)
     },
     reaction_policy: {
-      can_say_name: row.message_moderation_status === "approved",
-      can_read_message: row.message_moderation_status === "approved",
-      max_speech_seconds: 12,
+      can_say_name: row.reaction_can_say_name ?? (row.message_moderation_status === "approved"),
+      can_read_message: row.reaction_can_read_message ?? (row.message_moderation_status === "approved"),
+      max_speech_seconds: Number(row.reaction_max_speech_seconds ?? 12),
       must_not_discuss_token_price: true,
       must_not_promise_financial_return: true
     },
@@ -394,11 +400,13 @@ export class PostgresRepository implements CriptoTipRepository {
     const insert = await this.db.query<SupportEventRow>(
       `insert into support_events (id, source, source_event_id, stream_id, youtube_video_id, character_id, iris_user_id,
         youtube_author_channel_id, wallet_address, display_name_sanitized, display_name_llm_safe, amount_raw,
-        amount_display, currency_or_token, tier, message_sanitized, message_moderation_status, affinity_delta, delivery_status, created_at)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
+        amount_display, currency_or_token, tier, message_sanitized, message_moderation_status,
+        previous_affinity, affinity_delta, new_affinity, relationship_level, reaction_can_say_name,
+        reaction_can_read_message, reaction_max_speech_seconds, delivery_status, created_at)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
        on conflict (source, source_event_id) do nothing
        returning *`,
-      [event.event_id, event.source, event.source_event_id, event.stream_id, event.youtube_video_id, event.character_id, event.viewer.iris_user_id, event.viewer.youtube_author_channel_id, event.viewer.wallet_address, event.viewer.display_name, event.viewer.display_name, event.support.amount_raw, event.support.amount_display, event.support.currency_or_token ?? event.source, event.support.tier, event.support.message, event.support.message_moderation_status, event.relationship.affinity_delta, "pending", event.created_at]
+      [event.event_id, event.source, event.source_event_id, event.stream_id, event.youtube_video_id, event.character_id, event.viewer.iris_user_id, event.viewer.youtube_author_channel_id, event.viewer.wallet_address, event.viewer.display_name, event.viewer.display_name, event.support.amount_raw, event.support.amount_display, event.support.currency_or_token ?? null, event.support.tier, event.support.message, event.support.message_moderation_status, event.relationship.previous_affinity, event.relationship.affinity_delta, event.relationship.new_affinity, event.relationship.relationship_level, event.reaction_policy.can_say_name, event.reaction_policy.can_read_message, event.reaction_policy.max_speech_seconds, "pending", event.created_at]
     );
     if (insert.rows[0]) return { event: rowToSupportReceived(insert.rows[0]), created: true };
     const existing = await this.getSupportEventBySource(event.source, event.source_event_id);

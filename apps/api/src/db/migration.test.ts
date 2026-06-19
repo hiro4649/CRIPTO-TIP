@@ -7,6 +7,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const sql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8").toLowerCase();
 const chainSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8").toLowerCase();
 const supportIdentitySql = readFileSync(resolve(here, "../../../../migrations/0005_support_side_effect_source_identity.sql"), "utf8").toLowerCase();
+const supportDataFidelitySql = readFileSync(resolve(here, "../../../../migrations/0006_support_event_data_fidelity_columns.sql"), "utf8").toLowerCase();
 
 describe("migration 0001", () => {
   it("contains required tables", () => {
@@ -51,5 +52,17 @@ describe("migration 0005", () => {
     expect(supportIdentitySql).toContain("unique(source, source_event_id, character_id)");
     expect(supportIdentitySql).not.toContain("drop table");
     expect(supportIdentitySql).not.toContain("truncate");
+  });
+});
+
+describe("migration 0006", () => {
+  it("adds support event data-fidelity columns without destructive data operations", () => {
+    for (const column of ["previous_affinity", "new_affinity", "relationship_level", "reaction_can_say_name", "reaction_can_read_message", "reaction_max_speech_seconds"]) {
+      expect(supportDataFidelitySql).toContain(`alter table support_events add column if not exists ${column}`);
+    }
+    expect(supportDataFidelitySql).toContain("coalesce(previous_affinity, 0)");
+    expect(supportDataFidelitySql).toContain("coalesce(new_affinity, affinity_delta)");
+    expect(supportDataFidelitySql).not.toContain("drop table");
+    expect(supportDataFidelitySql).not.toContain("truncate");
   });
 });
