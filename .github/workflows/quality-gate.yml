@@ -9,7 +9,8 @@ on:
 permissions:
   contents: read
   pull-requests: read
-  issues: read
+  actions: read
+  checks: read
 
 jobs:
   quality-gate:
@@ -429,3 +430,27 @@ jobs:
             codex-runtime-latency-measurement.safe.json
             codex-owner-decision-digest.safe.json
           if-no-files-found: error
+
+  required-check-evidence:
+    needs: [quality-gate]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Export required checks safe metadata
+        run: node scripts/export-required-checks-metadata.mjs --pr "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --target-head "${{ github.event.pull_request.head.sha }}" --wait-ms 300000 --poll-ms 5000 --no-exit --output ci-required-checks-metadata.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Upload required checks safe metadata
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-required-checks-metadata
+          path: ci-required-checks-metadata.json
+          if-no-files-found: error
+      - name: Validate same-head required checks
+        run: node scripts/validate-same-head-required-checks.mjs --input ci-required-checks-metadata.json

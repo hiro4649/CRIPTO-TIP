@@ -12,7 +12,11 @@ The `typescript` job writes safe summaries for:
 - `pnpm-typecheck-safe-summary`
 - `pnpm-test-safe-summary`
 - `ci-safe-failure-artifact`
-- `ci-required-checks-metadata`
+
+The `quality-gate` workflow writes `ci-required-checks-metadata` from a separate
+post-gate `required-check-evidence` job. That job runs after `quality-gate`
+instead of inside the `typescript` job, so it does not capture `typescript` as
+still running and then misrepresent that running snapshot as final evidence.
 
 `ci-required-checks-metadata` is produced from safe GitHub check metadata. It
 must preserve status, conclusion, head SHA, check run ID, workflow run ID, run
@@ -27,7 +31,11 @@ The artifacts contain check metadata, command class, phase, exit code, package s
 
 `same_head_required_checks_all_pass` is the success safe reason code for all required checks passing on the same head. `product_code_failure` is only for an actual product verification failure and must not be used for same-head success.
 
-Required safe artifact uploads use `if-no-files-found: error`. Missing `pnpm-typecheck-safe-summary`, `pnpm-test-safe-summary`, `ci-safe-failure-artifact`, or `ci-required-checks-metadata` is a terminal blocker because failed CI must remain diagnosable without raw logs.
+Required safe artifact uploads use `if-no-files-found: error`. Missing
+`pnpm-typecheck-safe-summary`, `pnpm-test-safe-summary`,
+`ci-safe-failure-artifact`, or post-required-check `ci-required-checks-metadata`
+is a terminal blocker because failed CI must remain diagnosable without raw
+logs.
 
 ## Merge Readiness Boundary
 
@@ -37,7 +45,11 @@ Quality-gate pass alone is not merge readiness. The required checks are:
 - `typescript`
 - `contracts`
 
-All required checks must pass on the same head SHA. Missing checks, mixed heads, unexpected check names, or quality-gate pass with a failed required check are blockers.
+All required checks must pass on the same head SHA. Missing checks, mixed heads,
+incomplete metadata, ambiguous duplicate latest runs, a latest running check, a
+latest failed check, or quality-gate pass with a failed required check are
+blockers. Auxiliary checks such as `required-check-evidence` may be observed in
+the metadata, but they are not themselves required checks.
 
 ## Future v1.0.8 Precondition
 

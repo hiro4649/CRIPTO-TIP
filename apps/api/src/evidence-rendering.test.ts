@@ -433,6 +433,8 @@ describe("evidence single source of truth scripts", () => {
     const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
     expect(metadata.same_head_required_checks_passed).toBe(true);
     expect(metadata.safe_reason_code).toBe("same_head_required_checks_all_pass");
+    expect(metadata.artifact_generation_phase).toBe("post_required_checks");
+    expect(metadata.head_provenance).toBe("fixture_exact_head");
     expect(metadata.safe_reason_code).not.toBe("product_code_failure");
     expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
   });
@@ -457,38 +459,79 @@ describe("evidence single source of truth scripts", () => {
     const mixed = path.join(os.tmpdir(), `cripto-tip-mixed-checks-${Date.now()}.json`);
     const qgPassTsFail = path.join(os.tmpdir(), `cripto-tip-qg-pass-ts-fail-${Date.now()}.json`);
     const missing = writeJsonFixture("checks", { checks: [
-      { check_name: "quality-gate", workflow_name: "quality-gate", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", run_id: "1" },
-      { check_name: "typescript", workflow_name: "ci", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", run_id: "2" }
+      { check_name: "quality-gate", workflow_name: "quality-gate", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", workflow_run_id: "1", check_run_id: "11", run_attempt: 1, workflow_run_created_at: "2026-06-19T00:00:00.000Z", started_at: "2026-06-19T00:00:01.000Z", completed_at: "2026-06-19T00:00:02.000Z" },
+      { check_name: "typescript", workflow_name: "ci", status: "completed", conclusion: "success", head_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", workflow_run_id: "2", check_run_id: "22", run_attempt: 1, workflow_run_created_at: "2026-06-19T00:00:00.000Z", started_at: "2026-06-19T00:00:01.000Z", completed_at: "2026-06-19T00:00:02.000Z" }
     ] });
-    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/mixed-head-checks.json", "--output", mixed]);
-    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/quality-gate-pass-typescript-fail.json", "--output", qgPassTsFail]);
-    expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", mixed]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/mixed-head-checks.json", "--output", mixed, "--no-exit"]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/quality-gate-pass-typescript-fail.json", "--output", qgPassTsFail, "--no-exit"]);
+    expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", mixed]).stderr).toMatch(/required_check_head_mismatch/);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", qgPassTsFail]).stderr).toMatch(/quality_gate_pass_but_required_check_failed/);
     const missingOutput = path.join(os.tmpdir(), `cripto-tip-missing-checks-${Date.now()}.json`);
-    runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", missing, "--output", missingOutput, "--no-exit"]);
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
   }, 30000);
 
   it("keeps required check metadata faithful for running checks and PR158 contradiction", () => {
     const running = path.join(os.tmpdir(), `cripto-tip-running-checks-${Date.now()}.json`);
     const pr158 = path.join(os.tmpdir(), `cripto-tip-pr158-contradiction-${Date.now()}.json`);
-    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/running-required-checks.json", "--output", running]);
-    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/pr158-required-check-contradiction.json", "--output", pr158]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/running-required-checks.json", "--output", running, "--no-exit"]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/pr158-required-check-contradiction.json", "--output", pr158, "--no-exit"]);
 
     const runningMetadata = JSON.parse(fs.readFileSync(running, "utf8"));
     const pr158Metadata = JSON.parse(fs.readFileSync(pr158, "utf8"));
 
     expect(runningMetadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.status).toBe("in_progress");
     expect(runningMetadata.same_head_required_checks_passed).toBe(false);
+    expect(runningMetadata.safe_reason_code).toBe("required_checks_pending");
     expect(pr158Metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.conclusion).toBe("failure");
     expect(pr158Metadata.checks.some((check: { workflow_run_id: string }) => check.workflow_run_id === "")).toBe(true);
     expect(pr158Metadata.same_head_required_checks_passed).toBe(false);
     expect(pr158Metadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
   }, 30000);
 
+  it("uses latest required check state and never falls back to stale success", () => {
+    const running = path.join(os.tmpdir(), `cripto-tip-latest-running-${Date.now()}.json`);
+    const failed = path.join(os.tmpdir(), `cripto-tip-latest-failed-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/latest-running-with-old-success.json", "--output", running, "--no-exit"]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/latest-failure-with-old-success.json", "--output", failed, "--no-exit"]);
+
+    const runningMetadata = JSON.parse(fs.readFileSync(running, "utf8"));
+    const failedMetadata = JSON.parse(fs.readFileSync(failed, "utf8"));
+
+    expect(runningMetadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.status).toBe("in_progress");
+    expect(runningMetadata.safe_reason_code).toBe("required_checks_pending");
+    expect(failedMetadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.conclusion).toBe("failure");
+    expect(failedMetadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
+  }, 30000);
+
+  it("accepts auxiliary required-check-evidence without making it required", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-required-check-aux-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/auxiliary-required-check-evidence.json", "--output", output]);
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(metadata.same_head_required_checks_passed).toBe(true);
+    expect(metadata.auxiliary_checks_observed).toContain("required-check-evidence");
+    expect(metadata.unexpected_checks).toEqual([]);
+    expect(runScript("validate-same-head-required-checks.mjs", ["--input", output])).toContain("passed");
+  });
+
+  it("rejects incomplete, metadata-limited, duplicate, and pre-required-check artifacts", () => {
+    const cases = [
+      ["fixtures/ci-safe/blank-run-ids-checks.json", /required_check_metadata_incomplete/],
+      ["fixtures/ci-safe/metadata-limited-checks.json", /required_check_metadata_incomplete/],
+      ["fixtures/ci-safe/duplicate-equal-rank-checks.json", /required_check_duplicate_ambiguous/],
+      ["fixtures/ci-safe/pre-required-checks-phase.json", /required_check_metadata_incomplete/]
+    ] as const;
+
+    for (const [fixturePath, expected] of cases) {
+      const output = path.join(os.tmpdir(), `cripto-tip-required-check-negative-${Date.now()}-${path.basename(fixturePath)}.json`);
+      runScript("export-required-checks-metadata.mjs", ["--fixture", fixturePath, "--output", output, "--no-exit"]);
+      expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", output]).stderr).toMatch(expected);
+    }
+  }, 30000);
+
   it("uses the latest same-head completed required check attempt deterministically", () => {
     const output = path.join(os.tmpdir(), `cripto-tip-duplicate-checks-${Date.now()}.json`);
-    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/duplicate-stale-attempt-checks.json", "--output", output]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/duplicate-stale-attempt-checks.json", "--output", output, "--no-exit"]);
     const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
     const selected = metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript");
 
@@ -501,11 +544,23 @@ describe("evidence single source of truth scripts", () => {
 
   it("requires safe CI artifacts to fail closed when upload files are missing", () => {
     const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");
-    for (const name of ["pnpm-typecheck-safe-summary", "pnpm-test-safe-summary", "ci-safe-failure-artifact", "ci-required-checks-metadata"]) {
+    for (const name of ["pnpm-typecheck-safe-summary", "pnpm-test-safe-summary", "ci-safe-failure-artifact"]) {
       const block = new RegExp(`name: ${name}[\\s\\S]*?if-no-files-found: error`);
       expect(workflow).toMatch(block);
     }
-    expect(workflow).not.toMatch(/name: (pnpm-typecheck-safe-summary|pnpm-test-safe-summary|ci-safe-failure-artifact|ci-required-checks-metadata)[\s\S]*?if-no-files-found: warn/);
+    expect(workflow).not.toMatch(/Export required checks safe metadata|Upload required checks safe metadata|ci-required-checks-metadata/);
+    expect(workflow).not.toMatch(/name: (pnpm-typecheck-safe-summary|pnpm-test-safe-summary|ci-safe-failure-artifact)[\s\S]*?if-no-files-found: warn/);
+  });
+
+  it("generates required-check evidence after quality-gate in the quality-gate workflow", () => {
+    const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "quality-gate.yml"), "utf8");
+    expect(workflow).toMatch(/required-check-evidence:/);
+    expect(workflow).toMatch(/needs: \[quality-gate\]/);
+    expect(workflow).toMatch(/export-required-checks-metadata\.mjs[\s\S]*--target-head/);
+    expect(workflow).toMatch(/--wait-ms 300000 --poll-ms 5000 --no-exit/);
+    expect(workflow).toMatch(/name: ci-required-checks-metadata[\s\S]*if-no-files-found: error/);
+    expect(workflow).toMatch(/validate-same-head-required-checks\.mjs/);
+    expect(workflow).not.toMatch(/gh run view --log|--log/);
   });
 
   it("rejects unsafe raw fields in CI safe artifact schema", () => {

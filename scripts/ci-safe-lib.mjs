@@ -9,6 +9,12 @@ export const safeReasonCodes = new Set([
   "safe_artifact_missing_for_failed_ci",
   "workflow_metadata_mismatch",
   "required_check_name_mismatch",
+  "required_checks_pending",
+  "required_checks_timeout",
+  "required_check_latest_run_failed",
+  "required_check_head_mismatch",
+  "required_check_duplicate_ambiguous",
+  "required_check_metadata_incomplete",
   "wrong_working_directory",
   "product_code_failure",
   "external_runner_failure",
@@ -137,6 +143,7 @@ export function runCommandNoRawOutput(command, args, options = {}) {
 
 export function normalizeChecks(input) {
   if (Array.isArray(input)) return input;
+  if (Array.isArray(input?.check_runs)) return input.check_runs;
   if (Array.isArray(input?.checks)) return input.checks;
   if (Array.isArray(input?.statusCheckRollup)) return input.statusCheckRollup;
   return [];
@@ -170,8 +177,8 @@ function workflowRunIdFromDetailsUrl(value) {
   };
 }
 
-function completedTime(check) {
-  const value = check.completed_at || check.completedAt || "";
+function timestamp(check, snake, camel) {
+  const value = check[snake] || check[camel] || "";
   const time = Date.parse(value);
   return Number.isFinite(time) ? time : 0;
 }
@@ -181,10 +188,23 @@ function runAttempt(check) {
   return Number.isFinite(value) ? value : 0;
 }
 
-function compareCheckRecency(a, b) {
-  const attemptDelta = runAttempt(b) - runAttempt(a);
-  if (attemptDelta !== 0) return attemptDelta;
-  return completedTime(b) - completedTime(a);
+function latestRank(check) {
+  return [
+    timestamp(check, "workflow_run_created_at", "workflowRunCreatedAt"),
+    runAttempt(check),
+    timestamp(check, "started_at", "startedAt"),
+    timestamp(check, "completed_at", "completedAt")
+  ];
+}
+
+function compareRankDesc(a, b) {
+  const left = latestRank(a);
+  const right = latestRank(b);
+  for (let index = 0; index < left.length; index += 1) {
+    const delta = right[index] - left[index];
+    if (delta !== 0) return delta;
+  }
+  return 0;
 }
 
 function normalizeCheckProjection(check, targetHeadSha = "") {
@@ -199,26 +219,33 @@ function normalizeCheckProjection(check, targetHeadSha = "") {
     head_sha: check.head_sha || check.headSha || targetHeadSha,
     check_run_id: checkRunId,
     workflow_run_id: workflowRunId,
-    run_attempt: Number(check.run_attempt || check.runAttempt || 1),
+    run_attempt: Number(check.run_attempt ?? check.runAttempt ?? 1),
+    workflow_run_created_at: check.workflow_run_created_at || check.workflowRunCreatedAt || "",
     started_at: check.started_at || check.startedAt || "",
     completed_at: check.completed_at || check.completedAt || ""
   };
+}
+
+function validHeadSha(value) {
+  return /^[0-9a-f]{40}$/i.test(String(value || ""));
 }
 
 function selectRequiredCheck(checks, name, targetHeadSha) {
   const candidates = checks.filter((check) => check.check_name === name);
   if (!candidates.length) return { selected: undefined, reason: "missing" };
   const sameHead = candidates.filter((check) => targetHeadSha ? check.head_sha === targetHeadSha : Boolean(check.head_sha));
-  if (!sameHead.length) return { selected: candidates.sort(compareCheckRecency)[0], reason: "head_mismatch" };
-  const completed = sameHead.filter((check) => check.status === "completed");
-  if (!completed.length) return { selected: sameHead.sort(compareCheckRecency)[0], reason: "not_completed" };
-  const sorted = completed.sort(compareCheckRecency);
-  if (sorted.length > 1 && compareCheckRecency(sorted[0], sorted[1]) === 0) return { selected: sorted[0], reason: "duplicate_ambiguous" };
+  if (!sameHead.length) return { selected: candidates.sort(compareRankDesc)[0], reason: "head_mismatch" };
+  const sorted = sameHead.sort(compareRankDesc);
+  if (sorted.length > 1 && compareRankDesc(sorted[0], sorted[1]) === 0) return { selected: sorted[0], reason: "duplicate_ambiguous" };
+  if (sorted[0].status !== "completed") return { selected: sorted[0], reason: "pending" };
+  if (sorted[0].conclusion !== "success") return { selected: sorted[0], reason: "failed" };
   return { selected: sorted[0], reason: "selected" };
 }
 
 export function buildRequiredChecksMetadata(input) {
   const targetHeadSha = input?.target_head_sha || input?.head_sha || input?.headRefOid || process.env.CODEX_PR_HEAD_SHA || process.env.GITHUB_SHA || "";
+  const headProvenance = input?.head_provenance || "metadata_limited";
+  const artifactGenerationPhase = input?.artifact_generation_phase || "metadata_limited";
   const checks = normalizeChecks(input).map((check) => normalizeCheckProjection(check, targetHeadSha));
   const selectedByName = new Map();
   const selectionReasons = {};
@@ -230,30 +257,44 @@ export function buildRequiredChecksMetadata(input) {
   const selectedRequired = requiredChecks.map((name) => selectedByName.get(name)).filter(Boolean);
   const headSet = new Set(selectedRequired.map((check) => check.head_sha).filter(Boolean));
   const missing = requiredChecks.filter((name) => !selectedByName.has(name));
-  const unexpected = checks.filter((check) => requiredChecks.includes(check.check_name) === false);
   const ambiguousRequired = requiredChecks.filter((name) => selectionReasons[name] === "duplicate_ambiguous");
+  const pendingRequired = requiredChecks.filter((name) => selectionReasons[name] === "pending");
+  const failedRequired = requiredChecks.filter((name) => selectionReasons[name] === "failed");
+  const headMismatchRequired = requiredChecks.filter((name) => selectionReasons[name] === "head_mismatch");
   const selectedRunIdsPresent = selectedRequired.every((check) => check.workflow_run_id && check.check_run_id);
   const allRequiredCompleted = selectedRequired.length === requiredChecks.length && selectedRequired.every((check) => check.status === "completed");
   const allRequiredSuccess = selectedRequired.length === requiredChecks.length && selectedRequired.every((check) => check.conclusion === "success");
-  const sameHeadRequiredChecksPassed = missing.length === 0 &&
+  const metadataComplete = validHeadSha(targetHeadSha) &&
+    headProvenance !== "metadata_limited" &&
+    artifactGenerationPhase === "post_required_checks" &&
+    selectedRunIdsPresent &&
+    selectedRequired.every((check) => Number.isFinite(Number(check.run_attempt)) && Number(check.run_attempt) > 0);
+  const sameHeadRequiredChecksPassed = metadataComplete &&
+    missing.length === 0 &&
     headSet.size === 1 &&
-    (!targetHeadSha || headSet.has(targetHeadSha)) &&
+    headSet.has(targetHeadSha) &&
     allRequiredCompleted &&
     allRequiredSuccess &&
-    selectedRunIdsPresent &&
     ambiguousRequired.length === 0;
   let safeReasonCode = sameHeadRequiredChecksPassed ? "same_head_required_checks_all_pass" : "same_head_required_checks_not_all_pass";
-  if (unexpected.length) safeReasonCode = "required_check_name_mismatch";
-  if (selectedRequired.some((check) => check.check_name === "quality-gate" && check.conclusion === "success") && selectedRequired.some((check) => check.conclusion !== "success")) {
+  if (!validHeadSha(targetHeadSha) || !metadataComplete) safeReasonCode = "required_check_metadata_incomplete";
+  if (headMismatchRequired.length || (headSet.size > 1 || (headSet.size === 1 && !headSet.has(targetHeadSha)))) safeReasonCode = "required_check_head_mismatch";
+  if (ambiguousRequired.length) safeReasonCode = "required_check_duplicate_ambiguous";
+  if (pendingRequired.length) safeReasonCode = "required_checks_pending";
+  if (failedRequired.length) safeReasonCode = "required_check_latest_run_failed";
+  if (selectedRequired.some((check) => check.check_name === "quality-gate" && check.conclusion === "success") && selectedRequired.some((check) => check.status === "completed" && check.conclusion !== "success")) {
     safeReasonCode = "quality_gate_pass_but_required_check_failed";
   }
   return {
     schema_version: "1.0.0",
+    artifact_generation_phase: artifactGenerationPhase,
+    head_provenance: headProvenance,
     required_checks: requiredChecks,
     checks: selectedRequired,
     all_checks_observed: checks,
     missing_checks: missing,
-    unexpected_checks: unexpected.map((check) => check.check_name),
+    auxiliary_checks_observed: checks.filter((check) => requiredChecks.includes(check.check_name) === false).map((check) => check.check_name),
+    unexpected_checks: [],
     ambiguous_required_checks: ambiguousRequired,
     selection_reasons: selectionReasons,
     target_head_sha: targetHeadSha,
