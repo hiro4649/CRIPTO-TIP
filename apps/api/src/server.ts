@@ -33,7 +33,6 @@ import {
   type TipIntent
 } from "@cripto-tip/shared";
 import { loadConfig } from "./config/env.js";
-import { InMemoryRepository } from "./repositories/in-memory.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 import { fakeFixtureCapability } from "./youtube-live-chat-client.js";
@@ -45,8 +44,10 @@ import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-c
 import { registerAdminModerationReadRoutes } from "./routes/admin-moderation-read-routes.js";
 import { registerAdminYouTubeConnectorRoutes } from "./routes/admin-youtube-connector-routes.js";
 import { registerYouTubeFixtureRoutes } from "./routes/youtube-fixture-routes.js";
+import { createRuntimeRepository, resolveRuntimeRepositorySelection } from "./repositories/runtime-selection.js";
 
-loadConfig();
+const appConfig = loadConfig();
+export const runtimeRepositorySelection = resolveRuntimeRepositorySelection(appConfig);
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? mockValue("admin");
 const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? mockValue("internal");
@@ -79,7 +80,7 @@ type AdminRateLimitBucket = {
 const ADMIN_RATE_LIMIT_WINDOW_MS = 60_000;
 const ADMIN_RATE_LIMIT_MAX_REQUESTS = 3;
 
-export const repository = new InMemoryRepository();
+export const repository = createRuntimeRepository(appConfig);
 export const store: Store = { overlayClients: new Map() };
 
 function requireBearer(req: FastifyRequest, expected: string): boolean {

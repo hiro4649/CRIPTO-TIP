@@ -4,6 +4,7 @@ const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 
 export const AppConfigSchema = z.object({
   DATABASE_URL: z.string().optional(),
+  RUNTIME_REPOSITORY_MODE: z.enum(["in_memory", "postgres"]).default("in_memory"),
   QUEUE_MODE: z.enum(["in_memory", "db_outbox"]).default("in_memory"),
   WORKER_ID: z.string().default("worker-local"),
   OUTBOX_POLL_INTERVAL_MS: z.coerce.number().int().positive().default(1000),
