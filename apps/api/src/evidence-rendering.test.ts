@@ -417,6 +417,36 @@ describe("evidence single source of truth scripts", () => {
     expect(runScriptResult("validate-same-head-required-checks.mjs", ["--input", missingOutput]).stderr).toMatch(/same_head_required_checks_not_all_pass/);
   }, 30000);
 
+  it("keeps required check metadata faithful for running checks and PR158 contradiction", () => {
+    const running = path.join(os.tmpdir(), `cripto-tip-running-checks-${Date.now()}.json`);
+    const pr158 = path.join(os.tmpdir(), `cripto-tip-pr158-contradiction-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/running-required-checks.json", "--output", running]);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/pr158-required-check-contradiction.json", "--output", pr158]);
+
+    const runningMetadata = JSON.parse(fs.readFileSync(running, "utf8"));
+    const pr158Metadata = JSON.parse(fs.readFileSync(pr158, "utf8"));
+
+    expect(runningMetadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.status).toBe("in_progress");
+    expect(runningMetadata.same_head_required_checks_passed).toBe(false);
+    expect(pr158Metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript")?.conclusion).toBe("failure");
+    expect(pr158Metadata.checks.some((check: { workflow_run_id: string }) => check.workflow_run_id === "")).toBe(true);
+    expect(pr158Metadata.same_head_required_checks_passed).toBe(false);
+    expect(pr158Metadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
+  }, 30000);
+
+  it("uses the latest same-head completed required check attempt deterministically", () => {
+    const output = path.join(os.tmpdir(), `cripto-tip-duplicate-checks-${Date.now()}.json`);
+    runScript("export-required-checks-metadata.mjs", ["--fixture", "fixtures/ci-safe/duplicate-stale-attempt-checks.json", "--output", output]);
+    const metadata = JSON.parse(fs.readFileSync(output, "utf8"));
+    const selected = metadata.checks.find((check: { check_name: string }) => check.check_name === "typescript");
+
+    expect(selected?.workflow_run_id).toBe("3");
+    expect(selected?.run_attempt).toBe(2);
+    expect(selected?.conclusion).toBe("failure");
+    expect(metadata.same_head_required_checks_passed).toBe(false);
+    expect(metadata.safe_reason_code).toBe("quality_gate_pass_but_required_check_failed");
+  }, 30000);
+
   it("requires safe CI artifacts to fail closed when upload files are missing", () => {
     const workflow = fs.readFileSync(path.join(root, ".github", "workflows", "ci.yml"), "utf8");
     for (const name of ["pnpm-typecheck-safe-summary", "pnpm-test-safe-summary", "ci-safe-failure-artifact", "ci-required-checks-metadata"]) {

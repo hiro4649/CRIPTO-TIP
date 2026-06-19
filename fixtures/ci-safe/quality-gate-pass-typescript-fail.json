@@ -1,7 +1,7 @@
 {
   "checks": [
-    { "check_name": "quality-gate", "workflow_name": "quality-gate", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "1" },
-    { "check_name": "typescript", "workflow_name": "ci", "status": "completed", "conclusion": "failure", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "2" },
-    { "check_name": "contracts", "workflow_name": "ci", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "run_id": "3" }
+    { "check_name": "quality-gate", "workflow_name": "quality-gate", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "workflow_run_id": "1", "check_run_id": "11", "run_attempt": 1, "completed_at": "2026-06-19T00:00:03.000Z" },
+    { "check_name": "typescript", "workflow_name": "ci", "status": "completed", "conclusion": "failure", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "workflow_run_id": "2", "check_run_id": "22", "run_attempt": 1, "completed_at": "2026-06-19T00:00:04.000Z" },
+    { "check_name": "contracts", "workflow_name": "ci", "status": "completed", "conclusion": "success", "head_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "workflow_run_id": "2", "check_run_id": "33", "run_attempt": 1, "completed_at": "2026-06-19T00:00:02.000Z" }
   ]
 }
