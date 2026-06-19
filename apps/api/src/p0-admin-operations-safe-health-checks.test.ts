@@ -51,7 +51,14 @@ describe("P0 admin operations safe health checks", () => {
     expect(response.statusCode).toBe(200);
     expect(body.status).toBe("ok");
     expect(body.generated_at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
-    expect(body.repository.mode).toBe("local_in_memory");
+    expect(body.repository).toMatchObject({
+      repository_mode: "in_memory_local",
+      persistence_mode: "volatile_memory",
+      selection_status: "selected",
+      durability_claimed: false,
+      real_db_connected: false,
+      runtime_readiness_claimed: false
+    });
     expect(body.endpoints).toEqual({
       dlq_list: true,
       dlq_redrive: true,
