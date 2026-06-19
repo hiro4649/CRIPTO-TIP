@@ -5,9 +5,11 @@
 import fs from 'node:fs';
 
 import path from 'node:path';
+
 import { currentVersion } from './codex-harness-version.mjs';
 
 
+export const LEGACY_SCHEMA_VERSION = '1.0.5';
 
 export const HARNESS_VERSION = currentVersion;
 
