@@ -2,13 +2,13 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
   "harnessVersion": "1.2.6",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 156,
+  "prNumber": 0,
   "headSha": "current_pr_head",
-  "baseSha": "f46e7415e34117c26f46649a466d80eca43db589",
-  "title": "refactor: extract admin youtube connector routes",
-  "goal": "Move read-only Admin YouTube connector routes from server.ts into a dedicated dependency-injected route module without changing behavior.",
+  "baseSha": "95122d3fe27537652691f8aea85c72dae77271ad",
+  "title": "refactor: extract admin moderation read routes",
+  "goal": "Move read-only Admin moderation list and summary routes from server.ts into a dedicated dependency-injected route module without changing behavior.",
   "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, forbidden paths change, raw logs are required, or evidence cannot be refreshed for the current head.",
-  "changeType": "p1_api_admin_youtube_connector_routes_refactor",
+  "changeType": "p1_api_admin_moderation_read_routes_refactor",
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
@@ -27,29 +27,27 @@
   "scope": {
     "changedFiles": [
       "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-youtube-connector-routes.ts",
-      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
-      "apps/api/src/evidence-rendering.test.ts",
-      ".codex/p1-api-admin-youtube-connector-routes.json",
+      "apps/api/src/routes/admin-moderation-read-routes.ts",
+      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
+      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
+      ".codex/p1-api-admin-moderation-read-routes.json",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_YOUTUBE_CONNECTOR_ROUTES.md",
+      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
       "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-youtube-connector-routes.md"
+      "docs/pr-p1-api-admin-moderation-read-routes.md"
     ],
     "allowedPaths": [
       "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-youtube-connector-routes.ts",
-      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
-      "apps/api/src/evidence-rendering.test.ts",
-      ".codex/p1-api-admin-youtube-connector-routes.json",
+      "apps/api/src/routes/admin-moderation-read-routes.ts",
+      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
+      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
+      ".codex/p1-api-admin-moderation-read-routes.json",
       ".codex/evidence-pack.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_YOUTUBE_CONNECTOR_ROUTES.md",
+      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
       "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-youtube-connector-routes.md"
+      "docs/pr-p1-api-admin-moderation-read-routes.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -63,7 +61,7 @@
     ]
   },
   "commands": [
-    { "name": "corepack pnpm exec vitest run apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-admin-youtube-live-chat-connector-capability.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts", "status": "pass", "result": "12 passed" },
+    { "name": "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts", "status": "pass", "result": "118 files, 2049 passed, 6 skipped" },
     { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
     { "name": "corepack pnpm lint", "status": "pass", "result": "pass" },
     { "name": "corepack pnpm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
@@ -82,7 +80,7 @@
     { "name": "quality-gate", "runId": "pre_pr", "artifactId": "pre_pr", "result": "local_pre_pr" }
   ],
   "allowedScope": [
-    "read-only Admin YouTube connector route extraction",
+    "read-only Admin moderation route extraction",
     "dependency-injected route registration",
     "route parity tests",
     "static route dependency assertions",
@@ -123,17 +121,17 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "Admin YouTube connector routes are no longer implemented inline in server.ts",
+    "Admin moderation read routes are no longer implemented inline in server.ts",
     "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
-    "read-only behavior, auth, strict schema, blocked network state, and safe validation remain covered",
-    "existing Admin YouTube connector tests continue to pass",
+    "read-only behavior, auth, held-support list, moderation summary, and safe audit metadata remain covered",
+    "existing Admin moderation tests continue to pass",
     "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 117,
-    "passed": 2046,
+    "testFiles": 118,
+    "passed": 2049,
     "skipped": 6
   },
   "securityBoundaries": [
@@ -141,11 +139,11 @@
     "No DB driver or Google SDK dependency is added.",
     "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
     "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "The connector remains fake_transport only.",
+    "The extracted moderation routes remain read-only.",
     "No runtime, production, legal, or YouTube policy readiness is claimed."
   ],
   "residualRisks": [
-    "Public wallet and live session mock truthfulness, runtime repository selection, support numeric identity, and support data fidelity remain future phases.",
+    "Admin moderation approve/reject write routes and broader admin route families still live in server.ts.",
     "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
   ],
   "humanConfirmation": [
@@ -155,7 +153,7 @@
     "This PR does not create merge authority."
   ],
   "productVerificationCommands": [
-    "corepack pnpm exec vitest run apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-admin-youtube-live-chat-connector-capability.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts: pass",
+    "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm test: pass",
@@ -177,7 +175,7 @@
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
     "internalRuntimeApiChanged": false,
-    "statement": "Moves read-only Admin YouTube connector routes out of server.ts; route behavior and external public API shape are unchanged."
+    "statement": "Moves read-only Admin moderation list and summary routes out of server.ts; route behavior and external public API shape are unchanged."
   },
   "safeOutput": { "status": "pass" },
   "productionClaims": {
@@ -188,10 +186,10 @@
     "youtubePolicyComplianceClaimed": false
   },
   "reviewScope": {
-    "scope": "P1 read-only Admin YouTube connector route extraction and evidence.",
-    "riskSummary": "Main risk is route parity drift while reducing server.ts route surface; focused tests cover auth, strict schema, safe validation, blocked readiness, and existing admin connector behavior.",
-    "verificationOracle": "Focused route parity and existing Admin YouTube connector tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
+    "scope": "P1 read-only Admin moderation route extraction and evidence.",
+    "riskSummary": "Main risk is route parity drift while reducing server.ts route surface; focused tests cover auth, held list, summary, dependency boundaries, and existing admin moderation behavior.",
+    "verificationOracle": "Focused route parity and existing Admin moderation tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
   },
-  "serverLineCount": { "afterPhaseD": 4997 },
-  "prBodyPath": "docs/pr-p1-api-admin-youtube-connector-routes.md"
+  "serverLineCount": { "afterPhaseE": 5216 },
+  "prBodyPath": "docs/pr-p1-api-admin-moderation-read-routes.md"
 }
