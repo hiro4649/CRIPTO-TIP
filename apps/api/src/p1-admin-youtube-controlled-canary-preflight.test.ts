@@ -113,23 +113,27 @@ describe("P1 admin YouTube controlled canary preflight", () => {
     const app = buildServer(new InMemoryRepository());
     await app.ready();
 
-    const unauthorizedGet = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization" });
-    const unauthorizedPost = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", payload: completeAuthorizationBundle() });
-    const getBefore = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization", headers: { authorization: adminAuth } });
-    const post = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: completeAuthorizationBundle() });
-    const unknown = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), unknown: true } });
-    const unsafe = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), clientIdRef: "Bearer raw" } });
-    const getAfter = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization", headers: { authorization: adminAuth } });
+    const unauthorizedGet = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization-preflight" });
+    const unauthorizedPost = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization-preflight/evaluate", payload: completeAuthorizationBundle() });
+    const getBefore = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization-preflight", headers: { authorization: adminAuth } });
+    const post = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization-preflight/evaluate", headers: { authorization: adminAuth }, payload: completeAuthorizationBundle() });
+    const alias = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization", headers: { authorization: adminAuth } });
+    const unknown = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization-preflight/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), unknown: true } });
+    const unsafe = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization-preflight/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), clientIdRef: "Bearer raw" } });
+    const getAfter = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization-preflight", headers: { authorization: adminAuth } });
 
     expect(unauthorizedGet.statusCode).toBe(401);
     expect(unauthorizedPost.statusCode).toBe(401);
     expect(getBefore.statusCode).toBe(200);
     expect(getBefore.json().authorization_status).toBe("awaiting_owner_authorization");
     expect(getBefore.json().execution_status).toBe("forbidden");
+    expect(getBefore.json().input_trust).toBe("committed_safe_bundle");
+    expect(alias.json()).toEqual(getBefore.json());
     expect(post.statusCode).toBe(200);
     expect(post.json().authorization_status).toBe("authorization_fields_complete");
     expect(post.json().preflight_status).toBe("authorization_fields_complete_network_disabled");
     expect(post.json().execution_status).toBe("forbidden");
+    expect(post.json().input_trust).toBe("untrusted_preview");
     expect(post.json().network_enabled).toBe(false);
     expect(post.json().real_api_execution).toBe(false);
     expect(unknown.statusCode).toBe(400);
@@ -141,6 +145,17 @@ describe("P1 admin YouTube controlled canary preflight", () => {
     await app.close();
   });
 
+  it("does not infer owner-only authorization fields from legacy coarse statuses", () => {
+    const ready = evaluateYouTubeLiveChatControlledCanaryPreflight(codeReadyInput());
+
+    expect(ready.preflight_status).toBe("code_ready_network_blocked");
+    expect(ready.authorization_status).toBe("awaiting_owner_authorization");
+    expect(ready.authorization_blocker_codes).toContain("client_id_ref_absent");
+    expect(ready.authorization_blocker_codes).toContain("test_channel_unselected");
+    expect(ready.authorization_blocker_codes).toContain("test_live_stream_unselected");
+    expect(ready.execution_status).toBe("forbidden");
+  });
+
   it("keeps existing real connector readiness blocked pending owner scope", async () => {
     const app = buildServer(new InMemoryRepository());
     await app.ready();
@@ -149,6 +164,8 @@ describe("P1 admin YouTube controlled canary preflight", () => {
 
     expect(readiness.statusCode).toBe(200);
     expect(readiness.json().readiness_status).toBe("blocked_pending_owner_scope");
+    expect(readiness.json().preflight_status).toBe("blocked");
+    expect(readiness.json().execution_status).toBe("forbidden");
     expect(readiness.json().real_api_execution).toBe(false);
 
     await app.close();

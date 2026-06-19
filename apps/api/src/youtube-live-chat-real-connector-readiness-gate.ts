@@ -1,6 +1,14 @@
+import {
+  defaultYouTubeCanaryAuthorizationBundle,
+  evaluateYouTubeCanaryAuthorization,
+  type YouTubeCanaryAuthorizationBlockerCode,
+  type YouTubeCanaryAuthorizationBundle
+} from "./youtube-live-chat-canary-authorization-gate.js";
+
 export type YouTubeLiveChatRealConnectorReadinessGate = {
-  readiness_status: "blocked_pending_owner_scope";
-  preflight_status?: "blocked" | "code_ready_network_blocked" | "controlled_canary_candidate";
+  readiness_status: "blocked_pending_owner_scope" | "blocked_pending_network_enablement";
+  preflight_status?: "blocked" | "code_ready_network_blocked";
+  execution_status: "forbidden";
   network_enabled: false;
   oauth_configured: false;
   real_api_execution: false;
@@ -54,28 +62,28 @@ export function buildYouTubeLiveChatRealConnectorReadinessGate(): YouTubeLiveCha
 
 export function evaluateYouTubeLiveChatRealConnectorReadiness(input: YouTubeLiveChatRealConnectorReadinessEvaluationInput): YouTubeLiveChatRealConnectorReadinessGate {
   const bundle = readinessInputToAuthorizationBundle(input);
-  const canonical = evaluateYouTubeCanaryAuthorization(bundle);
-  const reasons = [
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "untrusted_preview" });
+  const technicalReasons = [
     ...(input.config_status === "preflight_blocked" || input.config_status === "config_invalid" || input.config_status === "config_blocked" ? ["config_blocked"] : []),
     ...(input.oauth_contract_status !== "pass" ? ["oauth_contract_blocked"] : []),
     ...(input.planner_status !== "pass" ? ["planner_blocked"] : []),
-    ...(input.envelope_status !== "pass" ? ["envelope_blocked"] : []),
-    ...(input.secret_provider_status !== "opaque_interface_ready" ? ["secret_provider_unselected"] : []),
-    ...(input.privacy_review_status !== "pass" ? ["privacy_review_required"] : []),
-    ...(input.data_deletion_status !== "pass" ? ["data_deletion_review_required"] : []),
-    ...(input.revocation_runbook_status !== "documented" ? ["revocation_runbook_missing"] : []),
-    ...(input.kill_switch_status !== "armed_for_controlled_canary" ? ["operator_kill_switch_required"] : []),
-    ...(input.network_authorization_status !== "present" ? ["network_authorization_absent"] : [])
+    ...(input.envelope_status !== "pass" ? ["envelope_blocked"] : [])
   ];
-  return toReadinessGate(bundle, reasons.length > 0 ? reasons : canonical.blocker_codes.map(toReadinessReasonCode));
+  return toReadinessGate(bundle, [...technicalReasons, ...canonical.blocker_codes.map(toReadinessReasonCode)]);
+}
+
+export function evaluateYouTubeLiveChatRealConnectorReadinessFromAuthorizationBundle(bundle: YouTubeCanaryAuthorizationBundle): YouTubeLiveChatRealConnectorReadinessGate {
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "untrusted_preview" });
+  return toReadinessGate(bundle, canonical.blocker_codes.map(toReadinessReasonCode));
 }
 
 function toReadinessGate(bundle: YouTubeCanaryAuthorizationBundle, blockingReasonCodes: string[]): YouTubeLiveChatRealConnectorReadinessGate {
-  const projected = projectAuthorizationToRealConnectorReadiness(bundle);
-  const networkOnly = blockingReasonCodes.length === 1 && blockingReasonCodes[0] === "network_authorization_absent";
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "committed_safe_bundle" });
+  const networkOnly = canonical.authorization_status === "authorization_fields_complete";
   return {
-    readiness_status: "blocked_pending_owner_scope",
-    preflight_status: networkOnly ? "code_ready_network_blocked" : projected.config_status === "controlled_canary_candidate" ? "controlled_canary_candidate" : "blocked",
+    readiness_status: networkOnly ? "blocked_pending_network_enablement" : "blocked_pending_owner_scope",
+    preflight_status: networkOnly ? "code_ready_network_blocked" : "blocked",
+    execution_status: "forbidden",
     network_enabled: false,
     oauth_configured: false,
     real_api_execution: false,
@@ -94,7 +102,7 @@ function toReadinessGate(bundle: YouTubeCanaryAuthorizationBundle, blockingReaso
       "data_deletion_review",
       "operator_kill_switch"
     ],
-    blocking_reason_codes: blockingReasonCodes.length > 0 ? blockingReasonCodes : ["network_authorization_absent"],
+    blocking_reason_codes: stableUnique(blockingReasonCodes.length > 0 ? blockingReasonCodes : ["network_authorization_absent"]),
     safe_reason_codes: [
       "read_only_admin_gate",
       "no_secret_refs",
@@ -108,28 +116,18 @@ function toReadinessGate(bundle: YouTubeCanaryAuthorizationBundle, blockingReaso
 
 function readinessInputToAuthorizationBundle(input: YouTubeLiveChatRealConnectorReadinessEvaluationInput): YouTubeCanaryAuthorizationBundle {
   const defaults = defaultYouTubeCanaryAuthorizationBundle();
-  const fieldComplete =
-    input.config_status === "controlled_canary_candidate" &&
-    input.oauth_contract_status === "pass" &&
-    input.planner_status === "pass" &&
-    input.envelope_status === "pass" &&
-    input.secret_provider_status === "opaque_interface_ready" &&
-    input.privacy_review_status === "pass" &&
-    input.data_deletion_status === "pass" &&
-    input.revocation_runbook_status === "documented" &&
-    input.kill_switch_status === "armed_for_controlled_canary";
   return {
     ...defaults,
-    bundleStatus: fieldComplete && input.network_authorization_status === "present" ? "owner_inputs_recorded" : defaults.bundleStatus,
+    bundleStatus: defaults.bundleStatus,
     networkAuthorization: input.network_authorization_status === "present" ? "owner_authorization_recorded" : "absent",
     credentialProvider: input.secret_provider_status === "opaque_interface_ready" ? "opaque_interface_ready" : "unselected",
-    clientIdRef: input.secret_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    clientSecretRef: input.secret_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    refreshTokenRef: input.secret_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    redirectUri: input.oauth_contract_status === "pass" && fieldComplete ? "confirmed" : "unconfirmed",
-    testChannel: fieldComplete ? "selected_test_only" : "unselected",
-    testLiveStream: fieldComplete ? "selected_test_only" : "unselected",
-    quotaBudget: input.planner_status === "pass" && fieldComplete ? "confirmed_within_first_canary_limits" : "unconfirmed",
+    clientIdRef: defaults.clientIdRef,
+    clientSecretRef: defaults.clientSecretRef,
+    refreshTokenRef: defaults.refreshTokenRef,
+    redirectUri: defaults.redirectUri,
+    testChannel: defaults.testChannel,
+    testLiveStream: defaults.testLiveStream,
+    quotaBudget: input.planner_status === "pass" ? "confirmed_within_first_canary_limits" : "unconfirmed",
     privacyReview: input.privacy_review_status === "pass" ? "pass" : "incomplete",
     dataDeletionReview: input.data_deletion_status === "pass" ? "pass" : "incomplete",
     revocationRunbook: input.revocation_runbook_status,
@@ -162,10 +160,7 @@ function toReadinessReasonCode(code: YouTubeCanaryAuthorizationBlockerCode) {
   };
   return reasonMap[code];
 }
-import {
-  defaultYouTubeCanaryAuthorizationBundle,
-  evaluateYouTubeCanaryAuthorization,
-  projectAuthorizationToRealConnectorReadiness,
-  type YouTubeCanaryAuthorizationBlockerCode,
-  type YouTubeCanaryAuthorizationBundle
-} from "./youtube-live-chat-canary-authorization-gate.js";
+
+function stableUnique<T>(values: T[]): T[] {
+  return [...new Set(values)];
+}

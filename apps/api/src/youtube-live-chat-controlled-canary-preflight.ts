@@ -38,6 +38,7 @@ export type YouTubeLiveChatControlledCanaryPreflightResult = {
   network_enabled: false;
   oauth_configured: false;
   real_api_execution: false;
+  execution_status: "forbidden";
   safe_reason_codes: string[];
   config_hash: string;
   evaluated_at: string;
@@ -47,15 +48,19 @@ export type YouTubeLiveChatControlledCanaryPreflightResult = {
   owner_approval_created: false;
   github_approval_review_created: false;
   merge_authority_created: false;
+  authorization_status: "awaiting_owner_authorization" | "authorization_fields_complete" | "invalid_authorization_bundle";
+  authorization_blocker_codes: YouTubeCanaryAuthorizationBlockerCode[];
+  input_trust: "committed_safe_bundle" | "untrusted_preview";
+  safe_bundle_hash: string;
 };
 
 export function defaultYouTubeLiveChatControlledCanaryPreflightInput(): YouTubeLiveChatControlledCanaryPreflightInput {
   return projectAuthorizationToLegacyPreflight(defaultYouTubeCanaryAuthorizationBundle());
 }
 
-export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date("2026-06-18T00:00:00.000Z")): YouTubeLiveChatControlledCanaryPreflightResult {
+export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date("2026-06-18T00:00:00.000Z"), inputTrust: "committed_safe_bundle" | "untrusted_preview" = "untrusted_preview"): YouTubeLiveChatControlledCanaryPreflightResult {
   const bundle = legacyPreflightToAuthorizationBundle(input);
-  const canonical = evaluateYouTubeCanaryAuthorization(bundle, now);
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { now, inputTrust });
   const legacyReasons = [
     ...(input.config_status === "preflight_blocked" || input.config_status === "config_invalid" ? ["config_blocked"] : []),
     ...(input.oauth_contract_status !== "pass" ? ["oauth_contract_blocked"] : []),
@@ -88,6 +93,7 @@ export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeL
     network_enabled: false,
     oauth_configured: false,
     real_api_execution: false,
+    execution_status: "forbidden",
     safe_reason_codes: reasons.length > 0 ? reasons : ["real_api_execution_forbidden"],
     config_hash: safeCanonicalAuthorizationHash(bundle),
     evaluated_at: now.toISOString(),
@@ -96,36 +102,28 @@ export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeL
     endpoint_values_exposed: false,
     owner_approval_created: false,
     github_approval_review_created: false,
-    merge_authority_created: false
+    merge_authority_created: false,
+    authorization_status: canonical.authorization_status,
+    authorization_blocker_codes: canonical.blocker_codes,
+    input_trust: canonical.input_trust,
+    safe_bundle_hash: canonical.safe_bundle_hash
   };
 }
 
 function legacyPreflightToAuthorizationBundle(input: YouTubeLiveChatControlledCanaryPreflightInput): YouTubeCanaryAuthorizationBundle {
   const defaults = defaultYouTubeCanaryAuthorizationBundle();
-  const fieldComplete =
-    input.config_status === "controlled_canary_candidate" &&
-    input.oauth_contract_status === "pass" &&
-    input.credential_provider_status === "opaque_interface_ready" &&
-    input.kill_switch_status === "armed_for_controlled_canary" &&
-    input.quota_planner_status === "pass" &&
-    input.direct_rest_transport_status === "pass" &&
-    input.list_connector_service_status === "pass" &&
-    input.stream_contract_status === "pass" &&
-    input.privacy_review_status === "pass" &&
-    input.data_deletion_review_status === "pass" &&
-    input.revocation_runbook_status === "documented";
   return {
     ...defaults,
-    bundleStatus: fieldComplete && input.network_authorization_status === "present" ? "owner_inputs_recorded" : defaults.bundleStatus,
+    bundleStatus: defaults.bundleStatus,
     networkAuthorization: input.network_authorization_status === "present" ? "owner_authorization_recorded" : "absent",
     credentialProvider: input.credential_provider_status === "opaque_interface_ready" ? "opaque_interface_ready" : "unselected",
-    clientIdRef: input.credential_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    clientSecretRef: input.credential_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    refreshTokenRef: input.credential_provider_status === "opaque_interface_ready" ? "opaque_ref_recorded" : "absent",
-    redirectUri: input.oauth_contract_status === "pass" && fieldComplete ? "confirmed" : "unconfirmed",
-    testChannel: fieldComplete ? "selected_test_only" : "unselected",
-    testLiveStream: fieldComplete ? "selected_test_only" : "unselected",
-    quotaBudget: input.quota_planner_status === "pass" && fieldComplete ? "confirmed_within_first_canary_limits" : "unconfirmed",
+    clientIdRef: defaults.clientIdRef,
+    clientSecretRef: defaults.clientSecretRef,
+    refreshTokenRef: defaults.refreshTokenRef,
+    redirectUri: defaults.redirectUri,
+    testChannel: defaults.testChannel,
+    testLiveStream: defaults.testLiveStream,
+    quotaBudget: input.quota_planner_status === "pass" ? "confirmed_within_first_canary_limits" : "unconfirmed",
     privacyReview: input.privacy_review_status === "pass" ? "pass" : "incomplete",
     dataDeletionReview: input.data_deletion_review_status === "pass" ? "pass" : "incomplete",
     revocationRunbook: input.revocation_runbook_status,

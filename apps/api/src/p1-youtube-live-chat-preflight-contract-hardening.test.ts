@@ -138,7 +138,9 @@ describe("P1 YouTube Live Chat preflight contract hardening", () => {
       network_authorization_status: "absent"
     });
 
-    expect(readiness.preflight_status).toBe("code_ready_network_blocked");
+    expect(readiness.preflight_status).toBe("blocked");
+    expect(readiness.readiness_status).toBe("blocked_pending_owner_scope");
+    expect(readiness.execution_status).toBe("forbidden");
     expect(readiness.real_api_execution).toBe(false);
     expect(readiness.network_enabled).toBe(false);
   });

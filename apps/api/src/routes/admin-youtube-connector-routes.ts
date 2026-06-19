@@ -1,4 +1,4 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import type { AdminYouTubeConnectorRouteDependencies } from "./admin-youtube-connector-route-dependencies.js";
 import { YouTubeCanaryAuthorizationBundleSchema } from "../youtube-live-chat-canary-authorization-gate.js";
@@ -82,24 +82,32 @@ export function registerAdminYouTubeConnectorRoutes(app: FastifyInstance, deps: 
     return realConnectorReadiness();
   });
 
-  app.get("/admin/youtube-live-chat/canary-authorization", async (req, reply) => {
+  const getCanaryAuthorizationPreflight = async (req: FastifyRequest, reply: FastifyReply) => {
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
-    return evaluateCanaryAuthorization(defaultCanaryAuthorizationBundle());
-  });
+    return evaluateCanaryAuthorization(defaultCanaryAuthorizationBundle(), { inputTrust: "committed_safe_bundle" });
+  };
 
-  app.post("/admin/youtube-live-chat/canary-authorization/evaluate", async (req, reply) => {
+  const postCanaryAuthorizationPreflight = async (req: FastifyRequest, reply: FastifyReply) => {
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
     if (hasSecretLikeInput(req.body ?? {})) {
-      return reply.code(400).send({ error: "canary_authorization_invalid", safe_reason_codes: ["secret_like_input_forbidden"] });
+      return reply.code(400).send({ error: "canary_authorization_preflight_invalid", safe_reason_codes: ["unsafe_authorization_value_forbidden"] });
     }
     const parsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(req.body ?? {});
-    if (!parsed.success) return reply.code(400).send({ error: "canary_authorization_invalid", safe_reason_codes: ["canonical_authorization_fields_required"] });
-    return evaluateCanaryAuthorization(parsed.data);
-  });
+    if (!parsed.success) {
+      const evaluation = evaluateCanaryAuthorization(req.body ?? {}, { inputTrust: "untrusted_preview" }) as { blocker_codes?: string[] };
+      return reply.code(400).send({ error: "canary_authorization_preflight_invalid", safe_reason_codes: evaluation.blocker_codes ?? ["authorization_bundle_schema_invalid"] });
+    }
+    return evaluateCanaryAuthorization(parsed.data, { inputTrust: "untrusted_preview" });
+  };
+
+  app.get("/admin/youtube-live-chat/canary-authorization-preflight", getCanaryAuthorizationPreflight);
+  app.post("/admin/youtube-live-chat/canary-authorization-preflight/evaluate", postCanaryAuthorizationPreflight);
+  app.get("/admin/youtube-live-chat/canary-authorization", getCanaryAuthorizationPreflight);
+  app.post("/admin/youtube-live-chat/canary-authorization/evaluate", postCanaryAuthorizationPreflight);
 
   app.get("/admin/youtube-live-chat/controlled-canary-preflight", async (req, reply) => {
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
-    return evaluateControlledCanary(defaultCanaryInput());
+    return evaluateControlledCanary(defaultCanaryInput(), new Date("2026-06-18T00:00:00.000Z"), "committed_safe_bundle");
   });
 
   app.post("/admin/youtube-live-chat/controlled-canary-preflight/evaluate", async (req, reply) => {
@@ -109,7 +117,7 @@ export function registerAdminYouTubeConnectorRoutes(app: FastifyInstance, deps: 
     if (hasSecretLikeInput(parsed.data)) {
       return reply.code(400).send({ error: "controlled_canary_preflight_invalid", safe_reason_codes: ["secret_like_input_forbidden"] });
     }
-    return evaluateControlledCanary(parsed.data);
+    return evaluateControlledCanary(parsed.data, new Date("2026-06-18T00:00:00.000Z"), "untrusted_preview");
   });
 }
 

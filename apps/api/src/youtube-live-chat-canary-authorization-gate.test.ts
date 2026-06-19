@@ -4,12 +4,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   YouTubeCanaryAuthorizationBundleSchema,
+  YouTubeCanaryAuthorizationEvidenceSchema,
   defaultYouTubeCanaryAuthorizationBundle,
   evaluateYouTubeCanaryAuthorization,
   projectAuthorizationToLegacyPreflight,
   projectAuthorizationToRealConnectorReadiness,
   safeCanonicalAuthorizationHash
 } from "./youtube-live-chat-canary-authorization-gate.js";
+import { evaluateYouTubeLiveChatRealConnectorReadinessFromAuthorizationBundle } from "./youtube-live-chat-real-connector-readiness-gate.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
@@ -111,12 +113,17 @@ describe("YouTube canary authorization gate", () => {
     for (const input of invalidCases) {
       const evaluation = evaluateYouTubeCanaryAuthorization(input);
       expect(evaluation.authorization_status).toBe("invalid_authorization_bundle");
-      expect(evaluation.blocker_codes).toContain("authorization_bundle_schema_invalid");
+      expect(evaluation.blocker_codes.length).toBeGreaterThan(0);
       expect(evaluation.execution_status).toBe("forbidden");
       expectSafeOutput(evaluation);
     }
 
     expect(evaluateYouTubeCanaryAuthorization({ ...base, clientIdRef: "Bearer raw" }).blocker_codes).toContain("unsafe_authorization_value_forbidden");
+    expect(evaluateYouTubeCanaryAuthorization({ ...base, firstCanaryLimits: { ...base.firstCanaryLimits, maxResults: 201 } }).blocker_codes).toContain("first_canary_limit_invalid");
+    expect(evaluateYouTubeCanaryAuthorization({ ...base, firstCanaryLimits: { ...base.firstCanaryLimits, automaticRetry: true } }).blocker_codes).toContain("first_canary_limit_invalid");
+    expect(evaluateYouTubeCanaryAuthorization({ ...base, firstCanaryLimits: { ...base.firstCanaryLimits, sideEffects: { ...base.firstCanaryLimits.sideEffects, overlay: true } } }).blocker_codes).toContain("side_effect_contract_invalid");
+    expect(evaluateYouTubeCanaryAuthorization({ ...base, networkExecution: true }).blocker_codes).toContain("execution_flag_must_remain_false");
+    expect(evaluateYouTubeCanaryAuthorization({ ...base, unknown: true }).blocker_codes).toContain("authorization_bundle_schema_invalid");
   });
 
   it("uses a stable safe hash independent of key order and evaluated_at", () => {
@@ -125,7 +132,7 @@ describe("YouTube canary authorization gate", () => {
     const changed = { ...base, privacyReview: "incomplete" as const };
 
     expect(safeCanonicalAuthorizationHash(base)).toBe(safeCanonicalAuthorizationHash(YouTubeCanaryAuthorizationBundleSchema.parse(reordered)));
-    expect(evaluateYouTubeCanaryAuthorization(base, new Date("2026-06-20T00:00:00.000Z")).safe_bundle_hash).toBe(evaluateYouTubeCanaryAuthorization(base, new Date("2026-06-21T00:00:00.000Z")).safe_bundle_hash);
+    expect(evaluateYouTubeCanaryAuthorization(base, { now: new Date("2026-06-20T00:00:00.000Z") }).safe_bundle_hash).toBe(evaluateYouTubeCanaryAuthorization(base, { now: new Date("2026-06-21T00:00:00.000Z") }).safe_bundle_hash);
     expect(safeCanonicalAuthorizationHash(base)).not.toBe(safeCanonicalAuthorizationHash(changed));
   });
 
@@ -144,9 +151,24 @@ describe("YouTube canary authorization gate", () => {
     });
   });
 
-  it("keeps committed .codex bundle schema-compatible without runtime file reads", () => {
+  it("keeps real readiness fail-closed for a complete authorization bundle", () => {
+    const readiness = evaluateYouTubeLiveChatRealConnectorReadinessFromAuthorizationBundle(completeBundle());
+
+    expect(readiness.readiness_status).toBe("blocked_pending_network_enablement");
+    expect(readiness.preflight_status).toBe("code_ready_network_blocked");
+    expect(readiness.execution_status).toBe("forbidden");
+    expect(readiness.network_enabled).toBe(false);
+    expect(readiness.oauth_configured).toBe(false);
+    expect(readiness.real_api_execution).toBe(false);
+    expect(JSON.stringify(readiness)).not.toContain("controlled_canary_candidate");
+  });
+
+  it("keeps committed .codex evidence wrapper schema-compatible without runtime file reads", () => {
     const evidence = readCodexEvidence("p1-youtube-controlled-canary-authorization-bundle.json");
-    expect(YouTubeCanaryAuthorizationBundleSchema.parse(evidence)).toEqual(defaultYouTubeCanaryAuthorizationBundle());
+    expect(YouTubeCanaryAuthorizationEvidenceSchema.parse(evidence).bundle).toEqual(defaultYouTubeCanaryAuthorizationBundle());
+    expect(evidence.productRuntimeChanged).toBe(true);
+    expect(evidence.readOnlyAdminSurfaceAdded).toBe(true);
+    expect(evidence.externalExecutionEnabled).toBe(false);
   });
 
   it("does not add runtime .codex/docs reads or network/client execution to the authorization path", () => {
