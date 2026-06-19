@@ -21,7 +21,7 @@ buckets as machine authority.
 
 The artifacts contain check metadata, command class, phase, exit code, package scope, working directory, head SHA, run ID, safe reason code, and next safe action. They must not contain raw logs, stdout or stderr bodies, stack traces, source file contents, dependency trees, secret values, wallet addresses, OAuth tokens, API keys, private URLs, or full test failure output.
 
-`pnpm-test-safe-summary` may include Vitest aggregate counts and repository-relative failed test file names. It must not include assertion messages, raw failure bodies, stdout, stderr, stack traces, or absolute machine paths.
+`pnpm-test-safe-summary` may include Vitest aggregate counts, repository-relative failed test file names, and failed test names. It must not include assertion messages, raw failure bodies, stdout, stderr, stack traces, or absolute machine paths.
 
 `raw_log_allowed` is always `false`. If metadata is insufficient, `raw_log_required` may be `true`, but the safe reason must remain `raw_log_required_but_forbidden` or `metadata_limited_external_blocked`.
 

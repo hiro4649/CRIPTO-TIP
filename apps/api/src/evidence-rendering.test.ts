@@ -412,6 +412,7 @@ describe("evidence single source of truth scripts", () => {
     const test = JSON.parse(fs.readFileSync(output, "utf8"));
     expect(test.test_counts).toEqual({ testFiles: 2, passed: 2, failed: 1, skipped: 0 });
     expect(test.failed_test_files).toEqual(["apps/api/src/failing-safe-summary.test.ts"]);
+    expect(test.failed_test_names).toEqual(["does not leak failure body"]);
     expect(test.raw_log_required).toBe(false);
     expect(JSON.stringify(test)).not.toMatch(/raw failure detail|failureMessages|stdout|stderr|stack_trace/);
   });
