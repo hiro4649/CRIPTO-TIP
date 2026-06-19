@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { simpleStatus, writeJsonReport, exitFor, normalizePath } from './codex-v080-lib.mjs';
+import { simpleStatus, writeJsonReport, exitFor, normalizePath, readJson } from './codex-v080-lib.mjs';
 
 const DANGEROUS = [
   ['dangerous_api_pattern_detected', /\beval\s*\(/],
@@ -41,6 +41,37 @@ function fixturePath(file) {
   return /self-test|fixtures?|EVAL_CASES|SECURITY_LIFECYCLE_RULES|SECURITY_LIFECYCLE_POLICY/i.test(file);
 }
 
+function validSecurityOracle(oracle) {
+  if (!oracle || typeof oracle !== 'object') return false;
+  const required = [
+    'authenticationBoundaryTested',
+    'untrustedInputTested',
+    'negativePathsTested',
+    'unsafeInputNoEchoTested',
+    'authorityCreationBlocked',
+    'networkExecutionBlocked',
+    'oauthExecutionBlocked',
+    'secretAccessBlocked',
+    'runtimeExecutionBlocked',
+  ];
+  return Array.isArray(oracle.coveredFiles) &&
+    oracle.coveredFiles.length > 0 &&
+    required.every((key) => oracle[key] === true);
+}
+
+function evidenceSecurityOraclePresent(env = process.env) {
+  if (env.CODEX_SECURITY_ORACLE_EVIDENCE_JSON) {
+    try {
+      return validSecurityOracle(JSON.parse(env.CODEX_SECURITY_ORACLE_EVIDENCE_JSON));
+    } catch {
+      return false;
+    }
+  }
+  const evidence = readJson('.codex/evidence-pack.json');
+  if (!evidence.ok) return false;
+  return validSecurityOracle(evidence.value?.securityOracle);
+}
+
 function workflowEscalated(file, text) {
   if (!/\.github\/workflows\//.test(file)) return false;
   const lines = String(text || '').split(/\r?\n/);
@@ -59,6 +90,7 @@ function workflowEscalated(file, text) {
 
 export function buildSecurityLifecycleReport(env = process.env) {
   const files = parseFiles(env).filter((file) => fs.existsSync(file) && fs.statSync(file).isFile());
+  const securityOraclePresent = env.CODEX_SECURITY_ORACLE_PRESENT === '1' || evidenceSecurityOraclePresent(env);
   const failures = [];
   const warnings = [];
   const layers = {
@@ -87,7 +119,7 @@ export function buildSecurityLifecycleReport(env = process.env) {
       else failures.push(`${reasonCode}:${file}`);
       layers.dangerous_api_scan = fixturePath(file) ? layers.dangerous_api_scan : 'fail';
     }
-    if (/^(src|apps|contracts)\//.test(file) && /auth|security|runtime|entrypoint/i.test(file) && env.CODEX_SECURITY_ORACLE_PRESENT !== '1') {
+    if (/^(src|apps|contracts)\//.test(file) && /auth|security|runtime|entrypoint/i.test(file) && !securityOraclePresent) {
       failures.push('security_lifecycle_failed');
       layers.turn_diff_surface_scan = 'fail';
     }
