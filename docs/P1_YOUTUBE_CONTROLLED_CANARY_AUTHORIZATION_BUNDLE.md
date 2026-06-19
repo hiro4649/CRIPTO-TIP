@@ -5,8 +5,13 @@ controlled canary is executed.
 
 ## Current Status
 
-The bundle status is `awaiting_owner_authorization`. This is not a failure and
-does not authorize network execution.
+The domain bundle status is `awaiting_owner_authorization`. This is not a
+failure and does not authorize network execution.
+
+The committed `.codex` file is an evidence wrapper. Runtime code consumes the
+domain bundle shape only; evidence-only fields such as repository, harness
+version, package status, workflow status, and readiness claims are not part of
+the runtime domain schema.
 
 No OAuth flow, secret lookup, YouTube API call, credential exchange, canary run,
 support side effect, affinity update, reaction request, overlay event, outbox
@@ -65,6 +70,11 @@ The first canary, when separately authorized, is limited to:
 The machine-readable evidence mirrors these limits with
 `safeParsePreviewOnly: true`, `supportSideEffects: false`, and an explicit
 `sideEffects` object where every product side effect is false.
+
+The evidence wrapper records `productRuntimeChanged: true` and
+`readOnlyAdminSurfaceAdded: true` because this PR adds read-only admin
+authorization preflight routes. It also records `externalExecutionEnabled:
+false`.
 
 ## Blocked Until Authorized
 

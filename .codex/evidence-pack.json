@@ -1,53 +1,65 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.6",
-  "harnessVersion": "1.2.6",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.7",
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
+  "prNumber": 172,
   "headSha": "current_pr_head",
-  "baseSha": "95122d3fe27537652691f8aea85c72dae77271ad",
-  "title": "refactor: extract admin moderation read routes",
-  "goal": "Move read-only Admin moderation list and summary routes from server.ts into a dedicated dependency-injected route module without changing behavior.",
-  "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, forbidden paths change, raw logs are required, or evidence cannot be refreshed for the current head.",
-  "changeType": "p1_api_admin_moderation_read_routes_refactor",
+  "baseSha": "d516c603f63c8512d2b96a46444bb215d88db0fc",
+  "title": "feat: add youtube canary authorization preflight gate",
+  "goal": "Canonicalize owner authorization evaluation while keeping YouTube canary execution forbidden and admin preflight routes read-only.",
+  "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, evidence is stale, owner fields are inferred from coarse statuses, readiness emits execution-candidate wording, or quality gates weaken.",
+  "changeType": "p1_youtube_canary_authorization_preflight_gate",
+  "prProfile": "security_r3",
+  "taskMode": "feature",
+  "riskLevel": "R3",
+  "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
-  "schemaVersion": "1.0.0",
-  "prProfile": "product_r3",
-  "taskMode": "refactor",
-  "ciRunId": "pre_pr",
-  "qualityGateRunId": "pre_pr",
-  "qualityGateArtifactId": "pre_pr",
-  "productCiStatus": "local_pre_pr",
-  "qualityGateStatus": "local_pre_pr",
-  "riskLevel": "R3",
+  "ciRunId": "metadata_limited",
+  "qualityGateRunId": "metadata_limited",
+  "qualityGateArtifactId": "metadata_limited",
+  "productCiStatus": "metadata_limited",
+  "qualityGateStatus": "metadata_limited",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": true,
   "scope": {
     "changedFiles": [
-      "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-moderation-read-routes.ts",
-      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
-      ".codex/p1-api-admin-moderation-read-routes.json",
       ".codex/evidence-pack.json",
+      ".codex/p1-youtube-canary-authorization-preflight-gate.json",
+      ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
-      "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-moderation-read-routes.md"
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_PREFLIGHT_GATE.md",
+      "docs/P1_YOUTUBE_CONTROLLED_CANARY_AUTHORIZATION_BUNDLE.md",
+      "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
     ],
     "allowedPaths": [
-      "apps/api/src/server.ts",
-      "apps/api/src/routes/admin-moderation-read-routes.ts",
-      "apps/api/src/routes/admin-moderation-read-route-dependencies.ts",
-      "apps/api/src/p1-api-admin-moderation-read-routes.test.ts",
-      ".codex/p1-api-admin-moderation-read-routes.json",
       ".codex/evidence-pack.json",
+      ".codex/p1-youtube-canary-authorization-preflight-gate.json",
+      ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
-      "docs/P1_API_ADMIN_MODERATION_READ_ROUTES.md",
-      "docs/CRIPTO_TIP_PRODUCT_COMPLETION_AUDIT_V2.md",
-      "docs/pr-p1-api-admin-moderation-read-routes.md"
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_PREFLIGHT_GATE.md",
+      "docs/P1_YOUTUBE_CONTROLLED_CANARY_AUTHORIZATION_BUNDLE.md",
+      "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -60,31 +72,12 @@
       ".env.example"
     ]
   },
-  "commands": [
-    { "name": "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts", "status": "pass", "result": "118 files, 2049 passed, 6 skipped" },
-    { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm lint", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
-    { "name": "npm test", "status": "pass", "result": "117 files, 2046 passed, 6 skipped" },
-    { "name": "corepack pnpm evidence:ci", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm quality:self-protection", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-secret-safety-scan.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v126-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v125-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v124-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v123-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "cd contracts && forge test", "status": "unavailable_nonblocking_local", "result": "forge_not_installed" }
-  ],
-  "remoteRuns": [
-    { "name": "ci", "runId": "pre_pr", "result": "local_pre_pr" },
-    { "name": "quality-gate", "runId": "pre_pr", "artifactId": "pre_pr", "result": "local_pre_pr" }
-  ],
   "allowedScope": [
-    "read-only Admin moderation route extraction",
-    "dependency-injected route registration",
-    "route parity tests",
-    "static route dependency assertions",
-    "product completion audit update",
+    "canonical YouTube canary authorization domain evaluator",
+    "read-only admin authorization preflight routes",
+    "legacy controlled-canary preflight projection",
+    "real connector readiness projection",
+    "typed blocker tests",
     ".codex evidence",
     "PR evidence docs"
   ],
@@ -108,11 +101,6 @@
     "real OAuth execution",
     "secret value read",
     "wallet/RPC/deploy change",
-    "real TTS",
-    "real Live2D",
-    "renderer",
-    "OBS",
-    "real WebSocket delivery",
     "token sale",
     "token exchange",
     "cash-out",
@@ -121,63 +109,150 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "Admin moderation read routes are no longer implemented inline in server.ts",
-    "route module does not read process.env, import server, create a repository singleton, call global fetch, or access secrets",
-    "read-only behavior, auth, held-support list, moderation summary, and safe audit metadata remain covered",
-    "existing Admin moderation tests continue to pass",
-    "no package, lockfile, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+    "canonical domain schema and evidence wrapper schema are separated",
+    "GET default evaluation uses committed_safe_bundle input trust",
+    "POST preview evaluation uses untrusted_preview input trust",
+    "legacy coarse statuses do not infer owner-only credential refs or test stream fields",
+    "real readiness never emits controlled_canary_candidate",
+    "complete authorization fields keep execution forbidden and network disabled",
+    "no package, lockfile, workflow, contract, migration, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+  ],
+  "commands": [
+    {
+      "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
+      "status": "pass",
+      "result": "5 files, 26 passed"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "status": "pass",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "status": "pass",
+      "result": "pass"
+    }
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 118,
-    "passed": 2049,
-    "skipped": 6
+    "testFiles": 120,
+    "passed": 2099,
+    "skipped": 6,
+    "testedHeadSha": "40bc1258d9b307e07a3c5794fd13976acea5c976",
+    "currentRunEvidence": true,
+    "evidenceOnlyDelta": true
+  },
+  "bestOfNEvidence": {
+    "candidateCount": 3,
+    "selectedCandidate": "A",
+    "candidates": [
+      {
+        "id": "A",
+        "summary": "canonical domain evaluator plus legacy and readiness projections",
+        "selected": true
+      },
+      {
+        "id": "B",
+        "summary": "legacy preflight expansion only",
+        "selected": false,
+        "rejectedReason": "would preserve readiness taxonomy drift"
+      },
+      {
+        "id": "C",
+        "summary": "independent third gate",
+        "selected": false,
+        "rejectedReason": "would add another authority source"
+      }
+    ],
+    "selectionReason": "single owner-authorization source of truth, reduced taxonomy drift, and network-disabled execution boundary preserved"
+  },
+  "testCoverageEvidence": {
+    "changedArea": [
+      "canonical authorization",
+      "legacy projection",
+      "readiness projection",
+      "admin preflight routes"
+    ],
+    "risks": [
+      "misleading readiness wording",
+      "owner field inference",
+      "unsafe input reflection",
+      "side-effect enablement",
+      "hash drift"
+    ],
+    "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
+    "fullTestCommand": "corepack pnpm test",
+    "coveredSuccessPaths": [
+      "committed GET trust",
+      "POST preview trust",
+      "complete preview still execution forbidden",
+      "legacy compatibility output",
+      "real readiness network enablement blocked"
+    ],
+    "coveredFailurePaths": [
+      "unknown field reject",
+      "unsafe value reject",
+      "execution flag true reject",
+      "first canary limit reject",
+      "side effect true reject"
+    ],
+    "boundaryTests": [
+      "no runtime .codex reads",
+      "no docs reads in runtime path",
+      "no network client execution",
+      "no owner approval creation",
+      "no merge authority creation"
+    ]
   },
   "securityBoundaries": [
-    "No package.json or pnpm-lock change.",
-    "No DB driver or Google SDK dependency is added.",
-    "No real DB connection, migration, contract, workflow, web, or overlay path is changed.",
-    "No real YouTube API, OAuth token, token exchange, token refresh, token revocation request, RPC, wallet, or deploy change is used.",
-    "The extracted moderation routes remain read-only.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed."
-  ],
-  "residualRisks": [
-    "Admin moderation approve/reject write routes and broader admin route families still live in server.ts.",
-    "Real credential provider, OAuth consent, real list calls, quota observation, privacy review, data deletion review, and YouTube policy verification remain future owner-scoped work."
-  ],
-  "humanConfirmation": [
-    "AI review is not human approval.",
-    "AI review is not GitHub approval review.",
-    "This PR does not create owner approval record.",
-    "This PR does not create merge authority."
+    "Admin authorization is required on all routes.",
+    "POST preview input is untrusted.",
+    "GET committed bundle input is safe committed evidence.",
+    "POST does not persist state.",
+    "POST does not mutate default GET output.",
+    "No network call is made.",
+    "No OAuth execution is made.",
+    "No secret access is made.",
+    "No owner authority is created.",
+    "No candidate wording enables execution.",
+    "Unknown fields are rejected.",
+    "Unsafe input is rejected without echoing raw values.",
+    "Side effects remain literal false.",
+    "Execution flags remain literal false.",
+    "Complete fields still return execution forbidden."
   ],
   "productVerificationCommands": [
-    "corepack pnpm test -- apps/api/src/p1-api-admin-moderation-read-routes.test.ts apps/api/src/p0-admin-moderation-hold-review-controls.test.ts apps/api/src/p0-admin-moderation-queue-summary.test.ts: pass",
-    "corepack pnpm typecheck: pass",
+    "corepack pnpm install --frozen-lockfile: pass",
+    "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-superchat-support-received-vertical-slice.test.ts apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass",
     "corepack pnpm lint: pass",
+    "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
-    "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass",
-    "node scripts/codex-v126-self-test.mjs: pass",
-    "node scripts/codex-v125-self-test.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass",
-    "cd contracts && forge test: unavailable_nonblocking_local"
+    "npm test: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
+    "packageJsonChanged": false,
+    "pnpmLockChanged": false,
     "runtimeDependenciesAdded": false,
+    "dbDriverDependencyAdded": false,
     "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
-    "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "Moves read-only Admin moderation list and summary routes out of server.ts; route behavior and external public API shape are unchanged."
+    "publicApiChanged": true,
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds read-only admin canary authorization preflight routes and keeps legacy aliases delegated to the same handler. It does not enable execution."
   },
-  "safeOutput": { "status": "pass" },
+  "reviewScope": {
+    "scope": "P1 YouTube canary authorization preflight gate hardening.",
+    "riskSummary": "Main risk is accidentally implying execution readiness or inferring owner-only fields from coarse compatibility inputs.",
+    "verificationOracle": "Focused authorization, route, readiness, typed blocker, trust-boundary, and evidence wrapper tests plus full repo checks."
+  },
+  "safeOutput": {
+    "status": "pass"
+  },
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -185,11 +260,29 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "reviewScope": {
-    "scope": "P1 read-only Admin moderation route extraction and evidence.",
-    "riskSummary": "Main risk is route parity drift while reducing server.ts route surface; focused tests cover auth, held list, summary, dependency boundaries, and existing admin moderation behavior.",
-    "verificationOracle": "Focused route parity and existing Admin moderation tests, typecheck, lint, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
-  },
-  "serverLineCount": { "afterPhaseE": 5216 },
-  "prBodyPath": "docs/pr-p1-api-admin-moderation-read-routes.md"
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "metadata_limited",
+      "result": "metadata_limited"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "metadata_limited",
+      "artifactId": "metadata_limited",
+      "result": "metadata_limited"
+    }
+  ],
+  "residualRisks": [
+    "This PR still does not run a real YouTube canary.",
+    "Real credential provider, OAuth execution, network authorization, and YouTube API calls remain future owner-scoped work.",
+    "Remote same-head checks and safe artifact refresh are required after push."
+  ],
+  "humanConfirmation": [
+    "AI review is not human approval.",
+    "AI review is not GitHub approval review.",
+    "This PR does not create owner approval record.",
+    "This PR does not create merge authority."
+  ],
+  "prBodyPath": "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
 }

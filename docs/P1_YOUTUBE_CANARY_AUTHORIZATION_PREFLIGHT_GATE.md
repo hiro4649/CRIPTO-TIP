@@ -1,21 +1,36 @@
 # P1 YouTube Canary Authorization Preflight Gate
 
 This gate is the canonical authorization contract for the controlled YouTube
-canary preflight. It is a preview evaluator only. It does not execute OAuth,
-read secrets, call YouTube, enable network access, or create owner approval.
+canary authorization preflight. It is a read-only evaluator only. It does not
+execute OAuth, read secrets, call YouTube, enable network access, or create
+owner approval.
 
 ## Source Of Truth
 
 `apps/api/src/youtube-live-chat-canary-authorization-gate.ts` owns the
-canonical bundle schema, default bundle, evaluation result, stable safe hash,
-legacy preflight projection, and real connector readiness projection.
+canonical domain bundle schema, evidence wrapper schema, default bundle,
+evaluation result, stable safe hash, legacy preflight projection, and real
+connector readiness projection.
 
 Legacy controlled-canary preflight and real connector readiness gates delegate
 to this evaluator, then preserve their existing response shapes for route
 compatibility.
 
 Runtime code does not read `.codex` files or docs. Those files are evidence
-only.
+only. Evidence-only metadata such as repository name, harness version, package
+status, workflow status, readiness claims, and PR phase is intentionally outside
+the runtime domain bundle.
+
+## Admin Routes
+
+Canonical route:
+
+- `GET /admin/youtube-live-chat/canary-authorization-preflight`
+- `POST /admin/youtube-live-chat/canary-authorization-preflight/evaluate`
+
+The previous `/admin/youtube-live-chat/canary-authorization` route remains a
+deprecated alias wired to the same handler. It does not duplicate evaluation
+logic.
 
 ## Authorization States
 
@@ -31,7 +46,6 @@ only.
 Every evaluation returns:
 
 - `execution_status: forbidden`
-- `input_trust: untrusted_preview`
 - `network_enabled: false`
 - `oauth_configured: false`
 - `secret_accessed: false`
@@ -40,8 +54,20 @@ Every evaluation returns:
 - `github_approval_review_created: false`
 - `merge_authority_created: false`
 
-POST bodies are preview input only. They do not mutate the GET default, do not
-persist owner decisions, and do not create authority to run a canary.
+GET default evaluation uses `input_trust: committed_safe_bundle`.
+
+POST bodies use `input_trust: untrusted_preview`. They do not mutate the GET
+default, do not persist owner decisions, and do not create authority to run a
+canary.
+
+Legacy controlled-canary preflight compatibility output may still return
+`code_ready_network_blocked`, but its canonical authorization status remains
+`awaiting_owner_authorization` unless individual owner fields are present in the
+canonical domain bundle.
+
+Real connector readiness never emits `controlled_canary_candidate`. Complete
+authorization fields still produce `blocked_pending_network_enablement`,
+`code_ready_network_blocked`, and `execution_status: forbidden`.
 
 ## First Canary Limits
 
