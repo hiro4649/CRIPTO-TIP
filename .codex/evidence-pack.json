@@ -14,7 +14,7 @@
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
   "schemaVersion": "1.0.0",
-  "prProfile": "harness_h0",
+  "prProfile": "harness_workflow_r3",
   "taskMode": "bugfix",
   "ciRunId": "pre_pr",
   "qualityGateRunId": "pre_pr",
@@ -28,6 +28,8 @@
   "scope": {
     "changedFiles": [
       ".github/workflows/quality-gate.yml",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json",
+      "scripts/codex-change-classification-gate.mjs",
       "scripts/codex-workflow-quality-runner.mjs",
       "scripts/check-quality-gate-self-protection.mjs",
       "scripts/validate-quality-gate-safe-summary.mjs",
@@ -39,6 +41,8 @@
     ],
     "allowedPaths": [
       ".github/workflows/quality-gate.yml",
+      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json",
+      "scripts/codex-change-classification-gate.mjs",
       "scripts/codex-workflow-quality-runner.mjs",
       "scripts/check-quality-gate-self-protection.mjs",
       "scripts/validate-quality-gate-safe-summary.mjs",

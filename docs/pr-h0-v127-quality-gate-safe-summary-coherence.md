@@ -1,6 +1,10 @@
-PR profile: harness_h0
+PR profile: harness_workflow_r3
 Risk level: H0
 Task mode: bugfix
+
+Reproduced: yes
+Root cause: identified
+Verification: pass
 
 ## Goal
 
@@ -11,6 +15,26 @@ This PR makes the workflow fail when the safe summary reports technical failure,
 ## Risk level
 
 H0 harness repair. The change affects the quality-gate harness and does not change product runtime behavior.
+
+## Files or scope
+
+Changed scope:
+
+- `.github/workflows/quality-gate.yml`
+- `scripts/codex-workflow-quality-runner.mjs`
+- `scripts/validate-quality-gate-safe-summary.mjs`
+- `scripts/check-quality-gate-self-protection.mjs`
+- `scripts/codex-change-classification-gate.mjs`
+- `docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json`
+- `apps/api/src/evidence-rendering.test.ts`
+- `.codex` evidence
+- PR evidence document
+
+Forbidden scope remains product runtime, package and lockfile changes, contracts, migrations, real network, OAuth, secrets, DB, RPC, wallet, deploy, and readiness claims.
+
+## Evidence Integrity
+
+Current H0 evidence uses `current_pr_head` for remote head binding and records tested head `6fa0c116bdb1ee4abd2a56e29ecda684a5590e18` for the code/test commit. Later deltas are evidence and PR metadata only unless explicitly noted.
 
 ## Security impact
 
@@ -70,6 +94,12 @@ The runner now evaluates workflow report failures before honoring `finalDecision
 
 The workflow uploads safe artifacts first, then runs `scripts/validate-quality-gate-safe-summary.mjs` as a load-bearing final step.
 
+Bugfix reproduction status: reproduced locally and through PR #172/#173 safe artifacts.
+
+Bugfix root cause: the workflow runner could honor a final decision zero exit before checking technical safe-summary failures.
+
+Bugfix verification: focused regression tests, lint, typecheck, full test, evidence checks, self-protection, secret scan, and self-tests passed locally.
+
 ## Best of N Evidence
 
 Candidate count: 3
@@ -102,7 +132,7 @@ Remote quality-gate must prove that a safe-summary failure now fails the workflo
 
 PR #172 remains merge-blocked until this H0 repair is merged and PR #172 is refreshed against the updated main.
 
-## Human confirmation needed
+## Human Confirmation
 
 AI technical review is not human/project-owner approval.
 
@@ -111,3 +141,7 @@ AI technical review is not GitHub approval review.
 This PR does not create owner approval record.
 
 This PR does not create merge authority.
+
+## Human confirmation needed
+
+Human/project-owner approval is still separate from this AI technical review. This PR does not create owner approval, GitHub approval review, or merge authority.
