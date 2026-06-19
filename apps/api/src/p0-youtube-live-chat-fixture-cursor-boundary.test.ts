@@ -230,8 +230,10 @@ describe("P0 YouTube live chat fixture cursor boundary", () => {
 
   it("committed cursor path keeps character context explicit and does not persist support events", () => {
     const serverSource = fs.readFileSync(path.join(root, "apps", "api", "src", "server.ts"), "utf8");
+    const routeSource = fs.readFileSync(path.join(root, "apps", "api", "src", "routes", "youtube-fixture-routes.ts"), "utf8");
+    const combinedSource = `${serverSource}\n${routeSource}`;
 
-    expect(serverSource).toContain("character_id: cursor.character_id");
-    expect(serverSource).not.toContain('character_id: "char_mio",\n          youtube_video_id: cursor.youtube_video_id');
+    expect(combinedSource).toContain("character_id: cursor.character_id");
+    expect(combinedSource).not.toContain('character_id: "char_mio",\n          youtube_video_id: cursor.youtube_video_id');
   });
 });
