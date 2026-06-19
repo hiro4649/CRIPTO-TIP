@@ -2,7 +2,7 @@
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.7",
   "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 0,
+  "prNumber": "pre_pr",
   "headSha": "6fa0c116bdb1ee4abd2a56e29ecda684a5590e18",
   "baseSha": "d516c603f63c8512d2b96a46444bb215d88db0fc",
   "title": "fix: enforce quality-gate safe-summary coherence",
@@ -112,15 +112,20 @@
     "YouTube policy compliance claim",
     "owner approval creation",
     "GitHub approval review creation",
-    "merge authority creation"
+    "merge authority creation",
+    "token sale",
+    "token exchange",
+    "cash-out",
+    "custody",
+    "internal balance",
+    "investment wording"
   ],
   "doneCriteria": [
     "workflow success cannot coexist with safe summary status fail",
     "workflow success cannot coexist with technicalChecksReady false",
     "workflow success cannot coexist with technical blockingStatuses",
     "owner-only authority absence does not become a technical failure by itself",
-    "safe artifacts still upload before the final validator",
-    "raw logs are not required for diagnosis"
+    "safe artifacts still upload before the final validator"
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
