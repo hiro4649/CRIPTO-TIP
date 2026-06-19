@@ -110,21 +110,14 @@ describe("evidence single source of truth scripts", () => {
 
   it("writes test summary from Vitest output", () => {
     const file = path.join(os.tmpdir(), `cripto-tip-vitest-${Date.now()}.txt`);
-    const summaryPath = path.join(root, ".codex", "test-summary.json");
-    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
+    const summaryPath = path.join(os.tmpdir(), `cripto-tip-test-summary-${Date.now()}.json`);
     fs.writeFileSync(file, "Test Files  20 passed (20)\nTests  178 passed | 6 skipped (184)\n");
-    try {
-      expect(runScript("write-test-summary.mjs", ["--from", file])).toContain("178 passed");
-    } finally {
-      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
-      else fs.writeFileSync(summaryPath, previousSummary);
-    }
+    expect(runScript("write-test-summary.mjs", ["--from", file, "--output", summaryPath])).toContain("178 passed");
   });
 
   it("writes test summary from current Vitest JSON output", () => {
     const file = path.join(os.tmpdir(), `cripto-tip-vitest-json-${Date.now()}.json`);
-    const summaryPath = path.join(root, ".codex", "test-summary.json");
-    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
+    const summaryPath = path.join(os.tmpdir(), `cripto-tip-test-summary-json-${Date.now()}.json`);
     fs.writeFileSync(file, JSON.stringify({
       numTotalTestSuites: 3,
       numPassedTests: 11,
@@ -132,38 +125,27 @@ describe("evidence single source of truth scripts", () => {
       numPendingTests: 2,
       numTodoTests: 1
     }));
-    try {
-      expect(runScript("write-test-summary.mjs", ["--from-json", file])).toContain("11 passed");
-      const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
-      expect(summary).toMatchObject({
-        testFiles: 3,
-        passed: 11,
-        failed: 0,
-        skipped: 3,
-        sourceType: "vitest_json_summary",
-        currentRunEvidence: true
-      });
-    } finally {
-      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
-      else fs.writeFileSync(summaryPath, previousSummary);
-    }
+    expect(runScript("write-test-summary.mjs", ["--from-json", file, "--output", summaryPath])).toContain("11 passed");
+    const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+    expect(summary).toMatchObject({
+      testFiles: 3,
+      passed: 11,
+      failed: 0,
+      skipped: 3,
+      sourceType: "vitest_json_summary",
+      currentRunEvidence: true
+    });
   });
 
   it("writes test summary from same-run safe pnpm summary", () => {
     const file = path.join(os.tmpdir(), `cripto-tip-safe-test-summary-${Date.now()}.json`);
-    const summaryPath = path.join(root, ".codex", "test-summary.json");
-    const previousSummary = fs.existsSync(summaryPath) ? fs.readFileSync(summaryPath, "utf8") : undefined;
+    const summaryPath = path.join(os.tmpdir(), `cripto-tip-test-summary-safe-${Date.now()}.json`);
     fs.writeFileSync(file, JSON.stringify({ test_counts: { testFiles: 4, passed: 12, failed: 0, skipped: 1 } }));
-    try {
-      expect(runScript("write-test-summary.mjs", ["--safe-summary", file])).toContain("12 passed");
-      const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
-      expect(summary.sourceType).toBe("safe_pnpm_test_summary");
-      expect(summary.currentRunEvidence).toBe(true);
-      expect(JSON.stringify(summary)).not.toMatch(/stdout|stderr|stack_trace|failureMessages/);
-    } finally {
-      if (previousSummary === undefined) fs.rmSync(summaryPath, { force: true });
-      else fs.writeFileSync(summaryPath, previousSummary);
-    }
+    expect(runScript("write-test-summary.mjs", ["--safe-summary", file, "--output", summaryPath])).toContain("12 passed");
+    const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
+    expect(summary.sourceType).toBe("safe_pnpm_test_summary");
+    expect(summary.currentRunEvidence).toBe(true);
+    expect(JSON.stringify(summary)).not.toMatch(/stdout|stderr|stack_trace|failureMessages/);
   });
 
   it("fails closed when no current-run test summary input is provided", () => {
