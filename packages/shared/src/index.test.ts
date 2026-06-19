@@ -141,6 +141,7 @@ describe("affinity and events", () => {
       published_at: new Date(0).toISOString()
     });
     expect(event.support.message_moderation_status).toBe("hold");
+    expect(event.support.currency_or_token).toBe("JPY");
     expect(event.reaction_policy.can_read_message).toBe(false);
   });
 
@@ -180,13 +181,14 @@ describe("affinity and events", () => {
       display_name: "Akira",
       amount_raw: "100",
       amount_display: "100 IRIS",
-      tier: "medium",
+      tier: "medium" as const,
       message: "safe",
-      moderation_status: "approved",
+      moderation_status: "approved" as const,
       created_at: new Date(0).toISOString()
     };
 
     expect(TokenTipInputSchema.parse(valid).amount_raw).toBe("100");
+    expect(normalizeTokenTipToSupportReceived(valid).support.currency_or_token).toBeUndefined();
     expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "0" })).toThrow();
     expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "00100" })).toThrow();
     expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "1.5" })).toThrow();
@@ -227,6 +229,7 @@ describe("affinity and events", () => {
       published_at: new Date(0).toISOString()
     });
     expect(event.source).toBe("youtube_super_sticker");
+    expect(event.support.currency_or_token).toBe("JPY");
     expect(event.reaction_policy.can_read_message).toBe(false);
   });
 

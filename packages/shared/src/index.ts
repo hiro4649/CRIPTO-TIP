@@ -87,6 +87,7 @@ export const SupportReceivedSchema = z.object({
   support: z.object({
     amount_raw: NonNegativeDecimalStringSchema,
     amount_display: z.string(),
+    currency_or_token: z.string().min(1).max(32).optional(),
     tier: z.enum(tiers),
     message: z.string(),
     message_moderation_status: z.enum(moderationStatuses)
@@ -283,7 +284,7 @@ export function normalizeYouTubeSuperChatToSupportReceived(input: YouTubeSuperCh
     youtube_video_id: input.youtube_video_id,
     character_id: input.character_id,
     viewer: { display_name: name.sanitized, youtube_author_channel_id: input.author_channel_id },
-    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: moderation.status },
+    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, currency_or_token: input.currency, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: moderation.status },
     relationship: { previous_affinity: affinity.previous, affinity_delta: affinity.delta, new_affinity: affinity.next, relationship_level: Math.floor(affinity.next / 50) },
     reaction_policy: { can_say_name: moderation.status === "approved", can_read_message: moderation.status === "approved", max_speech_seconds: 12, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
     created_at: input.published_at
@@ -303,7 +304,7 @@ export function normalizeYouTubeSuperStickerToSupportReceived(input: YouTubeSupe
     youtube_video_id: input.youtube_video_id,
     character_id: input.character_id,
     viewer: { display_name: name.sanitized, youtube_author_channel_id: input.author_channel_id },
-    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: "approved" },
+    support: { amount_raw: input.amount_micros, amount_display: input.amount_display_string, currency_or_token: input.currency, tier: input.tier >= 4 ? "high" : input.tier >= 3 ? "large" : input.tier >= 2 ? "medium" : "small", message, message_moderation_status: "approved" },
     relationship: { previous_affinity: affinity.previous, affinity_delta: affinity.delta, new_affinity: affinity.next, relationship_level: Math.floor(affinity.next / 50) },
     reaction_policy: { can_say_name: true, can_read_message: false, max_speech_seconds: 10, must_not_discuss_token_price: true, must_not_promise_financial_return: true },
     created_at: input.published_at
