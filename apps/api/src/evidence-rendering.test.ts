@@ -381,6 +381,41 @@ describe("evidence single source of truth scripts", () => {
     expect(JSON.stringify({ typecheck, test })).not.toMatch(/stdout|stderr|stack_trace/);
   });
 
+  it("safe pnpm test summary records Vitest counts without failure messages", () => {
+    const summary = path.join(os.tmpdir(), `cripto-tip-vitest-safe-summary-${Date.now()}.json`);
+    const output = path.join(os.tmpdir(), `cripto-tip-test-safe-counts-${Date.now()}.json`);
+    fs.writeFileSync(summary, JSON.stringify({
+      numTotalTestSuites: 2,
+      numPassedTestSuites: 1,
+      numFailedTestSuites: 1,
+      numPendingTestSuites: 0,
+      numTotalTests: 3,
+      numPassedTests: 2,
+      numFailedTests: 1,
+      numPendingTests: 0,
+      numTodoTests: 0,
+      testResults: [
+        {
+          name: path.join(process.cwd(), "apps/api/src/failing-safe-summary.test.ts"),
+          status: "failed",
+          assertionResults: [
+            {
+              title: "does not leak failure body",
+              status: "failed",
+              failureMessages: ["raw failure detail must not be copied"]
+            }
+          ]
+        }
+      ]
+    }));
+    runScript("safe-pnpm-test-summary.mjs", ["--simulate-exit", "1", "--summary", summary, "--typecheck-result", "success", "--no-exit", "--output", output]);
+    const test = JSON.parse(fs.readFileSync(output, "utf8"));
+    expect(test.test_counts).toEqual({ testFiles: 2, passed: 2, failed: 1, skipped: 0 });
+    expect(test.failed_test_files).toEqual(["apps/api/src/failing-safe-summary.test.ts"]);
+    expect(test.raw_log_required).toBe(false);
+    expect(JSON.stringify(test)).not.toMatch(/raw failure detail|failureMessages|stdout|stderr|stack_trace/);
+  });
+
   it("records a safe not-run test summary when typecheck already failed", () => {
     const testOutput = path.join(os.tmpdir(), `cripto-tip-test-not-run-${Date.now()}.json`);
     runScript("safe-pnpm-test-summary.mjs", ["--typecheck-result", "failure", "--not-run-due-to-typecheck", "--no-exit", "--output", testOutput]);

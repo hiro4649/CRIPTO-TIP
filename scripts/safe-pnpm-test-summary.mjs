@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import path from "node:path";
 import { valueAfter, hasFlag, writeJson, makeSafeArtifact, runCommandNoRawOutput } from "./ci-safe-lib.mjs";
 
 const args = process.argv.slice(2);
@@ -7,15 +8,57 @@ const output = valueAfter(args, "--output") || "reports/pnpm-test-safe-summary.j
 const simulated = valueAfter(args, "--simulate-exit");
 const summaryPath = valueAfter(args, "--summary");
 const notRunDueToTypecheck = hasFlag(args, "--not-run-due-to-typecheck");
-const exitCode = notRunDueToTypecheck ? 0 : simulated === undefined ? Number(runCommandNoRawOutput("pnpm", ["test"], {
+const generatedSummaryPath = summaryPath || path.join("reports", "vitest-test-safe-results.json");
+const vitestArgs = [
+  "exec",
+  "vitest",
+  "run",
+  "packages/shared",
+  "apps/api",
+  "apps/overlay",
+  "apps/web",
+  "--reporter=json",
+  `--outputFile=${generatedSummaryPath}`
+];
+const exitCode = notRunDueToTypecheck ? 0 : simulated === undefined ? Number(runCommandNoRawOutput("pnpm", vitestArgs, {
   env: {
     RUN_LIVE_POSTGRES_TESTS: process.env.RUN_LIVE_POSTGRES_TESTS,
     DATABASE_URL: process.env.DATABASE_URL
   }
 }).status || 0) : Number(simulated);
 
+function safeRelativeTestFile(name) {
+  if (!name) return "metadata_limited";
+  return path.relative(process.cwd(), name).replace(/\\/g, "/") || path.basename(name);
+}
+
+function summarizeVitest(summary) {
+  const results = Array.isArray(summary.testResults) ? summary.testResults : [];
+  const failedFiles = results
+    .filter((result) => result.status === "failed" || result.assertionResults?.some((assertion) => assertion.status === "failed"))
+    .map((result) => safeRelativeTestFile(result.name))
+    .filter(Boolean)
+    .slice(0, 20);
+  const skipped = Number(summary.numPendingTests ?? 0) + Number(summary.numTodoTests ?? 0);
+  return {
+    counts: {
+      testFiles: Number.isFinite(Number(summary.numTotalTestSuites)) ? Number(summary.numTotalTestSuites) : null,
+      passed: Number.isFinite(Number(summary.numPassedTests)) ? Number(summary.numPassedTests) : null,
+      failed: Number.isFinite(Number(summary.numFailedTests)) ? Number(summary.numFailedTests) : null,
+      skipped
+    },
+    failedFiles
+  };
+}
+
 let counts = { testFiles: null, passed: null, failed: null, skipped: null };
-if (summaryPath && fs.existsSync(summaryPath)) {
+let failedTestFiles = [];
+if (fs.existsSync(generatedSummaryPath)) {
+  const summary = JSON.parse(fs.readFileSync(generatedSummaryPath, "utf8"));
+  const summarized = summarizeVitest(summary);
+  counts = summarized.counts;
+  failedTestFiles = summarized.failedFiles;
+} else if (summaryPath && fs.existsSync(summaryPath)) {
   const summary = JSON.parse(fs.readFileSync(summaryPath, "utf8"));
   counts = {
     testFiles: summary.testFiles ?? null,
@@ -23,6 +66,7 @@ if (summaryPath && fs.existsSync(summaryPath)) {
     failed: summary.failed ?? null,
     skipped: summary.skipped ?? null
   };
+  failedTestFiles = Array.isArray(summary.failedTestFiles) ? summary.failedTestFiles.slice(0, 20) : [];
 }
 
 const typecheckResult = valueAfter(args, "--typecheck-result") || "unknown";
@@ -43,11 +87,11 @@ const artifact = makeSafeArtifact({
   exit_code: exitCode,
   result: notRunDueToTypecheck ? "not_run" : exitCode === 0 ? "success" : "failure",
   safe_reason_code: safeReason,
-  raw_log_required: !notRunDueToTypecheck && exitCode !== 0 && counts.failed === null,
+  raw_log_required: false,
   product_code_failure: !notRunDueToTypecheck && exitCode !== 0,
-  metadata_limited: notRunDueToTypecheck || (exitCode !== 0 && counts.failed === null),
-  next_safe_action: notRunDueToTypecheck ? "pnpm test was not run because pnpm typecheck failed; use the typecheck safe summary." : exitCode === 0 ? "Required test check passed." : "Use safe test counts if present; do not inspect raw CI logs."
+  metadata_limited: notRunDueToTypecheck || counts.failed === null,
+  next_safe_action: notRunDueToTypecheck ? "pnpm test was not run because pnpm typecheck failed; use the typecheck safe summary." : exitCode === 0 ? "Required test check passed." : "Use safe test counts and failed test file names only; do not inspect raw CI logs."
 });
-writeJson(output, { ...artifact, pnpm_test_result: notRunDueToTypecheck ? "not_run_due_to_typecheck_failure" : exitCode === 0 ? "success" : "failure", pnpm_typecheck_result: typecheckResult, test_counts: counts });
+writeJson(output, { ...artifact, pnpm_test_result: notRunDueToTypecheck ? "not_run_due_to_typecheck_failure" : exitCode === 0 ? "success" : "failure", pnpm_typecheck_result: typecheckResult, test_counts: counts, failed_test_files: failedTestFiles });
 console.log(`pnpm test safe summary: ${notRunDueToTypecheck ? "not_run_due_to_typecheck_failure" : exitCode === 0 ? "success" : "failure"}`);
 if (!hasFlag(args, "--no-exit")) process.exit(exitCode);
