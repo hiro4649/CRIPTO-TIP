@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import WebSocket from "ws";
-import { buildServer, isOverlayTokenValid, store } from "./server.js";
+import { buildServer, isOverlayTokenValid, store, type WalletVerifier } from "./server.js";
 import { InMemoryRepository } from "./repositories/in-memory.js";
+import { loadConfig } from "./config/env.js";
 import { normalizeTokenTipToSupportReceived } from "@cripto-tip/shared";
 
 describe("api", () => {
@@ -9,10 +10,32 @@ describe("api", () => {
   const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
   const internalAuth = `Bearer ${mockValue("internal")}`;
   const adminAuth = `Bearer ${mockValue("admin")}`;
+  const mockConfig = (appEnv: "local" | "test" | "staging" | "production") => loadConfig({
+    APP_ENV: appEnv,
+    MOCK_ADMIN_TOKEN: "admin-realistic-placeholder",
+    MOCK_INTERNAL_TOKEN: "internal-realistic-placeholder",
+    MOCK_OVERLAY_TOKEN: "overlay-realistic-placeholder",
+    IRIS_CORE_API_URL: "https://iris.example.test",
+    IRIS_CORE_SHARED_SECRET: "test-secret-placeholder"
+  });
 
   beforeEach(() => {
     store.overlayClients.clear();
   });
+
+  async function seedLiveSession(repo: InMemoryRepository, id: string) {
+    await repo.createLiveSession({
+      id,
+      youtube_video_id: `video-${id}`,
+      youtube_channel_id: "channel-test",
+      character_id: "char_mio",
+      title: "Fixture live session",
+      status: "live",
+      companion_url: `/live/${id}`,
+      overlay_url: `/overlay/${id}`,
+      created_at: new Date(0).toISOString()
+    });
+  }
 
   it("requires admin auth for admin mutation routes", async () => {
     const app = buildServer(new InMemoryRepository());
@@ -25,7 +48,9 @@ describe("api", () => {
   }, 20_000);
 
   it("creates tip intent and support.received mock pipeline", async () => {
-    const app = buildServer(new InMemoryRepository());
+    const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_1");
+    const app = buildServer(repo);
     await app.ready();
     const intent = await app.inject({
       method: "POST",
@@ -42,7 +67,9 @@ describe("api", () => {
   }, 20_000);
 
   it("public tip intent status does not expose wallet address or raw message", async () => {
-    const app = buildServer(new InMemoryRepository());
+    const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_public");
+    const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
       method: "POST",
@@ -60,7 +87,7 @@ describe("api", () => {
     await app.close();
   }, 20_000);
 
-  it("public mock routes disclose local mock execution without readiness claims", async () => {
+  it("public mock routes fail closed when live session and wallet verifier are unavailable", async () => {
     const app = buildServer(new InMemoryRepository());
     await app.ready();
 
@@ -74,7 +101,6 @@ describe("api", () => {
     });
 
     for (const response of [live, nonce, verify, tip]) {
-      expect(response.statusCode).toBe(200);
       expect(response.json().mock_runtime_truthfulness).toMatchObject({
         execution_mode: "local_mock",
         external_runtime_execution: "not_performed",
@@ -89,12 +115,77 @@ describe("api", () => {
       expect(serialized).not.toContain("runtime_ready");
       expect(serialized).not.toContain("production_ready");
     }
+    expect(live.statusCode).toBe(404);
+    expect(live.json()).toMatchObject({ error: "live_session_not_found", created: false });
+    expect(nonce.statusCode).toBe(501);
+    expect(nonce.json()).toMatchObject({ error: "wallet_verifier_not_configured", issued: false, verified: false });
+    expect(verify.statusCode).toBe(501);
+    expect(verify.json()).toMatchObject({ error: "wallet_verifier_not_configured", verified: false });
+    expect(tip.statusCode).toBe(404);
+    expect(tip.json()).toMatchObject({ error: "live_session_not_found", created: false });
 
+    await app.close();
+  }, 20_000);
+
+  it("internal live-session fixture is auth-bound and enables public local/test reads", async () => {
+    const app = buildServer({ repo: new InMemoryRepository(), config: { ...mockConfig("test") }, internalToken: mockValue("internal") });
+    await app.ready();
+
+    const unauthorized = await app.inject({ method: "POST", url: "/internal/fixtures/live-sessions", payload: { id: "str_fixture" } });
+    expect(unauthorized.statusCode).toBe(401);
+    const created = await app.inject({
+      method: "POST",
+      url: "/internal/fixtures/live-sessions",
+      headers: { authorization: internalAuth },
+      payload: { id: "str_fixture", character_id: "char_mio", title: "Fixture", status: "live", companion_url: "/live/str_fixture", overlay_url: "/overlay/str_fixture" }
+    });
+    expect(created.statusCode).toBe(200);
+    expect(created.json()).toMatchObject({ fixture_only: true, created: true });
+    const fetched = await app.inject({ method: "GET", url: "/api/live/str_fixture" });
+    expect(fetched.statusCode).toBe(200);
+    expect(fetched.json().id).toBe("str_fixture");
+
+    await app.close();
+  }, 20_000);
+
+  it("internal live-session fixture is disabled outside local/test", async () => {
+    const app = buildServer({ repo: new InMemoryRepository(), config: { ...mockConfig("staging") }, internalToken: mockValue("internal") });
+    await app.ready();
+    const response = await app.inject({
+      method: "POST",
+      url: "/internal/fixtures/live-sessions",
+      headers: { authorization: internalAuth },
+      payload: { id: "str_fixture", character_id: "char_mio", title: "Fixture", status: "live", companion_url: "/live/str_fixture", overlay_url: "/overlay/str_fixture" }
+    });
+    expect(response.statusCode).toBe(404);
+    await app.close();
+  }, 20_000);
+
+  it("wallet verifier injection uses one-time hashed nonce without default fake success", async () => {
+    const verifier: WalletVerifier = {
+      async verify(context) {
+        if (context.signature === "valid-signature") return { verified: true, iris_user_id: "usr_test" };
+        return { verified: false };
+      }
+    };
+    const app = buildServer({ repo: new InMemoryRepository(), walletVerifier: verifier });
+    await app.ready();
+    const nonce = await app.inject({ method: "POST", url: "/api/wallet/nonce", payload: { wallet_address: wallet, domain: "example.test", purpose: "login" } });
+    expect(nonce.statusCode).toBe(200);
+    expect(nonce.json().issued).toBe(true);
+    const rawNonce = nonce.json().nonce;
+    const first = await app.inject({ method: "POST", url: "/api/wallet/verify", payload: { wallet_address: wallet, nonce: rawNonce, signature: "valid-signature", domain: "example.test", purpose: "login" } });
+    expect(first.statusCode).toBe(200);
+    expect(first.json()).toMatchObject({ verified: true, iris_user_id: "usr_test" });
+    const replay = await app.inject({ method: "POST", url: "/api/wallet/verify", payload: { wallet_address: wallet, nonce: rawNonce, signature: "valid-signature", domain: "example.test", purpose: "login" } });
+    expect(replay.json()).toMatchObject({ verified: false });
+    expect(JSON.stringify(replay.json())).not.toContain(rawNonce);
     await app.close();
   }, 20_000);
 
   it("duplicate internal events do not double-apply affinity or emit second overlay/reaction", async () => {
     const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_dup");
     const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
@@ -114,7 +205,9 @@ describe("api", () => {
   }, 20_000);
 
   it("hold tip does not emit overlay or reaction before approval", async () => {
-    const app = buildServer(new InMemoryRepository());
+    const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_hold");
+    const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
       method: "POST",
@@ -130,6 +223,7 @@ describe("api", () => {
 
   it("rejected tip does not apply affinity", async () => {
     const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_reject");
     const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
@@ -146,6 +240,7 @@ describe("api", () => {
 
   it("display_only tip does not read message aloud", async () => {
     const repo = new InMemoryRepository();
+    await seedLiveSession(repo, "str_display");
     const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
@@ -173,6 +268,7 @@ describe("api", () => {
       }
     }
     const repo = new RecentRepo();
+    await seedLiveSession(repo, "str_recent");
     const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
@@ -192,6 +288,7 @@ describe("api", () => {
       }
     }
     const repo = new AffinityRepo();
+    await seedLiveSession(repo, "str_affinity");
     const app = buildServer(repo);
     await app.ready();
     const created = await app.inject({
