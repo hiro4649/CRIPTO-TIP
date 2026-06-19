@@ -1,6 +1,7 @@
 import { CharacterReactionRequestSchema, SupportReceivedSchema } from "@cripto-tip/shared";
 import { TerminalOutboxError, type OutboxHandler } from "../outbox/worker.js";
 import type { CriptoTipRepository, OutboxEvent } from "../repositories/types.js";
+import type { SupportEventIdentity } from "@cripto-tip/shared";
 import {
   buildAffinityDelivery,
   buildMemoryCandidateDelivery,
@@ -22,10 +23,10 @@ export function createIrisDeliverOutboxHandler(args: { repository: CriptoTipRepo
     const delivery = parseIrisDeliveryJob(job);
     try {
       await args.client.deliver(delivery);
-      await args.repository.updateSupportEventDeliveryStatus(delivery.source_event_id, "delivered");
+      if (hasSupportIdentity(delivery)) await args.repository.updateSupportEventDeliveryStatus(delivery, "delivered");
     } catch (error) {
       const terminal = isTerminalIrisDeliveryError(error);
-      await args.repository.updateSupportEventDeliveryStatus(delivery.source_event_id, terminal ? "failed" : "retrying");
+      if (hasSupportIdentity(delivery)) await args.repository.updateSupportEventDeliveryStatus(delivery, terminal ? "failed" : "retrying");
       if (terminal) throw new TerminalOutboxError(error instanceof Error ? error.message : "terminal iris delivery error");
       throw error;
     }
@@ -61,8 +62,13 @@ export function buildIrisDeliveryJobsForSupportEvent(event: unknown) {
 
 function isDeliveryPayload(value: unknown): value is IrisDeliveryPayload {
   if (!value || typeof value !== "object") return false;
-  const candidate = value as { delivery_type?: unknown; source_event_id?: unknown; idempotency_key?: unknown; payload?: unknown };
+  const candidate = value as { delivery_type?: unknown; source?: unknown; source_event_id?: unknown; idempotency_key?: unknown; payload?: unknown };
+  if (candidate.source !== undefined && typeof candidate.source !== "string") return false;
   return isDeliveryType(candidate.delivery_type) && typeof candidate.source_event_id === "string" && typeof candidate.idempotency_key === "string" && "payload" in candidate;
+}
+
+function hasSupportIdentity(delivery: IrisDeliveryPayload): delivery is IrisDeliveryPayload & SupportEventIdentity {
+  return typeof delivery.source === "string" && typeof delivery.source_event_id === "string";
 }
 
 function isDeliveryType(value: unknown): value is IrisDeliveryType {

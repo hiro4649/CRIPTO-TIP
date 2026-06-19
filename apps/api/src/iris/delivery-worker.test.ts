@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCharacterReactionRequest, normalizeTokenTipToSupportReceived } from "@cripto-tip/shared";
+import { buildCharacterReactionRequest, encodeSupportEventIdentity, normalizeTokenTipToSupportReceived } from "@cripto-tip/shared";
 import { processOutboxBatch } from "../outbox/worker.js";
 import { InMemoryRepository } from "../repositories/in-memory.js";
 import { buildIrisDeliveryJobsForSupportEvent, createIrisDeliverOutboxHandler } from "./delivery-worker.js";
@@ -57,7 +57,7 @@ describe("IRIS Core delivery adapter", () => {
 
     expect(client.deliveries.map((item) => item.delivery_type)).toEqual(["support.received", "affinity.apply", "memory.write_candidate"]);
     expect(JSON.stringify(client.deliveries)).not.toContain(wallet);
-    expect(repo.outboxEvents.get("iris.deliver:support.received:1:0x2222222222222222222222222222222222222222:0xiris:1")?.status).toBe("completed");
+    expect([...repo.outboxEvents.values()].find((job) => job.job_type === "iris.deliver" && job.idempotency_key.startsWith("iris.deliver:support.received:"))?.status).toBe("completed");
   });
 
   it("delivers character.reaction.requested without unsafe wording or wallet address", async () => {
@@ -102,7 +102,7 @@ describe("IRIS Core delivery adapter", () => {
       expect(job?.retry_count).toBe(1);
       expect(job?.last_error).not.toContain("change-me");
       expect([...repo.deadLetterEvents.values()]).toHaveLength(0);
-      expect(repo.supportEventDeliveryStatus.get(delivery.source_event_id)).toBe("retrying");
+      expect(repo.supportEventDeliveryStatus.get(encodeSupportEventIdentity(support))).toBe("retrying");
     }
   });
 
@@ -121,7 +121,7 @@ describe("IRIS Core delivery adapter", () => {
       expect(job?.retry_count).toBe(0);
       expect([...repo.deadLetterEvents.values()][0]?.job_type).toBe("iris.deliver");
       expect([...repo.deadLetterEvents.values()][0]?.last_error).toContain(String(statusCode));
-      expect(repo.supportEventDeliveryStatus.get(delivery.source_event_id)).toBe("failed");
+      expect(repo.supportEventDeliveryStatus.get(encodeSupportEventIdentity(support))).toBe("failed");
     }
   });
 
@@ -133,6 +133,6 @@ describe("IRIS Core delivery adapter", () => {
     await enqueueDelivery(repo, delivery);
     await processOutboxBatch({ repository: repo, workerId: "iris-worker", limit: 1, handler: createIrisDeliverOutboxHandler({ repository: repo, client: new MockIrisCoreClient() }) });
     expect(repo.outboxEvents.get(delivery.idempotency_key)?.status).toBe("completed");
-    expect(repo.supportEventDeliveryStatus.get(delivery.source_event_id)).toBe("delivered");
+    expect(repo.supportEventDeliveryStatus.get(encodeSupportEventIdentity(support))).toBe("delivered");
   });
 });

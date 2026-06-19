@@ -37,7 +37,7 @@ export const TipIntentSchema = z.object({
   display_name_llm_safe: z.string(),
   message_raw: z.string(),
   message_sanitized: z.string(),
-  amount_raw: z.string(),
+  amount_raw: PositiveDecimalStringSchema,
   amount_display: z.string(),
   tier: z.enum(tiers),
   message_hash: z.string().regex(/^0x[a-fA-F0-9]{64}$/),
@@ -59,7 +59,7 @@ export const TipTransactionSchema = z.object({
   from_address: WalletAddressSchema,
   stream_id: z.string(),
   character_id: z.string(),
-  amount_raw: z.string(),
+  amount_raw: PositiveDecimalStringSchema,
   message_hash: z.string(),
   client_tip_id: z.string().optional(),
   status: z.enum(["detected", "pending_confirmation", "confirmed", "reorged", "failed", "ignored"]),
@@ -147,6 +147,35 @@ export type YouTubeSuperStickerInput = z.infer<typeof YouTubeSuperStickerInputSc
 export const TokenTipInputSchema = z.object({ chain_id: z.number().int(), contract_address: WalletAddressSchema, tx_hash: z.string(), log_index: z.number().int().nonnegative(), stream_id: z.string(), character_id: z.string(), iris_user_id: z.string().optional(), wallet_address: WalletAddressSchema, display_name: z.string(), amount_raw: PositiveDecimalStringSchema, amount_display: z.string(), tier: z.enum(tiers), message: z.string(), moderation_status: z.enum(moderationStatuses), created_at: z.string() });
 export type TokenTipInput = z.infer<typeof TokenTipInputSchema>;
 
+export type SupportEventIdentity = Pick<SupportReceived, "source" | "source_event_id">;
+
+export function normalizeUnsignedDecimalString(input: string): string {
+  if (!/^[0-9]+$/.test(input) || input.length > 78) throw new Error("invalid_amount_raw");
+  return input.replace(/^0+/, "") || "0";
+}
+
+export function compareUnsignedDecimalStrings(left: string, right: string): -1 | 0 | 1 {
+  const normalizedLeft = normalizeUnsignedDecimalString(left);
+  const normalizedRight = normalizeUnsignedDecimalString(right);
+  if (normalizedLeft.length < normalizedRight.length) return -1;
+  if (normalizedLeft.length > normalizedRight.length) return 1;
+  if (normalizedLeft < normalizedRight) return -1;
+  if (normalizedLeft > normalizedRight) return 1;
+  return 0;
+}
+
+export function isUnsignedDecimalGreaterThan(left: string, right: string): boolean {
+  return compareUnsignedDecimalStrings(left, right) > 0;
+}
+
+export function encodeSupportEventIdentity(identity: SupportEventIdentity): string {
+  return JSON.stringify([identity.source, identity.source_event_id]);
+}
+
+export function encodeAffinityIdentity(identity: SupportEventIdentity, irisUserId: string, characterId: string): string {
+  return JSON.stringify([identity.source, identity.source_event_id, irisUserId, characterId]);
+}
+
 const walletRegex = /0x[a-fA-F0-9]{40}/g;
 const walletTestRegex = /0x[a-fA-F0-9]{40}/;
 const urlRegex = /(https?:\/\/|www\.)\S+/i;
@@ -213,7 +242,13 @@ export function moderateTipMessage(args: { displayName: string; message: string;
   if (detectWalletAddressInText(args.message) || detectWalletAddressInText(args.displayName)) reasons.push("wallet_address");
   if (personalInfoRegex.test(args.message)) reasons.push("personal_information");
   if (args.recentTipCount && args.recentTipCount >= 3) reasons.push("rapid_repeat");
-  if (args.isNewWallet && Number(args.amountRaw || "0") > 1_000_000) reasons.push("new_wallet_high_tip");
+  if (args.isNewWallet && args.amountRaw !== undefined) {
+    try {
+      if (isUnsignedDecimalGreaterThan(args.amountRaw, "1000000")) reasons.push("new_wallet_high_tip");
+    } catch {
+      reasons.push("invalid_amount_raw");
+    }
+  }
   if (reasons.includes("ng_word")) return { status: "rejected", reasons };
   if (reasons.length > 0) return { status: "hold", reasons };
   return { status: "approved", reasons };
@@ -248,7 +283,7 @@ export function createIdempotencyKeyForChainLog(input: Pick<TokenTipInput, "chai
 }
 
 export function createIdempotencyKeyForSupportEvent(source: string, sourceEventId: string): string {
-  return `${source}:${sourceEventId}`;
+  return encodeSupportEventIdentity({ source: source as SupportEventIdentity["source"], source_event_id: sourceEventId });
 }
 
 export function normalizeTokenTipToSupportReceived(input: TokenTipInput, affinity = { previous: 0, delta: 0, next: 0 }): SupportReceived {

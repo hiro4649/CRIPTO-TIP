@@ -84,7 +84,7 @@ describe("P0 admin support event search", () => {
       published_at: "2026-06-15T00:00:00.000Z"
     });
     await repo.createSupportEventIfAbsent(youtubeSupport);
-    await repo.updateSupportEventDeliveryStatus(first.source_event_id, "delivered");
+    await repo.updateSupportEventDeliveryStatus(first, "delivered");
     const before = { affinity: repo.affinityLedger.size, reaction: repo.reactionRequests.size, overlay: repo.overlayEvents.size, outbox: repo.outboxEvents.size };
 
     const all = await app.inject({ method: "GET", url: "/admin/support-events?limit=2", headers: { authorization: adminAuth } });

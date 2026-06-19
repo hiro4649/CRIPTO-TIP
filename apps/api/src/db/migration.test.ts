@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest";
 const here = dirname(fileURLToPath(import.meta.url));
 const sql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8").toLowerCase();
 const chainSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8").toLowerCase();
+const supportIdentitySql = readFileSync(resolve(here, "../../../../migrations/0005_support_side_effect_source_identity.sql"), "utf8").toLowerCase();
 
 describe("migration 0001", () => {
   it("contains required tables", () => {
@@ -37,5 +38,18 @@ describe("migration 0002", () => {
   it("indexes pending transaction confirmation scans", () => {
     expect(chainSql).toContain("tip_transactions_confirmation_idx");
     expect(chainSql).toContain("chain_id, contract_address, status, block_number");
+  });
+});
+
+describe("migration 0005", () => {
+  it("makes support side-effect identity source-aware without destructive data operations", () => {
+    expect(supportIdentitySql).toContain("alter table affinity_ledger add column if not exists source text");
+    expect(supportIdentitySql).toContain("alter table overlay_events add column if not exists source text");
+    expect(supportIdentitySql).toContain("alter table reaction_requests add column if not exists source text");
+    expect(supportIdentitySql).toContain("unique(source, source_event_id, iris_user_id, character_id)");
+    expect(supportIdentitySql).toContain("unique(source, source_event_id, stream_id)");
+    expect(supportIdentitySql).toContain("unique(source, source_event_id, character_id)");
+    expect(supportIdentitySql).not.toContain("drop table");
+    expect(supportIdentitySql).not.toContain("truncate");
   });
 });

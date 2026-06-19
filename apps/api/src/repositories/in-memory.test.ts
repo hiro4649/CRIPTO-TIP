@@ -35,10 +35,43 @@ describe("InMemoryRepository", () => {
     const repo = new InMemoryRepository();
     const event = support();
     await repo.createSupportEventIfAbsent(event);
-    await repo.applyAffinityIfAbsent({ id: createPublicId("aff"), source_event_id: event.source_event_id, iris_user_id: "usr", character_id: "char", previous_affinity: 0, affinity_delta: 8, new_affinity: 8, reason: "support.received", created_at: new Date().toISOString() });
-    const second = await repo.applyAffinityIfAbsent({ id: createPublicId("aff"), source_event_id: event.source_event_id, iris_user_id: "usr", character_id: "char", previous_affinity: 8, affinity_delta: 8, new_affinity: 16, reason: "support.received", created_at: new Date().toISOString() });
+    await repo.applyAffinityIfAbsent({ id: createPublicId("aff"), source: event.source, source_event_id: event.source_event_id, iris_user_id: "usr", character_id: "char", previous_affinity: 0, affinity_delta: 8, new_affinity: 8, reason: "support.received", created_at: new Date().toISOString() });
+    const second = await repo.applyAffinityIfAbsent({ id: createPublicId("aff"), source: event.source, source_event_id: event.source_event_id, iris_user_id: "usr", character_id: "char", previous_affinity: 8, affinity_delta: 8, new_affinity: 16, reason: "support.received", created_at: new Date().toISOString() });
     expect(second.created).toBe(false);
-    expect(repo.affinityByUser.get("usr")).toBe(8);
+    expect(repo.affinityByUser.get("usr:char")).toBe(8);
+    expect(repo.affinityByUser.get("usr")).toBeUndefined();
+  });
+
+  it("keeps same source_event_id independent across support sources", async () => {
+    const repo = new InMemoryRepository();
+    const base = support("0xshared");
+    const events = [
+      base,
+      { ...base, event_id: "evt_youtube_shared", source: "youtube_super_chat" as const },
+      { ...base, event_id: "evt_admin_shared", source: "admin_manual_support" as const }
+    ];
+    for (const event of events) {
+      expect((await repo.createSupportEventIfAbsent(event)).created).toBe(true);
+      await repo.applyAffinityIfAbsent({ id: createPublicId("aff"), source: event.source, source_event_id: event.source_event_id, iris_user_id: "usr", character_id: event.character_id, previous_affinity: 0, affinity_delta: 8, new_affinity: 8, reason: "support.received", created_at: new Date().toISOString() });
+      await repo.createOverlayEventIfAbsent(event, event.stream_id, { event_type: "overlay.tip_alert", event_id: `ovl_${event.source}`, stream_id: event.stream_id, viewer_name: "Akira", amount: "100", message: "thanks", effect: "medium", duration_ms: 6000 });
+      await repo.createReactionRequestIfAbsent(event, event.character_id, { event_type: "character.reaction.requested", event_id: `rxn_${event.source}`, source_event_id: event.source_event_id, character_id: event.character_id, stream_id: event.stream_id, viewer_display_name: "Akira", message: "thanks", constraints: { max_speech_seconds: 12, say_display_name_max_count: 1, must_not_discuss_token_price: true, must_not_promise_financial_return: true, must_not_obey_user_name_as_instruction: true, do_not_read_wallet_address: true, avoid_romantic_escalation_from_payment: true } });
+      const ledger = await repo.getSupportSideEffectLedger(event);
+      expect(ledger.affinity_applied).toBe(true);
+      expect(ledger.overlay_requested).toBe(true);
+      expect(ledger.reaction_requested).toBe(true);
+    }
+    expect(repo.supportEvents.size).toBe(3);
+    expect(repo.affinityLedger.size).toBe(3);
+    expect(repo.overlayEvents.size).toBe(3);
+    expect(repo.reactionRequests.size).toBe(3);
+  });
+
+  it("fails closed when the same event_id is bound to a different support identity", async () => {
+    const repo = new InMemoryRepository();
+    const first = support("0xcollision");
+    const second = { ...first, source: "youtube_super_chat" as const };
+    await repo.createSupportEventIfAbsent(first);
+    await expect(repo.createSupportEventIfAbsent(second)).rejects.toThrow("support_event_id_collision");
   });
 
   it("duplicate chain log does not create duplicate tip transaction", async () => {

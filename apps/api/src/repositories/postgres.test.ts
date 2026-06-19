@@ -9,10 +9,11 @@ import { normalizeTokenTipToSupportReceived, normalizeYouTubeSuperChatToSupportR
 class RecordingClient implements QueryClient {
   queries: Array<{ sql: string; params?: unknown[] }> = [];
   rows: unknown[] = [];
+  responses: unknown[][] = [];
 
   async query<T = unknown>(sql: string, params?: unknown[]) {
     this.queries.push(params ? { sql, params } : { sql });
-    return { rows: this.rows as T[] };
+    return { rows: (this.responses.shift() ?? this.rows) as T[] };
   }
 }
 
@@ -68,6 +69,31 @@ describe("PostgresRepository", () => {
       user_comment: "thanks",
       published_at: "2026-06-19T00:00:00.000Z"
     });
+    client.responses = [
+      [],
+      [{
+        id: support.event_id,
+        source: support.source,
+        source_event_id: support.source_event_id,
+        stream_id: support.stream_id,
+        youtube_video_id: support.youtube_video_id,
+        character_id: support.character_id,
+        iris_user_id: support.viewer.iris_user_id,
+        youtube_author_channel_id: support.viewer.youtube_author_channel_id,
+        wallet_address: support.viewer.wallet_address,
+        display_name_sanitized: support.viewer.display_name,
+        display_name_llm_safe: support.viewer.display_name,
+        amount_raw: support.support.amount_raw,
+        amount_display: support.support.amount_display,
+        currency_or_token: support.support.currency_or_token,
+        tier: support.support.tier,
+        message_sanitized: support.support.message,
+        message_moderation_status: support.support.message_moderation_status,
+        affinity_delta: support.relationship.affinity_delta,
+        delivery_status: "pending",
+        created_at: support.created_at
+      }]
+    ];
 
     await new PostgresRepository(client).createSupportEventIfAbsent(support);
 
@@ -100,6 +126,7 @@ const liveDescribe = runLivePostgres ? describe : describe.skip;
 const here = dirname(fileURLToPath(import.meta.url));
 const migrationSql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8");
 const chainMigrationSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8");
+const supportIdentityMigrationSql = readFileSync(resolve(here, "../../../../migrations/0005_support_side_effect_source_identity.sql"), "utf8");
 
 liveDescribe("PostgresRepository live integration", () => {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -111,6 +138,7 @@ liveDescribe("PostgresRepository live integration", () => {
     await pool.query("create schema public");
     await pool.query(migrationSql);
     await pool.query(chainMigrationSql);
+    await pool.query(supportIdentityMigrationSql);
   }, 30_000);
 
   afterAll(async () => {
@@ -159,7 +187,7 @@ liveDescribe("PostgresRepository live integration", () => {
     }, { previous: 0, delta: 8, next: 8 });
     expect((await repo.createSupportEventIfAbsent(support)).created).toBe(true);
     expect((await repo.createSupportEventIfAbsent({ ...support, event_id: "different" })).created).toBe(false);
-    const entry = { id: "aff_live_1", source_event_id: support.source_event_id, iris_user_id: "usr_live", character_id: "char", previous_affinity: 0, affinity_delta: 8, new_affinity: 8, reason: "support.received", created_at: new Date(0).toISOString() };
+    const entry = { id: "aff_live_1", source: support.source, source_event_id: support.source_event_id, iris_user_id: "usr_live", character_id: "char", previous_affinity: 0, affinity_delta: 8, new_affinity: 8, reason: "support.received", created_at: new Date(0).toISOString() };
     expect((await repo.applyAffinityIfAbsent(entry)).created).toBe(true);
     expect((await repo.applyAffinityIfAbsent({ ...entry, id: "aff_live_2", new_affinity: 16 })).created).toBe(false);
   });

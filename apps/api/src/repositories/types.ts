@@ -1,4 +1,4 @@
-import type { LiveSession, OverlayTipAlert, SupportReceived, TipIntent, TipTransaction, CharacterReactionRequest } from "@cripto-tip/shared";
+import type { LiveSession, OverlayTipAlert, SupportEventIdentity, SupportReceived, TipIntent, TipTransaction, CharacterReactionRequest } from "@cripto-tip/shared";
 
 export type JobType =
   | "chain.tip.detected"
@@ -21,6 +21,7 @@ export type PublicTipIntent = Pick<TipIntent, "id" | "stream_id" | "character_id
 
 export type AffinityLedgerEntry = {
   id: string;
+  source: SupportReceived["source"];
   source_event_id: string;
   iris_user_id: string;
   character_id: string;
@@ -648,9 +649,9 @@ export interface CriptoTipRepository {
   moveToDeadLetter(id: string, error: string, now?: Date): Promise<DeadLetterEvent | undefined>;
   listDeadLetters(filter?: DeadLetterListFilter): Promise<DeadLetterEvent[]>;
   retryDeadLetter(deadLetterId: string, actorId: string, now?: Date): Promise<OutboxEvent | undefined>;
-  updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed"): Promise<SupportReceived | undefined>;
-  createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;
-  createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
+  updateSupportEventDeliveryStatus(identity: SupportEventIdentity, status: "pending" | "retrying" | "delivered" | "failed"): Promise<SupportReceived | undefined>;
+  createOverlayEventIfAbsent(identity: SupportEventIdentity, streamId: string, payload: OverlayTipAlert): Promise<{ created: boolean }>;
+  createReactionRequestIfAbsent(identity: SupportEventIdentity, characterId: string, request: CharacterReactionRequest): Promise<{ created: boolean }>;
   writeAuditLog(input: AuditLogInput): Promise<void>;
   listAuditLogs(filter?: AuditLogListFilter): Promise<AuditLogInput[]>;
   getSupportSideEffectLedger(event: SupportReceived): Promise<SupportSideEffectLedger>;
