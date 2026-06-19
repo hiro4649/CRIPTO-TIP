@@ -93,7 +93,7 @@ describe("P0 YouTube Super Chat fixture normalizer", () => {
     expect(duplicate.statusCode).toBe(200);
     expect(duplicate.json()).toEqual(response.json());
     expect(response.json().normalization_status).toBe("normalized");
-    expect(response.json().idempotency_key).toBe("youtube_super_chat:ytmsg_superchat_001");
+    expect(response.json().idempotency_key).toBe(JSON.stringify(["youtube_super_chat", "ytmsg_superchat_001"]));
     expect(response.json().normalized_event).toMatchObject({
       event_type: "support.received",
       source: "youtube_super_chat",
@@ -294,6 +294,13 @@ describe("P0 YouTube Super Chat fixture normalizer", () => {
     const evidence = readCodexEvidence("p1-support-domain-numeric-identity-correctness.json");
 
     expect(evidence.supportDomainNumericIdentityStatus).toBe("implemented");
+    expect(evidence.schemaBoundaryStatus).toBe("pass");
+    expect(evidence.amountComparisonStatus).toBe("pass");
+    expect(evidence.affinityExactIdentityStatus).toBe("pass");
+    expect(evidence.supportEventCollisionGuardStatus).toBe("pass");
+    expect(evidence.sideEffectIdentityStatus).toBe("pass");
+    expect(evidence.postgresConcurrentDuplicateStatus).toBe("pass");
+    expect(evidence.stableIdAuthorityBoundaryStatus).toBe("pass");
     expect(evidence.positiveDecimalAmountStatus).toBe("pass");
     expect(evidence.youtubeAmountMicrosStatus).toBe("pass");
     expect(evidence.currencyCodeStatus).toBe("pass");

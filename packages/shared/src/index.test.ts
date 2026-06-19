@@ -3,8 +3,12 @@ import {
   buildCharacterReactionRequest,
   buildOverlayTipAlert,
   calculateAffinityDelta,
+  compareUnsignedDecimalStrings,
   createIdempotencyKeyForChainLog,
+  encodeSupportEventIdentity,
+  isUnsignedDecimalGreaterThan,
   moderateTipMessage,
+  normalizeUnsignedDecimalString,
   normalizeTokenTipToSupportReceived,
   normalizeYouTubeChatMessageReceived,
   normalizeYouTubeSuperChatToSupportReceived,
@@ -15,6 +19,8 @@ import {
   sanitizeMessage,
   sha256Bytes32Hex,
   SupportReceivedSchema,
+  TipIntentSchema,
+  TipTransactionSchema,
   TokenTipInputSchema,
   YouTubeSuperChatInputSchema
 } from "./index.js";
@@ -169,6 +175,68 @@ describe("affinity and events", () => {
     expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, live_chat_message_id: "" })).toThrow();
   });
 
+  it("compares unsigned decimal strings without Number precision loss", () => {
+    expect(normalizeUnsignedDecimalString("000100")).toBe("100");
+    expect(compareUnsignedDecimalStrings("100000000000000000000000000000000000000000000000001", "99999999999999999999999999999999999999999999999999")).toBe(1);
+    expect(isUnsignedDecimalGreaterThan("1000001", "1000000")).toBe(true);
+    expect(isUnsignedDecimalGreaterThan("999999", "1000000")).toBe(false);
+    expect(() => normalizeUnsignedDecimalString("")).toThrow("invalid_amount_raw");
+    expect(() => normalizeUnsignedDecimalString("-1")).toThrow("invalid_amount_raw");
+    expect(() => normalizeUnsignedDecimalString("1.0")).toThrow("invalid_amount_raw");
+    expect(() => normalizeUnsignedDecimalString("1e6")).toThrow("invalid_amount_raw");
+    expect(() => normalizeUnsignedDecimalString("1".repeat(79))).toThrow("invalid_amount_raw");
+  });
+
+  it("fails closed on invalid amountRaw moderation instead of silently using zero", () => {
+    const decision = moderateTipMessage({ displayName: "Akira", message: "safe", amountRaw: "1e100", isNewWallet: true });
+    expect(decision.status).toBe("hold");
+    expect(decision.reasons).toContain("invalid_amount_raw");
+  });
+
+  it("requires canonical amount_raw for public tip and transaction schemas", () => {
+    const intent = {
+      id: "tip_schema",
+      stream_id: "str",
+      character_id: "char",
+      iris_user_id: "usr",
+      display_name_raw: "Akira",
+      display_name_sanitized: "Akira",
+      display_name_llm_safe: "Akira",
+      message_raw: "safe",
+      message_sanitized: "safe",
+      amount_raw: "100",
+      amount_display: "100 IRIS",
+      tier: "small" as const,
+      message_hash: "0x" + "a".repeat(64),
+      client_tip_id: "0x" + "b".repeat(64),
+      moderation_status: "approved" as const,
+      created_at: new Date(0).toISOString()
+    };
+    const transaction = {
+      id: "tx_schema",
+      chain_id: 1,
+      contract_address: wallet,
+      token_address: wallet,
+      tx_hash: "0xtx_schema",
+      log_index: 0,
+      block_number: 1,
+      from_address: wallet,
+      stream_id: "str",
+      character_id: "char",
+      amount_raw: "100",
+      message_hash: "0x" + "c".repeat(64),
+      status: "detected" as const,
+      confirmations: 0
+    };
+
+    expect(TipIntentSchema.parse(intent).amount_raw).toBe("100");
+    expect(TipTransactionSchema.parse(transaction).amount_raw).toBe("100");
+    for (const amount_raw of ["0", "00100", "1.5", "1e2"]) {
+      expect(() => TipIntentSchema.parse({ ...intent, amount_raw })).toThrow();
+      expect(() => TipTransactionSchema.parse({ ...transaction, amount_raw })).toThrow();
+    }
+  });
+
   it("rejects zero or ambiguous token tip amount identity before support normalization", () => {
     const valid = {
       chain_id: 1,
@@ -231,6 +299,11 @@ describe("affinity and events", () => {
     expect(event.source).toBe("youtube_super_sticker");
     expect(event.support.currency_or_token).toBe("JPY");
     expect(event.reaction_policy.can_read_message).toBe(false);
+  });
+
+  it("encodes support identity as a structured source tuple", () => {
+    expect(encodeSupportEventIdentity({ source: "youtube_super_chat", source_event_id: "same" })).not.toBe(encodeSupportEventIdentity({ source: "iris_token_tip", source_event_id: "same" }));
+    expect(encodeSupportEventIdentity({ source: "youtube_super_chat", source_event_id: "a:b" })).toBe(JSON.stringify(["youtube_super_chat", "a:b"]));
   });
 
   it("normalizes regular YouTube chat with sanitization and wallet redaction", () => {

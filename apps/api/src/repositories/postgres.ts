@@ -1,4 +1,5 @@
 import { createPublicId, SupportReceivedSchema, type CharacterReactionRequest, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction } from "@cripto-tip/shared";
+import type { SupportEventIdentity } from "@cripto-tip/shared";
 import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, SupportEventSearchFilter, TipTransactionStatusPatch } from "./types.js";
 
 export type QueryClient = {
@@ -382,17 +383,27 @@ export class PostgresRepository implements CriptoTipRepository {
     return rowToChainCursor(row);
   }
   async createSupportEventIfAbsent(event: SupportReceived) {
-    const existing = await this.getSupportEventBySource(event.source, event.source_event_id);
-    if (existing) return { event: existing, created: false };
-    await this.db.query(
+    const eventIdOwner = await this.db.query<{ source: SupportReceived["source"]; source_event_id: string }>(
+      "select source, source_event_id from support_events where id = $1 limit 1",
+      [event.event_id]
+    );
+    const owner = eventIdOwner.rows[0];
+    if (owner && (owner.source !== event.source || owner.source_event_id !== event.source_event_id)) {
+      throw new Error("support_event_id_collision");
+    }
+    const insert = await this.db.query<SupportEventRow>(
       `insert into support_events (id, source, source_event_id, stream_id, youtube_video_id, character_id, iris_user_id,
         youtube_author_channel_id, wallet_address, display_name_sanitized, display_name_llm_safe, amount_raw,
         amount_display, currency_or_token, tier, message_sanitized, message_moderation_status, affinity_delta, delivery_status, created_at)
        values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)
-       on conflict (source, source_event_id) do nothing`,
+       on conflict (source, source_event_id) do nothing
+       returning *`,
       [event.event_id, event.source, event.source_event_id, event.stream_id, event.youtube_video_id, event.character_id, event.viewer.iris_user_id, event.viewer.youtube_author_channel_id, event.viewer.wallet_address, event.viewer.display_name, event.viewer.display_name, event.support.amount_raw, event.support.amount_display, event.support.currency_or_token ?? event.source, event.support.tier, event.support.message, event.support.message_moderation_status, event.relationship.affinity_delta, "pending", event.created_at]
     );
-    return { event: (await this.getSupportEventBySource(event.source, event.source_event_id)) ?? event, created: true };
+    if (insert.rows[0]) return { event: rowToSupportReceived(insert.rows[0]), created: true };
+    const existing = await this.getSupportEventBySource(event.source, event.source_event_id);
+    if (existing) return { event: existing, created: false };
+    throw new Error("support_event_insert_conflict_unresolved");
   }
   async getSupportEventBySource(source: string, sourceEventId: string) {
     const result = await this.db.query<SupportEventRow>("select * from support_events where source = $1 and source_event_id = $2 limit 1", [source, sourceEventId]);
@@ -435,17 +446,17 @@ export class PostgresRepository implements CriptoTipRepository {
   }
   async applyAffinityIfAbsent(entry: AffinityLedgerEntry) {
     const result = await this.db.query<AffinityLedgerEntry>(
-      `insert into affinity_ledger (id, source_event_id, iris_user_id, character_id, previous_affinity,
+      `insert into affinity_ledger (id, source, source_event_id, iris_user_id, character_id, previous_affinity,
         affinity_delta, new_affinity, reason, created_at)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-       on conflict (source_event_id, iris_user_id, character_id) do nothing
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+       on conflict (source, source_event_id, iris_user_id, character_id) do nothing
        returning *`,
-      [entry.id, entry.source_event_id, entry.iris_user_id, entry.character_id, entry.previous_affinity, entry.affinity_delta, entry.new_affinity, entry.reason, entry.created_at]
+      [entry.id, entry.source, entry.source_event_id, entry.iris_user_id, entry.character_id, entry.previous_affinity, entry.affinity_delta, entry.new_affinity, entry.reason, entry.created_at]
     );
     if (result.rows[0]) return { entry: result.rows[0], created: true };
     const existing = await this.db.query<AffinityLedgerEntry>(
-      `select * from affinity_ledger where source_event_id = $1 and iris_user_id = $2 and character_id = $3 limit 1`,
-      [entry.source_event_id, entry.iris_user_id, entry.character_id]
+      `select * from affinity_ledger where source = $1 and source_event_id = $2 and iris_user_id = $3 and character_id = $4 limit 1`,
+      [entry.source, entry.source_event_id, entry.iris_user_id, entry.character_id]
     );
     return { entry: existing.rows[0] ?? entry, created: false };
   }
@@ -577,33 +588,33 @@ export class PostgresRepository implements CriptoTipRepository {
     }
     return retried;
   }
-  async updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed") {
+  async updateSupportEventDeliveryStatus(identity: SupportEventIdentity, status: "pending" | "retrying" | "delivered" | "failed") {
     await this.db.query(
       `update support_events
        set delivery_status = $1, updated_at = $2
-       where source_event_id = $3`,
-      [status, new Date().toISOString(), sourceEventId]
+       where source = $3 and source_event_id = $4`,
+      [status, new Date().toISOString(), identity.source, identity.source_event_id]
     );
-    const result = await this.db.query<Record<string, unknown>>("select * from support_events where source_event_id = $1 limit 1", [sourceEventId]);
+    const result = await this.db.query<Record<string, unknown>>("select * from support_events where source = $1 and source_event_id = $2 limit 1", [identity.source, identity.source_event_id]);
     return result.rows[0] ? rowToSupportReceived(result.rows[0] as SupportEventRow) : undefined;
   }
-  async createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert) {
+  async createOverlayEventIfAbsent(identity: SupportEventIdentity, streamId: string, payload: OverlayTipAlert) {
     const result = await this.db.query<{ id: string }>(
-      `insert into overlay_events (id, source_event_id, stream_id, payload_json, delivery_status)
-       values ($1,$2,$3,$4::jsonb,$5)
-       on conflict (source_event_id, stream_id) do nothing
+      `insert into overlay_events (id, source, source_event_id, stream_id, payload_json, delivery_status)
+       values ($1,$2,$3,$4,$5::jsonb,$6)
+       on conflict (source, source_event_id, stream_id) do nothing
        returning id`,
-      [createPublicId("ovl"), sourceEventId, streamId, JSON.stringify(payload), "pending"]
+      [createPublicId("ovl"), identity.source, identity.source_event_id, streamId, JSON.stringify(payload), "pending"]
     );
     return { created: result.rows.length > 0 };
   }
-  async createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest) {
+  async createReactionRequestIfAbsent(identity: SupportEventIdentity, characterId: string, request: CharacterReactionRequest) {
     const result = await this.db.query<{ id: string }>(
-      `insert into reaction_requests (id, source_event_id, character_id, stream_id, payload_json, status)
-       values ($1,$2,$3,$4,$5::jsonb,$6)
-       on conflict (source_event_id, character_id) do nothing
+      `insert into reaction_requests (id, source, source_event_id, character_id, stream_id, payload_json, status)
+       values ($1,$2,$3,$4,$5,$6::jsonb,$7)
+       on conflict (source, source_event_id, character_id) do nothing
        returning id`,
-      [createPublicId("rxn"), sourceEventId, characterId, request.stream_id, JSON.stringify(request), "pending"]
+      [createPublicId("rxn"), identity.source, identity.source_event_id, characterId, request.stream_id, JSON.stringify(request), "pending"]
     );
     return { created: result.rows.length > 0 };
   }
@@ -635,9 +646,9 @@ export class PostgresRepository implements CriptoTipRepository {
   }
   async getSupportSideEffectLedger(event: SupportReceived) {
     const [affinity, reaction, overlay, outbox, overlayResend, reactionResend, auditCounts] = await Promise.all([
-      this.db.query<{ count: string }>("select count(*)::text as count from affinity_ledger where source_event_id = $1 and character_id = $2", [event.source_event_id, event.character_id]),
-      this.db.query<{ count: string }>("select count(*)::text as count from reaction_requests where source_event_id = $1 and character_id = $2", [event.source_event_id, event.character_id]),
-      this.db.query<{ count: string }>("select count(*)::text as count from overlay_events where source_event_id = $1 and stream_id = $2", [event.source_event_id, event.stream_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from affinity_ledger where source = $1 and source_event_id = $2 and character_id = $3", [event.source, event.source_event_id, event.character_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from reaction_requests where source = $1 and source_event_id = $2 and character_id = $3", [event.source, event.source_event_id, event.character_id]),
+      this.db.query<{ count: string }>("select count(*)::text as count from overlay_events where source = $1 and source_event_id = $2 and stream_id = $3", [event.source, event.source_event_id, event.stream_id]),
       this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_type = 'support_event' and aggregate_id = $1", [event.event_id]),
       this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_id = $1 and idempotency_key like $2", [event.event_id, `overlay.resend:${event.event_id}:%`]),
       this.db.query<{ count: string }>("select count(*)::text as count from outbox_events where aggregate_id = $1 and idempotency_key like $2", [event.event_id, `reaction.resend:${event.event_id}:%`]),

@@ -4,6 +4,7 @@ export type IrisDeliveryType = "support.received" | "character.reaction.requeste
 
 export type IrisDeliveryPayload = {
   delivery_type: IrisDeliveryType;
+  source?: SupportReceived["source"];
   source_event_id: string;
   idempotency_key: string;
   payload: unknown;
@@ -75,8 +76,9 @@ export function buildSupportReceivedDelivery(event: SupportReceived): IrisDelive
   const { wallet_address: _walletAddress, ...viewer } = event.viewer;
   return {
     delivery_type: "support.received",
+    source: event.source,
     source_event_id: event.source_event_id,
-    idempotency_key: `iris.deliver:support.received:${event.source_event_id}`,
+    idempotency_key: `iris.deliver:support.received:${event.source}:${event.source_event_id}`,
     payload: { ...event, viewer }
   };
 }
@@ -110,8 +112,9 @@ export function buildReactionDelivery(request: CharacterReactionRequest): IrisDe
 export function buildAffinityDelivery(event: SupportReceived): IrisDeliveryPayload {
   return {
     delivery_type: "affinity.apply",
+    source: event.source,
     source_event_id: event.source_event_id,
-    idempotency_key: `iris.deliver:affinity:${event.source_event_id}:${event.character_id}`,
+    idempotency_key: `iris.deliver:affinity:${event.source}:${event.source_event_id}:${event.character_id}`,
     payload: {
       event_type: "affinity.apply",
       source_event_id: event.source_event_id,
@@ -127,8 +130,9 @@ export function buildAffinityDelivery(event: SupportReceived): IrisDeliveryPaylo
 export function buildMemoryCandidateDelivery(event: SupportReceived): IrisDeliveryPayload {
   return {
     delivery_type: "memory.write_candidate",
+    source: event.source,
     source_event_id: event.source_event_id,
-    idempotency_key: `iris.deliver:memory:${event.source_event_id}:${event.character_id}`,
+    idempotency_key: `iris.deliver:memory:${event.source}:${event.source_event_id}:${event.character_id}`,
     payload: {
       event_type: "memory.write_candidate",
       source_event_id: event.source_event_id,

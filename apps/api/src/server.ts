@@ -10,6 +10,7 @@ import {
   canEmitOverlay,
   canRequestAiReaction,
   createIdempotencyKeyForChainLog,
+  encodeSupportEventIdentity,
   createPublicId,
   moderateTipMessage,
   normalizeTokenTipToSupportReceived,
@@ -22,6 +23,7 @@ import {
   supportSources,
   TipIntentSchema,
   SupportReceivedSchema,
+  PositiveDecimalStringSchema,
   YouTubeSuperChatInputSchema,
   type LiveSession,
   type ModerationStatus,
@@ -474,6 +476,7 @@ async function applySupportReceivedEffects(repo: CriptoTipRepository, support: S
     try {
       await repo.applyAffinityIfAbsent({
         id: createPublicId("aff"),
+        source: support.source,
         source_event_id: support.source_event_id,
         iris_user_id: support.viewer.iris_user_id,
         character_id: support.character_id,
@@ -495,9 +498,9 @@ async function applySupportReceivedEffects(repo: CriptoTipRepository, support: S
 
   const overlay = canEmitOverlay(support.support.message_moderation_status) ? buildOverlayTipAlert(support) : undefined;
   if (overlay) {
-    await repo.createOverlayEventIfAbsent(support.source_event_id, support.stream_id, overlay);
+    await repo.createOverlayEventIfAbsent(support, support.stream_id, overlay);
     try {
-      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${support.source_event_id}:${support.stream_id}`, payload_json: overlay });
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "overlay.emit", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `overlay.emit:${encodeSupportEventIdentity(support)}:${support.stream_id}`, payload_json: overlay });
       emitOverlay(overlay);
     } catch {
       await recordSupportPipelineDlq(repo, support, "overlay.emit", "overlay_enqueue_failed");
@@ -506,9 +509,9 @@ async function applySupportReceivedEffects(repo: CriptoTipRepository, support: S
 
   const reactionRequest = canRequestAiReaction(support.support.message_moderation_status) ? buildCharacterReactionRequest(support) : undefined;
   if (reactionRequest) {
-    await repo.createReactionRequestIfAbsent(support.source_event_id, support.character_id, reactionRequest);
+    await repo.createReactionRequestIfAbsent(support, support.character_id, reactionRequest);
     try {
-      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${support.source_event_id}:${support.character_id}`, payload_json: reactionRequest });
+      await repo.enqueueOutbox({ id: createPublicId("outbox"), job_type: "reaction.request", aggregate_type: "support_event", aggregate_id: support.event_id, idempotency_key: `reaction.request:${encodeSupportEventIdentity(support)}:${support.character_id}`, payload_json: reactionRequest });
     } catch {
       await recordSupportPipelineDlq(repo, support, "reaction.request", "reaction_enqueue_failed");
     }
@@ -532,7 +535,7 @@ const TipIntentRequestSchema = z.object({
   wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/).optional(),
   display_name: z.string().min(1),
   message: z.string().default(""),
-  amount_raw: z.string(),
+  amount_raw: PositiveDecimalStringSchema,
   amount_display: z.string(),
   tier: z.enum(["small", "medium", "large", "high"])
 });
@@ -3335,7 +3338,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
     const resendSourceEventId = `overlay-resend:${support.event_id}`;
     const overlay = buildOverlayTipAlert(support);
-    const overlayResult = await repo.createOverlayEventIfAbsent(resendSourceEventId, support.stream_id, overlay);
+    const overlayResult = await repo.createOverlayEventIfAbsent({ source: support.source, source_event_id: resendSourceEventId }, support.stream_id, overlay);
     const resendStatus = overlayResult.created ? "queued" : "duplicate";
     await repo.enqueueOutbox({
       id: stableId("outbox", `overlay-resend:${support.event_id}:${support.stream_id}`),
@@ -3381,7 +3384,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
 
     const resendSourceEventId = `reaction-resend:${support.event_id}`;
     const reactionRequest = buildCharacterReactionRequest(support);
-    const reactionResult = await repo.createReactionRequestIfAbsent(resendSourceEventId, support.character_id, reactionRequest);
+    const reactionResult = await repo.createReactionRequestIfAbsent({ source: support.source, source_event_id: resendSourceEventId }, support.character_id, reactionRequest);
     const resendStatus = reactionResult.created ? "queued" : "duplicate";
     await repo.enqueueOutbox({
       id: stableId("outbox", `reaction-resend:${support.event_id}:${support.character_id}`),

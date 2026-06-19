@@ -1,4 +1,6 @@
 import { createPublicId, createIdempotencyKeyForChainLog, type LiveSession, type OverlayTipAlert, type SupportReceived, type TipIntent, type TipTransaction, type CharacterReactionRequest } from "@cripto-tip/shared";
+import { encodeAffinityIdentity, encodeSupportEventIdentity } from "@cripto-tip/shared";
+import type { SupportEventIdentity } from "@cripto-tip/shared";
 import type { AffinityLedgerEntry, AuditLogInput, AuditLogListFilter, ChainCursor, ChainCursorKey, ChainLogKey, CriptoTipRepository, DeadLetterEvent, DeadLetterListFilter, OutboxEvent, PublicTipIntent, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter, SupportEventTimelineEntry, SupportModerationReviewStatus, SupportModerationReviewSummaryEntry, TipTransactionStatusPatch } from "./types.js";
 
 export function toPublicTipIntent(intent: TipIntent): PublicTipIntent {
@@ -21,6 +23,7 @@ export class InMemoryRepository implements CriptoTipRepository {
   tipTransactions = new Map<string, TipTransaction>();
   chainCursors = new Map<string, ChainCursor>();
   supportEvents = new Map<string, SupportReceived>();
+  supportEventIdentityByEventId = new Map<string, string>();
   affinityLedger = new Map<string, AffinityLedgerEntry>();
   outboxEvents = new Map<string, OutboxEvent>();
   deadLetterEvents = new Map<string, DeadLetterEvent>();
@@ -50,6 +53,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.tipTransactions.clear();
     this.chainCursors.clear();
     this.supportEvents.clear();
+    this.supportEventIdentityByEventId.clear();
     this.affinityLedger.clear();
     this.outboxEvents.clear();
     this.deadLetterEvents.clear();
@@ -85,7 +89,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     this.recentTipsByWallet.set(key, (this.recentTipsByWallet.get(key) ?? 0) + 1);
   }
   async getCurrentAffinity(irisUserId: string, characterId: string) {
-    return this.affinityLedger.get([...this.affinityLedger.keys()].find((key) => key.includes(`:${irisUserId}:${characterId}`)) ?? "")?.new_affinity ?? this.affinityByUser.get(`${irisUserId}:${characterId}`) ?? this.affinityByUser.get(irisUserId) ?? 0;
+    return this.affinityByUser.get(`${irisUserId}:${characterId}`) ?? 0;
   }
   async listSupportEventsByStream(streamId: string) {
     return [...this.supportEvents.values()].filter((event) => event.stream_id === streamId);
@@ -98,7 +102,7 @@ export class InMemoryRepository implements CriptoTipRepository {
       .filter((event) => !filter.characterId || event.character_id === filter.characterId)
       .filter((event) => !filter.source || event.source === filter.source)
       .filter((event) => !filter.moderationStatus || event.support.message_moderation_status === filter.moderationStatus)
-      .filter((event) => !filter.deliveryStatus || (this.supportEventDeliveryStatus.get(event.source_event_id) ?? "pending") === filter.deliveryStatus)
+      .filter((event) => !filter.deliveryStatus || (this.supportEventDeliveryStatus.get(encodeSupportEventIdentity(event)) ?? "pending") === filter.deliveryStatus)
       .filter((event) => !filter.createdAfter || event.created_at >= filter.createdAfter)
       .filter((event) => !filter.createdBefore || event.created_at <= filter.createdBefore)
       .sort((a, b) => b.created_at.localeCompare(a.created_at) || a.event_id.localeCompare(b.event_id))
@@ -112,7 +116,7 @@ export class InMemoryRepository implements CriptoTipRepository {
         display_name_sanitized: event.viewer.display_name,
         tier: event.support.tier,
         moderation_status: event.support.message_moderation_status,
-        delivery_status: this.supportEventDeliveryStatus.get(event.source_event_id) ?? "pending",
+        delivery_status: this.supportEventDeliveryStatus.get(encodeSupportEventIdentity(event)) ?? "pending",
         created_at: event.created_at
       }));
   }
@@ -126,7 +130,7 @@ export class InMemoryRepository implements CriptoTipRepository {
     return [...this.supportEvents.values()].find((event) => event.event_id === eventId);
   }
   async updateSupportEvent(event: SupportReceived) {
-    this.supportEvents.set(`${event.source}:${event.source_event_id}`, event);
+    this.supportEvents.set(encodeSupportEventIdentity(event), event);
     return event;
   }
   async getSupportModerationReviewStatus(eventId: string) {
@@ -311,20 +315,25 @@ export class InMemoryRepository implements CriptoTipRepository {
     return normalized;
   }
   async createSupportEventIfAbsent(event: SupportReceived) {
-    const key = `${event.source}:${event.source_event_id}`;
+    const key = encodeSupportEventIdentity(event);
+    const existingIdentity = this.supportEventIdentityByEventId.get(event.event_id);
+    if (existingIdentity && existingIdentity !== key) throw new Error("support_event_id_collision");
     const existing = this.supportEvents.get(key);
-    if (existing) return { event: existing, created: false };
+    if (existing) {
+      this.supportEventIdentityByEventId.set(event.event_id, key);
+      return { event: existing, created: false };
+    }
     this.supportEvents.set(key, event);
+    this.supportEventIdentityByEventId.set(event.event_id, key);
     return { event, created: true };
   }
-  async getSupportEventBySource(source: string, sourceEventId: string) { return this.supportEvents.get(`${source}:${sourceEventId}`); }
+  async getSupportEventBySource(source: string, sourceEventId: string) { return this.supportEvents.get(encodeSupportEventIdentity({ source: source as SupportEventIdentity["source"], source_event_id: sourceEventId })); }
   async applyAffinityIfAbsent(entry: AffinityLedgerEntry) {
-    const key = `${entry.source_event_id}:${entry.iris_user_id}:${entry.character_id}`;
+    const key = encodeAffinityIdentity(entry, entry.iris_user_id, entry.character_id);
     const existing = this.affinityLedger.get(key);
     if (existing) return { entry: existing, created: false };
     this.affinityLedger.set(key, entry);
     this.affinityByUser.set(`${entry.iris_user_id}:${entry.character_id}`, entry.new_affinity);
-    this.affinityByUser.set(entry.iris_user_id, entry.new_affinity);
     return { entry, created: true };
   }
   async enqueueOutbox(input: Parameters<CriptoTipRepository["enqueueOutbox"]>[0]) {
@@ -423,18 +432,19 @@ export class InMemoryRepository implements CriptoTipRepository {
     }
     return updated;
   }
-  async updateSupportEventDeliveryStatus(sourceEventId: string, status: "pending" | "retrying" | "delivered" | "failed") {
-    this.supportEventDeliveryStatus.set(sourceEventId, status);
-    return [...this.supportEvents.values()].find((event) => event.source_event_id === sourceEventId);
+  async updateSupportEventDeliveryStatus(identity: SupportEventIdentity, status: "pending" | "retrying" | "delivered" | "failed") {
+    const key = encodeSupportEventIdentity(identity);
+    this.supportEventDeliveryStatus.set(key, status);
+    return this.supportEvents.get(key);
   }
-  async createOverlayEventIfAbsent(sourceEventId: string, streamId: string, payload: OverlayTipAlert) {
-    const key = `${sourceEventId}:${streamId}`;
+  async createOverlayEventIfAbsent(identity: SupportEventIdentity, streamId: string, payload: OverlayTipAlert) {
+    const key = JSON.stringify([identity.source, identity.source_event_id, streamId]);
     if (this.overlayEvents.has(key)) return { created: false };
     this.overlayEvents.set(key, payload);
     return { created: true };
   }
-  async createReactionRequestIfAbsent(sourceEventId: string, characterId: string, request: CharacterReactionRequest) {
-    const key = `${sourceEventId}:${characterId}`;
+  async createReactionRequestIfAbsent(identity: SupportEventIdentity, characterId: string, request: CharacterReactionRequest) {
+    const key = JSON.stringify([identity.source, identity.source_event_id, characterId]);
     if (this.reactionRequests.has(key)) return { created: false };
     this.reactionRequests.set(key, request);
     return { created: true };
@@ -475,11 +485,11 @@ export class InMemoryRepository implements CriptoTipRepository {
     const auditLogs = await this.listAuditLogs({ targetType: "support_event", targetId: event.event_id });
     const audit_action_counts: Record<string, number> = {};
     for (const log of auditLogs) audit_action_counts[log.action] = (audit_action_counts[log.action] ?? 0) + 1;
-    const sourceKey = event.source_event_id;
+    const sourceKey = encodeSupportEventIdentity(event);
     return {
-      affinity_applied: [...this.affinityLedger.values()].some((entry) => entry.source_event_id === sourceKey && entry.character_id === event.character_id),
-      reaction_requested: this.reactionRequests.has(`${sourceKey}:${event.character_id}`),
-      overlay_requested: this.overlayEvents.has(`${sourceKey}:${event.stream_id}`),
+      affinity_applied: [...this.affinityLedger.values()].some((entry) => encodeSupportEventIdentity(entry) === sourceKey && entry.character_id === event.character_id),
+      reaction_requested: this.reactionRequests.has(JSON.stringify([event.source, event.source_event_id, event.character_id])),
+      overlay_requested: this.overlayEvents.has(JSON.stringify([event.source, event.source_event_id, event.stream_id])),
       outbox_enqueued: [...this.outboxEvents.values()].some((outbox) => outbox.aggregate_type === "support_event" && outbox.aggregate_id === event.event_id),
       resend_candidates: {
         overlay_resend: [...this.outboxEvents.values()].filter((outbox) => outbox.aggregate_id === event.event_id && outbox.idempotency_key.startsWith(`overlay.resend:${event.event_id}:`)).length,
