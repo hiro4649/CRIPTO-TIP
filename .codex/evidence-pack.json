@@ -31,6 +31,7 @@
       ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
       "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
       "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
       "apps/api/src/routes/admin-youtube-connector-routes.ts",
@@ -49,6 +50,7 @@
       ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
       "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
       "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
       "apps/api/src/routes/admin-youtube-connector-routes.ts",
@@ -119,9 +121,9 @@
   ],
   "commands": [
     {
-      "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
+      "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
       "status": "pass",
-      "result": "5 files, 26 passed"
+      "result": "6 files, 32 passed"
     },
     {
       "name": "corepack pnpm lint",
@@ -138,9 +140,9 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 120,
-    "passed": 2099,
+    "passed": 2103,
     "skipped": 6,
-    "testedHeadSha": "40bc1258d9b307e07a3c5794fd13976acea5c976",
+    "testedHeadSha": "d3b65549186c0ece4f1b600c674b40943d1dab7e",
     "currentRunEvidence": true,
     "evidenceOnlyDelta": true
   },
@@ -168,6 +170,25 @@
     ],
     "selectionReason": "single owner-authorization source of truth, reduced taxonomy drift, and network-disabled execution boundary preserved"
   },
+  "securityOracle": {
+    "coveredFiles": [
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/server.ts"
+    ],
+    "authenticationBoundaryTested": true,
+    "untrustedInputTested": true,
+    "negativePathsTested": true,
+    "unsafeInputNoEchoTested": true,
+    "authorityCreationBlocked": true,
+    "networkExecutionBlocked": true,
+    "oauthExecutionBlocked": true,
+    "secretAccessBlocked": true,
+    "runtimeExecutionBlocked": true
+  },
   "testCoverageEvidence": {
     "changedArea": [
       "canonical authorization",
@@ -182,7 +203,7 @@
       "side-effect enablement",
       "hash drift"
     ],
-    "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts",
+    "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
     "fullTestCommand": "corepack pnpm test",
     "coveredSuccessPaths": [
       "committed GET trust",

@@ -44,4 +44,47 @@
   "ownerApprovalCreated": false,
   "githubApprovalReviewCreated": false,
   "mergeAuthorityCreated": false
+  ,
+  "securityOracle": {
+    "coveredFiles": [
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/server.ts"
+    ],
+    "authenticationBoundaryTested": true,
+    "untrustedInputTested": true,
+    "negativePathsTested": true,
+    "unsafeInputNoEchoTested": true,
+    "authorityCreationBlocked": true,
+    "networkExecutionBlocked": true,
+    "oauthExecutionBlocked": true,
+    "secretAccessBlocked": true,
+    "runtimeExecutionBlocked": true
+  },
+  "bestOfNEvidence": {
+    "candidateCount": 3,
+    "selectedCandidate": "A",
+    "candidates": [
+      {
+        "id": "A",
+        "summary": "canonical authorization evaluator plus legacy and readiness projections",
+        "selected": true
+      },
+      {
+        "id": "B",
+        "summary": "legacy preflight extension only",
+        "selected": false,
+        "rejectedReason": "rejected for readiness taxonomy drift"
+      },
+      {
+        "id": "C",
+        "summary": "independent third evaluator",
+        "selected": false,
+        "rejectedReason": "rejected for evaluator drift"
+      }
+    ]
+  }
 }

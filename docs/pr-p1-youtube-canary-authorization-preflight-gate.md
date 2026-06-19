@@ -3,6 +3,7 @@
 Canonicalize owner authorization evaluation while keeping YouTube canary execution forbidden and admin preflight routes read-only.
 
 PR profile: security_r3
+Risk level: R3
 Task mode: feature
 
 ## Task Contract
@@ -23,7 +24,7 @@ Done criteria: canonical domain schema and evidence wrapper schema are separated
 
 Head SHA: current_pr_head
 
-Base SHA: d516c603f63c8512d2b96a46444bb215d88db0fc
+Base SHA: 8f6087920b7ecdd30d2c640926f15ca1f49459f3
 
 Product CI: metadata_limited
 
@@ -35,7 +36,34 @@ Quality-gate run: metadata_limited
 
 Quality-gate artifact: metadata_limited
 
-Tests: 120 test files, 2099 passed, 6 skipped
+Tests: 120 test files, 2103 passed, 6 skipped
+
+## Risk level
+
+R3 security-sensitive product change. The changed surface adds read-only admin authorization preflight behavior and must not enable real YouTube execution, OAuth, secret access, network calls, owner approval, GitHub approval review, or merge authority.
+
+## Security impact
+
+Security oracle covered files:
+
+- `apps/api/src/youtube-live-chat-canary-authorization-gate.ts`
+- `apps/api/src/youtube-live-chat-controlled-canary-preflight.ts`
+- `apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts`
+- `apps/api/src/routes/admin-youtube-connector-routes.ts`
+- `apps/api/src/routes/admin-youtube-connector-route-dependencies.ts`
+- `apps/api/src/server.ts`
+
+Security oracle assertions:
+
+- authenticationBoundaryTested: true
+- untrustedInputTested: true
+- negativePathsTested: true
+- unsafeInputNoEchoTested: true
+- authorityCreationBlocked: true
+- networkExecutionBlocked: true
+- oauthExecutionBlocked: true
+- secretAccessBlocked: true
+- runtimeExecutionBlocked: true
 
 ## Testing and review
 
@@ -48,18 +76,28 @@ Tests: 120 test files, 2099 passed, 6 skipped
 - `node scripts/render-pr-evidence.mjs --input .codex/evidence-pack.json --output docs/pr-p1-youtube-canary-authorization-preflight-gate.md`
 - `node scripts/check-evidence-placeholders.mjs`
 
-Product verification:
+## Validation commands
+
+- `corepack pnpm install --frozen-lockfile`: pass
+- `corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts`: pass
+- `corepack pnpm vitest run apps/api/src/p0-superchat-support-received-vertical-slice.test.ts apps/api/src/p0-superchat-event-pipeline-hardening.test.ts`: pass
+- `corepack pnpm lint`: pass
+- `corepack pnpm typecheck`: pass
+- `corepack pnpm test`: pass
+- `npm test`: pass
+
+## Product verification
 
 Repository checks and package verification were run on the current evidence head.
 
-Tests or checks run:
+## Tests or checks run
 
 The commands below are the merge-relevant checks for this evidence tooling change.
 
 Product verification commands:
 
 - corepack pnpm install --frozen-lockfile: pass
-- corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts: pass
+- corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts: pass
 - corepack pnpm vitest run apps/api/src/p0-superchat-support-received-vertical-slice.test.ts apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass
 - corepack pnpm lint: pass
 - corepack pnpm typecheck: pass
@@ -90,7 +128,32 @@ Review scope and verification:
 
 ## Test Coverage Evidence
 
-Current recorded test summary: 120 files, 2099 passed, 6 skipped.
+Current recorded test summary: 120 files, 2103 passed, 6 skipped.
+
+Changed area: canonical authorization evaluator, legacy preflight projection, real readiness projection, read-only admin preflight routes, and network-disabled E2E guard.
+
+Test command: `corepack pnpm test`.
+
+What the test covers: committed GET trust, POST preview trust, complete preview still execution forbidden, legacy compatibility output, real readiness network enablement blocked, unknown field rejection, unsafe value rejection, execution flag rejection, first canary limit rejection, and side-effect rejection.
+
+Edge cases: owner-only credential refs are not inferred from coarse legacy status, raw unsafe preview values are not echoed, readiness output does not emit controlled-canary candidate wording, POST preview does not mutate GET committed output, and network/OAuth/secret/runtime execution remain blocked.
+
+## Best of N Evidence
+
+Candidate count: 3
+
+Candidates:
+
+- A: canonical authorization evaluator plus legacy and readiness projections.
+- B: legacy preflight extension only.
+- C: independent third evaluator.
+
+Selected candidate: A
+
+Rejected candidates:
+
+- B rejected for readiness taxonomy drift.
+- C rejected for evaluator drift.
 
 ## Security Boundaries
 
@@ -122,3 +185,7 @@ Current recorded test summary: 120 files, 2099 passed, 6 skipped.
 - AI review is not GitHub approval review.
 - This PR does not create owner approval record.
 - This PR does not create merge authority.
+
+## Human confirmation needed
+
+Human/project-owner approval remains separate from this AI technical review. This PR does not create owner approval, GitHub approval review, or merge authority.
