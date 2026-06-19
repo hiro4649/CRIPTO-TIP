@@ -54,6 +54,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Prepare PR changed files metadata
+        if: always()
+        shell: bash
+        env:
+          CODEX_EVENT_NAME: ${{ github.event_name }}
+          CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        run: |
+          set -euo pipefail
+          changed_file_list="$RUNNER_TEMP/codex-changed-files.safe.txt"
+          : > "$changed_file_list"
+          if [ "${CODEX_EVENT_NAME:-}" = "pull_request" ] && [ -n "${CODEX_PR_BASE_SHA:-}" ] && [ -n "${CODEX_PR_HEAD_SHA:-}" ]; then
+            git diff --name-only "${CODEX_PR_BASE_SHA}...${CODEX_PR_HEAD_SHA}" > "$changed_file_list" || true
+          fi
+          if [ ! -s "$changed_file_list" ]; then
+            git diff --name-only origin/main...HEAD > "$changed_file_list" || true
+          fi
+          {
+            echo "CODEX_CHANGED_FILES<<CODEX_CHANGED_FILES_EOF"
+            cat "$changed_file_list"
+            echo "CODEX_CHANGED_FILES_EOF"
+          } >> "$GITHUB_ENV"
       - name: Install root dependencies if present
         shell: bash
         run: |
@@ -127,7 +149,10 @@ jobs:
           fi
           export CODEX_HARNESS_MODE=target
           export CODEX_PROFILE_COMPAT_MODE=off
-          changed_files="$(git diff --name-only origin/main...HEAD || true)"
+          changed_files="${CODEX_CHANGED_FILES:-}"
+          if [ -z "$changed_files" ]; then
+            changed_files="$(git diff --name-only "${CODEX_PR_BASE_SHA}...${CODEX_PR_HEAD_SHA}" || git diff --name-only origin/main...HEAD || true)"
+          fi
           export CODEX_CHANGED_FILES="$changed_files"
           classification_json="$(CODEX_QUALITY_REPORT=json node scripts/codex-change-classification-gate.mjs || true)"
           product_relevant="$(CLASSIFICATION_JSON="$classification_json" node -e "const r=JSON.parse(process.env.CLASSIFICATION_JSON||'{}'); const s=r.changeClassificationStatus||{}; process.stdout.write(s.productRelevantChanged||s.runtimeReadinessClaimed||s.packageOrLockfileChanged?'1':'0')")"
