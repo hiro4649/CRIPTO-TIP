@@ -33,7 +33,7 @@ export type AppConfig = z.infer<typeof AppConfigSchema>;
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const config = AppConfigSchema.parse(env);
-  const productionLike = config.APP_ENV === "production" || config.NODE_ENV === "production";
+  const productionLike = config.APP_ENV === "staging" || config.APP_ENV === "production" || config.NODE_ENV === "production";
   if (productionLike && config.REJECT_DEFAULT_MOCK_TOKENS_IN_PRODUCTION) {
     for (const [name, value] of Object.entries({ MOCK_ADMIN_TOKEN: config.MOCK_ADMIN_TOKEN, MOCK_INTERNAL_TOKEN: config.MOCK_INTERNAL_TOKEN, MOCK_OVERLAY_TOKEN: config.MOCK_OVERLAY_TOKEN })) {
       if (value === mockValue("admin") || value === mockValue("internal") || value === mockValue("overlay")) throw new Error(`${name} must not use the local mock default in production`);

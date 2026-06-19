@@ -44,10 +44,8 @@ import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-c
 import { registerAdminModerationReadRoutes } from "./routes/admin-moderation-read-routes.js";
 import { registerAdminYouTubeConnectorRoutes } from "./routes/admin-youtube-connector-routes.js";
 import { registerYouTubeFixtureRoutes } from "./routes/youtube-fixture-routes.js";
-import { createRuntimeRepository, resolveRuntimeRepositorySelection } from "./repositories/runtime-selection.js";
+import { createRuntimeRepository, resolveRuntimeRepositorySelection, type RuntimeRepositorySelection } from "./repositories/runtime-selection.js";
 
-const appConfig = loadConfig();
-export const runtimeRepositorySelection = resolveRuntimeRepositorySelection(appConfig);
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? mockValue("admin");
 const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? mockValue("internal");
@@ -124,6 +122,7 @@ class InMemoryWalletNonceStore implements WalletNonceStore {
 type BuildServerDependencies = {
   repo?: CriptoTipRepository;
   config?: AppConfig;
+  runtimeRepositorySelection?: RuntimeRepositorySelection;
   walletVerifier?: WalletVerifier;
   nonceStore?: WalletNonceStore;
   now?: () => Date;
@@ -134,6 +133,7 @@ type BuildServerDependencies = {
 type ParsedBuildServerDependencies = {
   repo: CriptoTipRepository;
   config: AppConfig;
+  runtimeRepositorySelection: RuntimeRepositorySelection;
   walletVerifier: WalletVerifier | undefined;
   nonceStore: WalletNonceStore | undefined;
   now: () => Date;
@@ -153,8 +153,22 @@ type AdminRateLimitBucket = {
 const ADMIN_RATE_LIMIT_WINDOW_MS = 60_000;
 const ADMIN_RATE_LIMIT_MAX_REQUESTS = 3;
 
-export const repository = createRuntimeRepository(appConfig);
 export const store: Store = { overlayClients: new Map() };
+
+let defaultRepository: CriptoTipRepository | undefined;
+let defaultRuntimeRepositorySelection: RuntimeRepositorySelection | undefined;
+
+export function getRuntimeRepositorySelection(config: AppConfig = loadConfig()) {
+  return resolveRuntimeRepositorySelection(config);
+}
+
+export function getRuntimeRepository(config: AppConfig = loadConfig()) {
+  if (!defaultRepository) {
+    defaultRuntimeRepositorySelection = resolveRuntimeRepositorySelection(config);
+    defaultRepository = createRuntimeRepository(config);
+  }
+  return defaultRepository;
+}
 
 function requireBearer(req: FastifyRequest, expected: string): boolean {
   return req.headers.authorization === `Bearer ${expected}`;
@@ -3022,9 +3036,12 @@ function hashNonce(nonce: string) {
 
 function parseBuildServerDependencies(input?: CriptoTipRepository | BuildServerDependencies): ParsedBuildServerDependencies {
   if (!input || "getLiveSession" in input) {
+    const config = loadConfig();
+    const repo = input ?? getRuntimeRepository(config);
     return {
-      repo: input ?? repository,
-      config: appConfig,
+      repo,
+      config,
+      runtimeRepositorySelection: input ? resolveRuntimeRepositorySelection(config) : (defaultRuntimeRepositorySelection ?? resolveRuntimeRepositorySelection(config)),
       walletVerifier: undefined,
       nonceStore: undefined,
       now: () => new Date(),
@@ -3032,9 +3049,12 @@ function parseBuildServerDependencies(input?: CriptoTipRepository | BuildServerD
       internalToken: INTERNAL_TOKEN
     };
   }
+  const config = input.config ?? loadConfig();
+  const runtimeRepositorySelection = input.runtimeRepositorySelection ?? resolveRuntimeRepositorySelection(config, input.repo && input.config?.RUNTIME_REPOSITORY_MODE === "postgres" ? { injectedRepository: input.repo, injectedMode: "postgres" } : {});
   return {
-    repo: input.repo ?? repository,
-    config: input.config ?? appConfig,
+    repo: input.repo ?? getRuntimeRepository(config),
+    config,
+    runtimeRepositorySelection,
     walletVerifier: input.walletVerifier,
     nonceStore: input.nonceStore ?? (input.walletVerifier ? new InMemoryWalletNonceStore() : undefined),
     now: input.now ?? (() => new Date()),
@@ -5341,7 +5361,12 @@ export function buildServer(input?: CriptoTipRepository | BuildServerDependencie
       status: "ok",
       generated_at: new Date().toISOString(),
       repository: {
-        mode: "local_in_memory"
+        repository_mode: deps.runtimeRepositorySelection.selectedMode,
+        persistence_mode: deps.runtimeRepositorySelection.persistenceMode,
+        selection_status: deps.runtimeRepositorySelection.selectionStatus,
+        durability_claimed: deps.runtimeRepositorySelection.durabilityClaimed,
+        real_db_connected: deps.runtimeRepositorySelection.realDbConnected,
+        runtime_readiness_claimed: deps.runtimeRepositorySelection.runtimeReadinessClaimed
       },
       endpoints: {
         dlq_list: true,

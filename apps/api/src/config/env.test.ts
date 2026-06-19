@@ -13,6 +13,10 @@ describe("config validation", () => {
     expect(() => loadConfig({ APP_ENV: "production", NODE_ENV: "production" })).toThrow(/MOCK_ADMIN/);
   });
 
+  it("staging config rejects local mock tokens", () => {
+    expect(() => loadConfig({ APP_ENV: "staging" })).toThrow(/MOCK_ADMIN/);
+  });
+
   it("production config rejects missing or placeholder IRIS Core secret", () => {
     const tokenEnv = {
       MOCK_ADMIN_TOKEN: "admin-realistic-placeholder",
