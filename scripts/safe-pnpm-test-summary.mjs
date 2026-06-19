@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { valueAfter, hasFlag, writeJson, makeSafeArtifact, runCommandNoRawOutput } from "./ci-safe-lib.mjs";
 
@@ -8,7 +9,10 @@ const output = valueAfter(args, "--output") || "reports/pnpm-test-safe-summary.j
 const simulated = valueAfter(args, "--simulate-exit");
 const summaryPath = valueAfter(args, "--summary");
 const notRunDueToTypecheck = hasFlag(args, "--not-run-due-to-typecheck");
-const generatedSummaryPath = summaryPath || path.join("reports", "vitest-test-safe-results.json");
+const generatedSummaryPath = summaryPath || path.join(
+  fs.mkdtempSync(path.join(os.tmpdir(), "cripto-tip-vitest-safe-")),
+  "vitest-test-safe-results.json"
+);
 const vitestArgs = [
   "exec",
   "vitest",
