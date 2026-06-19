@@ -6,6 +6,7 @@ const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 describe("config validation", () => {
   it("local/test config allows local mock tokens", () => {
     expect(loadConfig({ APP_ENV: "test" }).MOCK_ADMIN_TOKEN).toBe(mockValue("admin"));
+    expect(loadConfig({ APP_ENV: "test" }).RUNTIME_REPOSITORY_MODE).toBe("in_memory");
   });
 
   it("production config rejects local mock tokens", () => {
