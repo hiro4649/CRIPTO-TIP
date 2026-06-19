@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "change": "h0-v127-post-check-evidence-closure",
+  "sourceOfRecordStatus": "post_required_checks",
+  "requiredCheckEvidenceStatus": "post_gate_job_ready",
+  "headProvenanceRequired": "commit_check_runs_api",
+  "artifactGenerationPhaseRequired": "post_required_checks",
+  "rawGitHubLogsAllowed": false,
+  "qualityGateWeakening": false,
+  "packageJsonChangeAllowed": false,
+  "pnpmLockChangeAllowed": false,
+  "dbDriverDependencyAllowed": false,
+  "realDbConnectionAllowed": false,
+  "runtimeReadinessClaimAllowed": false,
+  "productionReadinessClaimAllowed": false,
+  "legalComplianceClaimAllowed": false,
+  "youtubePolicyComplianceClaimAllowed": false,
+  "ownerApprovalCreated": false,
+  "githubApprovalReviewCreated": false,
+  "mergeAuthorityCreated": false
+}

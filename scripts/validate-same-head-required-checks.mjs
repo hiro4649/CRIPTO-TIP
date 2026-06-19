@@ -9,6 +9,10 @@ if (!inputPath) {
 }
 const input = readJson(inputPath);
 const metadata = input.required_checks ? input : buildRequiredChecksMetadata(input);
+if (metadata.artifact_generation_phase !== "post_required_checks") {
+  console.error("required_check_metadata_incomplete");
+  process.exit(1);
+}
 if (!metadata.same_head_required_checks_passed) {
   console.error(metadata.safe_reason_code || "same_head_required_checks_not_all_pass");
   process.exit(1);

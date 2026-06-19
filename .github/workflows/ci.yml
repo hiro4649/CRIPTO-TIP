@@ -73,16 +73,6 @@ jobs:
         env:
           CODEX_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           CODEX_PR_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
-      - name: Export required checks safe metadata
-        if: always()
-        run: |
-          if [ -n "${{ github.event.pull_request.number || '' }}" ]; then
-            node scripts/export-required-checks-metadata.mjs --pr "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --output reports/ci-required-checks-metadata.json
-          else
-            node scripts/export-required-checks-metadata.mjs --fixture fixtures/ci-safe/mixed-head-checks.json --output reports/ci-required-checks-metadata.json
-          fi
-        env:
-          GH_TOKEN: ${{ github.token }}
       - name: Upload pnpm typecheck safe summary
         if: always()
         uses: actions/upload-artifact@v4
@@ -104,14 +94,6 @@ jobs:
           name: ci-safe-failure-artifact
           path: reports/ci-safe-failure-artifact.json
           if-no-files-found: error
-      - name: Upload required checks safe metadata
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ci-required-checks-metadata
-          path: reports/ci-required-checks-metadata.json
-          if-no-files-found: error
-
   contracts:
     runs-on: ubuntu-latest
     steps:
