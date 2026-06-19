@@ -110,8 +110,8 @@
   "receiptCarriedContinuationAndEvidenceCompression": {
     "version": "1.2.7",
     "name": "Receipt-Carried Continuation and Evidence Compression",
-    "sourceOnlyRelease": true,
-    "targetRollout": "not_started",
+    "sourceOnlyRelease": false,
+    "targetRollout": "installed",
     "newP0Artifact": false,
     "newTopLevelStatus": false,
     "newSkill": false,

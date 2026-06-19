@@ -13,6 +13,18 @@ function record(patch: Partial<HarnessV120AdaptiveReviewPoolRecord> = {}) {
   } as HarnessV120AdaptiveReviewPoolRecord;
 }
 
+function expectAgentsTargetHarnessAligned(agents: string) {
+  expect(agents).toContain("CODEX_QUALITY_HARNESS_FILE v1.2.7");
+  expect(agents).toContain("Active target harness: v1.2.7 / v127.");
+  expect(agents).toContain("v1.2.0 adaptive routing");
+  expect(agents).toContain("v1.2.4 specialist-governance fields remain compatibility layers");
+  expect(agents).toContain("v1.2.5 adds Goal Shard");
+  expect(agents).toContain("v1.2.6 adds observed-state loops");
+  expect(agents).toContain("v1.2.7 adds receipt-carried continuation");
+  expect(agents).not.toContain("Active target harness: v1.2.6 / v126.");
+  expect(agents).not.toContain("downstream project consuming Codex Harness v1.1.8");
+}
+
 describe("harness v1.2.0 adaptive review pool profile", () => {
   it("default v1.2.0 adaptive review pool profile is valid", () => {
     const current = validateHarnessV120AdaptiveReviewPoolRecord(record());
@@ -84,11 +96,20 @@ describe("harness v1.2.0 adaptive review pool profile", () => {
   it("AGENTS active marker and v1.2.0 compatibility boundary are aligned", () => {
     const agents = readFileSync("AGENTS.md", "utf8");
 
-    expect(agents).toContain("CODEX_QUALITY_HARNESS_FILE v1.2.6");
-    expect(agents).toContain("Active target harness: v1.2.6 / v126.");
-    expect(agents).toContain("v1.2.0 adaptive routing");
-    expect(agents).toContain("v1.2.4 specialist-governance fields remain compatibility layers");
-    expect(agents).toContain("v1.2.5 adds only internal Goal Shard");
-    expect(agents).not.toContain("downstream project consuming Codex Harness v1.1.8");
+    expectAgentsTargetHarnessAligned(agents);
+  });
+
+  it("rejects stale active target marker while preserving v1.2.0 compatibility", () => {
+    const staleAgents = [
+      "CODEX_QUALITY_HARNESS_FILE v1.2.7",
+      "Active target harness: v1.2.6 / v126.",
+      "v1.2.0 adaptive routing",
+      "v1.2.4 specialist-governance fields remain compatibility layers",
+      "v1.2.5 adds Goal Shard",
+      "v1.2.6 adds observed-state loops",
+      "v1.2.7 adds receipt-carried continuation"
+    ].join("\n");
+
+    expect(() => expectAgentsTargetHarnessAligned(staleAgents)).toThrow();
   });
 });

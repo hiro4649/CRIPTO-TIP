@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "pr": 158,
+  "diagnosisScope": "HARNESS v1.2.7 target compatibility",
+  "failingTestFile": "apps/api/src/harness-v120-adaptive-review-pool.test.ts",
+  "failingTestCaseName": "harness v1.2.0 adaptive review pool profile > AGENTS active marker and v1.2.0 compatibility boundary are aligned",
+  "failureCategory": "stale_harness_coupled_test_assertion",
+  "deterministicStatus": "deterministic",
+  "minimalResponsibleChangedFileSet": [
+    "AGENTS.md",
+    "docs/process/CODEX_ACTIVE_POLICY_INDEX.json",
+    "apps/api/src/harness-v120-adaptive-review-pool.test.ts"
+  ],
+  "productBehaviorAffected": false,
+  "assertionWeakeningRequired": false,
+  "repairSummary": [
+    "Updated the harness-coupled AGENTS marker assertion from stale v1.2.6 active target wording to v1.2.7 / v127 target wording.",
+    "Added a negative regression case proving stale v1.2.6 active target wording is still rejected.",
+    "Updated active policy v1.2.7 rollout metadata from source-only planning to target-installed mode."
+  ],
+  "safeNextAction": "push_pr158_correction_and_wait_for_same_head_required_checks",
+  "rawLogsRead": false,
+  "rawOutputIncluded": false,
+  "runtimeBehaviorChanged": false,
+  "packageOrLockfileChanged": false,
+  "workflowChanged": false,
+  "contractChanged": false,
+  "readinessClaimed": false
+}
