@@ -1,6 +1,6 @@
 import Fastify, { type FastifyRequest } from "fastify";
 import websocket from "@fastify/websocket";
-import { createHash } from "node:crypto";
+import { createHash, randomBytes as nodeRandomBytes } from "node:crypto";
 import { z } from "zod";
 import {
   buildCharacterReactionRequest,
@@ -32,7 +32,7 @@ import {
   type Tier,
   type TipIntent
 } from "@cripto-tip/shared";
-import { loadConfig } from "./config/env.js";
+import { loadConfig, type AppConfig } from "./config/env.js";
 import type { AuditLogInput, CriptoTipRepository, JobType, ReactionDispatchAdapterExecutionBoundaryApprovalMetadata, ReactionDispatchAdapterExecutionBoundaryApprovalReasonCode, ReactionDispatchAdapterExecutionBoundaryApprovalStatus, ReactionDispatchApprovalMetadata, ReactionDispatchApprovalReasonCode, ReactionDispatchApprovalResult, ReactionDispatchCandidateCreateResult, ReactionDispatchCandidateMetadata, ReactionDispatchCandidateReasonCode, ReactionDispatchDryRunApprovalMetadata, ReactionDispatchDryRunApprovalReasonCode, ReactionDispatchDryRunApprovalStatus, ReactionDispatchInternalOutboxAttemptPlanMetadata, ReactionDispatchInternalOutboxAttemptPlanReasonCode, ReactionDispatchInternalOutboxLeaseMetadata, ReactionDispatchInternalOutboxLeaseReasonCode, ReactionDispatchInternalOutboxMetadata, ReactionDispatchInternalOutboxReasonCode, ReactionDispatchInternalOutboxResult, ReactionDispatchLocalAdapterSimulationCase, ReactionDispatchLocalAdapterSimulationReasonCode, ReactionDispatchLocalAdapterSimulationResultMetadata, ReactionDispatchOutboxBoundaryMetadata, ReactionDispatchOutboxBoundaryReasonCode, ReactionDispatchOutboxBoundaryResult, ReactionDispatchSimulationFailureDlqMetadata, SupportEventResolutionMetadata, SupportEventResolutionStatus, SupportEventSearchFilter } from "./repositories/types.js";
 import { validateSupportEventContractV2Preview } from "./support-event-contract-v2-validator.js";
 import { fakeFixtureCapability } from "./youtube-live-chat-client.js";
@@ -67,6 +67,79 @@ function mockRuntimeTruthfulness(surface: string) {
   } as const;
 }
 const PORT = Number(process.env.API_PORT ?? 4000);
+
+type WalletVerificationContext = {
+  wallet_address: string;
+  nonce: string;
+  signature: string;
+  domain: string;
+  purpose: string;
+};
+
+type WalletVerificationResult = {
+  verified: boolean;
+  iris_user_id?: string;
+};
+
+export type WalletVerifier = {
+  verify(context: WalletVerificationContext): Promise<WalletVerificationResult>;
+};
+
+type WalletNonceRecord = {
+  nonce_hash: string;
+  wallet_address: string;
+  domain: string;
+  purpose: string;
+  issued_at: string;
+  expires_at: string;
+  consumed: boolean;
+};
+
+export type WalletNonceStore = {
+  issue(record: WalletNonceRecord): Promise<void>;
+  consume(args: { nonce_hash: string; wallet_address: string; domain: string; purpose: string; now: Date }): Promise<WalletNonceRecord | null>;
+};
+
+class InMemoryWalletNonceStore implements WalletNonceStore {
+  private readonly records = new Map<string, WalletNonceRecord>();
+
+  async issue(record: WalletNonceRecord) {
+    this.records.set(record.nonce_hash, { ...record });
+  }
+
+  async consume(args: { nonce_hash: string; wallet_address: string; domain: string; purpose: string; now: Date }) {
+    const record = this.records.get(args.nonce_hash);
+    if (!record || record.consumed) return null;
+    if (Date.parse(record.expires_at) <= args.now.getTime()) {
+      this.records.set(args.nonce_hash, { ...record, consumed: true });
+      return null;
+    }
+    if (record.wallet_address !== args.wallet_address || record.domain !== args.domain || record.purpose !== args.purpose) return null;
+    const consumed = { ...record, consumed: true };
+    this.records.set(args.nonce_hash, consumed);
+    return consumed;
+  }
+}
+
+type BuildServerDependencies = {
+  repo?: CriptoTipRepository;
+  config?: AppConfig;
+  walletVerifier?: WalletVerifier;
+  nonceStore?: WalletNonceStore;
+  now?: () => Date;
+  randomBytes?: (size: number) => Buffer;
+  internalToken?: string;
+};
+
+type ParsedBuildServerDependencies = {
+  repo: CriptoTipRepository;
+  config: AppConfig;
+  walletVerifier: WalletVerifier | undefined;
+  nonceStore: WalletNonceStore | undefined;
+  now: () => Date;
+  randomBytes: (size: number) => Buffer;
+  internalToken: string;
+};
 
 type Store = {
   overlayClients: Map<string, Set<{ send: (payload: string) => void }>>;
@@ -2939,43 +3012,146 @@ async function applyAdminBulkModerationItem(repo: CriptoTipRepository, eventId: 
   };
 }
 
-export function buildServer(repo: CriptoTipRepository = repository) {
+function normalizeWalletAddress(walletAddress: string) {
+  return walletAddress.toLowerCase();
+}
+
+function hashNonce(nonce: string) {
+  return createHash("sha256").update(nonce).digest("hex");
+}
+
+function parseBuildServerDependencies(input?: CriptoTipRepository | BuildServerDependencies): ParsedBuildServerDependencies {
+  if (!input || "getLiveSession" in input) {
+    return {
+      repo: input ?? repository,
+      config: appConfig,
+      walletVerifier: undefined,
+      nonceStore: undefined,
+      now: () => new Date(),
+      randomBytes: nodeRandomBytes,
+      internalToken: INTERNAL_TOKEN
+    };
+  }
+  return {
+    repo: input.repo ?? repository,
+    config: input.config ?? appConfig,
+    walletVerifier: input.walletVerifier,
+    nonceStore: input.nonceStore ?? (input.walletVerifier ? new InMemoryWalletNonceStore() : undefined),
+    now: input.now ?? (() => new Date()),
+    randomBytes: input.randomBytes ?? nodeRandomBytes,
+    internalToken: input.internalToken ?? INTERNAL_TOKEN
+  };
+}
+
+export function buildServer(input?: CriptoTipRepository | BuildServerDependencies) {
+  const deps = parseBuildServerDependencies(input);
+  const repo = deps.repo;
   const app = Fastify({ logger: false });
   const adminRateLimitBuckets = new Map<string, AdminRateLimitBucket>();
   app.register(websocket);
 
   app.get("/health", async () => ({ ok: true, service: "cripto-tip-api" }));
 
-  app.get("/api/live/:streamId", async (req) => {
+  app.get("/api/live/:streamId", async (req, reply) => {
     const params = z.object({ streamId: z.string() }).parse(req.params);
     const existing = await repo.getLiveSession(params.streamId);
     if (existing) return { ...existing, mock_runtime_truthfulness: mockRuntimeTruthfulness("live_session") };
+    return reply.code(404).send({
+      error: "live_session_not_found",
+      created: false,
+      mock_runtime_truthfulness: mockRuntimeTruthfulness("live_session")
+    });
+  });
+
+  app.post("/internal/fixtures/live-sessions", async (req, reply) => {
+    if (!requireBearer(req, deps.internalToken)) return reply.code(401).send({ error: "unauthorized" });
+    if (deps.config.APP_ENV !== "local" && deps.config.APP_ENV !== "test") return reply.code(404).send({ error: "fixture_route_not_available" });
+    const body = z.object({
+      id: z.string(),
+      character_id: z.string(),
+      title: z.string(),
+      status: z.enum(["scheduled", "live", "ended"]),
+      companion_url: z.string(),
+      overlay_url: z.string(),
+      youtube_video_id: z.string().optional(),
+      youtube_live_chat_id: z.string().optional(),
+      youtube_channel_id: z.string().optional()
+    }).strict().parse(req.body);
+    const existing = await repo.getLiveSession(body.id);
+    if (existing) return { fixture_only: true, created: false, duplicate: true, live_session: existing };
     const session: LiveSession = {
-      id: params.streamId,
-      youtube_video_id: "mock-youtube-video",
-      youtube_channel_id: "mock-channel",
-      character_id: "char_mio",
-      title: "IRIS LIVE mock session",
-      status: "live",
-      companion_url: `/live/${params.streamId}`,
-      overlay_url: `/overlay/${params.streamId}`,
-      created_at: new Date().toISOString()
+      id: body.id,
+      youtube_video_id: body.youtube_video_id,
+      youtube_live_chat_id: body.youtube_live_chat_id,
+      youtube_channel_id: body.youtube_channel_id,
+      character_id: body.character_id,
+      title: body.title,
+      status: body.status,
+      companion_url: body.companion_url,
+      overlay_url: body.overlay_url,
+      created_at: deps.now().toISOString()
     };
-    return { ...(await repo.createLiveSession(session)), mock_runtime_truthfulness: mockRuntimeTruthfulness("live_session") };
+    return { fixture_only: true, created: true, live_session: await repo.createLiveSession(session) };
   });
 
-  app.post("/api/wallet/nonce", async (req) => {
-    const body = z.object({ wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/) }).parse(req.body);
-    return { nonce: createPublicId("nonce"), expires_at: new Date(Date.now() + 10 * 60_000).toISOString(), mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_nonce") };
+  app.post("/api/wallet/nonce", async (req, reply) => {
+    if (!deps.walletVerifier || !deps.nonceStore) {
+      return reply.code(501).send({ error: "wallet_verifier_not_configured", issued: false, verified: false, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_nonce") });
+    }
+    const body = z.object({
+      wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+      domain: z.string().min(1).default("cripto-tip.local"),
+      purpose: z.string().min(1).default("wallet_login")
+    }).parse(req.body);
+    const nonce = deps.randomBytes(32).toString("base64url");
+    const issuedAt = deps.now();
+    const expiresAt = new Date(issuedAt.getTime() + 10 * 60_000);
+    await deps.nonceStore.issue({
+      nonce_hash: hashNonce(nonce),
+      wallet_address: normalizeWalletAddress(body.wallet_address),
+      domain: body.domain,
+      purpose: body.purpose,
+      issued_at: issuedAt.toISOString(),
+      expires_at: expiresAt.toISOString(),
+      consumed: false
+    });
+    return { nonce, issued: true, expires_at: expiresAt.toISOString(), mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_nonce") };
   });
 
-  app.post("/api/wallet/verify", async (req) => {
-    z.object({ wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/), nonce: z.string(), signature: z.string().min(1) }).parse(req.body);
-    return { iris_user_id: "usr_mock", verified: true, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_verify") };
+  app.post("/api/wallet/verify", async (req, reply) => {
+    if (!deps.walletVerifier || !deps.nonceStore) {
+      return reply.code(501).send({ error: "wallet_verifier_not_configured", verified: false, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_verify") });
+    }
+    const body = z.object({
+      wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/),
+      nonce: z.string().min(1),
+      signature: z.string().min(1),
+      domain: z.string().min(1).default("cripto-tip.local"),
+      purpose: z.string().min(1).default("wallet_login")
+    }).parse(req.body);
+    const walletAddress = normalizeWalletAddress(body.wallet_address);
+    const consumed = await deps.nonceStore.consume({
+      nonce_hash: hashNonce(body.nonce),
+      wallet_address: walletAddress,
+      domain: body.domain,
+      purpose: body.purpose,
+      now: deps.now()
+    });
+    if (!consumed) return { verified: false, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_verify") };
+    const result = await deps.walletVerifier.verify({
+      wallet_address: walletAddress,
+      nonce: body.nonce,
+      signature: body.signature,
+      domain: body.domain,
+      purpose: body.purpose
+    });
+    return { ...result, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_verify") };
   });
 
-  app.post("/api/live/:streamId/tip-intents", async (req) => {
+  app.post("/api/live/:streamId/tip-intents", async (req, reply) => {
     const { streamId } = z.object({ streamId: z.string() }).parse(req.params);
+    const session = await repo.getLiveSession(streamId);
+    if (!session) return reply.code(404).send({ error: "live_session_not_found", created: false, mock_runtime_truthfulness: mockRuntimeTruthfulness("tip_intent") });
     const body = TipIntentRequestSchema.parse(req.body);
     const displayName = sanitizeDisplayName(body.display_name);
     const message = sanitizeMessage(body.message);
@@ -3007,9 +3183,11 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     return { tip_intent: await repo.getTipIntentPublic(id), moderation, mock_runtime_truthfulness: mockRuntimeTruthfulness("tip_intent") };
   });
 
-  app.get("/api/tip-intents/:tipIntentId", async (req) => {
+  app.get("/api/tip-intents/:tipIntentId", async (req, reply) => {
     const { tipIntentId } = z.object({ tipIntentId: z.string() }).parse(req.params);
-    return (await repo.getTipIntentPublic(tipIntentId)) ?? { error: "not_found" };
+    const tipIntent = await repo.getTipIntentPublic(tipIntentId);
+    if (!tipIntent) return reply.code(404).send({ error: "tip_intent_not_found" });
+    return tipIntent;
   });
 
   app.post("/internal/events", async (req, reply) => {
