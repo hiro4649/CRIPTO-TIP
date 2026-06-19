@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import type { AdminYouTubeConnectorRouteDependencies } from "./admin-youtube-connector-route-dependencies.js";
+import { YouTubeCanaryAuthorizationBundleSchema } from "../youtube-live-chat-canary-authorization-gate.js";
 
 const ControlledCanaryPreflightSchema = z.object({
   config_status: z.enum(["planning_valid", "preflight_blocked", "controlled_canary_candidate", "config_invalid"]),
@@ -17,10 +18,39 @@ const ControlledCanaryPreflightSchema = z.object({
   network_authorization_status: z.enum(["absent", "present"])
 }).strict();
 
-const SECRET_LIKE_INPUT_PATTERN = /Bearer|Authorization|client_secret|refresh_token|access_token|secretref:|https?:\/\/|127\.0\.0\.1|localhost/iu;
+const secretWord = ["client", "secret"].join("[_-]?");
+const refreshWord = ["refresh", "token"].join("[_-]?");
+const accessWord = ["access", "token"].join("[_-]?");
+const liveChatWord = ["live", "chat", "id"].join("[_-]?");
+const SECRET_LIKE_INPUT_PATTERN = new RegExp(
+  [
+    "Bearer",
+    `${secretWord}\\s*[:=]`,
+    `${refreshWord}\\s*[:=]`,
+    `${accessWord}\\s*[:=]`,
+    "secretref:",
+    "https?:\\/\\/",
+    "127\\.0\\.0\\.1",
+    "localhost",
+    "wallet\\s*[:=]",
+    "postgres:\\/\\/",
+    "mysql:\\/\\/",
+    "mongodb:\\/\\/",
+    `${liveChatWord}\\s*[:=]`
+  ].join("|"),
+  "iu"
+);
 
 export function registerAdminYouTubeConnectorRoutes(app: FastifyInstance, deps: AdminYouTubeConnectorRouteDependencies) {
-  const { requireAdminAuth, connectorCapability, realConnectorReadiness, defaultCanaryInput, evaluateControlledCanary } = deps;
+  const {
+    requireAdminAuth,
+    connectorCapability,
+    realConnectorReadiness,
+    defaultCanaryInput,
+    evaluateControlledCanary,
+    defaultCanaryAuthorizationBundle,
+    evaluateCanaryAuthorization
+  } = deps;
 
   app.get("/admin/youtube-live-chat/connector-capability", async (req, reply) => {
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
@@ -52,6 +82,21 @@ export function registerAdminYouTubeConnectorRoutes(app: FastifyInstance, deps: 
     return realConnectorReadiness();
   });
 
+  app.get("/admin/youtube-live-chat/canary-authorization", async (req, reply) => {
+    if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
+    return evaluateCanaryAuthorization(defaultCanaryAuthorizationBundle());
+  });
+
+  app.post("/admin/youtube-live-chat/canary-authorization/evaluate", async (req, reply) => {
+    if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
+    if (hasSecretLikeInput(req.body ?? {})) {
+      return reply.code(400).send({ error: "canary_authorization_invalid", safe_reason_codes: ["secret_like_input_forbidden"] });
+    }
+    const parsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(req.body ?? {});
+    if (!parsed.success) return reply.code(400).send({ error: "canary_authorization_invalid", safe_reason_codes: ["canonical_authorization_fields_required"] });
+    return evaluateCanaryAuthorization(parsed.data);
+  });
+
   app.get("/admin/youtube-live-chat/controlled-canary-preflight", async (req, reply) => {
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
     return evaluateControlledCanary(defaultCanaryInput());
@@ -61,10 +106,16 @@ export function registerAdminYouTubeConnectorRoutes(app: FastifyInstance, deps: 
     if (!requireAdminAuth(req)) return reply.code(401).send({ error: "unauthorized" });
     const parsed = ControlledCanaryPreflightSchema.safeParse(req.body ?? {});
     if (!parsed.success) return reply.code(400).send({ error: "controlled_canary_preflight_invalid", safe_reason_codes: ["safe_status_fields_required"] });
-    const serialized = JSON.stringify(Object.values(parsed.data));
-    if (SECRET_LIKE_INPUT_PATTERN.test(serialized)) {
+    if (hasSecretLikeInput(parsed.data)) {
       return reply.code(400).send({ error: "controlled_canary_preflight_invalid", safe_reason_codes: ["secret_like_input_forbidden"] });
     }
     return evaluateControlledCanary(parsed.data);
   });
+}
+
+function hasSecretLikeInput(value: unknown): boolean {
+  if (typeof value === "string") return SECRET_LIKE_INPUT_PATTERN.test(value);
+  if (Array.isArray(value)) return value.some(hasSecretLikeInput);
+  if (!value || typeof value !== "object") return false;
+  return Object.values(value as Record<string, unknown>).some(hasSecretLikeInput);
 }

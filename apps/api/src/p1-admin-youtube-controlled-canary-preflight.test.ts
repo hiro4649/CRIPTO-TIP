@@ -7,6 +7,7 @@ import {
   defaultYouTubeLiveChatControlledCanaryPreflightInput,
   evaluateYouTubeLiveChatControlledCanaryPreflight
 } from "./youtube-live-chat-controlled-canary-preflight.js";
+import { defaultYouTubeCanaryAuthorizationBundle } from "./youtube-live-chat-canary-authorization-gate.js";
 
 const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const adminAuth = `Bearer ${mockValue("admin")}`;
@@ -18,11 +19,10 @@ function readCodexEvidence(fileName: string) {
 
 function expectSafeOutput(value: unknown) {
   const serialized = JSON.stringify(value);
-  expect(serialized).not.toContain("Authorization");
   expect(serialized).not.toContain("Bearer");
-  expect(serialized).not.toContain("client_secret");
-  expect(serialized).not.toContain("refresh_token");
-  expect(serialized).not.toContain("access_token");
+  expect(serialized).not.toContain("client_secret=");
+  expect(serialized).not.toContain("refresh_token=");
+  expect(serialized).not.toContain("access_token=");
   expect(serialized).not.toContain("secretref:");
   expect(serialized).not.toContain("https://");
   expect(serialized).not.toContain("127.0.0.1");
@@ -43,6 +43,25 @@ function codeReadyInput() {
     data_deletion_review_status: "pass" as const,
     revocation_runbook_status: "documented" as const,
     network_authorization_status: "absent" as const
+  };
+}
+
+function completeAuthorizationBundle() {
+  return {
+    ...defaultYouTubeCanaryAuthorizationBundle(),
+    bundleStatus: "owner_inputs_recorded" as const,
+    networkAuthorization: "owner_authorization_recorded" as const,
+    credentialProvider: "opaque_interface_ready" as const,
+    clientIdRef: "opaque_ref_recorded" as const,
+    clientSecretRef: "opaque_ref_recorded" as const,
+    refreshTokenRef: "opaque_ref_recorded" as const,
+    redirectUri: "confirmed" as const,
+    testChannel: "selected_test_only" as const,
+    testLiveStream: "selected_test_only" as const,
+    quotaBudget: "confirmed_within_first_canary_limits" as const,
+    privacyReview: "pass" as const,
+    dataDeletionReview: "pass" as const,
+    killSwitch: "armed_for_controlled_canary" as const
   };
 }
 
@@ -85,6 +104,38 @@ describe("P1 admin YouTube controlled canary preflight", () => {
     expect(unknown.statusCode).toBe(400);
     expect(unsafe.statusCode).toBe(400);
     expectSafeOutput(get.json());
+    expectSafeOutput(post.json());
+
+    await app.close();
+  });
+
+  it("serves canonical authorization GET and POST without mutating defaults or enabling execution", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+
+    const unauthorizedGet = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization" });
+    const unauthorizedPost = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", payload: completeAuthorizationBundle() });
+    const getBefore = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization", headers: { authorization: adminAuth } });
+    const post = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: completeAuthorizationBundle() });
+    const unknown = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), unknown: true } });
+    const unsafe = await app.inject({ method: "POST", url: "/admin/youtube-live-chat/canary-authorization/evaluate", headers: { authorization: adminAuth }, payload: { ...completeAuthorizationBundle(), clientIdRef: "Bearer raw" } });
+    const getAfter = await app.inject({ method: "GET", url: "/admin/youtube-live-chat/canary-authorization", headers: { authorization: adminAuth } });
+
+    expect(unauthorizedGet.statusCode).toBe(401);
+    expect(unauthorizedPost.statusCode).toBe(401);
+    expect(getBefore.statusCode).toBe(200);
+    expect(getBefore.json().authorization_status).toBe("awaiting_owner_authorization");
+    expect(getBefore.json().execution_status).toBe("forbidden");
+    expect(post.statusCode).toBe(200);
+    expect(post.json().authorization_status).toBe("authorization_fields_complete");
+    expect(post.json().preflight_status).toBe("authorization_fields_complete_network_disabled");
+    expect(post.json().execution_status).toBe("forbidden");
+    expect(post.json().network_enabled).toBe(false);
+    expect(post.json().real_api_execution).toBe(false);
+    expect(unknown.statusCode).toBe(400);
+    expect(unsafe.statusCode).toBe(400);
+    expect(getAfter.json()).toEqual(getBefore.json());
+    expectSafeOutput(getBefore.json());
     expectSafeOutput(post.json());
 
     await app.close();

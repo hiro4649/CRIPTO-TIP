@@ -18,6 +18,7 @@
   "quotaBudget": "unconfirmed",
   "privacyReview": "incomplete",
   "dataDeletionReview": "incomplete",
+  "revocationRunbook": "documented",
   "killSwitch": "blocked",
   "firstCanaryLimits": {
     "testChannels": 1,
@@ -28,7 +29,22 @@
     "maximumDurationSeconds": 60,
     "automaticFallback": false,
     "automaticRetry": false,
-    "supportSideEffects": false
+    "safeParsePreviewOnly": true,
+    "supportSideEffects": false,
+    "sideEffects": {
+      "affinity": false,
+      "reaction": false,
+      "overlay": false,
+      "externalOutbox": false,
+      "irisCore": false,
+      "voxweave": false,
+      "tts": false,
+      "live2d": false,
+      "obs": false,
+      "wallet": false,
+      "chain": false,
+      "productionData": false
+    }
   },
   "networkExecution": false,
   "oauthExecution": false,

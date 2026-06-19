@@ -29,6 +29,7 @@ as opaque references or decisions, not raw secret values:
 - quota budget
 - privacy review
 - data deletion review
+- revocation runbook
 - kill switch owner and activation path
 
 Raw credential values, private secret names, token values, and private endpoints
@@ -60,6 +61,10 @@ The first canary, when separately authorized, is limited to:
 - no wallet
 - no chain
 - no production data
+
+The machine-readable evidence mirrors these limits with
+`safeParsePreviewOnly: true`, `supportSideEffects: false`, and an explicit
+`sideEffects` object where every product side effect is false.
 
 ## Blocked Until Authorized
 
