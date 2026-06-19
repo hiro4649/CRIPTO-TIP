@@ -79,6 +79,7 @@ function parseSafeSummary(file) {
 const fromText = valueAfter("--from");
 const fromJson = valueAfter("--from-json");
 const safeSummary = valueAfter("--safe-summary");
+const output = valueAfter("--output") || ".codex/test-summary.json";
 
 let summary;
 if (fromText && fs.existsSync(fromText)) summary = parseTextSummary(fromText);
@@ -87,5 +88,5 @@ else if (safeSummary && fs.existsSync(safeSummary)) summary = parseSafeSummary(s
 else throw new Error("test_summary_current_run_input_required");
 
 summary = assertFiniteSummary(summary);
-fs.writeFileSync(".codex/test-summary.json", JSON.stringify(summary, null, 2) + "\n");
+fs.writeFileSync(output, JSON.stringify(summary, null, 2) + "\n");
 console.log(`Test summary: ${summary.testFiles} files, ${summary.passed} passed, ${summary.skipped} skipped from ${summary.sourceType}.`);
