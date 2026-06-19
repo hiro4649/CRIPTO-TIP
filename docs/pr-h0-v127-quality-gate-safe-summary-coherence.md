@@ -7,6 +7,12 @@ Root cause: identified
 Verification: pass
 Skip reason: harness-only H0 change with no product runtime behavior.
 
+## Task Contract
+
+Implement an H0 harness-only repair so the quality-gate workflow conclusion cannot pass when the load-bearing safe summary reports a technical failure.
+
+Do not change product runtime behavior, package files, dependencies, contracts, migrations, real network execution, OAuth, secrets, DB, RPC, wallet, deploy, readiness claims, owner approval, GitHub approval review, or merge authority.
+
 ## Goal
 
 Enforce coherence between the quality-gate workflow conclusion and the load-bearing safe summary.
@@ -77,6 +83,18 @@ Current H0 evidence uses `current_pr_head` for remote head binding and records t
 ## Product verification
 
 No product runtime verification is introduced by this H0 repair. The changed surface is workflow and harness validation.
+
+Product verification commands:
+
+- `corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts`: pass
+- `corepack pnpm lint`: pass
+- `corepack pnpm typecheck`: pass
+- `corepack pnpm test`: pass
+- `npm test`: pass
+- `corepack pnpm evidence:ci`: pass
+- `corepack pnpm quality:self-protection`: pass
+- `node scripts/check-quality-gate-self-protection.mjs`: pass
+- `node scripts/codex-secret-safety-scan.mjs`: pass
 
 ## Tests or checks run
 
