@@ -1,23 +1,23 @@
 import { z } from "zod";
 import {
   createIdempotencyKeyForSupportEvent,
+  CurrencyCodeSchema,
   normalizeYouTubeSuperChatToSupportReceived,
+  SourceEventIdSchema,
+  YouTubeAmountMicrosSchema,
   YouTubeSuperChatInputSchema,
   type SupportReceived
 } from "@cripto-tip/shared";
 
-const amountMicrosPattern = /^[1-9][0-9]{0,17}$/;
-const currencyPattern = /^[A-Z]{3}$/;
-
 export const YouTubeSuperChatFixtureSchema = YouTubeSuperChatInputSchema.extend({
-  live_chat_message_id: z.string().min(1).max(160),
+  live_chat_message_id: SourceEventIdSchema,
   stream_id: z.string().min(1).max(160),
   youtube_video_id: z.string().min(1).max(160).optional(),
   character_id: z.string().min(1).max(160),
   author_channel_id: z.string().min(1).max(160),
   author_display_name: z.string().min(1).max(120),
-  amount_micros: z.string().regex(amountMicrosPattern),
-  currency: z.string().regex(currencyPattern),
+  amount_micros: YouTubeAmountMicrosSchema,
+  currency: CurrencyCodeSchema,
   amount_display_string: z.string().min(1).max(80),
   tier: z.number().int().min(1).max(7),
   user_comment: z.string().max(500).default(""),

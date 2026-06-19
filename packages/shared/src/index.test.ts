@@ -14,7 +14,9 @@ import {
   sanitizeDisplayName,
   sanitizeMessage,
   sha256Bytes32Hex,
-  SupportReceivedSchema
+  SupportReceivedSchema,
+  TokenTipInputSchema,
+  YouTubeSuperChatInputSchema
 } from "./index.js";
 
 const wallet = "0x1111111111111111111111111111111111111111";
@@ -140,6 +142,74 @@ describe("affinity and events", () => {
     });
     expect(event.support.message_moderation_status).toBe("hold");
     expect(event.reaction_policy.can_read_message).toBe(false);
+  });
+
+  it("rejects ambiguous YouTube numeric and source identity values", () => {
+    const valid = {
+      live_chat_message_id: "yt_numeric_identity",
+      stream_id: "str_1",
+      character_id: "char_mio",
+      author_channel_id: "UC123",
+      author_display_name: "Akira",
+      amount_micros: "1000000",
+      currency: "JPY",
+      amount_display_string: "JPY 1,000",
+      tier: 3,
+      user_comment: "thank you",
+      published_at: new Date(0).toISOString()
+    };
+
+    expect(YouTubeSuperChatInputSchema.parse(valid).amount_micros).toBe("1000000");
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, amount_micros: "0" })).toThrow();
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, amount_micros: "000001" })).toThrow();
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, amount_micros: "1e6" })).toThrow();
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, amount_micros: "1.0" })).toThrow();
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, currency: "jpy" })).toThrow();
+    expect(() => YouTubeSuperChatInputSchema.parse({ ...valid, live_chat_message_id: "" })).toThrow();
+  });
+
+  it("rejects zero or ambiguous token tip amount identity before support normalization", () => {
+    const valid = {
+      chain_id: 1,
+      contract_address: wallet,
+      tx_hash: "0xtx_amount_identity",
+      log_index: 0,
+      stream_id: "str_1",
+      character_id: "char_mio",
+      wallet_address: wallet,
+      display_name: "Akira",
+      amount_raw: "100",
+      amount_display: "100 IRIS",
+      tier: "medium",
+      message: "safe",
+      moderation_status: "approved",
+      created_at: new Date(0).toISOString()
+    };
+
+    expect(TokenTipInputSchema.parse(valid).amount_raw).toBe("100");
+    expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "0" })).toThrow();
+    expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "00100" })).toThrow();
+    expect(() => TokenTipInputSchema.parse({ ...valid, amount_raw: "1.5" })).toThrow();
+  });
+
+  it("allows canonical zero only at the normalized support event boundary", () => {
+    const event = normalizeYouTubeSuperChatToSupportReceived({
+      live_chat_message_id: "yt_support_zero_boundary",
+      stream_id: "str_1",
+      character_id: "char_mio",
+      author_channel_id: "UC123",
+      author_display_name: "Akira",
+      amount_micros: "1000000",
+      currency: "JPY",
+      amount_display_string: "JPY 1,000",
+      tier: 3,
+      user_comment: "thank you",
+      published_at: new Date(0).toISOString()
+    });
+
+    expect(SupportReceivedSchema.parse({ ...event, support: { ...event.support, amount_raw: "0" } }).support.amount_raw).toBe("0");
+    expect(() => SupportReceivedSchema.parse({ ...event, support: { ...event.support, amount_raw: "00" } })).toThrow();
+    expect(() => SupportReceivedSchema.parse({ ...event, support: { ...event.support, amount_raw: "01" } })).toThrow();
   });
 
   it("normalizes YouTube Super Sticker without treating it as Super Chat", () => {
