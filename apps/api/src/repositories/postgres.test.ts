@@ -89,7 +89,13 @@ describe("PostgresRepository", () => {
         tier: support.support.tier,
         message_sanitized: support.support.message,
         message_moderation_status: support.support.message_moderation_status,
+        previous_affinity: support.relationship.previous_affinity,
         affinity_delta: support.relationship.affinity_delta,
+        new_affinity: support.relationship.new_affinity,
+        relationship_level: support.relationship.relationship_level,
+        reaction_can_say_name: support.reaction_policy.can_say_name,
+        reaction_can_read_message: support.reaction_policy.can_read_message,
+        reaction_max_speech_seconds: support.reaction_policy.max_speech_seconds,
         delivery_status: "pending",
         created_at: support.created_at
       }]
@@ -102,13 +108,94 @@ describe("PostgresRepository", () => {
     expect(insert?.params?.[13]).not.toBe("youtube_super_chat");
   });
 
+  it("round-trips support relationship and reaction policy from persisted rows", async () => {
+    const client = new RecordingClient();
+    const support = normalizeYouTubeSuperChatToSupportReceived({
+      live_chat_message_id: "yt_data_fidelity_roundtrip",
+      stream_id: "str_fidelity",
+      character_id: "char_mio",
+      author_channel_id: "UC_FIDELITY",
+      author_display_name: "Akira",
+      amount_micros: "2500000",
+      currency: "JPY",
+      amount_display_string: "JPY 2,500",
+      tier: 4,
+      user_comment: "thanks",
+      published_at: "2026-06-19T00:00:00.000Z"
+    }, { previous: 25, delta: 24, next: 49 });
+    client.rows = [{
+      id: support.event_id,
+      source: support.source,
+      source_event_id: support.source_event_id,
+      stream_id: support.stream_id,
+      youtube_video_id: support.youtube_video_id,
+      character_id: support.character_id,
+      iris_user_id: support.viewer.iris_user_id,
+      youtube_author_channel_id: support.viewer.youtube_author_channel_id,
+      wallet_address: support.viewer.wallet_address,
+      display_name_sanitized: support.viewer.display_name,
+      display_name_llm_safe: support.viewer.display_name,
+      amount_raw: support.support.amount_raw,
+      amount_display: support.support.amount_display,
+      currency_or_token: support.support.currency_or_token,
+      tier: support.support.tier,
+      message_sanitized: support.support.message,
+      message_moderation_status: support.support.message_moderation_status,
+      previous_affinity: 25,
+      affinity_delta: 24,
+      new_affinity: 49,
+      relationship_level: 3,
+      reaction_can_say_name: false,
+      reaction_can_read_message: false,
+      reaction_max_speech_seconds: 10,
+      delivery_status: "pending",
+      created_at: support.created_at
+    }];
+
+    const loaded = await new PostgresRepository(client).getSupportEventBySource(support.source, support.source_event_id);
+
+    expect(loaded?.relationship).toMatchObject({ previous_affinity: 25, affinity_delta: 24, new_affinity: 49, relationship_level: 3 });
+    expect(loaded?.reaction_policy).toMatchObject({ can_say_name: false, can_read_message: false, max_speech_seconds: 10 });
+  });
+
+  it("does not invent currency metadata for token tips when none exists", async () => {
+    const client = new RecordingClient();
+    const support = normalizeTokenTipToSupportReceived({
+      chain_id: 31337,
+      contract_address: "0x2222222222222222222222222222222222222222",
+      tx_hash: "0xdatafidelity",
+      log_index: 1,
+      stream_id: "str",
+      character_id: "char",
+      wallet_address: "0x1111111111111111111111111111111111111111",
+      display_name: "Akira",
+      amount_raw: "100",
+      amount_display: "100 IRIS",
+      tier: "medium",
+      message: "thanks",
+      moderation_status: "approved",
+      created_at: new Date(0).toISOString()
+    });
+    client.responses = [[], []];
+
+    await expect(new PostgresRepository(client).createSupportEventIfAbsent(support)).rejects.toThrow("support_event_insert_conflict_unresolved");
+
+    const insert = client.queries.find((query) => query.sql.includes("insert into support_events"));
+    expect(insert?.params?.[13]).toBeNull();
+  });
+
   it("committed P1 support event data fidelity evidence preserves safe boundaries", () => {
     const evidence = JSON.parse(readFileSync(resolve(here, "../../../../.codex/p1-support-event-data-fidelity.json"), "utf8"));
 
     expect(evidence.supportEventDataFidelityStatus).toBe("implemented");
     expect(evidence.youtubeCurrencyPreservedStatus).toBe("pass");
     expect(evidence.postgresCurrencyPersistenceStatus).toBe("pass");
+    expect(evidence.postgresRelationshipRoundTripStatus).toBe("pass");
+    expect(evidence.postgresReactionPolicyRoundTripStatus).toBe("pass");
+    expect(evidence.postgresMissingCurrencyNoGuessStatus).toBe("pass");
+    expect(evidence.supportEventDataFidelityColumnMigrationStatus).toBe("pass");
     expect(evidence.sourceNotUsedAsCurrencyWhenCurrencyExists).toBe(true);
+    expect(evidence.sourceNotUsedAsCurrencyWhenMissing).toBe(true);
     expect(evidence.realYouTubeApiUsed).toBe(false);
     expect(evidence.realDbConnectionUsed).toBe(false);
     expect(evidence.dbDriverDependencyAdded).toBe(false);
@@ -127,6 +214,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const migrationSql = readFileSync(resolve(here, "../../../../migrations/0001_durable_events.sql"), "utf8");
 const chainMigrationSql = readFileSync(resolve(here, "../../../../migrations/0002_chain_listener_reorg.sql"), "utf8");
 const supportIdentityMigrationSql = readFileSync(resolve(here, "../../../../migrations/0005_support_side_effect_source_identity.sql"), "utf8");
+const supportDataFidelityMigrationSql = readFileSync(resolve(here, "../../../../migrations/0006_support_event_data_fidelity_columns.sql"), "utf8");
 
 liveDescribe("PostgresRepository live integration", () => {
   const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
@@ -139,6 +227,7 @@ liveDescribe("PostgresRepository live integration", () => {
     await pool.query(migrationSql);
     await pool.query(chainMigrationSql);
     await pool.query(supportIdentityMigrationSql);
+    await pool.query(supportDataFidelityMigrationSql);
   }, 30_000);
 
   afterAll(async () => {
