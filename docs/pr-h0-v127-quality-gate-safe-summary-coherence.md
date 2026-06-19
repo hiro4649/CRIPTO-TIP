@@ -5,6 +5,7 @@ Task mode: bugfix
 Reproduced: yes
 Root cause: identified
 Verification: pass
+Skip reason: harness-only H0 change with no product runtime behavior.
 
 ## Goal
 
@@ -121,6 +122,14 @@ Reasons alternatives rejected: B leaves workflow success masking technical failu
 Current test summary: 119 files, 2093 passed, 6 skipped.
 
 Tested head: `6fa0c116bdb1ee4abd2a56e29ecda684a5590e18`
+
+Changed area: quality-gate workflow runner, safe-summary validator, classification rules, and harness evidence tests.
+
+Test command: `corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts`.
+
+What the test covers: failed safe summary rejection, owner-only boundary acceptance, self-protection validator enforcement, workflow runner early-success bypass prevention, evidence-pack validation, and current-head evidence rendering.
+
+Edge cases: safe summary fail with workflow success, technicalChecksReady false, blocking statuses present, ownerMergeAuthorized false with technical pass, missing validator step, and stale evidence head handling.
 
 ## Security Boundaries
 
