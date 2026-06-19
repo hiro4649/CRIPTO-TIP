@@ -51,6 +51,20 @@ const mockValue = (scope: string) => ["change", "me", scope, "token"].join("-");
 const ADMIN_TOKEN = process.env.MOCK_ADMIN_TOKEN ?? mockValue("admin");
 const INTERNAL_TOKEN = process.env.MOCK_INTERNAL_TOKEN ?? mockValue("internal");
 const OVERLAY_TOKEN = process.env.MOCK_OVERLAY_TOKEN ?? mockValue("overlay");
+
+function mockRuntimeTruthfulness(surface: string) {
+  return {
+    surface,
+    execution_mode: "local_mock",
+    external_runtime_execution: "not_performed",
+    real_wallet_signature_verified: false,
+    real_youtube_api_used: false,
+    real_chain_confirmation_used: false,
+    production_readiness_claim: false,
+    legal_compliance_claim: false,
+    youtube_policy_compliance_claim: false
+  } as const;
+}
 const PORT = Number(process.env.API_PORT ?? 4000);
 
 type Store = {
@@ -2934,7 +2948,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
   app.get("/api/live/:streamId", async (req) => {
     const params = z.object({ streamId: z.string() }).parse(req.params);
     const existing = await repo.getLiveSession(params.streamId);
-    if (existing) return existing;
+    if (existing) return { ...existing, mock_runtime_truthfulness: mockRuntimeTruthfulness("live_session") };
     const session: LiveSession = {
       id: params.streamId,
       youtube_video_id: "mock-youtube-video",
@@ -2946,17 +2960,17 @@ export function buildServer(repo: CriptoTipRepository = repository) {
       overlay_url: `/overlay/${params.streamId}`,
       created_at: new Date().toISOString()
     };
-    return repo.createLiveSession(session);
+    return { ...(await repo.createLiveSession(session)), mock_runtime_truthfulness: mockRuntimeTruthfulness("live_session") };
   });
 
   app.post("/api/wallet/nonce", async (req) => {
     const body = z.object({ wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/) }).parse(req.body);
-    return { nonce: createPublicId("nonce"), expires_at: new Date(Date.now() + 10 * 60_000).toISOString() };
+    return { nonce: createPublicId("nonce"), expires_at: new Date(Date.now() + 10 * 60_000).toISOString(), mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_nonce") };
   });
 
   app.post("/api/wallet/verify", async (req) => {
     z.object({ wallet_address: z.string().regex(/^0x[a-fA-F0-9]{40}$/), nonce: z.string(), signature: z.string().min(1) }).parse(req.body);
-    return { iris_user_id: "usr_mock", verified: true };
+    return { iris_user_id: "usr_mock", verified: true, mock_runtime_truthfulness: mockRuntimeTruthfulness("wallet_verify") };
   });
 
   app.post("/api/live/:streamId/tip-intents", async (req) => {
@@ -2989,7 +3003,7 @@ export function buildServer(repo: CriptoTipRepository = repository) {
     });
     await repo.createTipIntent(tipIntent);
     if (body.wallet_address) await repo.recordRecentTipByWallet(body.wallet_address);
-    return { tip_intent: await repo.getTipIntentPublic(id), moderation };
+    return { tip_intent: await repo.getTipIntentPublic(id), moderation, mock_runtime_truthfulness: mockRuntimeTruthfulness("tip_intent") };
   });
 
   app.get("/api/tip-intents/:tipIntentId", async (req) => {

@@ -60,6 +60,39 @@ describe("api", () => {
     await app.close();
   }, 20_000);
 
+  it("public mock routes disclose local mock execution without readiness claims", async () => {
+    const app = buildServer(new InMemoryRepository());
+    await app.ready();
+
+    const live = await app.inject({ method: "GET", url: "/api/live/str_truth" });
+    const nonce = await app.inject({ method: "POST", url: "/api/wallet/nonce", payload: { wallet_address: wallet } });
+    const verify = await app.inject({ method: "POST", url: "/api/wallet/verify", payload: { wallet_address: wallet, nonce: "nonce", signature: "sig" } });
+    const tip = await app.inject({
+      method: "POST",
+      url: "/api/live/str_truth/tip-intents",
+      payload: { wallet_address: wallet, display_name: "Akira", message: "thanks", amount_raw: "100", amount_display: "100 IRIS", tier: "small" }
+    });
+
+    for (const response of [live, nonce, verify, tip]) {
+      expect(response.statusCode).toBe(200);
+      expect(response.json().mock_runtime_truthfulness).toMatchObject({
+        execution_mode: "local_mock",
+        external_runtime_execution: "not_performed",
+        real_wallet_signature_verified: false,
+        real_youtube_api_used: false,
+        real_chain_confirmation_used: false,
+        production_readiness_claim: false,
+        legal_compliance_claim: false,
+        youtube_policy_compliance_claim: false
+      });
+      const serialized = JSON.stringify(response.json());
+      expect(serialized).not.toContain("runtime_ready");
+      expect(serialized).not.toContain("production_ready");
+    }
+
+    await app.close();
+  }, 20_000);
+
   it("duplicate internal events do not double-apply affinity or emit second overlay/reaction", async () => {
     const repo = new InMemoryRepository();
     const app = buildServer(repo);
