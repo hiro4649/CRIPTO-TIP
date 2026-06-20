@@ -104,7 +104,11 @@ describe("YouTube canary authorization record model", () => {
       record({ created_at: "not-a-date" }),
       record({ expires_at: "2026-06-19T00:00:00.000Z" }),
       record({ record_status: "revoked", revoked_at: undefined }),
+      record({ record_status: "revoked", revoked_at: "2026-06-20T01:00:00.000Z", revocation_reason_code: undefined }),
       record({ record_status: "draft", revoked_at: "2026-06-20T01:00:00.000Z" }),
+      record({ record_status: "draft", revocation_reason_code: "owner_revoked" }),
+      record({ record_status: "revoked", revoked_at: "2026-06-19T23:59:59.000Z", revocation_reason_code: "owner_revoked" }),
+      record({ ...recordedNonExecutable(), credential_reference_status: "absent" }),
       record({ authorization_bundle_hash: "hash_raw" }),
       record({ audit_receipt_hash: "receipt_raw" }),
       { ...record(), owner_email: "owner@example.test" },
@@ -123,14 +127,14 @@ describe("YouTube canary authorization record model", () => {
     }
   });
 
-  it("keeps missing references in draft instead of creating execution readiness", () => {
+  it("rejects recorded_non_executable with missing references instead of downgrading declared state", () => {
     const evaluation = evaluateYouTubeCanaryAuthorizationRecord(record({
       ...recordedNonExecutable(),
       credential_reference_status: "absent"
     }), now);
 
-    expect(evaluation.effective_record_status).toBe("draft");
-    expect(evaluation.safe_reason_codes).toContain("credential_reference_status_absent");
+    expect(evaluation.effective_record_status).toBe("invalid");
+    expect(evaluation.safe_reason_codes).toContain("authorization_record_schema_invalid");
     expectNeverExecutable(evaluation);
   });
 });
