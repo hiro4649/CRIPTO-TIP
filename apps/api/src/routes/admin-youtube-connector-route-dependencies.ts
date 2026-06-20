@@ -32,6 +32,7 @@ export type AdminYouTubeConnectorRouteDependencies = {
     supports_fixture_pages: boolean;
     supports_cursor_handoff: boolean;
   };
+  now: () => Date;
   realConnectorReadiness: () => unknown;
   defaultCanaryInput: () => ControlledCanaryPreflightRouteInput;
   evaluateControlledCanary: (input: ControlledCanaryPreflightRouteInput, now?: Date, inputTrust?: "committed_safe_bundle" | "untrusted_preview") => unknown;

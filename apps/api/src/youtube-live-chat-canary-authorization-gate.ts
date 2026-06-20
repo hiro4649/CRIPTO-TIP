@@ -1,5 +1,9 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import {
+  buildYouTubeCanaryAuthorizationAuditReceipt,
+  type YouTubeCanaryAuthorizationAuditReceipt
+} from "./youtube-live-chat-canary-audit-receipt.js";
 
 const SideEffectContractSchema = z.object({
   affinity: z.literal(false),
@@ -129,6 +133,7 @@ export type YouTubeCanaryAuthorizationEvaluation = {
   owner_approval_created: false;
   github_approval_review_created: false;
   merge_authority_created: false;
+  audit_receipt: YouTubeCanaryAuthorizationAuditReceipt;
 };
 
 const secretWord = ["client", "secret"].join("[_-]?");
@@ -231,7 +236,7 @@ export function defaultYouTubeCanaryAuthorizationEvidence(): YouTubeCanaryAuthor
 }
 
 export function evaluateYouTubeCanaryAuthorization(input: unknown, options: YouTubeCanaryAuthorizationEvaluationOptions = {}): YouTubeCanaryAuthorizationEvaluation {
-  const now = options.now ?? new Date("2026-06-20T00:00:00.000Z");
+  const now = options.now ?? new Date();
   const inputTrust = options.inputTrust ?? "untrusted_preview";
   const unsafe = hasUnsafeAuthorizationValue(input);
   const parsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(input);
@@ -341,7 +346,7 @@ function buildEvaluation(args: {
   inputTrust: YouTubeCanaryAuthorizationInputTrust;
   now: Date;
 }): YouTubeCanaryAuthorizationEvaluation {
-  return {
+  const evaluation: Omit<YouTubeCanaryAuthorizationEvaluation, "audit_receipt"> = {
     authorization_status: args.authorizationStatus,
     preflight_status: args.authorizationStatus === "authorization_fields_complete" ? "authorization_fields_complete_network_disabled" : "blocked",
     execution_status: "forbidden",
@@ -361,6 +366,10 @@ function buildEvaluation(args: {
     owner_approval_created: false,
     github_approval_review_created: false,
     merge_authority_created: false
+  };
+  return {
+    ...evaluation,
+    audit_receipt: buildYouTubeCanaryAuthorizationAuditReceipt(evaluation)
   };
 }
 
