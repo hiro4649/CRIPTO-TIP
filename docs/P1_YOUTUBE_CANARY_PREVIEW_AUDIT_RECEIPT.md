@@ -56,3 +56,22 @@ production readiness.
 `safe_receipt_hash` is a safe correlation identifier over the receipt fields
 except itself. It is not a signature, proof of correctness, owner approval, or
 authorization record.
+
+## Receipt Integrity
+
+The receipt schema now uses the canonical canary authorization blocker-code
+registry. Unknown blocker codes are rejected. External receipt verification also
+rejects duplicate blocker codes, non-canonical blocker ordering, and a
+`safe_receipt_hash` that does not match the receipt fields excluding itself.
+
+Receipt semantics are checked with the schema:
+
+- committed input must use committed evaluation mode and `preview_only: false`
+- preview input must use preview evaluation mode and `preview_only: true`
+- complete authorization must have no blocker codes
+- awaiting authorization must be blocked and have blocker codes
+- invalid authorization must be blocked and include an invalid-bundle blocker
+
+These checks make receipt correlation safer, but they still do not create
+runtime readiness, production readiness, owner approval, GitHub approval review,
+or merge authority.
