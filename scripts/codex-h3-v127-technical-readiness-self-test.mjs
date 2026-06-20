@@ -161,4 +161,34 @@ try {
   fs.rmSync(validatorInput, { force: true });
 }
 
+const workflowRunnerInput = 'codex-h3-v127-workflow-runner-technical-pass.safe-summary.json';
+fs.writeFileSync(workflowRunnerInput, JSON.stringify({
+  harnessVersion: '1.2.7',
+  status: 'pass',
+  technicalStatus: 'pass',
+  technicalChecksReady: true,
+  mergeReady: false,
+  ownerMergeAuthorized: false,
+  finalDecision: { exitCode: 1, mergeAllowed: false, safeNextAction: 'owner_decision_or_state_delta' },
+  targetQualityScoreStatus: {
+    status: 'pass',
+    blockingStatuses: [],
+    manualStatuses: [{ key: 'safeArtifactIndexStatus', status: 'warning' }],
+  },
+  safeArtifactIndexStatus: {
+    status: 'manual',
+    reasonCodes: ['safe_artifact_index_soft_budget_exceeded'],
+  },
+  safeArtifactValidation: { status: 'pass' },
+  safeSummaryOnly: true,
+}, null, 2));
+try {
+  execFileSync('node', ['scripts/codex-workflow-quality-runner.mjs', '--report', workflowRunnerInput, '--gate-exit', '0'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+  });
+} finally {
+  fs.rmSync(workflowRunnerInput, { force: true });
+}
+
 console.log('H3 v1.2.7 technical readiness self-test passed.');
