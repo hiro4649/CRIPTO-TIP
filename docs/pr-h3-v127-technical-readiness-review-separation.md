@@ -29,26 +29,32 @@ No secret, token, endpoint, OAuth, YouTube API, DB, RPC, wallet, deployment, pro
 - node --check scripts/codex-safe-artifact-index.mjs
 - node --check scripts/codex-technical-readiness-policy.mjs
 - node --check scripts/codex-v085-stability-gate.mjs
+- node scripts/codex-h3-v127-technical-readiness-self-test.mjs
 - corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts
 
 ## Product verification
 Not applicable. This PR does not change product runtime behavior.
+Skip reason: harness-only/docs-only H3 repair with no product runtime change and no runtime readiness claim.
 
 ## Tests or checks run
 Pending current-head verification.
 
 ## Testing and review
-The added tests cover PR #172-style manual advisories, unknown manual reasons failing closed, and soft-versus-hard artifact budget behavior.
+The added harness self-test covers PR #172-style manual advisories, unknown manual reasons failing closed, soft-versus-hard artifact budget behavior, compatible profile escalation, profile downgrade rejection, and harness-only formal precedence.
 
 ## Best of N Evidence
-Selected approach A: typed technical readiness classification with separate owner-review and advisory fields. This keeps same-head technical checks load-bearing while preventing review-only states from blocking technical readiness.
+Candidate count: 3
+
+Selected candidate: typed technical readiness classification with separate owner-review and advisory fields.
+
+Reason selected: keeps same-head technical checks load-bearing while preventing review-only states from blocking technical readiness.
 
 Rejected approach B: special-case PR #172. That would hide a general harness defect and create stale exception risk.
 
 Rejected approach C: treat all manual_confirmation_required states as pass. That would weaken security and evidence gates.
 
 ## Test Coverage Evidence
-Focused coverage is added in apps/api/src/evidence-rendering.test.ts. The fixture is a safe projection only and contains no raw logs or raw outputs.
+Focused coverage is added in scripts/codex-h3-v127-technical-readiness-self-test.mjs. The fixture is a safe projection only and contains no raw logs or raw outputs.
 
 ## Residual risks
 Remote quality-gate behavior must be confirmed on the PR head using safe artifacts only. This PR does not create owner approval, GitHub approval review, merge authority, release authority, deploy authority, runtime readiness, production readiness, legal compliance, or YouTube policy compliance.
