@@ -12850,7 +12850,7 @@ async function runTargetHarnessGate() {
 
 
 
-  if (failures.length) process.exit(1);
+  if (report.technicalStatus !== 'pass') process.exit(1);
 
 
 
