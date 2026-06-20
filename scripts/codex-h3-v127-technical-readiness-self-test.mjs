@@ -87,6 +87,19 @@ const requiredHeadingHintState = buildTechnicalReadinessState({
 assertCase('required_heading_hint_is_advisory', requiredHeadingHintState.technicalStatus === 'pass' &&
   requiredHeadingHintState.advisoryStatuses.some((item) => item.reasonCode === 'requiredHeadingHintStatus'));
 
+const safeArtifactManualOutcomeState = buildTechnicalReadinessState({
+  targetQualityScoreStatus: {
+    status: 'pass',
+    blockingStatuses: [],
+    manualStatuses: [{ key: 'safeArtifactIndexStatus', status: 'warning' }],
+  },
+  safeSummaryOnly: true,
+}, {
+  warnings: [{ id: 'safeArtifactIndexStatus.manual' }],
+});
+assertCase('safe_artifact_index_manual_outcome_is_advisory', safeArtifactManualOutcomeState.technicalStatus === 'pass' &&
+  safeArtifactManualOutcomeState.technicalEvidenceRequiredStatuses.length === 0);
+
 const compatibleBody = [
   'PR profile: harness_workflow_r3',
   '## Goal',
