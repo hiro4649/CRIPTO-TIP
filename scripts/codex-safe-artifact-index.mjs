@@ -34,7 +34,13 @@ const REQUIRED_ARTIFACTS = [
 
 ];
 
-const DEFAULT_ARTIFACT_BUDGET = 16;
+const DEFAULT_SOFT_ARTIFACT_BUDGET = 16;
+const DEFAULT_HARD_ARTIFACT_BUDGET = 40;
+
+function positiveInteger(value, fallback) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
 
 
 
@@ -80,17 +86,26 @@ export function buildSafeArtifactIndex(artifacts = [], mode = process.env.CODEX_
 
   const machineArtifacts = entries.filter((item) => !PRIMARY_HUMAN_ARTIFACTS.includes(item.artifactName)).map((item) => item.artifactName);
 
-  const maxArtifacts = Number(options.maxArtifacts || process.env.CODEX_ARTIFACT_BUDGET || DEFAULT_ARTIFACT_BUDGET);
+  const softArtifactBudget = positiveInteger(options.softArtifactBudget || process.env.CODEX_ARTIFACT_SOFT_BUDGET || process.env.CODEX_ARTIFACT_BUDGET, DEFAULT_SOFT_ARTIFACT_BUDGET);
+  const hardArtifactBudget = positiveInteger(options.hardArtifactBudget || process.env.CODEX_ARTIFACT_HARD_BUDGET, DEFAULT_HARD_ARTIFACT_BUDGET);
+  const effectiveHardArtifactBudget = Math.max(hardArtifactBudget, softArtifactBudget);
+  const artifactSoftBudgetExceeded = entries.length > softArtifactBudget;
+  const artifactHardBudgetExceeded = entries.length > effectiveHardArtifactBudget;
+  const primaryHumanArtifactBudgetExceeded = primaryHumanArtifacts.length > 3;
 
   const artifactBudget = {
 
-    maxArtifacts,
+    softArtifactBudget,
+    hardArtifactBudget: effectiveHardArtifactBudget,
 
     maxPrimaryHumanArtifacts: 3,
 
     artifactCount: entries.length,
 
-    budgetExceeded: entries.length > maxArtifacts,
+    budgetExceeded: artifactSoftBudgetExceeded,
+    softBudgetExceeded: artifactSoftBudgetExceeded,
+    hardBudgetExceeded: artifactHardBudgetExceeded,
+    primaryHumanArtifactBudgetExceeded,
 
   };
 
@@ -99,6 +114,8 @@ export function buildSafeArtifactIndex(artifacts = [], mode = process.env.CODEX_
   const unsafe = unsafePath || entries.some((item) => scanObjectForUnsafe(item).length || !item.safeSummaryOnly || item.rawLogIncluded || item.containsSecrets || item.containsEndpointValues);
 
   const requiredMissing = missingArtifacts.length > 0;
+
+  const duplicate = duplicateArtifacts.length > 0;
 
   return {
 
@@ -124,7 +141,8 @@ export function buildSafeArtifactIndex(artifacts = [], mode = process.env.CODEX_
 
     machineArtifacts,
 
-    status: unsafe || requiredMissing ? 'fail' : artifactBudget.budgetExceeded ? 'warning' : 'pass',
+    status: unsafe || requiredMissing || duplicate || artifactHardBudgetExceeded || primaryHumanArtifactBudgetExceeded ? 'fail'
+      : artifactSoftBudgetExceeded ? 'warning' : 'pass',
 
     reasonCodes: [
 
@@ -132,7 +150,13 @@ export function buildSafeArtifactIndex(artifacts = [], mode = process.env.CODEX_
 
       ...(requiredMissing ? ['artifact_required_missing'] : []),
 
-      ...(artifactBudget.budgetExceeded ? ['artifact_budget_exceeded'] : []),
+      ...(duplicate ? ['artifact_duplicate_ambiguity'] : []),
+
+      ...(artifactHardBudgetExceeded ? ['artifact_hard_budget_exceeded'] : []),
+
+      ...(primaryHumanArtifactBudgetExceeded ? ['primary_human_artifact_budget_exceeded'] : []),
+
+      ...(artifactSoftBudgetExceeded && !artifactHardBudgetExceeded ? ['artifact_soft_budget_exceeded', 'artifact_budget_exceeded'] : []),
 
     ],
 

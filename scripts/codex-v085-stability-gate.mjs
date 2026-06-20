@@ -15,6 +15,7 @@ import {
 } from './codex-v080-lib.mjs';
 import { classifyChange, changedFiles } from './codex-change-classification-gate.mjs';
 import { buildPrProfileReport } from './codex-pr-profile-gate.mjs';
+import { classifyGateStatus } from './codex-technical-readiness-policy.mjs';
 
 const taskModes = new Set([
   'bugfix',
@@ -197,8 +198,9 @@ function buildBugfixEvidenceStatus(env, taskStatus, classificationStatus) {
 function buildPrProfileAssistStatus(env) {
   const profile = buildPrProfileReport(env).prProfileStatus;
   const needsHint = ['fail', 'warning'].includes(profile.status);
+  const repairHintStatus = profile.status === 'fail' ? 'fail' : needsHint ? 'warning' : profile.status;
   return {
-    status: needsHint ? 'warning' : profile.status,
+    status: repairHintStatus,
     declaredProfile: profile.declaredProfile || null,
     inferredProfile: profile.inferredProfile || profile.profile || null,
     profileConflict: (profile.reasonCodes || []).includes('pr_profile_conflict'),
@@ -399,23 +401,55 @@ function buildFastPathExplainabilityStatus(fastPathStatus = {}) {
   };
 }
 
+function technicallyBlockingStatus(value) {
+  if (!value) return false;
+  const status = String(value.status || '').toLowerCase();
+  if (status === 'fail') return true;
+  if (status !== 'manual_confirmation_required' && status !== 'warning') return false;
+  const classification = classifyGateStatus(value);
+  return classification === 'technical_blocker' || classification === 'technical_evidence_required';
+}
+
+function ownerReviewStatus(value) {
+  if (!value) return false;
+  const status = String(value.status || '').toLowerCase();
+  if (status !== 'manual_confirmation_required' && status !== 'warning') return false;
+  return classifyGateStatus(value) === 'owner_review_required';
+}
+
+function advisoryStatus(value) {
+  if (!value) return false;
+  const status = String(value.status || '').toLowerCase();
+  if (status !== 'manual_confirmation_required' && status !== 'warning') return false;
+  return classifyGateStatus(value) === 'advisory';
+}
+
 function buildOneScreenDashboardStatus(parts) {
   const blocking = [
     ['bugfix', parts.bugfixEvidenceStatus],
     ['import_smoke', parts.importSmokeMicroStatus],
     ['runtime_risk', parts.runtimeRiskRegisterStatus],
-  ].find(([, value]) => value?.status === 'fail');
+  ].find(([, value]) => technicallyBlockingStatus(value));
   const manual = [
     ['task_mode', parts.taskDisciplineStatus],
+    ['pr_profile', parts.prProfileAssistStatus],
     ['runtime_risk', parts.runtimeRiskRegisterStatus],
-  ].find(([, value]) => value?.status === 'manual_confirmation_required' || value?.status === 'warning');
+  ].find(([, value]) => ownerReviewStatus(value));
+  const advisory = [
+    ['task_mode', parts.taskDisciplineStatus],
+    ['bugfix', parts.bugfixEvidenceStatus],
+    ['pr_profile', parts.prProfileAssistStatus],
+    ['import_smoke', parts.importSmokeMicroStatus],
+    ['runtime_risk', parts.runtimeRiskRegisterStatus],
+    ['fast_path', parts.fastPathExplainabilityStatus],
+  ].find(([, value]) => advisoryStatus(value));
   return {
     status: 'pass',
     mode: isSourceHarnessMode(parts.env) ? 'source' : 'target',
     mergeReady: !blocking && !manual,
-    targetMergeReady: !blocking && !manual,
+    targetMergeReady: !blocking,
     topBlockingReason: blocking?.[0] || '',
-    topNextAction: blocking ? 'fix_blocking_v085_evidence' : manual ? 'add_manual_confirmation_or_safe_summary' : 'ready_for_review',
+    topNextAction: blocking ? 'fix_blocking_v085_evidence' : manual ? 'add_owner_review_or_safe_summary' : advisory ? 'review_advisory_safe_summary' : 'ready_for_review',
     fastPathDecision: parts.fastPathExplainabilityStatus.decision,
     productEvidenceSummary: parts.productEvidenceExplainStatus.nextBestFix,
     runtimeRiskSummary: parts.runtimeRiskRegisterStatus.status,
@@ -462,7 +496,10 @@ export async function buildV085StabilityReport(env = process.env) {
   const unsafe = scanObjectForUnsafe(nested).length > 0;
   const failures = nested.filter((item) => item.status === 'fail');
   const manual = nested.filter((item) => item.status === 'manual_confirmation_required' || item.status === 'warning');
-  const status = unsafe || failures.length ? 'fail' : manual.length ? 'manual_confirmation_required' : 'pass';
+  const technicalManual = manual.filter((item) => technicallyBlockingStatus(item));
+  const ownerReview = manual.filter((item) => ownerReviewStatus(item));
+  const advisory = manual.filter((item) => advisoryStatus(item));
+  const status = unsafe || failures.length || technicalManual.length ? 'fail' : 'pass';
   return simpleStatus('v085StabilityStatus', status, {
     taskDisciplineStatus,
     bugfixEvidenceStatus,
@@ -477,6 +514,32 @@ export async function buildV085StabilityReport(env = process.env) {
       ...new Set(nested.flatMap((item) => item.reasonCodes || [])),
       ...(unsafe ? ['unsafe_value_detected'] : []),
     ],
+    technicalChecksReady: status === 'pass',
+    technicalBlockingStatuses: failures.map((item) => ({
+      gate: item.gate || item.key || item.statusName || 'v085_nested_status',
+      status: item.status,
+      reasonCode: item.reasonCodes?.[0] || 'v085_failure',
+      safeSummaryOnly: true,
+    })),
+    technicalEvidenceRequiredStatuses: technicalManual.map((item) => ({
+      gate: item.gate || item.key || item.statusName || 'v085_nested_status',
+      status: item.status,
+      reasonCode: item.reasonCodes?.[0] || 'v085_manual',
+      safeSummaryOnly: true,
+    })),
+    ownerReviewRequired: ownerReview.length > 0,
+    ownerReviewReasons: ownerReview.map((item) => ({
+      gate: item.gate || item.key || item.statusName || 'v085_nested_status',
+      status: item.status,
+      reasonCode: item.reasonCodes?.[0] || 'owner_review_required',
+      safeSummaryOnly: true,
+    })),
+    advisoryStatuses: advisory.map((item) => ({
+      gate: item.gate || item.key || item.statusName || 'v085_nested_status',
+      status: item.status,
+      reasonCode: item.reasonCodes?.[0] || 'advisory',
+      safeSummaryOnly: true,
+    })),
     safeSummaryOnly: true,
   });
 }

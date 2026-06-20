@@ -39,6 +39,7 @@ import { buildGithubReplayContextAsync } from './codex-ci-replay.mjs';
 
 
 import { buildCompactReasonSummary } from './codex-reason-summary.mjs';
+import { buildTechnicalReadinessState } from './codex-technical-readiness-policy.mjs';
 
 import * as v101Gates from './codex-v101-gate-lib.mjs';
 import * as v102Gates from './codex-v102-gate-lib.mjs';
@@ -3515,10 +3516,19 @@ function applyV127PostClosureConsistency(report = {}, outcome = {}) {
     safeSummaryOnly: true,
   };
   report.qualityScore = report.qualityScoreStatus.score;
-  report.status = failures.length ? 'fail' : (warnings.length ? 'manual_confirmation_required' : 'pass');
-  report.technicalChecksReady = failures.length === 0 && warnings.length === 0;
-  report.mergeReady = report.technicalChecksReady;
   report.ownerMergeAuthorized = report.finalDecision?.mergeAllowed === true;
+  const technicalReadiness = buildTechnicalReadinessState(report, { failures, warnings });
+  report.technicalReadinessStatus = technicalReadiness;
+  report.technicalStatus = technicalReadiness.technicalStatus;
+  report.technicalChecksReady = technicalReadiness.technicalChecksReady;
+  report.technicalBlockingStatuses = technicalReadiness.technicalBlockingStatuses;
+  report.technicalEvidenceRequiredStatuses = technicalReadiness.technicalEvidenceRequiredStatuses;
+  report.ownerReviewRequired = technicalReadiness.ownerReviewRequired;
+  report.ownerReviewReasons = technicalReadiness.ownerReviewReasons;
+  report.advisoryStatuses = technicalReadiness.advisoryStatuses;
+  report.reviewStatus = technicalReadiness.reviewStatus;
+  report.status = technicalReadiness.technicalStatus;
+  report.mergeReady = technicalReadiness.mergeReady;
   if (failures.length) {
     const topFailures = failures.slice(0, 3).map((item) => item.id || item.reasonCode || 'post_closure_validation_failed');
     report.decisionCore = {
@@ -10605,7 +10615,18 @@ async function runSourceHarnessGate() {
 
 
 
-  report.status = failures.length ? 'fail' : (warnings.length ? 'manual_confirmation_required' : 'pass');
+  const technicalReadiness = buildTechnicalReadinessState(report, { failures, warnings });
+  report.technicalReadinessStatus = technicalReadiness;
+  report.technicalStatus = technicalReadiness.technicalStatus;
+  report.technicalChecksReady = technicalReadiness.technicalChecksReady;
+  report.technicalBlockingStatuses = technicalReadiness.technicalBlockingStatuses;
+  report.technicalEvidenceRequiredStatuses = technicalReadiness.technicalEvidenceRequiredStatuses;
+  report.ownerReviewRequired = technicalReadiness.ownerReviewRequired;
+  report.ownerReviewReasons = technicalReadiness.ownerReviewReasons;
+  report.advisoryStatuses = technicalReadiness.advisoryStatuses;
+  report.reviewStatus = technicalReadiness.reviewStatus;
+  report.status = technicalReadiness.technicalStatus;
+  report.mergeReady = technicalReadiness.mergeReady;
 
   if (report.status !== 'pass') {
     const blockerIds = [...failures, ...warnings]
@@ -12717,19 +12738,20 @@ async function runTargetHarnessGate() {
 
 
 
-  report.status = failures.length ? 'fail' : (warnings.length ? 'manual_confirmation_required' : 'pass');
-
-
-
-  report.mergeReady = failures.length === 0 && warnings.length === 0;
-
-
-
+  const technicalReadiness = buildTechnicalReadinessState(report, { failures, warnings });
+  report.technicalReadinessStatus = technicalReadiness;
+  report.technicalStatus = technicalReadiness.technicalStatus;
+  report.technicalChecksReady = technicalReadiness.technicalChecksReady;
+  report.technicalBlockingStatuses = technicalReadiness.technicalBlockingStatuses;
+  report.technicalEvidenceRequiredStatuses = technicalReadiness.technicalEvidenceRequiredStatuses;
+  report.ownerReviewRequired = technicalReadiness.ownerReviewRequired;
+  report.ownerReviewReasons = technicalReadiness.ownerReviewReasons;
+  report.advisoryStatuses = technicalReadiness.advisoryStatuses;
+  report.reviewStatus = technicalReadiness.reviewStatus;
+  report.status = technicalReadiness.technicalStatus;
+  report.mergeReady = technicalReadiness.mergeReady;
   report.targetMergeReady = report.mergeReady;
-
-
-
-  report.humanReviewRequired = warnings.length > 0;
+  report.humanReviewRequired = technicalReadiness.ownerReviewRequired;
 
 
 
@@ -13351,7 +13373,17 @@ async function runSourceHarnessCoreContractGate() {
   report.walletRpcDeployAccess = false;
   report.operatorVisibleStatuses = V119_STATUS_KEYS;
   report.syntheticRepresentativeValidation = report.representativeProductPrValidationStatus?.status === 'pass' ? 'pass' : 'fail';
-  report.status = failures.length ? 'fail' : (warnings.length ? 'manual_confirmation_required' : 'pass');
+  const technicalReadiness = buildTechnicalReadinessState(report, { failures, warnings });
+  report.technicalReadinessStatus = technicalReadiness;
+  report.technicalStatus = technicalReadiness.technicalStatus;
+  report.technicalChecksReady = technicalReadiness.technicalChecksReady;
+  report.technicalBlockingStatuses = technicalReadiness.technicalBlockingStatuses;
+  report.technicalEvidenceRequiredStatuses = technicalReadiness.technicalEvidenceRequiredStatuses;
+  report.ownerReviewRequired = technicalReadiness.ownerReviewRequired;
+  report.ownerReviewReasons = technicalReadiness.ownerReviewReasons;
+  report.advisoryStatuses = technicalReadiness.advisoryStatuses;
+  report.reviewStatus = technicalReadiness.reviewStatus;
+  report.status = technicalReadiness.technicalStatus;
   if (failures.length) {
     const topFailures = failures.slice(0, 3).map((item) => item.id || item.reasonCode || 'source_core_contract_gate_failed');
     report.decisionCore = {
