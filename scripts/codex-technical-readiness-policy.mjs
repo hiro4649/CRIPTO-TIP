@@ -52,7 +52,9 @@ const ADVISORY_REASONS = new Set([
   'runtime_risk_register_absent',
   'fast_path_full_verification_required',
   'safe_artifact_index',
+  'safe_artifact_index_status',
   'required_heading_hint',
+  'required_heading_hint_status',
   'required_heading_hint_available',
   'required_heading_near_miss',
   'ai_review_disclaimer',
@@ -96,6 +98,7 @@ function reasonFromStatus(status = {}) {
 
 export function classifyGateStatus(status = {}) {
   const value = String(status?.effectiveStatus || status?.status || '').toLowerCase();
+  if (!value) return classifyReasonCode(reasonFromStatus(status));
   if (value === 'pass' || value === 'pass_optional' || value === 'not_applicable' || value === 'not_required') return 'optional';
   if (value === 'fail' || value === 'missing' || value === 'not_run') return 'technical_blocker';
   if (value === 'manual_confirmation_required' || value === 'warning') {
