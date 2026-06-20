@@ -58,7 +58,7 @@ export function defaultYouTubeLiveChatControlledCanaryPreflightInput(): YouTubeL
   return projectAuthorizationToLegacyPreflight(defaultYouTubeCanaryAuthorizationBundle());
 }
 
-export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date("2026-06-18T00:00:00.000Z"), inputTrust: "committed_safe_bundle" | "untrusted_preview" = "untrusted_preview"): YouTubeLiveChatControlledCanaryPreflightResult {
+export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date(), inputTrust: "committed_safe_bundle" | "untrusted_preview" = "untrusted_preview"): YouTubeLiveChatControlledCanaryPreflightResult {
   const bundle = legacyPreflightToAuthorizationBundle(input);
   const canonical = evaluateYouTubeCanaryAuthorization(bundle, { now, inputTrust });
   const legacyReasons = [

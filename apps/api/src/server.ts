@@ -3294,6 +3294,7 @@ export function buildServer(input?: CriptoTipRepository | BuildServerDependencie
   registerAdminYouTubeConnectorRoutes(app, {
     requireAdminAuth: (request) => requireBearer(request, ADMIN_TOKEN),
     connectorCapability: fakeFixtureCapability,
+    now: deps.now,
     realConnectorReadiness: buildYouTubeLiveChatRealConnectorReadinessGate,
     defaultCanaryInput: defaultYouTubeLiveChatControlledCanaryPreflightInput,
     evaluateControlledCanary: evaluateYouTubeLiveChatControlledCanaryPreflight,
