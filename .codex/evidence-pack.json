@@ -4,7 +4,7 @@
   "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
   "prNumber": 184,
-  "headSha": "353b367e97bbf43139e3fe21cd9012db9e31f27f",
+  "headSha": "35aea156b56eecbc3f13ed210734e64fd6c60e5c",
   "baseSha": "f0153a228c63bdc43d8e9a3fafc4c0e3269f6e84",
   "title": "feat: bind youtube canary records to safe receipts",
   "goal": "Bind YouTube canary authorization records to safe audit receipts and authorization bundles using pure model validation, without creating execution, persistence, owner approval, or readiness authority.",
@@ -134,7 +134,7 @@
     {
       "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
       "status": "pass",
-      "result": "4 files, 28 passed"
+      "result": "4 files, 33 passed"
     },
     {
       "name": "corepack pnpm lint",
@@ -149,12 +149,12 @@
     {
       "name": "corepack pnpm test",
       "status": "pass",
-      "result": "123 files, 2123 passed, 6 skipped"
+      "result": "123 files, 2128 passed, 6 skipped"
     },
     {
       "name": "npm test",
       "status": "pass",
-      "result": "123 files, 2123 passed, 6 skipped"
+      "result": "123 files, 2128 passed, 6 skipped"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -191,9 +191,9 @@
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
     "testFiles": 123,
-    "passed": 2123,
+    "passed": 2128,
     "skipped": 6,
-    "testedHeadSha": "353b367e97bbf43139e3fe21cd9012db9e31f27f",
+    "testedHeadSha": "35aea156b56eecbc3f13ed210734e64fd6c60e5c",
     "currentRunEvidence": true
   },
   "bestOfNEvidence": {
@@ -235,7 +235,10 @@
     "networkExecutionBlocked": true,
     "oauthExecutionBlocked": true,
     "secretAccessBlocked": true,
-    "runtimeExecutionBlocked": true
+    "runtimeExecutionBlocked": true,
+    "temporalBindingTested": true,
+    "integrityFailurePrecedenceTested": true,
+    "typedBindingReasonCodesTested": true
   },
   "testCoverageEvidence": {
     "changedArea": [
@@ -251,7 +254,11 @@
       "preview receipt treated as authority",
       "incomplete committed bundle treated as ready",
       "recorded state claimed with missing references",
-      "raw input echoed"
+      "raw input echoed",
+      "record created before receipt accepted",
+      "temporal failure hidden behind revoked or expired status",
+      "generic hash binding reason hides mismatch class",
+      "receipt derivation mismatch accepted"
     ],
     "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
     "fullTestCommand": "corepack pnpm test",
@@ -259,7 +266,9 @@
       "complete committed bundle binds to recorded non-executable record",
       "preview receipt binds only as non-authoritative",
       "committed incomplete bundle remains blocked",
-      "draft, revoked, and expired records map after hashes pass"
+      "draft, revoked, and expired records map after hashes pass",
+      "record created at receipt time is accepted",
+      "record created after receipt time is accepted"
     ],
     "coveredFailurePaths": [
       "unknown blocker code",
@@ -274,7 +283,14 @@
       "mismatched record bundle hash",
       "mismatched record receipt hash",
       "tampered receipt semantics",
-      "invalid bundle input"
+      "invalid bundle input",
+      "record created before receipt time",
+      "record created before receipt time with revoked record",
+      "record created before receipt time with expired record",
+      "receipt integrity failure before temporal binding",
+      "bundle integrity failure before temporal binding",
+      "mismatched receipt bundle hash",
+      "receipt derivation mismatch"
     ],
     "boundaryTests": [
       "no raw input echo",
@@ -298,11 +314,11 @@
   ],
   "productVerificationCommands": [
     "corepack pnpm install --frozen-lockfile: pass",
-    "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts: pass; 4 files, 33 passed",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass",
-    "npm test: pass",
+    "corepack pnpm test: pass; 123 files, 2128 passed, 6 skipped",
+    "npm test: pass; 123 files, 2128 passed, 6 skipped",
     "corepack pnpm evidence:ci: pass",
     "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",

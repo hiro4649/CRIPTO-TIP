@@ -12,9 +12,10 @@ This PR adds a pure model contract that binds YouTube canary authorization
 records to safe audit receipts and authorization bundles.
 
 It adds canonical blocker-code validation, audit receipt integrity verification,
-record status hardening, and record/receipt/bundle hash binding. It does not add
-routes, persistence, repositories, database drivers, migrations, OAuth, network
-execution, secret access, or YouTube API execution.
+record status hardening, record/receipt/bundle hash binding, receipt derivation
+comparison, typed binding reason codes, and fail-closed temporal binding. It
+does not add routes, persistence, repositories, database drivers, migrations,
+OAuth, network execution, secret access, or YouTube API execution.
 
 ## Evidence Integrity
 
@@ -43,7 +44,8 @@ policy compliance.
 
 The binding evaluator recomputes the bundle hash and receipt hash from supplied
 safe model inputs and compares them to the record. It also verifies that the
-receipt fields match a fresh safe evaluation of the supplied bundle.
+receipt fields match a fresh safe evaluation of the supplied bundle. A record
+created before the receipt evaluation fails closed with a typed safe reason code.
 
 ## Security impact
 
@@ -104,6 +106,7 @@ Test command: `corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-re
 What the test covers: canonical blocker acceptance, unknown blocker rejection,
 duplicate blocker rejection, blocker ordering, receipt hash integrity, committed
 and preview semantic contracts, stricter record status semantics, hash binding,
+receipt derivation comparison, temporal binding, typed binding reason codes,
 preview non-authority, incomplete committed bundle blocking, and non-executable
 output flags.
 
@@ -124,9 +127,15 @@ Covered behaviors:
 - revoked records require revocation reason and valid revocation time
 - non-revoked records cannot carry revocation metadata
 - record/receipt/bundle binding accepts matching complete committed inputs
+- record created at receipt time is accepted
+- record created after receipt time is accepted
+- record created before receipt time is rejected before business record states
+- receipt and bundle integrity failures take precedence over temporal binding
 - preview receipts remain non-authoritative
 - incomplete committed bundles remain blocked
-- mismatched record bundle hash and receipt hash are rejected
+- mismatched receipt bundle hash, record bundle hash, and record receipt hash are
+  rejected with specific typed reason codes
+- receipt derivation mismatches are rejected with a typed reason code
 - tampered receipt hash and semantics are rejected
 - outputs remain forbidden, non-authoritative, non-persistent, and safe
 

@@ -21,10 +21,20 @@ The evaluator verifies:
 - the recomputed bundle hash against the receipt and record
 - the recomputed receipt hash against the record
 - the receipt fields against a fresh safe evaluation of the supplied bundle
+- temporal binding that requires the safe receipt to exist no later than the
+  record creation time
+- effective record status only after schema, receipt integrity, bundle
+  integrity, hash binding, receipt derivation, and temporal binding pass
 
 Hash equality is only safe correlation. It is not a signature, proof of owner
 intent, execution approval, GitHub approval review, merge authority, release
 authority, or deployment authority.
+
+The temporal rule is fail-closed: a record created before the receipt evaluation
+is invalid, even if that record is otherwise draft, revoked, or expired. A record
+created at the same instant as the receipt evaluation, or after it, may continue
+to the effective status checks. Returned safe reason codes identify the failure
+class without echoing raw timestamps or raw hashes.
 
 ## Binding Statuses
 
@@ -43,6 +53,16 @@ authority, or deployment authority.
   recorded non-executable record
 
 Every status remains non-authoritative and non-executable.
+
+## Typed Reason Codes
+
+Binding failures use a typed reason-code registry. The registry distinguishes
+record bundle hash mismatch, receipt bundle hash mismatch, record receipt hash
+mismatch, receipt derivation mismatch, temporal binding failure, preview
+non-authority, committed bundle incompleteness, and record draft/revoked/expired
+states. This keeps review evidence specific without printing raw receipt,
+record, bundle, timestamp, credential, URL, owner, wallet, database, or provider
+values.
 
 ## Fixed Safety Output
 

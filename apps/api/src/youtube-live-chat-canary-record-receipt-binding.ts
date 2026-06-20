@@ -5,12 +5,38 @@ import {
 } from "./youtube-live-chat-canary-authorization-gate.js";
 import {
   evaluateYouTubeCanaryAuthorizationRecord,
-  type YouTubeCanaryAuthorizationRecord
+  YouTubeCanaryAuthorizationRecordSchema
 } from "./youtube-live-chat-canary-authorization-record.js";
 import {
   verifyYouTubeCanaryAuthorizationAuditReceipt,
   type YouTubeCanaryAuthorizationAuditReceipt
 } from "./youtube-live-chat-canary-audit-receipt.js";
+import { z } from "zod";
+
+export const YouTubeCanaryAuthorizationRecordBindingReasonCodeSchema = z.enum([
+  "authorization_bundle_schema_invalid",
+  "audit_receipt_schema_invalid",
+  "audit_receipt_semantics_invalid",
+  "audit_receipt_hash_invalid",
+  "audit_receipt_blocker_order_invalid",
+  "audit_receipt_blocker_duplicate",
+  "authorization_record_schema_invalid",
+  "receipt_bundle_hash_mismatch",
+  "record_bundle_hash_mismatch",
+  "record_receipt_hash_mismatch",
+  "audit_receipt_not_derived_from_bundle",
+  "record_created_before_receipt",
+  "untrusted_preview_not_record_authority",
+  "committed_bundle_incomplete",
+  "authorization_record_draft",
+  "authorization_record_revoked",
+  "authorization_record_expired",
+  "authorization_record_bound_non_executable"
+]);
+
+export type YouTubeCanaryAuthorizationRecordBindingReasonCode = z.infer<
+  typeof YouTubeCanaryAuthorizationRecordBindingReasonCodeSchema
+>;
 
 export type YouTubeCanaryAuthorizationRecordBindingStatus =
   | "invalid"
@@ -40,7 +66,7 @@ export type YouTubeCanaryAuthorizationRecordBindingEvaluation = {
   record_persisted: false;
   receipt_persisted: false;
   persistence_status: "not_implemented";
-  safe_reason_codes: string[];
+  safe_reason_codes: YouTubeCanaryAuthorizationRecordBindingReasonCode[];
 };
 
 export type YouTubeCanaryAuthorizationRecordBindingInput = {
@@ -54,43 +80,42 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
   input: YouTubeCanaryAuthorizationRecordBindingInput
 ): YouTubeCanaryAuthorizationRecordBindingEvaluation {
   const now = input.now ?? new Date();
-  const recordEvaluation = evaluateYouTubeCanaryAuthorizationRecord(input.record, now);
-  if (recordEvaluation.effective_record_status === "invalid") {
-    return buildBinding("invalid", {
-      recordEffectiveStatus: "invalid",
-      receiptIntegrityStatus: "fail",
-      bundleIntegrityStatus: "fail",
-      hashBindingStatus: "fail",
-      trustStatus: "invalid",
-      safeReasonCodes: recordEvaluation.safe_reason_codes
-    });
-  }
 
   const receiptIntegrity = verifyYouTubeCanaryAuthorizationAuditReceipt(input.auditReceipt);
+  const bundleParsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(input.authorizationBundle);
+  if (!bundleParsed.success) {
+    return buildBinding("bundle_integrity_failed", {
+      recordEffectiveStatus: "invalid",
+      receiptIntegrityStatus: "pass",
+      bundleIntegrityStatus: "fail",
+      hashBindingStatus: "fail",
+      trustStatus: receiptIntegrity.integrity_status === "pass" ? receiptIntegrity.receipt.input_trust : "invalid",
+      safeReasonCodes: ["authorization_bundle_schema_invalid"]
+    });
+  }
   if (receiptIntegrity.integrity_status === "fail") {
     return buildBinding("receipt_integrity_failed", {
-      recordEffectiveStatus: recordEvaluation.effective_record_status,
+      recordEffectiveStatus: "invalid",
       receiptIntegrityStatus: "fail",
-      bundleIntegrityStatus: "fail",
+      bundleIntegrityStatus: "pass",
       hashBindingStatus: "fail",
       trustStatus: "invalid",
       safeReasonCodes: receiptIntegrity.safe_reason_codes
     });
   }
-
-  const bundleParsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(input.authorizationBundle);
-  if (!bundleParsed.success) {
-    return buildBinding("bundle_integrity_failed", {
-      recordEffectiveStatus: recordEvaluation.effective_record_status,
+  const recordParsed = YouTubeCanaryAuthorizationRecordSchema.safeParse(input.record);
+  if (!recordParsed.success) {
+    return buildBinding("invalid", {
+      recordEffectiveStatus: "invalid",
       receiptIntegrityStatus: "pass",
-      bundleIntegrityStatus: "fail",
+      bundleIntegrityStatus: "pass",
       hashBindingStatus: "fail",
       trustStatus: receiptIntegrity.receipt.input_trust,
-      safeReasonCodes: ["authorization_bundle_schema_invalid"]
+      safeReasonCodes: ["authorization_record_schema_invalid"]
     });
   }
 
-  const record = input.record as YouTubeCanaryAuthorizationRecord;
+  const record = recordParsed.data;
   const receipt = receiptIntegrity.receipt;
   const computedBundleHash = safeCanonicalAuthorizationHash(bundleParsed.data);
   const expectedEvaluation = evaluateYouTubeCanaryAuthorization(bundleParsed.data, {
@@ -99,27 +124,39 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
   });
 
   const expectedReceipt = expectedEvaluation.audit_receipt;
-  const hashOrReceiptMismatch =
-    record.authorization_bundle_hash !== computedBundleHash ||
-    record.audit_receipt_hash !== receipt.safe_receipt_hash ||
-    receipt.safe_bundle_hash !== computedBundleHash ||
-    receipt.safe_receipt_hash !== expectedReceipt.safe_receipt_hash ||
-    receipt.authorization_status !== expectedReceipt.authorization_status ||
-    receipt.preflight_status !== expectedReceipt.preflight_status ||
-    receipt.input_trust !== expectedReceipt.input_trust ||
-    receipt.preview_only !== expectedReceipt.preview_only ||
-    !sameStringArray(receipt.blocker_codes, expectedReceipt.blocker_codes);
+  const hashOrReceiptMismatch: YouTubeCanaryAuthorizationRecordBindingReasonCode[] = [];
+  if (receipt.safe_bundle_hash !== computedBundleHash) hashOrReceiptMismatch.push("receipt_bundle_hash_mismatch");
+  if (record.authorization_bundle_hash !== computedBundleHash) hashOrReceiptMismatch.push("record_bundle_hash_mismatch");
+  if (record.audit_receipt_hash !== receipt.safe_receipt_hash) hashOrReceiptMismatch.push("record_receipt_hash_mismatch");
+  if (!isSameYouTubeCanaryAuthorizationAuditReceipt(receipt, expectedReceipt)) {
+    hashOrReceiptMismatch.push("audit_receipt_not_derived_from_bundle");
+  }
 
-  if (hashOrReceiptMismatch) {
+  if (hashOrReceiptMismatch.length) {
     return buildBinding("hash_binding_failed", {
-      recordEffectiveStatus: recordEvaluation.effective_record_status,
+      recordEffectiveStatus: "invalid",
       receiptIntegrityStatus: "pass",
       bundleIntegrityStatus: "pass",
       hashBindingStatus: "fail",
       trustStatus: receipt.input_trust,
-      safeReasonCodes: ["record_receipt_hash_binding_failed"]
+      safeReasonCodes: hashOrReceiptMismatch
     });
   }
+
+  const recordCreatedAt = Date.parse(record.created_at);
+  const receiptEvaluatedAt = Date.parse(receipt.evaluated_at);
+  if (!Number.isFinite(recordCreatedAt) || !Number.isFinite(receiptEvaluatedAt) || recordCreatedAt < receiptEvaluatedAt) {
+    return buildBinding("invalid", {
+      recordEffectiveStatus: "invalid",
+      receiptIntegrityStatus: "pass",
+      bundleIntegrityStatus: "pass",
+      hashBindingStatus: "pass",
+      trustStatus: receipt.input_trust,
+      safeReasonCodes: ["record_created_before_receipt"]
+    });
+  }
+
+  const recordEvaluation = evaluateYouTubeCanaryAuthorizationRecord(record, now);
 
   if (receipt.input_trust === "untrusted_preview") {
     return buildBinding("preview_bound_non_authoritative", {
@@ -128,7 +165,7 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
       bundleIntegrityStatus: "pass",
       hashBindingStatus: "pass",
       trustStatus: "untrusted_preview",
-      safeReasonCodes: ["preview_receipt_non_authoritative"]
+      safeReasonCodes: ["untrusted_preview_not_record_authority"]
     });
   }
 
@@ -150,7 +187,7 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
       bundleIntegrityStatus: "pass",
       hashBindingStatus: "pass",
       trustStatus: "committed_safe_bundle",
-      safeReasonCodes: recordEvaluation.safe_reason_codes
+      safeReasonCodes: toBindingReasonCodes(recordEvaluation.safe_reason_codes)
     });
   }
   if (recordEvaluation.effective_record_status === "revoked") {
@@ -160,7 +197,7 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
       bundleIntegrityStatus: "pass",
       hashBindingStatus: "pass",
       trustStatus: "committed_safe_bundle",
-      safeReasonCodes: recordEvaluation.safe_reason_codes
+      safeReasonCodes: toBindingReasonCodes(recordEvaluation.safe_reason_codes)
     });
   }
   if (recordEvaluation.effective_record_status === "expired") {
@@ -170,7 +207,7 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
       bundleIntegrityStatus: "pass",
       hashBindingStatus: "pass",
       trustStatus: "committed_safe_bundle",
-      safeReasonCodes: recordEvaluation.safe_reason_codes
+      safeReasonCodes: toBindingReasonCodes(recordEvaluation.safe_reason_codes)
     });
   }
 
@@ -180,8 +217,35 @@ export function evaluateYouTubeCanaryAuthorizationRecordBinding(
     bundleIntegrityStatus: "pass",
     hashBindingStatus: "pass",
     trustStatus: "committed_safe_bundle",
-    safeReasonCodes: ["record_receipt_bound_non_executable"]
+    safeReasonCodes: ["authorization_record_bound_non_executable"]
   });
+}
+
+export function isSameYouTubeCanaryAuthorizationAuditReceipt(
+  left: YouTubeCanaryAuthorizationAuditReceipt,
+  right: YouTubeCanaryAuthorizationAuditReceipt
+): boolean {
+  return (
+    left.schema_version === right.schema_version &&
+    left.receipt_kind === right.receipt_kind &&
+    left.evaluation_mode === right.evaluation_mode &&
+    left.input_trust === right.input_trust &&
+    left.authorization_status === right.authorization_status &&
+    left.preflight_status === right.preflight_status &&
+    left.execution_status === right.execution_status &&
+    left.preview_only === right.preview_only &&
+    left.state_persisted === right.state_persisted &&
+    left.receipt_persisted === right.receipt_persisted &&
+    left.audit_retrievable === right.audit_retrievable &&
+    left.network_enabled === right.network_enabled &&
+    left.oauth_configured === right.oauth_configured &&
+    left.secret_accessed === right.secret_accessed &&
+    left.real_api_execution === right.real_api_execution &&
+    left.safe_bundle_hash === right.safe_bundle_hash &&
+    left.evaluated_at === right.evaluated_at &&
+    sameStringArray(left.blocker_codes, right.blocker_codes) &&
+    left.safe_receipt_hash === right.safe_receipt_hash
+  );
 }
 
 function buildBinding(
@@ -192,7 +256,7 @@ function buildBinding(
     bundleIntegrityStatus: "pass" | "fail";
     hashBindingStatus: "pass" | "fail";
     trustStatus: YouTubeCanaryAuthorizationRecordBindingEvaluation["trust_status"];
-    safeReasonCodes: string[];
+    safeReasonCodes: YouTubeCanaryAuthorizationRecordBindingReasonCode[];
   }
 ): YouTubeCanaryAuthorizationRecordBindingEvaluation {
   return {
@@ -217,4 +281,12 @@ function buildBinding(
 
 function sameStringArray(left: readonly string[], right: readonly string[]): boolean {
   return left.length === right.length && left.every((entry, index) => entry === right[index]);
+}
+
+function toBindingReasonCodes(values: readonly string[]): YouTubeCanaryAuthorizationRecordBindingReasonCode[] {
+  return values.flatMap((value) => {
+    if (value === "authorization_record_non_executable") return ["authorization_record_bound_non_executable"] as const;
+    const parsed = YouTubeCanaryAuthorizationRecordBindingReasonCodeSchema.safeParse(value);
+    return parsed.success ? [parsed.data] : [];
+  });
 }
