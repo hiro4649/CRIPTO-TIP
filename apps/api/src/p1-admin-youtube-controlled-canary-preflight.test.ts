@@ -128,12 +128,16 @@ describe("P1 admin YouTube controlled canary preflight", () => {
     expect(getBefore.json().authorization_status).toBe("awaiting_owner_authorization");
     expect(getBefore.json().execution_status).toBe("forbidden");
     expect(getBefore.json().input_trust).toBe("committed_safe_bundle");
+    expect(getBefore.json().preview_only).toBe(false);
+    expect(getBefore.json().state_persisted).toBe(false);
     expect(alias.json()).toEqual(getBefore.json());
     expect(post.statusCode).toBe(200);
     expect(post.json().authorization_status).toBe("authorization_fields_complete");
     expect(post.json().preflight_status).toBe("authorization_fields_complete_network_disabled");
     expect(post.json().execution_status).toBe("forbidden");
     expect(post.json().input_trust).toBe("untrusted_preview");
+    expect(post.json().preview_only).toBe(true);
+    expect(post.json().state_persisted).toBe(false);
     expect(post.json().network_enabled).toBe(false);
     expect(post.json().real_api_execution).toBe(false);
     expect(unknown.statusCode).toBe(400);
