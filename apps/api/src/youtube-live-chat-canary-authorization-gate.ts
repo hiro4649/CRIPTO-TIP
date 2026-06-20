@@ -114,6 +114,8 @@ export type YouTubeCanaryAuthorizationEvaluation = {
   preflight_status: "blocked" | "authorization_fields_complete_network_disabled";
   execution_status: "forbidden";
   input_trust: YouTubeCanaryAuthorizationInputTrust;
+  preview_only: boolean;
+  state_persisted: false;
   blocker_codes: YouTubeCanaryAuthorizationBlockerCode[];
   completed_fields: string[];
   pending_fields: string[];
@@ -344,6 +346,8 @@ function buildEvaluation(args: {
     preflight_status: args.authorizationStatus === "authorization_fields_complete" ? "authorization_fields_complete_network_disabled" : "blocked",
     execution_status: "forbidden",
     input_trust: args.inputTrust,
+    preview_only: args.inputTrust === "untrusted_preview",
+    state_persisted: false,
     blocker_codes: stableUnique(args.blockerCodes),
     completed_fields: args.completedFields,
     pending_fields: args.pendingFields,

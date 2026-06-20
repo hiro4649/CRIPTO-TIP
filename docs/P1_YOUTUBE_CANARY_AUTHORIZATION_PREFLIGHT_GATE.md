@@ -32,6 +32,11 @@ The previous `/admin/youtube-live-chat/canary-authorization` route remains a
 deprecated alias wired to the same handler. It does not duplicate evaluation
 logic.
 
+GET responses evaluate the committed safe bundle with `preview_only: false`.
+POST evaluate responses are untrusted previews with `preview_only: true` and
+`state_persisted: false`. A complete POST preview does not mutate the committed
+GET bundle and does not create canary execution readiness.
+
 ## Authorization States
 
 - `awaiting_owner_authorization`: one or more owner-controlled fields are
@@ -46,6 +51,7 @@ logic.
 Every evaluation returns:
 
 - `execution_status: forbidden`
+- `state_persisted: false`
 - `network_enabled: false`
 - `oauth_configured: false`
 - `secret_accessed: false`

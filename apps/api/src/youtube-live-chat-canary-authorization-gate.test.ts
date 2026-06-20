@@ -54,6 +54,8 @@ describe("YouTube canary authorization gate", () => {
     expect(evaluation.preflight_status).toBe("blocked");
     expect(evaluation.execution_status).toBe("forbidden");
     expect(evaluation.input_trust).toBe("untrusted_preview");
+    expect(evaluation.preview_only).toBe(true);
+    expect(evaluation.state_persisted).toBe(false);
     expect(evaluation.blocker_codes).toEqual([
       "bundle_status_incomplete",
       "network_authorization_absent",
@@ -84,6 +86,8 @@ describe("YouTube canary authorization gate", () => {
 
     expect(evaluation.authorization_status).toBe("authorization_fields_complete");
     expect(evaluation.preflight_status).toBe("authorization_fields_complete_network_disabled");
+    expect(evaluation.preview_only).toBe(true);
+    expect(evaluation.state_persisted).toBe(false);
     expect(evaluation.blocker_codes).toEqual([]);
     expect(evaluation.network_enabled).toBe(false);
     expect(evaluation.oauth_configured).toBe(false);
