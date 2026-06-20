@@ -1,6 +1,14 @@
+import {
+  defaultYouTubeCanaryAuthorizationBundle,
+  evaluateYouTubeCanaryAuthorization,
+  type YouTubeCanaryAuthorizationBlockerCode,
+  type YouTubeCanaryAuthorizationBundle
+} from "./youtube-live-chat-canary-authorization-gate.js";
+
 export type YouTubeLiveChatRealConnectorReadinessGate = {
-  readiness_status: "blocked_pending_owner_scope";
-  preflight_status?: "blocked" | "code_ready_network_blocked" | "controlled_canary_candidate";
+  readiness_status: "blocked_pending_owner_scope" | "blocked_pending_network_enablement";
+  preflight_status?: "blocked" | "code_ready_network_blocked";
+  execution_status: "forbidden";
   network_enabled: false;
   oauth_configured: false;
   real_api_execution: false;
@@ -37,7 +45,7 @@ export type YouTubeLiveChatRealConnectorReadinessEvaluationInput = {
 };
 
 export function buildYouTubeLiveChatRealConnectorReadinessGate(): YouTubeLiveChatRealConnectorReadinessGate {
-  const blockingReasonCodes = [
+  return toReadinessGate(defaultYouTubeCanaryAuthorizationBundle(), [
     "owner_scope_required",
     "transport_decision_pending",
     "oauth_scope_decision_pending",
@@ -49,10 +57,33 @@ export function buildYouTubeLiveChatRealConnectorReadinessGate(): YouTubeLiveCha
     "network_disabled",
     "oauth_not_configured",
     "real_api_execution_false"
+  ]);
+}
+
+export function evaluateYouTubeLiveChatRealConnectorReadiness(input: YouTubeLiveChatRealConnectorReadinessEvaluationInput): YouTubeLiveChatRealConnectorReadinessGate {
+  const bundle = readinessInputToAuthorizationBundle(input);
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "untrusted_preview" });
+  const technicalReasons = [
+    ...(input.config_status === "preflight_blocked" || input.config_status === "config_invalid" || input.config_status === "config_blocked" ? ["config_blocked"] : []),
+    ...(input.oauth_contract_status !== "pass" ? ["oauth_contract_blocked"] : []),
+    ...(input.planner_status !== "pass" ? ["planner_blocked"] : []),
+    ...(input.envelope_status !== "pass" ? ["envelope_blocked"] : [])
   ];
+  return toReadinessGate(bundle, [...technicalReasons, ...canonical.blocker_codes.map(toReadinessReasonCode)]);
+}
+
+export function evaluateYouTubeLiveChatRealConnectorReadinessFromAuthorizationBundle(bundle: YouTubeCanaryAuthorizationBundle): YouTubeLiveChatRealConnectorReadinessGate {
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "untrusted_preview" });
+  return toReadinessGate(bundle, canonical.blocker_codes.map(toReadinessReasonCode));
+}
+
+function toReadinessGate(bundle: YouTubeCanaryAuthorizationBundle, blockingReasonCodes: string[]): YouTubeLiveChatRealConnectorReadinessGate {
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { inputTrust: "committed_safe_bundle" });
+  const networkOnly = canonical.authorization_status === "authorization_fields_complete";
   return {
-    readiness_status: "blocked_pending_owner_scope",
-    preflight_status: "blocked",
+    readiness_status: networkOnly ? "blocked_pending_network_enablement" : "blocked_pending_owner_scope",
+    preflight_status: networkOnly ? "code_ready_network_blocked" : "blocked",
+    execution_status: "forbidden",
     network_enabled: false,
     oauth_configured: false,
     real_api_execution: false,
@@ -71,7 +102,7 @@ export function buildYouTubeLiveChatRealConnectorReadinessGate(): YouTubeLiveCha
       "data_deletion_review",
       "operator_kill_switch"
     ],
-    blocking_reason_codes: blockingReasonCodes,
+    blocking_reason_codes: stableUnique(blockingReasonCodes.length > 0 ? blockingReasonCodes : ["network_authorization_absent"]),
     safe_reason_codes: [
       "read_only_admin_gate",
       "no_secret_refs",
@@ -83,26 +114,53 @@ export function buildYouTubeLiveChatRealConnectorReadinessGate(): YouTubeLiveCha
   };
 }
 
-export function evaluateYouTubeLiveChatRealConnectorReadiness(input: YouTubeLiveChatRealConnectorReadinessEvaluationInput): YouTubeLiveChatRealConnectorReadinessGate {
-  const gate = buildYouTubeLiveChatRealConnectorReadinessGate();
-  const reasons = [
-    ...(input.config_status === "preflight_blocked" || input.config_status === "config_invalid" || input.config_status === "config_blocked" ? ["config_blocked"] : []),
-    ...(input.oauth_contract_status !== "pass" ? ["oauth_contract_blocked"] : []),
-    ...(input.planner_status !== "pass" ? ["planner_blocked"] : []),
-    ...(input.envelope_status !== "pass" ? ["envelope_blocked"] : []),
-    ...(input.secret_provider_status !== "opaque_interface_ready" ? ["secret_provider_unselected"] : []),
-    ...(input.privacy_review_status !== "pass" ? ["privacy_review_required"] : []),
-    ...(input.data_deletion_status !== "pass" ? ["data_deletion_review_required"] : []),
-    ...(input.revocation_runbook_status !== "documented" ? ["revocation_runbook_missing"] : []),
-    ...(input.kill_switch_status !== "armed_for_controlled_canary" ? ["operator_kill_switch_required"] : []),
-    ...(input.network_authorization_status !== "present" ? ["network_authorization_absent"] : [])
-  ];
+function readinessInputToAuthorizationBundle(input: YouTubeLiveChatRealConnectorReadinessEvaluationInput): YouTubeCanaryAuthorizationBundle {
+  const defaults = defaultYouTubeCanaryAuthorizationBundle();
   return {
-    ...gate,
-    preflight_status: reasons.length === 1 && reasons[0] === "network_authorization_absent" ? "code_ready_network_blocked" : "blocked",
-    blocking_reason_codes: reasons.length > 0 ? reasons : ["network_authorization_absent"],
-    network_enabled: false,
-    oauth_configured: false,
-    real_api_execution: false
+    ...defaults,
+    bundleStatus: defaults.bundleStatus,
+    networkAuthorization: input.network_authorization_status === "present" ? "owner_authorization_recorded" : "absent",
+    credentialProvider: input.secret_provider_status === "opaque_interface_ready" ? "opaque_interface_ready" : "unselected",
+    clientIdRef: defaults.clientIdRef,
+    clientSecretRef: defaults.clientSecretRef,
+    refreshTokenRef: defaults.refreshTokenRef,
+    redirectUri: defaults.redirectUri,
+    testChannel: defaults.testChannel,
+    testLiveStream: defaults.testLiveStream,
+    quotaBudget: input.planner_status === "pass" ? "confirmed_within_first_canary_limits" : "unconfirmed",
+    privacyReview: input.privacy_review_status === "pass" ? "pass" : "incomplete",
+    dataDeletionReview: input.data_deletion_status === "pass" ? "pass" : "incomplete",
+    revocationRunbook: input.revocation_runbook_status,
+    killSwitch: input.kill_switch_status
   };
+}
+
+function toReadinessReasonCode(code: YouTubeCanaryAuthorizationBlockerCode) {
+  const reasonMap: Record<YouTubeCanaryAuthorizationBlockerCode, string> = {
+    network_authorization_absent: "network_authorization_absent",
+    credential_provider_unselected: "secret_provider_unselected",
+    client_id_ref_absent: "secret_provider_unselected",
+    client_secret_ref_absent: "secret_provider_unselected",
+    refresh_token_ref_absent: "secret_provider_unselected",
+    redirect_uri_unconfirmed: "oauth_contract_blocked",
+    test_channel_unselected: "transport_decision_pending",
+    test_live_stream_unselected: "transport_decision_pending",
+    quota_budget_unconfirmed: "quota_budget_decision_pending",
+    privacy_review_incomplete: "privacy_review_required",
+    data_deletion_review_incomplete: "data_deletion_review_required",
+    revocation_runbook_missing: "revocation_runbook_missing",
+    kill_switch_blocked: "operator_kill_switch_required",
+    bundle_status_incomplete: "owner_scope_required",
+    transport_contract_invalid: "transport_decision_pending",
+    first_canary_limit_invalid: "quota_budget_decision_pending",
+    side_effect_contract_invalid: "transport_decision_pending",
+    execution_flag_must_remain_false: "real_api_execution_false",
+    unsafe_authorization_value_forbidden: "unsafe_authorization_value_forbidden",
+    authorization_bundle_schema_invalid: "config_blocked"
+  };
+  return reasonMap[code];
+}
+
+function stableUnique<T>(values: T[]): T[] {
+  return [...new Set(values)];
 }

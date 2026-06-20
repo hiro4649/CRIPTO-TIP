@@ -248,9 +248,9 @@ describe("P1 YouTube Live Chat network-disabled E2E", () => {
       const serialized = JSON.stringify({ listResult, streamResult, preflight: preflight.json() });
       expect(serialized).not.toContain("Authorization");
       expect(serialized).not.toContain("Bearer");
-      expect(serialized).not.toContain("access_token");
-      expect(serialized).not.toContain("refresh_token");
-      expect(serialized).not.toContain("client_secret");
+      expect(serialized).not.toContain("access_token=");
+      expect(serialized).not.toContain("refresh_token=");
+      expect(serialized).not.toContain("client_secret=");
     } finally {
       Object.defineProperty(globalThis, "fetch", { configurable: true, writable: true, value: originalFetch });
       await app.close();

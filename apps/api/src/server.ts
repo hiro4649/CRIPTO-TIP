@@ -40,6 +40,10 @@ import {
   defaultYouTubeLiveChatControlledCanaryPreflightInput,
   evaluateYouTubeLiveChatControlledCanaryPreflight
 } from "./youtube-live-chat-controlled-canary-preflight.js";
+import {
+  defaultYouTubeCanaryAuthorizationBundle,
+  evaluateYouTubeCanaryAuthorization
+} from "./youtube-live-chat-canary-authorization-gate.js";
 import { buildYouTubeLiveChatRealConnectorReadinessGate } from "./youtube-live-chat-real-connector-readiness-gate.js";
 import { registerAdminModerationReadRoutes } from "./routes/admin-moderation-read-routes.js";
 import { registerAdminYouTubeConnectorRoutes } from "./routes/admin-youtube-connector-routes.js";
@@ -3292,7 +3296,9 @@ export function buildServer(input?: CriptoTipRepository | BuildServerDependencie
     connectorCapability: fakeFixtureCapability,
     realConnectorReadiness: buildYouTubeLiveChatRealConnectorReadinessGate,
     defaultCanaryInput: defaultYouTubeLiveChatControlledCanaryPreflightInput,
-    evaluateControlledCanary: evaluateYouTubeLiveChatControlledCanaryPreflight
+    evaluateControlledCanary: evaluateYouTubeLiveChatControlledCanaryPreflight,
+    defaultCanaryAuthorizationBundle: defaultYouTubeCanaryAuthorizationBundle,
+    evaluateCanaryAuthorization: evaluateYouTubeCanaryAuthorization
   });
 
   registerAdminModerationReadRoutes(app, {

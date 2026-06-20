@@ -1,4 +1,11 @@
-import { createHash } from "node:crypto";
+import {
+  defaultYouTubeCanaryAuthorizationBundle,
+  evaluateYouTubeCanaryAuthorization,
+  projectAuthorizationToLegacyPreflight,
+  safeCanonicalAuthorizationHash,
+  type YouTubeCanaryAuthorizationBundle,
+  type YouTubeCanaryAuthorizationBlockerCode
+} from "./youtube-live-chat-canary-authorization-gate.js";
 
 export type YouTubeLiveChatControlledCanaryPreflightInput = {
   config_status: "planning_valid" | "preflight_blocked" | "controlled_canary_candidate" | "config_invalid";
@@ -31,6 +38,7 @@ export type YouTubeLiveChatControlledCanaryPreflightResult = {
   network_enabled: false;
   oauth_configured: false;
   real_api_execution: false;
+  execution_status: "forbidden";
   safe_reason_codes: string[];
   config_hash: string;
   evaluated_at: string;
@@ -40,27 +48,20 @@ export type YouTubeLiveChatControlledCanaryPreflightResult = {
   owner_approval_created: false;
   github_approval_review_created: false;
   merge_authority_created: false;
+  authorization_status: "awaiting_owner_authorization" | "authorization_fields_complete" | "invalid_authorization_bundle";
+  authorization_blocker_codes: YouTubeCanaryAuthorizationBlockerCode[];
+  input_trust: "committed_safe_bundle" | "untrusted_preview";
+  safe_bundle_hash: string;
 };
 
 export function defaultYouTubeLiveChatControlledCanaryPreflightInput(): YouTubeLiveChatControlledCanaryPreflightInput {
-  return {
-    config_status: "planning_valid",
-    oauth_contract_status: "pass",
-    credential_provider_status: "missing",
-    kill_switch_status: "blocked",
-    quota_planner_status: "pass",
-    direct_rest_transport_status: "pass",
-    list_connector_service_status: "pass",
-    stream_contract_status: "pass",
-    privacy_review_status: "required",
-    data_deletion_review_status: "required",
-    revocation_runbook_status: "documented",
-    network_authorization_status: "absent"
-  };
+  return projectAuthorizationToLegacyPreflight(defaultYouTubeCanaryAuthorizationBundle());
 }
 
-export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date("2026-06-18T00:00:00.000Z")): YouTubeLiveChatControlledCanaryPreflightResult {
-  const reasons = [
+export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeLiveChatControlledCanaryPreflightInput, now = new Date("2026-06-18T00:00:00.000Z"), inputTrust: "committed_safe_bundle" | "untrusted_preview" = "untrusted_preview"): YouTubeLiveChatControlledCanaryPreflightResult {
+  const bundle = legacyPreflightToAuthorizationBundle(input);
+  const canonical = evaluateYouTubeCanaryAuthorization(bundle, { now, inputTrust });
+  const legacyReasons = [
     ...(input.config_status === "preflight_blocked" || input.config_status === "config_invalid" ? ["config_blocked"] : []),
     ...(input.oauth_contract_status !== "pass" ? ["oauth_contract_blocked"] : []),
     ...(input.credential_provider_status !== "opaque_interface_ready" ? ["real_credential_provider_missing"] : []),
@@ -74,6 +75,7 @@ export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeL
     ...(input.revocation_runbook_status !== "documented" ? ["revocation_runbook_missing"] : []),
     ...(input.network_authorization_status !== "present" ? ["network_authorization_missing"] : [])
   ];
+  const reasons = legacyReasons.length > 0 ? legacyReasons : canonical.blocker_codes.map(toLegacyReasonCode);
   const nonNetworkReasons = reasons.filter((reason) => reason !== "network_authorization_missing");
   return {
     preflight_status: nonNetworkReasons.length === 0 ? "code_ready_network_blocked" : "blocked",
@@ -91,18 +93,66 @@ export function evaluateYouTubeLiveChatControlledCanaryPreflight(input: YouTubeL
     network_enabled: false,
     oauth_configured: false,
     real_api_execution: false,
+    execution_status: "forbidden",
     safe_reason_codes: reasons.length > 0 ? reasons : ["real_api_execution_forbidden"],
-    config_hash: safeConfigHash(input),
+    config_hash: safeCanonicalAuthorizationHash(bundle),
     evaluated_at: now.toISOString(),
     secret_refs_exposed: false,
     credential_handle_exposed: false,
     endpoint_values_exposed: false,
     owner_approval_created: false,
     github_approval_review_created: false,
-    merge_authority_created: false
+    merge_authority_created: false,
+    authorization_status: canonical.authorization_status,
+    authorization_blocker_codes: canonical.blocker_codes,
+    input_trust: canonical.input_trust,
+    safe_bundle_hash: canonical.safe_bundle_hash
   };
 }
 
-function safeConfigHash(input: YouTubeLiveChatControlledCanaryPreflightInput) {
-  return `safe_hash_${createHash("sha256").update(JSON.stringify(input)).digest("hex").slice(0, 16)}`;
+function legacyPreflightToAuthorizationBundle(input: YouTubeLiveChatControlledCanaryPreflightInput): YouTubeCanaryAuthorizationBundle {
+  const defaults = defaultYouTubeCanaryAuthorizationBundle();
+  return {
+    ...defaults,
+    bundleStatus: defaults.bundleStatus,
+    networkAuthorization: input.network_authorization_status === "present" ? "owner_authorization_recorded" : "absent",
+    credentialProvider: input.credential_provider_status === "opaque_interface_ready" ? "opaque_interface_ready" : "unselected",
+    clientIdRef: defaults.clientIdRef,
+    clientSecretRef: defaults.clientSecretRef,
+    refreshTokenRef: defaults.refreshTokenRef,
+    redirectUri: defaults.redirectUri,
+    testChannel: defaults.testChannel,
+    testLiveStream: defaults.testLiveStream,
+    quotaBudget: input.quota_planner_status === "pass" ? "confirmed_within_first_canary_limits" : "unconfirmed",
+    privacyReview: input.privacy_review_status === "pass" ? "pass" : "incomplete",
+    dataDeletionReview: input.data_deletion_review_status === "pass" ? "pass" : "incomplete",
+    revocationRunbook: input.revocation_runbook_status,
+    killSwitch: input.kill_switch_status === "armed_for_controlled_canary" ? "armed_for_controlled_canary" : "blocked"
+  };
+}
+
+function toLegacyReasonCode(code: YouTubeCanaryAuthorizationBlockerCode) {
+  const reasonMap: Record<YouTubeCanaryAuthorizationBlockerCode, string> = {
+    network_authorization_absent: "network_authorization_missing",
+    credential_provider_unselected: "real_credential_provider_missing",
+    client_id_ref_absent: "real_credential_provider_missing",
+    client_secret_ref_absent: "real_credential_provider_missing",
+    refresh_token_ref_absent: "real_credential_provider_missing",
+    redirect_uri_unconfirmed: "oauth_contract_blocked",
+    test_channel_unselected: "config_blocked",
+    test_live_stream_unselected: "config_blocked",
+    quota_budget_unconfirmed: "quota_runtime_budget_unconfirmed",
+    privacy_review_incomplete: "privacy_review_incomplete",
+    data_deletion_review_incomplete: "data_deletion_review_incomplete",
+    revocation_runbook_missing: "revocation_runbook_missing",
+    kill_switch_blocked: "operator_kill_switch_not_armed_for_network",
+    bundle_status_incomplete: "config_blocked",
+    transport_contract_invalid: "direct_rest_transport_blocked",
+    first_canary_limit_invalid: "quota_runtime_budget_unconfirmed",
+    side_effect_contract_invalid: "config_blocked",
+    execution_flag_must_remain_false: "real_api_execution_forbidden",
+    unsafe_authorization_value_forbidden: "secret_like_input_forbidden",
+    authorization_bundle_schema_invalid: "config_blocked"
+  };
+  return reasonMap[code];
 }

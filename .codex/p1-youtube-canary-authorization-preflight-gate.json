@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.0.0",
+  "harnessVersion": "1.2.7",
+  "repository": "hiro4649/CRIPTO-TIP",
+  "phase": "p1-youtube-canary-authorization-preflight-gate",
+  "authorizationContractStatus": "implemented",
+  "ownerAuthorizationSourceOfTruthStatus": "pass",
+  "technicalReadinessProjectionStatus": "pass",
+  "legacyPreflightDelegationStatus": "pass",
+  "realReadinessDelegationStatus": "pass",
+  "realReadinessCandidateWordingStatus": "pass",
+  "inputTrustSeparationStatus": "pass",
+  "domainEvidenceSeparationStatus": "pass",
+  "defaultAuthorizationStatus": "awaiting_owner_authorization",
+  "completePreviewStatus": "authorization_fields_complete_network_disabled",
+  "executionStatus": "forbidden",
+  "networkEnabled": false,
+  "oauthConfigured": false,
+  "secretAccess": false,
+  "realYouTubeApiUsed": false,
+  "firstCanaryLimitsStatus": "pass",
+  "sideEffectContractStatus": "pass",
+  "stableHashStatus": "pass",
+  "unsafeInputRejectionStatus": "pass",
+  "codexBundleDriftStatus": "pass",
+  "runtimeFileReadStatus": "none",
+  "productRuntimeChanged": true,
+  "readOnlyAdminSurfaceAdded": true,
+  "externalExecutionEnabled": false,
+  "packageJsonChanged": false,
+  "pnpmLockChanged": false,
+  "workflowChanged": false,
+  "contractsChanged": false,
+  "migrationsChanged": false,
+  "serverRuntimeExpanded": false,
+  "dbDriverDependencyAdded": false,
+  "realDbConnectionAdded": false,
+  "youtubeConnectorRuntimeEnabled": false,
+  "walletRpcDeployChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "legalComplianceClaimed": false,
+  "youtubePolicyComplianceClaimed": false,
+  "ownerApprovalCreated": false,
+  "githubApprovalReviewCreated": false,
+  "mergeAuthorityCreated": false
+  ,
+  "securityOracle": {
+    "coveredFiles": [
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/server.ts"
+    ],
+    "authenticationBoundaryTested": true,
+    "untrustedInputTested": true,
+    "negativePathsTested": true,
+    "unsafeInputNoEchoTested": true,
+    "authorityCreationBlocked": true,
+    "networkExecutionBlocked": true,
+    "oauthExecutionBlocked": true,
+    "secretAccessBlocked": true,
+    "runtimeExecutionBlocked": true
+  },
+  "bestOfNEvidence": {
+    "candidateCount": 3,
+    "selectedCandidate": "A",
+    "candidates": [
+      {
+        "id": "A",
+        "summary": "canonical authorization evaluator plus legacy and readiness projections",
+        "selected": true
+      },
+      {
+        "id": "B",
+        "summary": "legacy preflight extension only",
+        "selected": false,
+        "rejectedReason": "rejected for readiness taxonomy drift"
+      },
+      {
+        "id": "C",
+        "summary": "independent third evaluator",
+        "selected": false,
+        "rejectedReason": "rejected for evaluator drift"
+      }
+    ]
+  }
+}

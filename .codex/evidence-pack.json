@@ -1,108 +1,101 @@
 {
   "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.7",
+  "schemaVersion": "1.0.0",
   "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 173,
+  "prNumber": 172,
   "headSha": "current_pr_head",
-  "baseSha": "d516c603f63c8512d2b96a46444bb215d88db0fc",
-  "title": "fix: enforce quality-gate safe-summary coherence",
-  "goal": "Make the quality-gate workflow fail when the load-bearing safe summary reports technical failure, technicalChecksReady false, or blocking technical statuses.",
-  "rollbackOrStopCondition": "Stop without merge if same-head checks fail, the safe summary remains inconsistent with workflow conclusion, forbidden product paths change, raw logs are required, or evidence cannot be refreshed for the current head.",
-  "changeType": "h0_v127_quality_gate_safe_summary_coherence",
+  "baseSha": "38c71d09a6f46b7234c0e4168a3058af93a7ac42",
+  "title": "feat: add youtube canary authorization preflight gate",
+  "goal": "Canonicalize owner authorization evaluation while keeping YouTube canary execution forbidden and admin preflight routes read-only.",
+  "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, evidence is stale, owner fields are inferred from coarse statuses, readiness emits execution-candidate wording, or quality gates weaken.",
+  "changeType": "p1_youtube_canary_authorization_preflight_gate",
+  "prProfile": "security_r3",
+  "taskMode": "feature",
+  "riskLevel": "R3",
+  "productCodeChanged": true,
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
-  "schemaVersion": "1.0.0",
-  "prProfile": "harness_workflow_r3",
-  "taskMode": "bugfix",
-  "ciRunId": "pre_pr",
-  "qualityGateRunId": "pre_pr",
-  "qualityGateArtifactId": "pre_pr",
-  "productCiStatus": "local_pre_pr",
-  "qualityGateStatus": "local_pre_pr",
-  "riskLevel": "H0",
+  "ciRunId": "metadata_limited",
+  "qualityGateRunId": "metadata_limited",
+  "qualityGateArtifactId": "metadata_limited",
+  "productCiStatus": "metadata_limited",
+  "qualityGateStatus": "metadata_limited",
   "runtimeReadinessClaim": "no",
-  "productCodeChanged": false,
-  "workflowChanged": true,
   "scope": {
     "changedFiles": [
-      ".github/workflows/quality-gate.yml",
-      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json",
-      "scripts/codex-change-classification-gate.mjs",
-      "scripts/codex-workflow-quality-runner.mjs",
-      "scripts/check-quality-gate-self-protection.mjs",
-      "scripts/validate-quality-gate-safe-summary.mjs",
-      "apps/api/src/evidence-rendering.test.ts",
       ".codex/evidence-pack.json",
+      ".codex/p1-youtube-canary-authorization-preflight-gate.json",
+      ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
-      ".codex/h0-v127-quality-gate-safe-summary-coherence.json",
-      "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_PREFLIGHT_GATE.md",
+      "docs/P1_YOUTUBE_CONTROLLED_CANARY_AUTHORIZATION_BUNDLE.md",
+      "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
     ],
     "allowedPaths": [
-      ".github/workflows/quality-gate.yml",
-      "docs/process/CODEX_CHANGE_CLASSIFICATION_RULES.json",
-      "scripts/codex-change-classification-gate.mjs",
-      "scripts/codex-workflow-quality-runner.mjs",
-      "scripts/check-quality-gate-self-protection.mjs",
-      "scripts/validate-quality-gate-safe-summary.mjs",
-      "apps/api/src/evidence-rendering.test.ts",
       ".codex/evidence-pack.json",
+      ".codex/p1-youtube-canary-authorization-preflight-gate.json",
+      ".codex/p1-youtube-controlled-canary-authorization-bundle.json",
       ".codex/test-summary.json",
-      ".codex/h0-v127-quality-gate-safe-summary-coherence.json",
-      "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
+      "apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts",
+      "apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/server.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_PREFLIGHT_GATE.md",
+      "docs/P1_YOUTUBE_CONTROLLED_CANARY_AUTHORIZATION_BUNDLE.md",
+      "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
     ],
     "forbiddenPaths": [
       "package.json",
       "pnpm-lock.yaml",
       "contracts/**",
       "migrations/**",
-      "apps/api/src/product-runtime/**",
+      ".github/workflows/**",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
     ]
   },
-  "commands": [
-    { "name": "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts", "status": "pass", "result": "44 passed" },
-    { "name": "corepack pnpm lint", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm typecheck", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm test", "status": "pass", "result": "119 files, 2093 passed, 6 skipped" },
-    { "name": "npm test", "status": "pass", "result": "119 files, 2093 passed, 6 skipped" },
-    { "name": "corepack pnpm evidence:ci", "status": "pass", "result": "pass" },
-    { "name": "corepack pnpm quality:self-protection", "status": "pass", "result": "pass" },
-    { "name": "node scripts/check-evidence-placeholders.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/validate-evidence-freshness.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/check-quality-gate-self-protection.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-secret-safety-scan.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v127-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v126-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v125-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v124-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-v123-self-test.mjs", "status": "pass", "result": "pass" },
-    { "name": "node scripts/codex-local-quality-gate.mjs", "status": "fail_local_pre_evidence_remote", "result": "safe summary failed before H0 PR remote evidence refresh" }
-  ],
-  "remoteRuns": [
-    { "name": "ci", "runId": "pre_pr", "result": "local_pre_pr" },
-    { "name": "quality-gate", "runId": "pre_pr", "artifactId": "pre_pr", "result": "local_pre_pr" }
-  ],
   "allowedScope": [
-    "quality-gate workflow safe-summary validator",
-    "workflow quality runner exit coherence",
-    "quality-gate self-protection assertions",
-    "safe summary validator script",
-    "harness regression tests",
+    "canonical YouTube canary authorization domain evaluator",
+    "read-only admin authorization preflight routes",
+    "legacy controlled-canary preflight projection",
+    "real connector readiness projection",
+    "typed blocker tests",
     ".codex evidence",
     "PR evidence docs"
   ],
   "forbiddenScope": [
-    "product runtime change",
+    "runtime readiness claim",
+    "production readiness claim",
+    "legal compliance claim",
+    "YouTube policy compliance claim",
     "package.json change",
     "pnpm-lock change",
     "DB driver dependency",
+    "Google SDK dependency",
     "real DB connection",
     "migration change",
     "contract change",
+    "workflow change",
     "apps/web change",
     "apps/overlay change",
     "real network call",
@@ -110,13 +103,6 @@
     "real OAuth execution",
     "secret value read",
     "wallet/RPC/deploy change",
-    "runtime readiness claim",
-    "production readiness claim",
-    "legal compliance claim",
-    "YouTube policy compliance claim",
-    "owner approval creation",
-    "GitHub approval review creation",
-    "merge authority creation",
     "token sale",
     "token exchange",
     "cash-out",
@@ -125,67 +111,169 @@
     "investment wording"
   ],
   "doneCriteria": [
-    "workflow success cannot coexist with safe summary status fail",
-    "workflow success cannot coexist with technicalChecksReady false",
-    "workflow success cannot coexist with technical blockingStatuses",
-    "owner-only authority absence does not become a technical failure by itself",
-    "safe artifacts still upload before the final validator"
+    "canonical domain schema and evidence wrapper schema are separated",
+    "GET default evaluation uses committed_safe_bundle input trust",
+    "POST preview evaluation uses untrusted_preview input trust",
+    "legacy coarse statuses do not infer owner-only credential refs or test stream fields",
+    "real readiness never emits controlled_canary_candidate",
+    "complete authorization fields keep execution forbidden and network disabled",
+    "no package, lockfile, workflow, contract, migration, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+  ],
+  "commands": [
+    {
+      "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+      "status": "pass",
+      "result": "6 files, 32 passed"
+    },
+    {
+      "name": "corepack pnpm lint",
+      "status": "pass",
+      "result": "pass"
+    },
+    {
+      "name": "corepack pnpm typecheck",
+      "status": "pass",
+      "result": "pass"
+    }
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
     "command": "corepack pnpm test",
-    "testFiles": 119,
-    "passed": 2093,
+    "testFiles": 120,
+    "passed": 2103,
     "skipped": 6,
-    "testedHeadSha": "6fa0c116bdb1ee4abd2a56e29ecda684a5590e18",
-    "currentRunEvidence": true
+    "testedHeadSha": "d3b65549186c0ece4f1b600c674b40943d1dab7e",
+    "currentRunEvidence": true,
+    "evidenceOnlyDelta": true
+  },
+  "bestOfNEvidence": {
+    "candidateCount": 3,
+    "selectedCandidate": "A",
+    "candidates": [
+      {
+        "id": "A",
+        "summary": "canonical domain evaluator plus legacy and readiness projections",
+        "selected": true
+      },
+      {
+        "id": "B",
+        "summary": "legacy preflight expansion only",
+        "selected": false,
+        "rejectedReason": "would preserve readiness taxonomy drift"
+      },
+      {
+        "id": "C",
+        "summary": "independent third gate",
+        "selected": false,
+        "rejectedReason": "would add another authority source"
+      }
+    ],
+    "selectionReason": "single owner-authorization source of truth, reduced taxonomy drift, and network-disabled execution boundary preserved"
+  },
+  "securityOracle": {
+    "coveredFiles": [
+      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
+      "apps/api/src/youtube-live-chat-controlled-canary-preflight.ts",
+      "apps/api/src/youtube-live-chat-real-connector-readiness-gate.ts",
+      "apps/api/src/routes/admin-youtube-connector-routes.ts",
+      "apps/api/src/routes/admin-youtube-connector-route-dependencies.ts",
+      "apps/api/src/server.ts"
+    ],
+    "authenticationBoundaryTested": true,
+    "untrustedInputTested": true,
+    "negativePathsTested": true,
+    "unsafeInputNoEchoTested": true,
+    "authorityCreationBlocked": true,
+    "networkExecutionBlocked": true,
+    "oauthExecutionBlocked": true,
+    "secretAccessBlocked": true,
+    "runtimeExecutionBlocked": true
+  },
+  "testCoverageEvidence": {
+    "changedArea": [
+      "canonical authorization",
+      "legacy projection",
+      "readiness projection",
+      "admin preflight routes"
+    ],
+    "risks": [
+      "misleading readiness wording",
+      "owner field inference",
+      "unsafe input reflection",
+      "side-effect enablement",
+      "hash drift"
+    ],
+    "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts apps/api/src/p1-admin-youtube-real-connector-readiness-gate.test.ts apps/api/src/p1-youtube-live-chat-preflight-contract-hardening.test.ts apps/api/src/p1-api-admin-youtube-connector-routes.test.ts apps/api/src/p1-youtube-live-chat-network-disabled-e2e.test.ts",
+    "fullTestCommand": "corepack pnpm test",
+    "coveredSuccessPaths": [
+      "committed GET trust",
+      "POST preview trust",
+      "complete preview still execution forbidden",
+      "legacy compatibility output",
+      "real readiness network enablement blocked"
+    ],
+    "coveredFailurePaths": [
+      "unknown field reject",
+      "unsafe value reject",
+      "execution flag true reject",
+      "first canary limit reject",
+      "side effect true reject"
+    ],
+    "boundaryTests": [
+      "no runtime .codex reads",
+      "no docs reads in runtime path",
+      "no network client execution",
+      "no owner approval creation",
+      "no merge authority creation"
+    ]
   },
   "securityBoundaries": [
-    "No product runtime path is changed.",
-    "No package.json or pnpm-lock change.",
-    "No DB driver, Google SDK dependency, real DB, real YouTube API, OAuth execution, secret read, RPC, wallet, deploy, contract, migration, web, or overlay change.",
-    "No runtime, production, legal, or YouTube policy readiness is claimed.",
-    "No owner approval, GitHub approval review, or merge authority is created."
-  ],
-  "residualRisks": [
-    "H0 remote quality-gate must prove the new validator fails closed while still uploading safe artifacts.",
-    "PR #172 remains blocked until H0 is merged and PR #172 is refreshed against updated main."
-  ],
-  "humanConfirmation": [
-    "AI technical review is not human approval.",
-    "AI technical review is not GitHub approval review.",
-    "This PR does not create owner approval record.",
-    "This PR does not create merge authority."
+    "Admin authorization is required on all routes.",
+    "POST preview input is untrusted.",
+    "GET committed bundle input is safe committed evidence.",
+    "POST does not persist state.",
+    "POST does not mutate default GET output.",
+    "No network call is made.",
+    "No OAuth execution is made.",
+    "No secret access is made.",
+    "No owner authority is created.",
+    "No candidate wording enables execution.",
+    "Unknown fields are rejected.",
+    "Unsafe input is rejected without echoing raw values.",
+    "Side effects remain literal false.",
+    "Execution flags remain literal false.",
+    "Complete fields still return execution forbidden."
   ],
   "productVerificationCommands": [
-    "corepack pnpm vitest run apps/api/src/evidence-rendering.test.ts: pass",
+    "corepack pnpm install --frozen-lockfile: pass",
+    "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts apps/api/src/p1-admin-youtube-controlled-canary-preflight.test.ts: pass",
+    "corepack pnpm vitest run apps/api/src/p0-superchat-support-received-vertical-slice.test.ts apps/api/src/p0-superchat-event-pipeline-hardening.test.ts: pass",
     "corepack pnpm lint: pass",
     "corepack pnpm typecheck: pass",
     "corepack pnpm test: pass",
-    "npm test: pass",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
-    "node scripts/check-evidence-placeholders.mjs: pass",
-    "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass",
-    "node scripts/codex-v127-self-test.mjs: pass",
-    "node scripts/codex-v126-self-test.mjs: pass",
-    "node scripts/codex-v125-self-test.mjs: pass",
-    "node scripts/codex-v124-self-test.mjs: pass",
-    "node scripts/codex-v123-self-test.mjs: pass"
+    "npm test: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
+    "packageJsonChanged": false,
+    "pnpmLockChanged": false,
     "runtimeDependenciesAdded": false,
-    "verification": "No package scripts, runtime dependencies, package.json, or pnpm-lock changes are introduced."
+    "dbDriverDependencyAdded": false,
+    "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
   },
   "apiCompatibilitySummary": {
-    "publicApiChanged": false,
-    "internalRuntimeApiChanged": false,
-    "statement": "H0 changes only the quality-gate harness workflow and validation scripts; product runtime API behavior is unchanged."
+    "publicApiChanged": true,
+    "internalRuntimeApiChanged": true,
+    "statement": "Adds read-only admin canary authorization preflight routes and keeps legacy aliases delegated to the same handler. It does not enable execution."
   },
-  "safeOutput": { "status": "pass" },
+  "reviewScope": {
+    "scope": "P1 YouTube canary authorization preflight gate hardening.",
+    "riskSummary": "Main risk is accidentally implying execution readiness or inferring owner-only fields from coarse compatibility inputs.",
+    "verificationOracle": "Focused authorization, route, readiness, typed blocker, trust-boundary, and evidence wrapper tests plus full repo checks."
+  },
+  "safeOutput": {
+    "status": "pass"
+  },
   "productionClaims": {
     "runtimeReady": false,
     "productionReady": false,
@@ -193,10 +281,29 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "reviewScope": {
-    "scope": "H0 quality-gate safe-summary coherence.",
-    "riskSummary": "Main risk is a workflow success masking technical safe-summary failure; regression tests cover failed safe summary, owner-only boundary, and validator protection.",
-    "verificationOracle": "Focused evidence-rendering tests, lint, typecheck, full tests, evidence checks, quality self-protection, secret scan, self-tests, and GitHub same-head checks."
-  },
-  "prBodyPath": "docs/pr-h0-v127-quality-gate-safe-summary-coherence.md"
+  "remoteRuns": [
+    {
+      "name": "ci",
+      "runId": "metadata_limited",
+      "result": "metadata_limited"
+    },
+    {
+      "name": "quality-gate",
+      "runId": "metadata_limited",
+      "artifactId": "metadata_limited",
+      "result": "metadata_limited"
+    }
+  ],
+  "residualRisks": [
+    "This PR still does not run a real YouTube canary.",
+    "Real credential provider, OAuth execution, network authorization, and YouTube API calls remain future owner-scoped work.",
+    "Remote same-head checks and safe artifact refresh are required after push."
+  ],
+  "humanConfirmation": [
+    "AI review is not human approval.",
+    "AI review is not GitHub approval review.",
+    "This PR does not create owner approval record.",
+    "This PR does not create merge authority."
+  ],
+  "prBodyPath": "docs/pr-p1-youtube-canary-authorization-preflight-gate.md"
 }

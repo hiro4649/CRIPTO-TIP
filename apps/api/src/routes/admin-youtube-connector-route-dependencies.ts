@@ -1,4 +1,5 @@
 import type { FastifyRequest } from "fastify";
+import type { YouTubeCanaryAuthorizationBundle, YouTubeCanaryAuthorizationEvaluationOptions } from "../youtube-live-chat-canary-authorization-gate.js";
 
 export type AdminAuthChecker = (request: FastifyRequest) => boolean;
 
@@ -17,6 +18,8 @@ export type ControlledCanaryPreflightRouteInput = {
   network_authorization_status: "absent" | "present";
 };
 
+export type CanaryAuthorizationRouteInput = YouTubeCanaryAuthorizationBundle;
+
 export type AdminYouTubeConnectorRouteDependencies = {
   requireAdminAuth: AdminAuthChecker;
   connectorCapability: () => {
@@ -31,5 +34,7 @@ export type AdminYouTubeConnectorRouteDependencies = {
   };
   realConnectorReadiness: () => unknown;
   defaultCanaryInput: () => ControlledCanaryPreflightRouteInput;
-  evaluateControlledCanary: (input: ControlledCanaryPreflightRouteInput) => unknown;
+  evaluateControlledCanary: (input: ControlledCanaryPreflightRouteInput, now?: Date, inputTrust?: "committed_safe_bundle" | "untrusted_preview") => unknown;
+  defaultCanaryAuthorizationBundle: () => CanaryAuthorizationRouteInput;
+  evaluateCanaryAuthorization: (input: unknown, options?: YouTubeCanaryAuthorizationEvaluationOptions) => unknown;
 };
