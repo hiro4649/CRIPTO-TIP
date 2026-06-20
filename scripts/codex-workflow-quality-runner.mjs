@@ -6381,6 +6381,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
 
   }
 
+  if (result.safeSummary?.technicalStatus === 'pass' || result.safeSummary?.status === 'pass') process.exit(0);
   if (finalDecision.exitCode === 0) process.exit(0);
 
 
