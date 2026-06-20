@@ -76,6 +76,17 @@ const hardBudgetState = buildTechnicalReadinessState({
 });
 assertCase('hard_artifact_budget_is_blocking', hardBudgetState.technicalBlockingStatuses[0]?.reasonCode === 'artifact_hard_budget_exceeded');
 
+const requiredHeadingHintState = buildTechnicalReadinessState({
+  targetQualityScoreStatus: {
+    status: 'pass',
+    blockingStatuses: [],
+    manualStatuses: [{ key: 'requiredHeadingHintStatus', status: 'warning' }],
+  },
+  safeSummaryOnly: true,
+});
+assertCase('required_heading_hint_is_advisory', requiredHeadingHintState.technicalStatus === 'pass' &&
+  requiredHeadingHintState.advisoryStatuses.some((item) => item.reasonCode === 'requiredHeadingHintStatus'));
+
 const compatibleBody = [
   'PR profile: harness_workflow_r3',
   '## Goal',
