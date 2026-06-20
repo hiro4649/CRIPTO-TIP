@@ -18,6 +18,24 @@ execution, secret access, or YouTube API execution.
 
 ## Evidence Integrity
 
+Head SHA: 353b367e97bbf43139e3fe21cd9012db9e31f27f
+
+Base SHA: f0153a228c63bdc43d8e9a3fafc4c0e3269f6e84
+
+Product CI: success
+
+CI run: 27858152231
+
+Typescript: pass
+
+Contracts: pass
+
+Quality-gate: success
+
+Quality-gate run: 27858153585
+
+Quality-gate artifact: 7761420828
+
 Safe hashes are correlation identifiers only. They are not signatures, owner
 approval, GitHub approval review, merge authority, release authority, deploy
 authority, runtime readiness, production readiness, legal compliance, or YouTube
