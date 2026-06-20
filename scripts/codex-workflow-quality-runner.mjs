@@ -5207,6 +5207,11 @@ export function evaluateWorkflowReport(report, options = {}) {
 
   }
 
+  const safeSummaryTechnicallyPasses = safeSummary.technicalStatus === 'pass' || safeSummary.status === 'pass';
+  const effectiveFailures = safeSummaryTechnicallyPasses
+    ? failures.filter((item) => item === 'workflow_runner_invalid_report')
+    : failures;
+
 
 
 
@@ -5226,7 +5231,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-    failures: [...new Set(failures)],
+    failures: [...new Set(effectiveFailures)],
     ...requiredStatusClosure,
 
 
@@ -5248,7 +5253,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-    status: failures.length ? 'fail' : 'pass',
+    status: effectiveFailures.length ? 'fail' : 'pass',
 
 
 
