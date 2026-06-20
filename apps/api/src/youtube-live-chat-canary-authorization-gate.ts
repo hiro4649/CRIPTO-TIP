@@ -4,6 +4,15 @@ import {
   buildYouTubeCanaryAuthorizationAuditReceipt,
   type YouTubeCanaryAuthorizationAuditReceipt
 } from "./youtube-live-chat-canary-audit-receipt.js";
+export {
+  YOUTUBE_CANARY_AUTHORIZATION_BLOCKER_CODES,
+  YouTubeCanaryAuthorizationBlockerCodeSchema,
+  canonicalizeYouTubeCanaryAuthorizationBlockers
+} from "./youtube-live-chat-canary-authorization-blockers.js";
+import {
+  canonicalizeYouTubeCanaryAuthorizationBlockers,
+  type YouTubeCanaryAuthorizationBlockerCode
+} from "./youtube-live-chat-canary-authorization-blockers.js";
 
 const SideEffectContractSchema = z.object({
   affinity: z.literal(false),
@@ -84,27 +93,7 @@ export const YouTubeCanaryAuthorizationEvidenceSchema = z.object({
 export type YouTubeCanaryAuthorizationBundle = z.infer<typeof YouTubeCanaryAuthorizationBundleSchema>;
 export type YouTubeCanaryAuthorizationEvidence = z.infer<typeof YouTubeCanaryAuthorizationEvidenceSchema>;
 
-export type YouTubeCanaryAuthorizationBlockerCode =
-  | "network_authorization_absent"
-  | "credential_provider_unselected"
-  | "client_id_ref_absent"
-  | "client_secret_ref_absent"
-  | "refresh_token_ref_absent"
-  | "redirect_uri_unconfirmed"
-  | "test_channel_unselected"
-  | "test_live_stream_unselected"
-  | "quota_budget_unconfirmed"
-  | "privacy_review_incomplete"
-  | "data_deletion_review_incomplete"
-  | "revocation_runbook_missing"
-  | "kill_switch_blocked"
-  | "bundle_status_incomplete"
-  | "transport_contract_invalid"
-  | "first_canary_limit_invalid"
-  | "side_effect_contract_invalid"
-  | "execution_flag_must_remain_false"
-  | "unsafe_authorization_value_forbidden"
-  | "authorization_bundle_schema_invalid";
+export type { YouTubeCanaryAuthorizationBlockerCode } from "./youtube-live-chat-canary-authorization-blockers.js";
 
 export type YouTubeCanaryAuthorizationInputTrust = "committed_safe_bundle" | "untrusted_preview";
 
@@ -241,7 +230,7 @@ export function evaluateYouTubeCanaryAuthorization(input: unknown, options: YouT
   const unsafe = hasUnsafeAuthorizationValue(input);
   const parsed = YouTubeCanaryAuthorizationBundleSchema.safeParse(input);
   if (!parsed.success) {
-    const blockerCodes = stableUnique([
+    const blockerCodes = canonicalBlockers([
       ...typedInvalidBlockers(parsed.error),
       ...(unsafe ? ["unsafe_authorization_value_forbidden" as const] : [])
     ]);
@@ -273,7 +262,7 @@ export function evaluateYouTubeCanaryAuthorization(input: unknown, options: YouT
     [bundle.revocationRunbook === "documented", "revocation_runbook_missing", "revocationRunbook"],
     [bundle.killSwitch === "armed_for_controlled_canary", "kill_switch_blocked", "killSwitch"]
   ];
-  const blockerCodes = stableUnique(checks.filter(([ok]) => !ok).map(([, code]) => code));
+  const blockerCodes = canonicalBlockers(checks.filter(([ok]) => !ok).map(([, code]) => code));
   const completedFields = checks.filter(([ok]) => ok).map(([, , field]) => field);
   const pendingFields = checks.filter(([ok]) => !ok).map(([, , field]) => field);
 
@@ -334,7 +323,7 @@ function typedInvalidBlockers(error: z.ZodError): YouTubeCanaryAuthorizationBloc
     if (first === "networkExecution" || first === "oauthExecution" || first === "secretAccess" || first === "realYouTubeApiUsed") return "execution_flag_must_remain_false";
     return "authorization_bundle_schema_invalid";
   });
-  return stableUnique(blockers);
+  return canonicalBlockers(blockers);
 }
 
 function buildEvaluation(args: {
@@ -353,7 +342,7 @@ function buildEvaluation(args: {
     input_trust: args.inputTrust,
     preview_only: args.inputTrust === "untrusted_preview",
     state_persisted: false,
-    blocker_codes: stableUnique(args.blockerCodes),
+    blocker_codes: canonicalBlockers(args.blockerCodes),
     completed_fields: args.completedFields,
     pending_fields: args.pendingFields,
     first_canary_limits: args.bundle.firstCanaryLimits,
@@ -382,6 +371,10 @@ function hasUnsafeAuthorizationValue(input: unknown): boolean {
 
 function stableUnique<T>(values: T[]): T[] {
   return [...new Set(values)];
+}
+
+function canonicalBlockers(values: YouTubeCanaryAuthorizationBlockerCode[]): YouTubeCanaryAuthorizationBlockerCode[] {
+  return canonicalizeYouTubeCanaryAuthorizationBlockers(values);
 }
 
 function stableStringify(value: unknown): string {

@@ -2,6 +2,14 @@ import { z } from "zod";
 
 const isoDateTime = z.string().datetime();
 const referenceStatus = z.enum(["absent", "opaque_reference_recorded"]);
+const allReferenceKeys = [
+  "owner_decision_reference_status",
+  "network_authorization_reference_status",
+  "credential_reference_status",
+  "privacy_review_reference_status",
+  "data_deletion_review_reference_status",
+  "kill_switch_reference_status"
+] as const;
 
 export const YouTubeCanaryAuthorizationRecordSchema = z.object({
   schema_version: z.literal("1.0.0"),
@@ -44,12 +52,46 @@ export const YouTubeCanaryAuthorizationRecordSchema = z.object({
       message: "revoked_record_requires_revoked_at"
     });
   }
+  if (record.record_status === "revoked" && !record.revocation_reason_code) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["revocation_reason_code"],
+      message: "revoked_record_requires_revocation_reason_code"
+    });
+  }
   if (record.record_status !== "revoked" && record.revoked_at) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["revoked_at"],
       message: "non_revoked_record_must_not_have_revoked_at"
     });
+  }
+  if (record.record_status !== "revoked" && record.revocation_reason_code) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["revocation_reason_code"],
+      message: "non_revoked_record_must_not_have_revocation_reason_code"
+    });
+  }
+  if (record.revoked_at) {
+    const revokedAt = Date.parse(record.revoked_at);
+    if (Number.isFinite(createdAt) && Number.isFinite(revokedAt) && revokedAt <= createdAt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["revoked_at"],
+        message: "revoked_at_must_be_after_created_at"
+      });
+    }
+  }
+  if (record.record_status === "recorded_non_executable") {
+    const missingReference = allReferenceKeys.find((key) => record[key] !== "opaque_reference_recorded");
+    if (missingReference) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [missingReference],
+        message: "recorded_non_executable_requires_all_references_recorded"
+      });
+    }
   }
 });
 
@@ -66,15 +108,6 @@ export type YouTubeCanaryAuthorizationRecordEvaluation = {
   persistence_status: "not_implemented";
   safe_reason_codes: string[];
 };
-
-const allReferenceKeys = [
-  "owner_decision_reference_status",
-  "network_authorization_reference_status",
-  "credential_reference_status",
-  "privacy_review_reference_status",
-  "data_deletion_review_reference_status",
-  "kill_switch_reference_status"
-] as const;
 
 export function evaluateYouTubeCanaryAuthorizationRecord(input: unknown, now = new Date()): YouTubeCanaryAuthorizationRecordEvaluation {
   const parsed = YouTubeCanaryAuthorizationRecordSchema.safeParse(input);
