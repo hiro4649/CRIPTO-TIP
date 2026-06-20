@@ -30,6 +30,14 @@ function blockingStatuses(summary) {
   return Array.isArray(score.blockingStatuses) ? score.blockingStatuses : [];
 }
 
+function technicalBlockingStatuses(summary) {
+  return Array.isArray(summary.technicalBlockingStatuses) ? summary.technicalBlockingStatuses : [];
+}
+
+function technicalEvidenceRequiredStatuses(summary) {
+  return Array.isArray(summary.technicalEvidenceRequiredStatuses) ? summary.technicalEvidenceRequiredStatuses : [];
+}
+
 function allowedOptionalStatus(status) {
   return ["pass", "not_required", "not_applicable"].includes(String(status || ""));
 }
@@ -37,11 +45,15 @@ function allowedOptionalStatus(status) {
 function validate(summary, options = {}) {
   const failures = [];
   const expectedHead = options.expectedHead || "";
+  const technicalOnly = options.technicalOnly === true;
 
   if (!summary || typeof summary !== "object" || Array.isArray(summary)) failures.push("summary_not_object");
   if (summary.status !== "pass") failures.push("summary_status_not_pass");
+  if (summary.technicalStatus && summary.technicalStatus !== "pass") failures.push("technical_status_not_pass");
   if (summary.technicalChecksReady !== true) failures.push("technical_checks_not_ready");
-  if (blockingStatuses(summary).length !== 0) failures.push("blocking_statuses_present");
+  if (!technicalOnly && blockingStatuses(summary).length !== 0) failures.push("blocking_statuses_present");
+  if (technicalBlockingStatuses(summary).length !== 0) failures.push("technical_blocking_statuses_present");
+  if (technicalEvidenceRequiredStatuses(summary).length !== 0) failures.push("technical_evidence_required_statuses_present");
 
   if (summary.securityLifecycleStatus && summary.securityLifecycleStatus.status !== "pass") {
     failures.push("security_lifecycle_not_pass");
@@ -78,6 +90,7 @@ if (!input) fail("input_missing");
 
 const failures = validate(readJson(input), {
   expectedHead: valueAfter("--expected-head") || "",
+  technicalOnly: args.includes("--technical-only"),
 });
 
 if (failures.length) fail(failures[0]);

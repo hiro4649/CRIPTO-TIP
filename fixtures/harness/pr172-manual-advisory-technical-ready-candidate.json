@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "fixtureKind": "safe_projection_only",
+  "sourcePr": 172,
+  "headSha": "7848cfca6853242e27c1b3e05276513e05fbf59d",
+  "workflowConclusion": "failure",
+  "safeSummaryStatus": "manual_confirmation_required",
+  "technicalChecksReady": false,
+  "blockingStatuses": [],
+  "manualStatuses": [
+    {
+      "key": "safeArtifactIndexStatus",
+      "status": "manual_confirmation_required",
+      "reasonCodes": ["artifact_budget_exceeded"]
+    },
+    {
+      "key": "v085StabilityStatus",
+      "status": "manual_confirmation_required",
+      "reasonCodes": [
+        "task_mode_not_bugfix",
+        "pr_profile_repair_hint_available",
+        "pr_profile_conflict",
+        "import_smoke_config_absent",
+        "runtime_risk_register_absent",
+        "fast_path_full_verification_required"
+      ]
+    }
+  ],
+  "securityLifecycleStatus": "pass",
+  "profileDeclared": "security_r3",
+  "profileInferred": "product_minor_r2",
+  "artifactSoftBudgetExceeded": true,
+  "requiredChecks": {
+    "typescript": "pass",
+    "contracts": "pass"
+  },
+  "rawLogsRead": false,
+  "safeSummaryOnly": true
+}

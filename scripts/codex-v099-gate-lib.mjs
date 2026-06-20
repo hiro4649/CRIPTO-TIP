@@ -53,10 +53,10 @@ function activeSelfTestFile(version) {
 export function buildFormalEvidencePrecedenceReport(input = parseJson(process.env.CODEX_FORMAL_EVIDENCE_PRECEDENCE_JSON) || {}) {
   const productRelevant = productRelevantFromInput(input);
   const force = parseBool(input.forceCheck);
+  if (!force && !productRelevant) return notApplicable('formalEvidencePrecedenceStatus', 'formal_evidence_precedence_not_applicable');
   const evidence = input.formalEvidence || input.productEvidence || parseJson(process.env.CODEX_PRODUCT_VERIFICATION_EVIDENCE_JSON) || readMaybeJson(input.evidencePath || process.env.CODEX_PRODUCT_VERIFICATION_EVIDENCE_PATH);
   const baseline = input.formalBaseline || input.remoteBaseline || parseJson(process.env.CODEX_REMOTE_PRODUCT_BASELINE_JSON) || readMaybeJson(input.baselinePath || process.env.CODEX_REMOTE_PRODUCT_BASELINE_PATH);
   const diagnostic = input.formalDiagnostic || input.remoteNpmDiagnostic || parseJson(process.env.CODEX_REMOTE_NPM_DIAGNOSTIC_JSON) || readMaybeJson(input.diagnosticPath || process.env.CODEX_NPM_TEST_SAFE_SUMMARY_PATH);
-  if (!force && !productRelevant && !evidence && !baseline && !diagnostic) return notApplicable('formalEvidencePrecedenceStatus', 'formal_evidence_precedence_not_applicable');
   const reasonCodes = [];
   const evidencePresent = parseBool(input.formalEvidencePresent) || Boolean(evidence);
   const baselinePresent = parseBool(input.remoteBaselinePresent) || Boolean(baseline);

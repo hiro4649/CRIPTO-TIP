@@ -41,6 +41,7 @@ import { scanSafeOutput } from './codex-safe-output-scan.mjs';
 
 
 import { buildCompactReasonSummary } from './codex-reason-summary.mjs';
+import { buildTechnicalReadinessState } from './codex-technical-readiness-policy.mjs';
 
 
 
@@ -4160,6 +4161,7 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
   };
+  const technicalReadiness = report.technicalReadinessStatus || buildTechnicalReadinessState(report, {});
 
 
 
@@ -4211,7 +4213,8 @@ export function evaluateWorkflowReport(report, options = {}) {
 
 
 
-    status: report.status || 'missing',
+    status: technicalReadiness.technicalStatus || report.status || 'missing',
+    technicalStatus: technicalReadiness.technicalStatus || report.technicalStatus || report.status || 'missing',
 
 
 
@@ -4220,7 +4223,13 @@ export function evaluateWorkflowReport(report, options = {}) {
 
     mergeReady: Boolean(report.mergeReady),
 
-    technicalChecksReady: Boolean(report.technicalChecksReady ?? report.mergeReady),
+    technicalChecksReady: Boolean(technicalReadiness.technicalChecksReady ?? report.technicalChecksReady ?? report.mergeReady),
+    technicalBlockingStatuses: technicalReadiness.technicalBlockingStatuses || report.technicalBlockingStatuses || [],
+    technicalEvidenceRequiredStatuses: technicalReadiness.technicalEvidenceRequiredStatuses || report.technicalEvidenceRequiredStatuses || [],
+    ownerReviewRequired: Boolean(technicalReadiness.ownerReviewRequired ?? report.ownerReviewRequired ?? report.humanReviewRequired),
+    ownerReviewReasons: technicalReadiness.ownerReviewReasons || report.ownerReviewReasons || [],
+    advisoryStatuses: technicalReadiness.advisoryStatuses || report.advisoryStatuses || [],
+    reviewStatus: technicalReadiness.reviewStatus || report.reviewStatus || 'not_required',
 
     ownerMergeAuthorized: finalDecisionArtifact?.mergeAllowed === true,
 
