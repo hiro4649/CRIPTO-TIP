@@ -55,8 +55,9 @@ mismatched record/receipt/bundle hashes.
 
 It does not create owner approval, GitHub approval review, merge authority,
 runtime readiness, production readiness, legal compliance, YouTube policy
-compliance, OAuth execution, secret access, network execution, persistence, or
-real YouTube API execution.
+compliance, OAuth execution, secret access, network execution, persistence,
+real YouTube API execution, token sale, token exchange, cash-out, custody,
+internal balance, or investment wording.
 
 ## Best of N Evidence
 
@@ -145,6 +146,12 @@ Covered behaviors:
 - no secret access
 - no real YouTube API execution
 - no wallet, RPC, or deploy change
+- no token sale
+- no token exchange
+- no cash-out
+- no custody
+- no internal balance
+- no investment wording
 - no runtime readiness claim
 - no production readiness claim
 - no legal compliance claim

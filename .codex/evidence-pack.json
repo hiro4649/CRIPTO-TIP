@@ -104,6 +104,12 @@
     "real OAuth execution",
     "secret value read",
     "wallet/RPC/deploy change",
+    "token sale",
+    "token exchange",
+    "cash-out",
+    "custody",
+    "internal balance",
+    "investment wording",
     "owner approval creation",
     "GitHub approval review creation",
     "merge authority creation"
