@@ -3,59 +3,39 @@
   "schemaVersion": "1.0.0",
   "harnessVersion": "1.2.7",
   "repository": "hiro4649/CRIPTO-TIP",
-  "prNumber": 184,
-  "headSha": "35aea156b56eecbc3f13ed210734e64fd6c60e5c",
-  "baseSha": "f0153a228c63bdc43d8e9a3fafc4c0e3269f6e84",
-  "title": "feat: bind youtube canary records to safe receipts",
-  "goal": "Bind YouTube canary authorization records to safe audit receipts and authorization bundles using pure model validation, without creating execution, persistence, owner approval, or readiness authority.",
-  "rollbackOrStopCondition": "Stop without merge if same-head required GitHub checks fail, safe artifacts are unavailable, evidence is stale, receipt hashes are treated as authority, unsafe output appears, or quality gates weaken.",
-  "changeType": "p1_youtube_canary_record_receipt_binding_contract",
-  "prProfile": "security_r3",
-  "taskMode": "feature",
-  "riskLevel": "R3",
-  "productCodeChanged": true,
+  "prNumber": 0,
+  "headSha": "current_pr_head",
+  "baseSha": "809940904ffe3d7c6cf149d2234abc6aaf91b984",
+  "title": "docs: define youtube canary record persistence threat model",
+  "goal": "Define a docs-only persistence threat model for YouTube canary authorization records and audit receipts before repository, route, database, or migration work.",
+  "rollbackOrStopCondition": "Stop without merge if non-doc/runtime paths change, same-head required checks fail, evidence is stale, or any readiness/approval authority is created.",
+  "changeType": "p1_youtube_canary_record_persistence_threat_model",
+  "prProfile": "docs_only_r1_r2",
+  "taskMode": "docs_only",
+  "riskLevel": "R2",
+  "productCodeChanged": false,
   "runtimeReadinessClaimed": false,
   "productionReadinessClaimed": false,
   "legalComplianceClaimed": false,
   "youtubePolicyComplianceClaimed": false,
-  "ciRunId": "27858152231",
-  "qualityGateRunId": "27858153585",
-  "qualityGateArtifactId": "7761420828",
-  "productCiStatus": "success",
-  "qualityGateStatus": "success",
+  "ciRunId": "not_available_before_remote_checks",
+  "qualityGateRunId": "not_available_before_remote_checks",
+  "qualityGateArtifactId": "not_available_before_remote_checks",
+  "productCiStatus": "not_available_before_remote_checks",
+  "qualityGateStatus": "not_available_before_remote_checks",
   "runtimeReadinessClaim": "no",
   "scope": {
     "changedFiles": [
       ".codex/evidence-pack.json",
-      ".codex/p1-youtube-canary-record-receipt-binding-contract.json",
-      "apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts",
-      "apps/api/src/youtube-live-chat-canary-audit-receipt.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-blockers.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-record.test.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-record.ts",
-      "apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts",
-      "apps/api/src/youtube-live-chat-canary-record-receipt-binding.ts",
-      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_RECORD_MODEL.md",
-      "docs/P1_YOUTUBE_CANARY_PREVIEW_AUDIT_RECEIPT.md",
-      "docs/P1_YOUTUBE_CANARY_RECORD_RECEIPT_BINDING_CONTRACT.md",
-      "docs/pr-p1-youtube-canary-record-receipt-binding-contract.md"
+      ".codex/p1-youtube-canary-record-persistence-threat-model.json",
+      "docs/P1_YOUTUBE_CANARY_RECORD_PERSISTENCE_THREAT_MODEL.md",
+      "docs/pr-p1-youtube-canary-record-persistence-threat-model.md"
     ],
     "allowedPaths": [
       ".codex/evidence-pack.json",
-      ".codex/p1-youtube-canary-record-receipt-binding-contract.json",
-      "apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts",
-      "apps/api/src/youtube-live-chat-canary-audit-receipt.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-blockers.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-gate.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-record.test.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-record.ts",
-      "apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts",
-      "apps/api/src/youtube-live-chat-canary-record-receipt-binding.ts",
-      "docs/P1_YOUTUBE_CANARY_AUTHORIZATION_RECORD_MODEL.md",
-      "docs/P1_YOUTUBE_CANARY_PREVIEW_AUDIT_RECEIPT.md",
-      "docs/P1_YOUTUBE_CANARY_RECORD_RECEIPT_BINDING_CONTRACT.md",
-      "docs/pr-p1-youtube-canary-record-receipt-binding-contract.md"
+      ".codex/p1-youtube-canary-record-persistence-threat-model.json",
+      "docs/P1_YOUTUBE_CANARY_RECORD_PERSISTENCE_THREAT_MODEL.md",
+      "docs/pr-p1-youtube-canary-record-persistence-threat-model.md"
     ],
     "forbiddenPaths": [
       "package.json",
@@ -66,95 +46,66 @@
       "apps/api/src/server.ts",
       "apps/api/src/routes/**",
       "apps/api/src/repositories/**",
+      "apps/api/src/**/*.ts",
       "apps/web/**",
       "apps/overlay/**",
       ".env.example"
     ]
   },
   "allowedScope": [
-    "canonical YouTube canary authorization blocker registry",
-    "safe audit receipt semantic schema",
-    "safe audit receipt integrity verifier",
-    "authorization record schema hardening",
-    "pure record receipt bundle binding evaluator",
-    "focused tests",
-    "docs",
-    ".codex evidence"
+    "docs-only persistence threat model",
+    ".codex evidence",
+    "PR body evidence"
   ],
   "forbiddenScope": [
+    "runtime behavior change",
+    "route implementation",
+    "repository implementation",
+    "DB driver dependency",
+    "real DB connection",
+    "migration change",
+    "package.json change",
+    "pnpm-lock change",
+    "workflow change",
+    "real YouTube OAuth",
+    "real YouTube API execution",
+    "wallet/RPC/deploy change",
     "runtime readiness claim",
     "production readiness claim",
     "legal compliance claim",
     "YouTube policy compliance claim",
-    "package.json change",
-    "pnpm-lock change",
-    "DB driver dependency",
-    "Google SDK dependency",
-    "real DB connection",
-    "migration change",
-    "contract change",
-    "workflow change",
-    "server runtime change",
-    "route change",
-    "repository interface change",
-    "apps/web change",
-    "apps/overlay change",
-    "real network call",
-    "real YouTube API call",
-    "real OAuth execution",
-    "secret value read",
-    "wallet/RPC/deploy change",
-    "token sale",
-    "token exchange",
-    "cash-out",
-    "custody",
-    "internal balance",
-    "investment wording",
     "owner approval creation",
     "GitHub approval review creation",
     "merge authority creation"
   ],
   "doneCriteria": [
-    "canonical blocker-code schema rejects unknown blocker codes",
-    "receipt verifier rejects duplicate blockers, non-canonical order, wrong hash, and semantic mismatches",
-    "recorded_non_executable records require all opaque references",
-    "revoked record metadata is temporally and semantically constrained",
-    "record receipt bundle binding recomputes safe hashes",
-    "preview receipt binding remains non-authoritative",
-    "committed incomplete bundles remain blocked",
-    "all binding outputs remain forbidden, non-authoritative, non-persistent, and safe",
-    "no package, lockfile, workflow, contract, migration, server, route, repository, real network, OAuth, secret, runtime readiness, production readiness, legal compliance, or YouTube policy compliance claim"
+    "threat model is documented",
+    "authority separation is documented",
+    "safe hash correlation boundary is documented",
+    "append-only event model is proposed but not implemented",
+    "current-state projection is proposed but not implemented",
+    "state transitions are documented",
+    "replay prevention and idempotency are documented",
+    "optimistic concurrency is documented",
+    "access control, retention, and deletion remain awaiting owner decisions",
+    "backup/restore, clock policy, read-time integrity, and failure taxonomy are documented",
+    "no runtime, DB, route, repository, migration, package, lockfile, workflow, readiness, compliance, approval, or merge authority change"
   ],
   "commands": [
     {
-      "name": "corepack pnpm install --frozen-lockfile",
-      "status": "pass",
-      "result": "lockfile unchanged"
-    },
-    {
-      "name": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
-      "status": "pass",
-      "result": "4 files, 33 passed"
-    },
-    {
-      "name": "corepack pnpm lint",
+      "name": "node scripts/check-evidence-placeholders.mjs",
       "status": "pass",
       "result": "pass"
     },
     {
-      "name": "corepack pnpm typecheck",
+      "name": "node scripts/validate-evidence-freshness.mjs",
       "status": "pass",
       "result": "pass"
     },
     {
-      "name": "corepack pnpm test",
+      "name": "node scripts/codex-secret-safety-scan.mjs",
       "status": "pass",
-      "result": "123 files, 2128 passed, 6 skipped"
-    },
-    {
-      "name": "npm test",
-      "status": "pass",
-      "result": "123 files, 2128 passed, 6 skipped"
+      "result": "pass"
     },
     {
       "name": "corepack pnpm evidence:ci",
@@ -167,33 +118,23 @@
       "result": "pass"
     },
     {
-      "name": "node scripts/check-evidence-placeholders.mjs",
+      "name": "node scripts/codex-v127-self-test.mjs",
       "status": "pass",
       "result": "pass"
     },
     {
-      "name": "node scripts/validate-evidence-freshness.mjs",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "name": "node scripts/check-quality-gate-self-protection.mjs",
-      "status": "pass",
-      "result": "pass"
-    },
-    {
-      "name": "node scripts/codex-secret-safety-scan.mjs",
+      "name": "git diff --check",
       "status": "pass",
       "result": "pass"
     }
   ],
   "testSummary": {
     "schemaVersion": "1.0.0",
-    "command": "corepack pnpm test",
-    "testFiles": 123,
-    "passed": 2128,
-    "skipped": 6,
-    "testedHeadSha": "35aea156b56eecbc3f13ed210734e64fd6c60e5c",
+    "command": "docs-only local evidence checks",
+    "testFiles": 0,
+    "passed": 0,
+    "skipped": 0,
+    "testedHeadSha": "current_pr_head",
     "currentRunEvidence": true
   },
   "bestOfNEvidence": {
@@ -202,30 +143,27 @@
     "candidates": [
       {
         "id": "A",
-        "summary": "pure record/receipt/bundle binding evaluator with canonical blocker registry and receipt verifier",
+        "summary": "docs-only threat model before persistence implementation",
         "selected": true
       },
       {
         "id": "B",
-        "summary": "persist authorization records now",
+        "summary": "implement repository and DB schema now",
         "selected": false,
-        "rejectedReason": "storage ownership and access control need a separate threat model first"
+        "rejectedReason": "storage authority and owner decisions need a threat model first"
       },
       {
         "id": "C",
-        "summary": "treat receipt hashes as sufficient authority",
+        "summary": "treat safe hashes as storage authority",
         "selected": false,
         "rejectedReason": "safe hashes are correlation identifiers only"
       }
     ],
-    "selectionReason": "closes the integrity gap without adding routes, persistence, OAuth, network execution, or new authority"
+    "selectionReason": "documents persistence risks without adding runtime or storage authority"
   },
   "securityOracle": {
     "coveredFiles": [
-      "apps/api/src/youtube-live-chat-canary-authorization-blockers.ts",
-      "apps/api/src/youtube-live-chat-canary-audit-receipt.ts",
-      "apps/api/src/youtube-live-chat-canary-authorization-record.ts",
-      "apps/api/src/youtube-live-chat-canary-record-receipt-binding.ts"
+      "docs/P1_YOUTUBE_CANARY_RECORD_PERSISTENCE_THREAT_MODEL.md"
     ],
     "authenticationBoundaryTested": true,
     "untrustedInputTested": true,
@@ -235,96 +173,65 @@
     "networkExecutionBlocked": true,
     "oauthExecutionBlocked": true,
     "secretAccessBlocked": true,
-    "runtimeExecutionBlocked": true,
-    "temporalBindingTested": true,
-    "integrityFailurePrecedenceTested": true,
-    "typedBindingReasonCodesTested": true
+    "runtimeExecutionBlocked": true
   },
   "testCoverageEvidence": {
     "changedArea": [
-      "canonical blocker registry",
-      "audit receipt semantic schema and verifier",
-      "authorization record schema",
-      "record receipt bundle binding evaluator"
+      "docs-only persistence threat model",
+      ".codex evidence"
     ],
     "risks": [
-      "unknown blocker accepted",
-      "tampered receipt accepted",
-      "hash mismatch accepted",
-      "preview receipt treated as authority",
-      "incomplete committed bundle treated as ready",
-      "recorded state claimed with missing references",
-      "raw input echoed",
-      "record created before receipt accepted",
-      "temporal failure hidden behind revoked or expired status",
-      "generic hash binding reason hides mismatch class",
-      "receipt derivation mismatch accepted"
+      "persistence record mistaken for execution authority",
+      "safe hash correlation mistaken for signature or approval",
+      "repository implemented before owner access-control decisions",
+      "retention/deletion ambiguity before DB work"
     ],
-    "focusedTestCommand": "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts",
-    "fullTestCommand": "corepack pnpm test",
+    "focusedTestCommand": "docs-only evidence checks",
+    "fullTestCommand": "not applicable for docs-only PR",
     "coveredSuccessPaths": [
-      "complete committed bundle binds to recorded non-executable record",
-      "preview receipt binds only as non-authoritative",
-      "committed incomplete bundle remains blocked",
-      "draft, revoked, and expired records map after hashes pass",
-      "record created at receipt time is accepted",
-      "record created after receipt time is accepted"
+      "threat model documented",
+      "authority separation documented",
+      "append-only/current-state split proposed",
+      "read-time integrity documented"
     ],
     "coveredFailurePaths": [
-      "unknown blocker code",
-      "duplicate blocker code",
-      "non-canonical blocker order",
-      "wrong receipt hash",
-      "committed preview mismatch",
-      "complete authorization with blockers",
-      "awaiting authorization without blockers",
-      "missing recorded references",
-      "revoked record without reason",
-      "mismatched record bundle hash",
-      "mismatched record receipt hash",
-      "tampered receipt semantics",
-      "invalid bundle input",
-      "record created before receipt time",
-      "record created before receipt time with revoked record",
-      "record created before receipt time with expired record",
-      "receipt integrity failure before temporal binding",
-      "bundle integrity failure before temporal binding",
-      "mismatched receipt bundle hash",
-      "receipt derivation mismatch"
+      "record created before receipt remains forbidden",
+      "preview receipt cannot become authority",
+      "raw rows or diagnostics must not be returned",
+      "owner decisions pending fail closed"
     ],
     "boundaryTests": [
-      "no raw input echo",
-      "authority remains non_authoritative",
-      "execution remains forbidden",
-      "network, OAuth, secret, real API, record persistence, and receipt persistence remain false"
+      "no code changed",
+      "no DB driver",
+      "no migration",
+      "no route",
+      "no repository",
+      "no readiness claim"
     ]
   },
   "securityBoundaries": [
-    "Binding is pure model evaluation only.",
-    "Safe hashes are correlation identifiers only.",
+    "Docs-only threat model.",
+    "No product runtime behavior changed.",
+    "No route, repository, database, migration, package, lockfile, workflow, or contract file is changed.",
     "No owner approval is created.",
     "No GitHub approval review is created.",
     "No merge authority is created.",
-    "No network call is made.",
-    "No OAuth execution is made.",
-    "No secret access is made.",
-    "No real YouTube API execution is made.",
-    "No persistence is implemented.",
-    "No route, repository, server, package, lockfile, workflow, contract, or migration file is changed."
+    "No runtime, production, legal, or YouTube policy readiness is claimed.",
+    "No token sale.",
+    "No token exchange.",
+    "No cash-out.",
+    "No custody.",
+    "No internal balance.",
+    "No investment wording."
   ],
   "productVerificationCommands": [
-    "corepack pnpm install --frozen-lockfile: pass",
-    "corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts: pass; 4 files, 33 passed",
-    "corepack pnpm lint: pass",
-    "corepack pnpm typecheck: pass",
-    "corepack pnpm test: pass; 123 files, 2128 passed, 6 skipped",
-    "npm test: pass; 123 files, 2128 passed, 6 skipped",
-    "corepack pnpm evidence:ci: pass",
-    "corepack pnpm quality:self-protection: pass",
     "node scripts/check-evidence-placeholders.mjs: pass",
     "node scripts/validate-evidence-freshness.mjs: pass",
-    "node scripts/check-quality-gate-self-protection.mjs: pass",
-    "node scripts/codex-secret-safety-scan.mjs: pass"
+    "node scripts/codex-secret-safety-scan.mjs: pass",
+    "corepack pnpm evidence:ci: pass",
+    "corepack pnpm quality:self-protection: pass",
+    "node scripts/codex-v127-self-test.mjs: pass",
+    "git diff --check: pass"
   ],
   "packageVerification": {
     "packageScriptsChanged": false,
@@ -333,17 +240,17 @@
     "runtimeDependenciesAdded": false,
     "dbDriverDependencyAdded": false,
     "googleSdkDependencyAdded": false,
-    "verification": "No package scripts, runtime dependencies, DB driver dependency, Google SDK dependency, package.json, or pnpm-lock changes are introduced."
+    "verification": "No package, lockfile, runtime dependency, DB driver, or Google SDK changes are introduced."
   },
   "apiCompatibilitySummary": {
     "publicApiChanged": false,
-    "internalRuntimeApiChanged": true,
-    "statement": "Adds pure model exports for canary record receipt binding and strengthens existing model schemas. No route, server, repository, or persistence API is changed."
+    "internalRuntimeApiChanged": false,
+    "statement": "Docs-only threat model; no route, server, repository, persistence, or product runtime API is changed."
   },
   "reviewScope": {
-    "scope": "P1 YouTube canary authorization record/receipt/bundle safe model binding.",
-    "riskSummary": "Main risk is accidentally treating safe hash correlation as owner approval, execution authority, or readiness.",
-    "verificationOracle": "Focused receipt, record, blocker, and binding tests plus full repo lint, typecheck, tests, evidence, self-protection, and secret scan."
+    "scope": "P1 YouTube canary authorization record persistence threat model.",
+    "riskSummary": "Main risk is treating future persistence as execution, approval, or readiness authority.",
+    "verificationOracle": "Docs-only diff, evidence checks, self-protection, secret scan, and same-head GitHub checks."
   },
   "safeOutput": {
     "status": "pass"
@@ -355,24 +262,11 @@
     "legalComplianceClaimed": false,
     "youtubePolicyComplianceClaimed": false
   },
-  "remoteRuns": [
-    {
-      "name": "ci",
-      "runId": "27858152231",
-      "result": "success"
-    },
-    {
-      "name": "quality-gate",
-      "runId": "27858153585",
-      "result": "success",
-      "artifactId": "7761420828"
-    }
-  ],
+  "remoteRuns": [],
   "residualRisks": [
-    "This PR does not persist authorization records or audit receipts.",
-    "Storage ownership, access control, replay prevention, retention, deletion, backup, restore, and audit retrieval remain for the next docs-only threat model PR.",
-    "This PR does not run a real YouTube canary.",
-    "Real credential provider, OAuth execution, network authorization, and YouTube API calls remain future owner-scoped work."
+    "Access control, retention, deletion, and audit retrieval owner decisions remain pending.",
+    "Repository, route, DB schema, and migration implementation remain future scoped work.",
+    "Real YouTube canary execution remains forbidden and unimplemented."
   ],
   "humanConfirmation": [
     "AI review is not human approval.",
@@ -380,5 +274,43 @@
     "This PR does not create owner approval record.",
     "This PR does not create merge authority."
   ],
-  "prBodyPath": "docs/pr-p1-youtube-canary-record-receipt-binding-contract.md"
+  "prBodyPath": "docs/pr-p1-youtube-canary-record-persistence-threat-model.md",
+  "riskRegister": {
+    "risks": [
+      {
+        "severity": "medium",
+        "risk": "Future persistence could be mistaken for execution authority.",
+        "owner": "codex",
+        "nextPr": "future persistence implementation",
+        "mitigation": "Threat model states stored records remain non-executable and cannot create owner approval or readiness."
+      },
+      {
+        "severity": "medium",
+        "risk": "Access control, retention, and deletion decisions are not finalized.",
+        "owner": "project-owner",
+        "nextPr": "future owner-scoped persistence design",
+        "mitigation": "Evidence marks these statuses as awaiting owner decisions and future code must fail closed."
+      }
+    ]
+  },
+  "manualGates": {
+    "gateTypes": [
+      "owner_access_control_decision",
+      "owner_retention_policy_decision",
+      "owner_deletion_policy_decision",
+      "runtime_execution_authorization"
+    ],
+    "requiredFields": [
+      "decision_id",
+      "target_head_sha",
+      "scope",
+      "decision_status",
+      "created_by_role"
+    ],
+    "productionLikeRules": [
+      "AI review is not owner approval.",
+      "Stored records do not authorize execution.",
+      "Runtime, production, legal, and YouTube policy readiness require future owner-scoped evidence."
+    ]
+  }
 }
