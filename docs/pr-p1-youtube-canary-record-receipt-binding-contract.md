@@ -2,6 +2,12 @@
 
 ## Task Contract
 
+PR profile: security_r3
+Task mode: feature
+Risk level: R3
+
+## Goal
+
 This PR adds a pure model contract that binds YouTube canary authorization
 records to safe audit receipts and authorization bundles.
 
@@ -21,7 +27,41 @@ The binding evaluator recomputes the bundle hash and receipt hash from supplied
 safe model inputs and compares them to the record. It also verifies that the
 receipt fields match a fresh safe evaluation of the supplied bundle.
 
+## Security impact
+
+The change is security-sensitive because it touches authorization, receipt
+integrity, and safe correlation logic. It reduces ambiguity by rejecting unknown
+blocker codes, duplicate blocker codes, non-canonical blocker order, tampered
+receipt hashes, invalid receipt semantics, incomplete recorded records, and
+mismatched record/receipt/bundle hashes.
+
+It does not create owner approval, GitHub approval review, merge authority,
+runtime readiness, production readiness, legal compliance, YouTube policy
+compliance, OAuth execution, secret access, network execution, persistence, or
+real YouTube API execution.
+
+## Best of N Evidence
+
+Candidate count: 3
+
+Selected candidate: A - pure record/receipt/bundle binding evaluator with
+canonical blocker registry and receipt verifier.
+
+Reason selected: Candidate A closes the integrity gap without adding routes,
+persistence, OAuth, network execution, or new authority. It keeps the change
+small and gives the next persistence PR a safer model contract to reference.
+
+Rejected candidate B: Persist authorization records now. This was rejected
+because storage ownership, access control, replay prevention, retention, and
+audit retrieval need a separate threat model before repository or DB work.
+
+Rejected candidate C: Treat receipt hashes as sufficient authority. This was
+rejected because safe hashes are correlation identifiers only and must not
+become owner approval, execution authority, or readiness evidence.
+
 ## Testing And Review
+
+## Validation commands
 
 Local focused verification:
 
@@ -35,6 +75,23 @@ Remote current-head CI evidence will be refreshed after PR creation and same-hea
 GitHub checks complete.
 
 ## Test Coverage Evidence
+
+Changed area: YouTube canary authorization blocker registry, audit receipt
+schema/verifier, authorization record schema, and pure record/receipt/bundle
+binding evaluator.
+
+Test command: `corepack pnpm vitest run apps/api/src/youtube-live-chat-canary-record-receipt-binding.test.ts apps/api/src/youtube-live-chat-canary-authorization-record.test.ts apps/api/src/youtube-live-chat-canary-audit-receipt.test.ts apps/api/src/youtube-live-chat-canary-authorization-gate.test.ts`
+
+What the test covers: canonical blocker acceptance, unknown blocker rejection,
+duplicate blocker rejection, blocker ordering, receipt hash integrity, committed
+and preview semantic contracts, stricter record status semantics, hash binding,
+preview non-authority, incomplete committed bundle blocking, and non-executable
+output flags.
+
+Edge cases and failure paths: mismatched record bundle hash, mismatched record
+receipt hash, tampered receipt hash, tampered receipt semantics, invalid bundle
+input, missing references on declared recorded records, revoked records without
+reason, non-revoked records with revocation metadata, and raw input non-echo.
 
 Covered behaviors:
 
@@ -86,7 +143,7 @@ append-only/current-state separation, access boundaries, replay prevention,
 retention, deletion, backup, restore, and audit retrieval before any repository
 or database work begins.
 
-## Human Confirmation
+## Human confirmation needed
 
 AI technical review may recommend merging if same-head checks pass, but this PR
 does not create human/project-owner approval, GitHub approval review, owner
