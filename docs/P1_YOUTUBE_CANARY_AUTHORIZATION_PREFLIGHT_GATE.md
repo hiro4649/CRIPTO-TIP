@@ -12,6 +12,9 @@ canonical domain bundle schema, evidence wrapper schema, default bundle,
 evaluation result, stable safe hash, legacy preflight projection, and real
 connector readiness projection.
 
+`apps/api/src/youtube-live-chat-canary-audit-receipt.ts` owns the safe
+non-persistent audit receipt projection for a single evaluation.
+
 Legacy controlled-canary preflight and real connector readiness gates delegate
 to this evaluator, then preserve their existing response shapes for route
 compatibility.
@@ -37,6 +40,9 @@ POST evaluate responses are untrusted previews with `preview_only: true` and
 `state_persisted: false`. A complete POST preview does not mutate the committed
 GET bundle and does not create canary execution readiness.
 
+Admin routes use the injected request clock for `evaluated_at`. Tests inject
+fixed clocks; runtime routes do not use historical fixed dates.
+
 ## Authorization States
 
 - `awaiting_owner_authorization`: one or more owner-controlled fields are
@@ -59,6 +65,10 @@ Every evaluation returns:
 - `owner_approval_created: false`
 - `github_approval_review_created: false`
 - `merge_authority_created: false`
+
+Each evaluation also includes `audit_receipt`. The receipt is derived from the
+evaluation, remains non-persistent, and is not an owner authorization record or
+server audit log.
 
 GET default evaluation uses `input_trust: committed_safe_bundle`.
 
