@@ -44,6 +44,8 @@ v1.2.0 adaptive routing, v1.2.1 calibration, v1.2.2 read-budget routing,
 and v1.2.3 observed evidence/decision closure remain compatibility layers.
 v1.2.4 specialist-governance fields remain compatibility layers.
 v1.2.5 adds Goal Shard, Worktree Fleet, Evidence Lane, Typed Monitor Inbox, Fanout Guard, and Yield fields. v1.2.6 adds observed-state loops. v1.2.7 adds receipt-carried continuation and evidence compression inside the existing P0 artifacts.
+Rollback compatibility marker: CODEX_QUALITY_HARNESS_FILE v1.2.7.
+Rollback compatibility marker: Active target harness: v1.2.7 / v127.
 v1.2.7 remains available as rollback compatibility. v1.2.8 adds deterministic
 decision projection and token-minimal loop closure inside the existing target
 quality gate.
