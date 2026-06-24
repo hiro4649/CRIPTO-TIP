@@ -25,10 +25,13 @@ const safety = v128.complexSafety || {};
 
 const cases = [
   ['v128_self_test_must_pass', () => true],
-  ['agents_marker_is_v128', () => agents.includes('CODEX_QUALITY_HARNESS_FILE v1.2.8')],
-  ['manifest_active_tuple_is_v128', () => manifest.activeHarnessVersion === '1.2.8'
-    && manifest.activeSelfTestSuite === 'v128'
-    && manifest.activeSelfTestStatusKey === 'v128SelfTestStatus'],
+  ['agents_marker_supports_v128_rollback', () => agents.includes('CODEX_QUALITY_HARNESS_FILE v1.2.9')
+    && agents.includes('v1.2.8 remains available as rollback')],
+  ['manifest_exposes_v128_rollback_tuple', () => manifest.activeHarnessVersion === '1.2.9'
+    && manifest.activeSelfTestSuite === 'v129'
+    && manifest.versioningRollback?.activeHarnessVersion === '1.2.8'
+    && manifest.versioningRollback?.activeSelfTestSuite === 'v128'
+    && manifest.versioningRollback?.activeSelfTestStatusKey === 'v128SelfTestStatus'],
   ['complex_target_materialization_is_active_path_only', () => manifest.targetRepoMode === true
     && v128.rolloutClass === 'complex'
     && v128.materialization === 'target_quality_gate_active_path'
@@ -39,7 +42,7 @@ const cases = [
   ['v127_rollback_tuple_available', () => manifest.versioning?.activeHarnessVersion === '1.2.7'
     && manifest.versioning?.activeSelfTestSuite === 'v127'
     && manifest.versioning?.rollbackAvailable === true
-    && manifest.legacySelfTests?.v127 === 'blocking_compatibility_rollback'],
+    && ['blocking_compatibility_rollback', 'blocking_compatibility'].includes(manifest.legacySelfTests?.v127)],
   ['crypto_youtube_runtime_boundaries_preserved', () => safety.cryptoCustodyBoundaryPreserved === true
     && safety.youtubePolicyBoundaryPreserved === true
     && safety.deployForbidden === true
@@ -54,8 +57,9 @@ const cases = [
     && v128.routineSelectedSkillMax === 1
     && v128.routineReviewerFanout === 0
     && v128.routineOwnerInterruptMax === 0],
-  ['policy_index_points_to_v128_with_v127_deferred', () => policy.schemaVersion === '1.2.8'
-    && policy.requiredReads.includes('docs/process/CODEX_V128_SPEC.md')
+  ['policy_index_points_to_v129_with_v128_rollback_and_v127_deferred', () => policy.schemaVersion === '1.2.9'
+    && policy.requiredReads.includes('docs/process/CODEX_V129_SPEC.md')
+    && policy.deferredReads.includes('docs/process/CODEX_V128_SPEC.md')
     && policy.deferredReads.includes('docs/process/CODEX_V127_SPEC.md')
     && policy.selectedSkillsMax === 1],
   ['pr_body_is_not_machine_evidence', () => manifest.prBodyMachineEvidence === false

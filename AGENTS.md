@@ -19,7 +19,7 @@ owner scope and evidence. Done means the smallest relevant verification was run
 or honestly reported unavailable, with no raw logs or secret-like output.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.2.8
+CODEX_QUALITY_HARNESS_FILE v1.2.9
 
 ## Prime Directive
 
@@ -31,9 +31,9 @@ docs/process.
 
 ## Active Harness
 
-Active target harness: v1.2.8 / v128.
+Active target harness: v1.2.9 / v129.
 Read first: AGENTS.md, docs/process/CODEX_HARNESS_MANIFEST.json,
-docs/process/CODEX_V128_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json.
+docs/process/CODEX_V129_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json.
 README, legacy specs, and PR history are conditional reads only.
 
 ## Authority
@@ -46,9 +46,9 @@ v1.2.4 specialist-governance fields remain compatibility layers.
 v1.2.5 adds Goal Shard, Worktree Fleet, Evidence Lane, Typed Monitor Inbox, Fanout Guard, and Yield fields. v1.2.6 adds observed-state loops. v1.2.7 adds receipt-carried continuation and evidence compression inside the existing P0 artifacts.
 Rollback compatibility marker: CODEX_QUALITY_HARNESS_FILE v1.2.7.
 Rollback compatibility marker: Active target harness: v1.2.7 / v127.
-v1.2.7 remains available as rollback compatibility. v1.2.8 adds deterministic
-decision projection and token-minimal loop closure inside the existing target
-quality gate.
+v1.2.7 remains available as compatibility. v1.2.8 remains available as rollback
+compatibility. v1.2.9 adds goal-contracted capability routing and independent
+verification metadata inside the existing target quality gate.
 
 ## Target Footprint
 
@@ -72,7 +72,7 @@ proposal-only and owner-approval-required.
 ## Local Task Discipline
 
 Start from clean default branch or clean worktree. Preserve user changes.
-Run v127 self-test and the local quality gate for harness rollout. For product
+Run v129, v128 rollback, v127 compatibility self-tests and the local quality gate for harness rollout. For product
 work, use the repo-specific commands above and keep product evidence separate
 from harness evidence.
 <!-- CODEX_QUALITY_HARNESS_END -->
