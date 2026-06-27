@@ -1,660 +1,756 @@
 {
-    "marker":  "CODEX_QUALITY_HARNESS_FILE v1.2.9",
-    "schemaVersion":  "1.2.9",
-    "sourceHarnessVersion":  "1.2.9",
-    "harnessVersion":  "1.2.9",
-    "activeHarnessVersion":  "1.2.9",
-    "targetHarnessVersion":  "1.2.9",
-    "evidenceSchemaVersion":  6,
-    "profileTemplateVersion":  "1.1.6",
-    "futureHarnessArtifact":  false,
-    "upgradePath":  "direct_v128_to_v129_complex_target_active_path",
-    "activeSelfTestSuite":  "v129",
-    "activeSelfTestStatusKey":  "v129SelfTestStatus",
-    "legacySelfTests":  {
-                            "v122":  "blocking_compatibility",
-                            "v121":  "blocking_compatibility",
-                            "v120":  "blocking_compatibility",
-                            "v119":  "blocking_compatibility",
-                            "v118":  "blocking_compatibility",
-                            "v117":  "blocking_compatibility",
-                            "v116":  "blocking_compatibility",
-                            "v115":  "blocking_compatibility",
-                            "v114":  "blocking_compatibility",
-                            "v113":  "selected_critical",
-                            "v080_v112":  "target_shadow_legacy_count_only",
-                            "v123":  "blocking_compatibility",
-                            "v124":  "blocking_compatibility",
-                            "v125":  "blocking_compatibility",
-                            "v126":  "blocking_compatibility",
-                            "v127":  "blocking_compatibility",
-                            "v128":  "blocking_compatibility_rollback",
-                            "v129":  "blocking_current"
-                        },
-    "sourceOnlyRelease":  false,
-    "targetRollout":  "completed",
-    "representativeRealPrValidation":  "not_started",
-    "representativeRealPrReplay":  "required",
-    "representativeLivePrValidation":  "required",
-    "syntheticRepresentativeValidation":  "required",
-    "versioning":  {
-                       "activeHarnessVersion":  "1.2.7",
-                       "activeSelfTestSuite":  "v127",
-                       "activeSelfTestStatusKey":  "v127SelfTestStatus",
-                       "rollbackAvailable":  true,
-                       "compatibilityRole":  "v127_complex_target_rollback"
-                   },
-    "versioningRollback":  {
-                               "activeHarnessVersion":  "1.2.8",
-                               "activeSelfTestSuite":  "v128",
-                               "activeSelfTestStatusKey":  "v128SelfTestStatus",
-                               "rollbackAvailable":  true,
-                               "compatibilityRole":  "v128_complex_target_rollback"
-                           },
-    "theme":  "Goal-Contracted Capability Routing and Independent Verification",
-    "requiredStatuses":  [
-                             "orchestrationModeStatus",
-                             "permissionGrantStatus",
-                             "localRepoReadinessStatus",
-                             "workerContractStatus",
-                             "workerProofStatus",
-                             "reviewChainStatus",
-                             "ownerDecisionBriefStatus",
-                             "finalDecisionPointerStatus"
-                         ],
-    "repoSpecificRegistrations":  [
-                                      "voxweaveReviewEvidenceClassifierStatus",
-                                      "voxweaveEvidenceClassRegistryStatus",
-                                      "voxweaveDependencyRootResolverStatus",
-                                      "voxweaveTerminalNoActionGateStatus",
-                                      "voxweavePrInventoryHardStopStatus",
-                                      "voxweaveMainReflectionDryRunStatus",
-                                      "voxweaveNoDeltaNoPrStatus",
-                                      "voxweaveBodyOnlyGovernanceLaneStatus",
-                                      "live2dTargetHarnessIsolationStatus",
-                                      "live2dParentWorktreeInvariantStatus",
-                                      "live2dIsolatedWorktreeExecutionStatus",
-                                      "live2dPrContextCheckoutIsolationStatus",
-                                      "live2dFreshEvidenceBundlePrerequisiteStatus",
-                                      "live2dPriority1BlockedCarryoverStatus",
-                                      "live2dMotionDatasetRowSchemaPreflightStatus",
-                                      "live2dUxComfortAuditStatus",
-                                      "live2dBrowserApiSmokeJsonArtifactV2Status",
-                                      "live2dResidentEvidenceBoundaryV2Status",
-                                      "funkyCanonicalMergeEvidenceStatus",
-                                      "funkyFormalBackendEvidencePriorityStatus",
-                                      "funkyRemoteNpmStaleDiagnosticSuppressionStatus",
-                                      "funkySafeDbReadExportStageStatus",
-                                      "funkyStagingNoTxOwnerReviewStateStatus",
-                                      "funkyRuntimeReadinessBlockerDigestV5Status",
-                                      "funkyDockerRuntimeArtifactLaneStatus",
-                                      "funkyRuntimeAdoptionSequenceV3Status",
-                                      "funkySafeDbMockFirstRowsStatus",
-                                      "irisRemoteBlockerDecompositionStatus",
-                                      "irisPrEvidenceCompactSchemaStatus",
-                                      "irisDatasetAuditV2SpecGateStatus",
-                                      "irisDatasetAuditValidatorGateStatus",
-                                      "irisPriority1BlockedCarryoverStatus",
-                                      "irisLegacyJsonFixtureStabilityStatus",
-                                      "irisCurrentMainPostMergeValidationStatus",
-                                      "irisBelovedAvatarSafetyFixtureGateStatus",
-                                      "irisCandidateExecutionBoundaryV2Status",
-                                      "criptoTipEvidenceClosureStatus",
-                                      "criptoTipPrBodyArtifactLoopBreakerStatus",
-                                      "criptoTipManualGateAuditChainStatus",
-                                      "criptoTipProviderErrorTaxonomyStatus",
-                                      "criptoTipChaosSoakBudgetStatus",
-                                      "criptoTipRuntimePerformanceBudgetV4Status",
-                                      "criptoTipYouTubeProviderBoundaryV3Status",
-                                      "criptoTipCryptoNoCustodyStateMachineStatus",
-                                      "criptoTipNoInvestmentAdviceScannerV2Status",
-                                      "criptoTipViewerDataMinimizationV2Status",
-                                      "criptoTipOfficialYoutubeConnectorManualGateStatus",
-                                      "vgcTokenStageArtifactStatus",
-                                      "vgcDeployApprovalStateMachineStatus",
-                                      "vgcOwnerValuesWorkflowStatus",
-                                      "vgcNoDeployNoTxBoundaryStatus",
-                                      "vgcBscScanVerificationBoundaryStatus",
-                                      "vgcMainnetReadinessBoundaryStatus"
-                                  ],
-    "statusSurfaceTiersV114":  {
-                                   "critical_now":  [
-                                                        "v114SelfTestStatus",
-                                                        "loopKernelStatus",
-                                                        "loopExitCriteriaStatus",
-                                                        "noSpeculativeRepairStatus",
-                                                        "evaluationAbsorptionStatus"
-                                                    ],
-                                   "evidence_critical":  [
-                                                             "loopBudgetStatus",
-                                                             "loopGuardrailStatus",
-                                                             "loopFailureClassifierStatus",
-                                                             "loopHandoffStatus",
-                                                             "loopTerminalCloseoutStatus",
-                                                             "hookGuardrailRegistryStatus"
-                                                         ],
-                                   "compatibility_shadow":  [
-                                                                "v113SelfTestStatus",
-                                                                "legacySelfTestLaneSeparationStatus",
-                                                                "targetModeCompatibilityBridgeV3Status"
-                                                            ]
-                               },
-    "sourceProfileStubsV109":  {
-                                   "VOXWEAVE":  {
-                                                    "criticalInvariants":  [
-                                                                               "decision_ledger_required",
-                                                                               "pr_inventory_reduction_required",
-                                                                               "review_qg_separated"
-                                                                           ],
-                                                    "forbiddenReadinessClaims":  [
-                                                                                     "runtime",
-                                                                                     "production",
-                                                                                     "real_tts",
-                                                                                     "asr"
-                                                                                 ],
-                                                    "runtimeAllowed":  false,
-                                                    "productionAllowed":  false,
-                                                    "profileEvidenceClasses":  [
-                                                                                   "main_reflection_candidate",
-                                                                                   "inventory_reduction"
-                                                                               ],
-                                                    "safeNextActionHints":  [
-                                                                                "emit_decision_ledger_safe_summary"
-                                                                            ]
-                                                },
-                                   "IRIS-live2d-renderer":  {
-                                                                "criticalInvariants":  [
-                                                                                           "priority1_blocked_carryover",
-                                                                                           "trusted_loader_disabled",
-                                                                                           "future_motion_labels_non_executable"
-                                                                                       ],
-                                                                "forbiddenReadinessClaims":  [
-                                                                                                 "renderer",
-                                                                                                 "runtime",
-                                                                                                 "production"
-                                                                                             ],
-                                                                "runtimeAllowed":  false,
-                                                                "productionAllowed":  false,
-                                                                "profileEvidenceClasses":  [
-                                                                                               "harness_rollout",
-                                                                                               "terminal_blocked"
-                                                                                           ],
-                                                                "safeNextActionHints":  [
-                                                                                            "require_fresh_resident_evidence_before_readiness"
-                                                                                        ]
-                                                            },
-                                   "FUNKY":  {
-                                                 "criticalInvariants":  [
-                                                                            "formal_backend_evidence_precedence",
-                                                                            "d8_safe_db_read_export_lane_separation",
-                                                                            "no_funded_tx"
-                                                                        ],
-                                                 "forbiddenReadinessClaims":  [
-                                                                                  "runtime",
-                                                                                  "production",
-                                                                                  "staging_no_tx_pass",
-                                                                                  "mainnet"
-                                                                              ],
-                                                 "runtimeAllowed":  false,
-                                                 "productionAllowed":  false,
-                                                 "profileEvidenceClasses":  [
-                                                                                "product_pr",
-                                                                                "manual_gate_candidate"
-                                                                            ],
-                                                 "safeNextActionHints":  [
-                                                                             "preserve_backend_cwd_evidence"
-                                                                         ]
-                                             },
-                                   "IRIS":  {
-                                                "criticalInvariants":  [
-                                                                           "priority1_blocked_carryover",
-                                                                           "dataset_audit_boundary",
-                                                                           "candidate_execution_boundary",
-                                                                           "memory_privacy"
-                                                                       ],
-                                                "forbiddenReadinessClaims":  [
-                                                                                 "runtime",
-                                                                                 "production",
-                                                                                 "production_go"
-                                                                             ],
-                                                "runtimeAllowed":  false,
-                                                "productionAllowed":  false,
-                                                "profileEvidenceClasses":  [
-                                                                               "terminal_blocked",
-                                                                               "main_reflection_candidate"
-                                                                           ],
-                                                "safeNextActionHints":  [
-                                                                            "keep_priority1_blocked_until_fresh_evidence"
-                                                                        ]
-                                            },
-                                   "CRIPTO-TIP":  {
-                                                      "criticalInvariants":  [
-                                                                                 "safe_ci_failure_artifact_required",
-                                                                                 "crypto_no_custody",
-                                                                                 "no_wallet_rpc_deploy_access"
-                                                                             ],
-                                                      "forbiddenReadinessClaims":  [
-                                                                                       "runtime",
-                                                                                       "production",
-                                                                                       "legal_compliance",
-                                                                                       "youtube_policy_compliance"
-                                                                                   ],
-                                                      "runtimeAllowed":  false,
-                                                      "productionAllowed":  false,
-                                                      "profileEvidenceClasses":  [
-                                                                                     "terminal_blocked",
-                                                                                     "harness_rollout"
-                                                                                 ],
-                                                      "safeNextActionHints":  [
-                                                                                  "require_safe_artifact_or_state_delta"
-                                                                              ]
-                                                  },
-                                   "VGC-TOKEN":  {
-                                                     "criticalInvariants":  [
-                                                                                "token_stage_artifact",
-                                                                                "owner_values_workflow",
-                                                                                "deploy_approval_state_machine"
-                                                                            ],
-                                                     "forbiddenReadinessClaims":  [
-                                                                                      "deploy",
-                                                                                      "funded_tx",
-                                                                                      "governance_tx",
-                                                                                      "bscscan_verification",
-                                                                                      "readiness"
-                                                                                  ],
-                                                     "runtimeAllowed":  false,
-                                                     "productionAllowed":  false,
-                                                     "profileEvidenceClasses":  [
-                                                                                    "manual_gate_candidate"
-                                                                                ],
-                                                     "safeNextActionHints":  [
-                                                                                 "do_not_deploy_or_send_tx"
-                                                                             ]
-                                                 }
-                               },
-    "productCodeChanged":  false,
-    "runtimeReadinessClaimed":  false,
-    "productionReadinessClaimed":  false,
-    "selfApproval":  false,
-    "selfMerge":  false,
-    "subagentMergeAuthority":  false,
-    "localAgentSecretAccess":  false,
-    "walletRpcDeployAccess":  false,
-    "targetReposTouched":  false,
-    "safeSummaryOnly":  true,
-    "tokenEconomy":  "required",
-    "operationalClosure":  "required",
-    "v110AbsorptionMap":  {
-                              "decisionLedgerStatus":  [
-                                                           "decisionLedgerFileStatus",
-                                                           "proSummaryFirstStatus"
-                                                       ],
-                              "gateLedgerStatus":  [
-                                                       "gateLedgerFileStatus"
-                                                   ],
-                              "operatorDigestV4Status":  [
-                                                             "proSummaryFirstStatus",
-                                                             "detailOnDemandStatus"
-                                                         ],
-                              "workflowLedgerStatus":  [
-                                                           "stopResumeContractStatus",
-                                                           "decisionLedgerFileStatus"
-                                                       ],
-                              "ciWatcherStatus":  [
-                                                      "ciWatcherV2Status"
-                                                  ],
-                              "prInventoryReductionStatus":  [
-                                                                 "prInventoryReductionEngineStatus"
-                                                             ],
-                              "mainReflectionPackageStatus":  [
-                                                                  "mainReflectionPackageBuilderStatus"
-                                                              ],
-                              "reviewEvidenceProtocolV2Status":  [
-                                                                     "reviewEvidenceProtocolV3Status"
-                                                                 ],
-                              "runtimeReturnGateStatus":  [
-                                                              "runtimeReturnGateV2Status"
-                                                          ],
-                              "safeCiFailureArtifactV2Status":  [
-                                                                    "ciWatcherV2Status",
-                                                                    "failureTriageEngineStatus"
-                                                                ],
-                              "repairPlanSafeJsonStatus":  [
-                                                               "bodyRepairHintStatus",
-                                                               "repairPlanSafeJsonStatus"
-                                                           ],
-                              "missingStatusTaxonomyStatus":  [
-                                                                  "statusCompressionCompatibilityStatus"
-                                                              ],
-                              "externalSourceAbsorptionMapStatus":  [
-                                                                        "standingPolicyReferenceStatus"
-                                                                    ],
-                              "orchestrationAbsorptionMapStatus":  [
-                                                                       "sessionBudgetStatus",
-                                                                       "mainThreadAuthorityStatus"
-                                                                   ]
-                          },
-    "tokenHardCap":  "required",
-    "contextCapsule":  "required",
-    "failureClosure":  "required",
-    "v111AbsorptionMap":  {
-                              "proSummaryFirstStatus":  [
-                                                            "chatHardCapStatus",
-                                                            "artifactPointerOnlyStatus"
-                                                        ],
-                              "detailOnDemandStatus":  [
-                                                           "detailEscalationGateStatus"
-                                                       ],
-                              "deltaOnlyReportingStatus":  [
-                                                               "stateDeltaRequiredStatus",
-                                                               "noHistoryReplayStatus"
-                                                           ],
-                              "tokenBudgetStatus":  [
-                                                        "inputTokenBudgetStatus",
-                                                        "chatHardCapStatus"
-                                                    ],
-                              "sessionBudgetStatus":  [
-                                                          "activeSessionCountHardCapStatus",
-                                                          "eightSessionDefaultDeniedStatus"
-                                                      ],
-                              "codexInstructionCompressionStatus":  [
-                                                                        "codexInstructionMacroStatus"
-                                                                    ],
-                              "standingPolicyReferenceStatus":  [
-                                                                    "codexInstructionMacroStatus",
-                                                                    "noHistoryReplayStatus"
-                                                                ],
-                              "repoBoundaryReferenceStatus":  [
-                                                                  "contextCapsuleStatus"
-                                                              ],
-                              "noRepeatContextGuardStatus":  [
-                                                                 "noHistoryReplayStatus",
-                                                                 "stateDeltaRequiredStatus"
-                                                             ],
-                              "decisionLedgerFileStatus":  [
-                                                               "contextCapsuleStatus",
-                                                               "ledgerAbsorptionFirstStatus"
-                                                           ],
-                              "gateLedgerFileStatus":  [
-                                                           "ledgerAbsorptionFirstStatus"
-                                                       ],
-                              "stopResumeContractStatus":  [
-                                                               "executableStopResumeStatus",
-                                                               "validationResumePlanStatus"
-                                                           ],
-                              "longRunningValidationPlannerStatus":  [
-                                                                         "longRunningValidationPlannerV2Status"
-                                                                     ],
-                              "ciWatcherV2Status":  [
-                                                        "ciWatcherArtifactStatus",
-                                                        "sameHeadCiLedgerStatus"
-                                                    ],
-                              "forbiddenContentScannerV2Status":  [
-                                                                      "safeEvidenceWordingAllowlistStatus",
-                                                                      "forbiddenContentScannerV2Status"
-                                                                  ],
-                              "readinessLanguageLinterV2Status":  [
-                                                                      "readinessLanguageLinterV2Status"
-                                                                  ],
-                              "noDeployProofArtifactStatus":  [
-                                                                  "tokenPreflightGateLedgerStatus",
-                                                                  "deployApprovalStateMachineV2Status"
-                                                              ],
-                              "vgcTokenStageArtifactStatus":  [
-                                                                  "vgcTokenStageArtifactV2Status"
-                                                              ],
-                              "ownerValuesWorkflowStatus":  [
-                                                                "ownerValuesWorkflowV2Status"
-                                                            ],
-                              "deployApprovalStateMachineStatus":  [
-                                                                       "deployApprovalStateMachineV2Status"
-                                                                   ],
-                              "runtimeReadinessBlockerDigestStatus":  [
-                                                                          "runtimeReadinessBlockerDigestV3Status"
-                                                                      ],
-                              "live2dCriticalInvariantStatus":  [
-                                                                    "live2dCriticalInvariantTopGateStatus"
-                                                                ],
-                              "performanceBudgetV2Status":  [
-                                                                "performanceBudgetV3Status"
-                                                            ],
-                              "operatorEffortScoreStatus":  [
-                                                                "tokenEconomyLossAuditStatus",
-                                                                "operationalClosureScoreStatus"
-                                                            ],
-                              "outputVolumeScoreStatus":  [
-                                                              "chatHardCapStatus"
-                                                          ],
-                              "sessionEfficiencyScoreStatus":  [
-                                                                   "activeSessionCountHardCapStatus"
-                                                               ]
-                          },
-    "absorbedStatusMap":  {
-                              "tokenBudgetGovernorV2Status":  [
-                                                                  "tokenBudgetStatus",
-                                                                  "inputTokenBudgetStatus"
-                                                              ],
-                              "conversationSurfaceBudgetStatus":  [
-                                                                      "chatHardCapStatus",
-                                                                      "proSummaryFirstStatus"
-                                                                  ],
-                              "ciWatcherThinModeStatus":  [
-                                                              "ciWatcherStatus",
-                                                              "ciWatcherV2Status"
-                                                          ],
-                              "finalReportCompressionV2Status":  [
-                                                                     "mainReflectionPackageStatus",
-                                                                     "mainReflectionPackageV2Status"
-                                                                 ],
-                              "precisionBenchmarkParityV2Status":  [
-                                                                       "precisionBenchmarkParityStatus"
-                                                                   ]
-                          },
-    "targetRepoMode":  true,
-    "prBodyMachineEvidence":  false,
-    "contextRouting":  {
-                           "version":  "1.2.6",
-                           "field":  "orchestrationCapsule.skillContextRouting",
-                           "newP0Artifact":  false,
-                           "newTopLevelStatus":  false,
-                           "newSkill":  false,
-                           "subtitle":  "Self-reporting becomes observed state; long autonomy uses short safe loops.",
-                           "tokenOnlyMetadataProfile":  false
-                       },
-    "observedSkillDecisionClosure":  {
-                                         "version":  "1.2.4",
-                                         "fields":  [
-                                                        "orchestrationCapsule.finalDecisionClosure",
-                                                        "orchestrationCapsule.workspaceIdentityGate",
-                                                        "orchestrationCapsule.activePolicyIndex",
-                                                        "orchestrationCapsule.contextReadLedger",
-                                                        "orchestrationCapsule.skillContractRegistry",
-                                                        "orchestrationCapsule.skillEffectivenessLedger",
-                                                        "orchestrationCapsule.escalationEffectivenessLedger",
-                                                        "workerProofCapsule.reviewerIndependenceProof",
-                                                        "workerProofCapsule.reviewLoopVerification",
-                                                        "ownerDecisionBrief.finalDecisionClosureSummary"
-                                                    ],
-                                         "activePolicyIndex":  "docs/process/CODEX_ACTIVE_POLICY_INDEX.json",
-                                         "newP0Artifact":  false,
-                                         "newTopLevelStatus":  false,
-                                         "newSkill":  false,
-                                         "targetRollout":  "not_started",
-                                         "subtitle":  "Prove what was read. Prove what worked. Prove why it stopped."
-                                     },
-    "goalScopedDelegatedAutonomy":  {
-                                        "version":  "1.2.4",
-                                        "name":  "Goal-Scoped Delegated Autonomy and Evidence Semantics",
-                                        "fields":  [
-                                                       "orchestrationCapsule.goalContract",
-                                                       "orchestrationCapsule.delegationBoundary",
-                                                       "orchestrationCapsule.evidenceSemanticsKernel",
-                                                       "orchestrationCapsule.targetHarnessFootprintPolicy",
-                                                       "workerProofCapsule.boundedExpertLoop",
-                                                       "workerProofCapsule.expertRoleLedger",
-                                                       "workerProofCapsule.safeFailureDigest",
-                                                       "ownerDecisionBrief.finalDecisionClosureAdapter",
-                                                       "ownerDecisionBrief.ownerBurdenReducer",
-                                                       "ownerDecisionBrief.safeSessionLearningProposal",
-                                                       "ownerDecisionBrief.repoSpecificVisualProofSurface"
-                                                   ],
-                                        "newP0Artifact":  false,
-                                        "newTopLevelStatus":  false,
-                                        "newSkill":  false,
-                                        "targetRollout":  "not_started",
-                                        "finalAuthority":  "v1.1.8_final_decision_kernel",
-                                        "subtitle":  "Delegate technical evaluation inside the goal scope; never create owner authority."
-                                    },
-    "goalShardedWorktreeFleet":  {
-                                     "version":  "1.2.5",
-                                     "name":  "Goal-Sharded Worktree Fleet and Evidence Lane Closure",
-                                     "p0InternalBlocks":  [
-                                                              "Goal Shard and Progress Evidence",
-                                                              "Worktree Fleet and Shard Merge Queue",
-                                                              "Evidence Lane and QG Lane Semantics",
-                                                              "Typed Monitor Inbox and Cost-Aware Fanout Guard",
-                                                              "Skill / Review / Product Value Yield"
-                                                          ],
-                                     "fields":  [
-                                                    "orchestrationCapsule.goalShardAndProgressEvidence",
-                                                    "orchestrationCapsule.evidenceLaneAndQGLaneSemantics",
-                                                    "orchestrationCapsule.typedMonitorInboxAndFanoutGuard",
-                                                    "orchestrationCapsule.skillReviewProductValueYield",
-                                                    "workerProofCapsule.worktreeFleetContract",
-                                                    "workerProofCapsule.shardMergeQueue",
-                                                    "ownerDecisionBrief.productValueDeltaSummary",
-                                                    "ownerDecisionBrief.safeMemoryLedger"
-                                                ],
-                                     "p1OptionalSurfaces":  [
-                                                                "Execution Ladder",
-                                                                "Safe Batch Tool Plan",
-                                                                "Safe Memory Ledger",
-                                                                "Repo-specific Visual Proof Surface"
-                                                            ],
-                                     "newP0Artifact":  false,
-                                     "newTopLevelStatus":  false,
-                                     "newSkill":  false,
-                                     "targetRollout":  "not_started",
-                                     "finalAuthority":  "v1.1.8_final_decision_kernel",
-                                     "subtitle":  "v1.2.5 is a control plane, not an authority expansion."
-                                 },
-    "observedStateMinimalLoopRuntime":  {
-                                            "version":  "1.2.6",
-                                            "name":  "Observed-State Bridge-Safe Loop Runtime with Context-Slim Skill and Validation Routing",
-                                            "p0InternalBlocks":  [
-                                                                     "Observed Workspace, Owner Receipt, and Capability Boundary",
-                                                                     "Spec-First Checker/Builder Loop and Stop Circuit",
-                                                                     "Evidence Lane State Machine and Safe Failure Capsule",
-                                                                     "Context / Skill / Validation Budget Router",
-                                                                     "Skill / Review / Product Value Effectiveness"
-                                                                 ],
-                                            "fields":  [
-                                                           "orchestrationCapsule.observedWorkspaceOwnerReceiptAndCapability",
-                                                           "orchestrationCapsule.specFirstCheckerBuilderLoopAndStopCircuit",
-                                                           "orchestrationCapsule.evidenceLaneStateMachineAndSafeFailureCapsule",
-                                                           "orchestrationCapsule.contextSkillValidationBudgetRouter",
-                                                           "orchestrationCapsule.skillReviewProductValueEffectiveness",
-                                                           "workerProofCapsule.observedGitWorktreePrState",
-                                                           "ownerDecisionBrief.ownerDecisionReceipt",
-                                                           "ownerDecisionBrief.ownerDelegatedProcessReceipt"
-                                                       ],
-                                            "p1OptionalSurfaces":  [
-                                                                       "Knowledge Map Capsule",
-                                                                       "Bridge Handoff Extended Mode",
-                                                                       "Operator Output Discipline",
-                                                                       "Repo-specific Visual Proof",
-                                                                       "Safe Session Learning Proposal",
-                                                                       "Architecture Entropy Watch"
-                                                                   ],
-                                            "newP0Artifact":  false,
-                                            "newTopLevelStatus":  false,
-                                            "newSkill":  false,
-                                            "targetRollout":  "completed",
-                                            "finalAuthority":  "v1.1.8_final_decision_kernel",
-                                            "subtitle":  "Self-reporting becomes observed state; long autonomy uses short safe loops."
-                                        },
-    "deterministicDecisionProjectionAndTokenMinimalLoopClosure":  {
-                                                                       "version":  "1.2.8",
-                                                                       "name":  "Deterministic Decision Projection and Token-Minimal Loop Closure",
-                                                                       "sourceOnlyRelease":  false,
-                                                                       "targetRollout":  "completed",
-                                                                       "rolloutClass":  "complex",
-                                                                       "materialization":  "target_quality_gate_active_path",
-                                                                       "newP0Artifact":  false,
-                                                                       "newTopLevelStatus":  false,
-                                                                       "newSkill":  false,
-                                                                       "finalAuthority":  "v1.1.8_final_decision_kernel",
-                                                                       "v127RollbackAvailable":  true,
-                                                                       "sourceFullBundleCopied":  false,
-                                                                       "workflowChanged":  false,
-                                                                       "productCodeChanged":  false,
-                                                                       "packageOrLockfileChanged":  false,
-                                                                       "routineManagedSafeArtifactRead":  1,
-                                                                       "routineColdArtifactRead":  0,
-                                                                       "diagnosticColdArtifactReadMax":  3,
-                                                                       "routineSelectedSkillMax":  1,
-                                                                       "routineReviewerFanout":  0,
-                                                                       "routineOwnerInterruptMax":  0,
-                                                                       "prBodyMachineEvidence":  false,
-                                                                       "safeSummaryOnly":  true,
-                                                                       "authority":  {
-                                                                                         "decisionCapsule":  "domain_decision_authority",
-                                                                                         "evidenceCapsule":  "same_head_freshness_authority",
-                                                                                         "finalDecision":  "pass_block_mergeAllowed_exit_code_authority",
-                                                                                         "qualityGateSafeSummary":  "non_authoritative_projection"
-                                                                                     },
-                                                                       "complexSafety":  {
-                                                                                             "cryptoCustodyBoundaryPreserved":  true,
-                                                                                             "youtubePolicyBoundaryPreserved":  true,
-                                                                                             "deployForbidden":  true,
-                                                                                             "walletAccessForbidden":  true,
-                                                                                             "rpcAccessForbidden":  true,
-                                                                                             "secretAccessForbidden":  true,
-                                                                                             "runtimeReadinessClaimed":  false,
-                                                                                             "productionReadinessClaimed":  false,
-                                                                                             "legalComplianceClaimed":  false,
-                                                                                             "youtubePolicyComplianceClaimed":  false
-                                                                                         }
-                                                                   },
-    "goalContractedCapabilityRouter":  {
-                                           "version":  "1.2.9",
-                                           "name":  "Goal-Contracted Capability Routing and Independent Verification",
-                                           "sourceHarnessCommit":  "07bba3cba7456375194fc25fe1d2108a893502d0",
-                                           "sourceOnlyRelease":  false,
-                                           "targetRollout":  "completed",
-                                           "rolloutClass":  "complex",
-                                           "materialization":  "target_quality_gate_active_path",
-                                           "newP0Artifact":  false,
-                                           "newTopLevelStatus":  false,
-                                           "newSkill":  false,
-                                           "sourceFullBundleCopied":  false,
-                                           "modelIdPinnedInTarget":  false,
-                                           "hostAdapterStoredInTarget":  false,
-                                           "realHostExecution":  "user_local_trusted_adapter",
-                                           "independentVerifierRequired":  true,
-                                           "pluginDefault":  "none",
-                                           "pluginUnavailablePolicy":  "explicit_nonblocking",
-                                           "finalAuthority":  "v1.1.8_final_decision_kernel",
-                                           "authorityCreated":  false,
-                                           "productRuntimeMutationCount":  0,
-                                           "productCodeChanged":  false,
-                                           "packageOrLockfileChanged":  false,
-                                           "workflowChanged":  false,
-                                           "routineColdArtifactRead":  0,
-                                           "routineSelectedSkillMax":  1,
-                                           "routineReviewerFanout":  0,
-                                           "routineOwnerInterruptMax":  0,
-                                           "complexSafety":  {
-                                                                 "cryptoCustodyBoundaryPreserved":  true,
-                                                                 "youtubePolicyBoundaryPreserved":  true,
-                                                                 "deployForbidden":  true,
-                                                                 "walletAccessForbidden":  true,
-                                                                 "rpcAccessForbidden":  true,
-                                                                 "secretAccessForbidden":  true,
-                                                                 "runtimeReadinessClaimed":  false,
-                                                                 "productionReadinessClaimed":  false,
-                                                                 "legalComplianceClaimed":  false,
-                                                                 "youtubePolicyComplianceClaimed":  false
-                                                             }
-                                       }
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.3.0",
+  "schemaVersion": "1.3.0",
+  "sourceHarnessVersion": "1.3.0",
+  "harnessVersion": "1.3.0",
+  "activeHarnessVersion": "1.3.0",
+  "targetHarnessVersion": "1.3.0",
+  "evidenceSchemaVersion": 6,
+  "profileTemplateVersion": "1.1.6",
+  "futureHarnessArtifact": false,
+  "upgradePath": "direct_v127_to_v128_complex_target_active_path",
+  "activeSelfTestSuite": "v130",
+  "activeSelfTestStatusKey": "v130SelfTestStatus",
+  "legacySelfTests": {
+    "v122": "blocking_compatibility",
+    "v121": "blocking_compatibility",
+    "v120": "blocking_compatibility",
+    "v119": "blocking_compatibility",
+    "v118": "blocking_compatibility",
+    "v117": "blocking_compatibility",
+    "v116": "blocking_compatibility",
+    "v115": "blocking_compatibility",
+    "v114": "blocking_compatibility",
+    "v113": "selected_critical",
+    "v080_v112": "target_shadow_legacy_count_only",
+    "v123": "blocking_compatibility",
+    "v124": "blocking_compatibility",
+    "v125": "blocking_compatibility",
+    "v126": "blocking_compatibility",
+    "v127": "blocking_compatibility",
+    "v128": "blocking_compatibility_rollback",
+    "v129": "immediate_rollback",
+    "v130": "blocking_current_active_authority"
+  },
+  "sourceOnlyRelease": false,
+  "targetRollout": "completed",
+  "representativeRealPrValidation": "not_started",
+  "representativeRealPrReplay": "required",
+  "representativeLivePrValidation": "required",
+  "syntheticRepresentativeValidation": "required",
+  "theme": "HARNESS v1.3.0 Core Metadata Target Bridge",
+  "requiredStatuses": [
+    "orchestrationModeStatus",
+    "permissionGrantStatus",
+    "localRepoReadinessStatus",
+    "workerContractStatus",
+    "workerProofStatus",
+    "reviewChainStatus",
+    "ownerDecisionBriefStatus",
+    "finalDecisionPointerStatus"
+  ],
+  "repoSpecificRegistrations": [
+    "CRIPTO-TIPReviewEvidenceClassifierStatus",
+    "CRIPTO-TIPEvidenceClassRegistryStatus",
+    "CRIPTO-TIPDependencyRootResolverStatus",
+    "CRIPTO-TIPTerminalNoActionGateStatus",
+    "CRIPTO-TIPPrInventoryHardStopStatus",
+    "CRIPTO-TIPMainReflectionDryRunStatus",
+    "CRIPTO-TIPNoDeltaNoPrStatus",
+    "CRIPTO-TIPBodyOnlyGovernanceLaneStatus",
+    "live2dTargetHarnessIsolationStatus",
+    "live2dParentWorktreeInvariantStatus",
+    "live2dIsolatedWorktreeExecutionStatus",
+    "live2dPrContextCheckoutIsolationStatus",
+    "live2dFreshEvidenceBundlePrerequisiteStatus",
+    "live2dPriority1BlockedCarryoverStatus",
+    "live2dMotionDatasetRowSchemaPreflightStatus",
+    "live2dUxComfortAuditStatus",
+    "live2dBrowserApiSmokeJsonArtifactV2Status",
+    "live2dResidentEvidenceBoundaryV2Status",
+    "funkyCanonicalMergeEvidenceStatus",
+    "funkyFormalBackendEvidencePriorityStatus",
+    "funkyRemoteNpmStaleDiagnosticSuppressionStatus",
+    "funkySafeDbReadExportStageStatus",
+    "funkyStagingNoTxOwnerReviewStateStatus",
+    "funkyRuntimeReadinessBlockerDigestV5Status",
+    "funkyDockerRuntimeArtifactLaneStatus",
+    "funkyRuntimeAdoptionSequenceV3Status",
+    "funkySafeDbMockFirstRowsStatus",
+    "irisRemoteBlockerDecompositionStatus",
+    "irisPrEvidenceCompactSchemaStatus",
+    "irisDatasetAuditV2SpecGateStatus",
+    "irisDatasetAuditValidatorGateStatus",
+    "irisPriority1BlockedCarryoverStatus",
+    "irisLegacyJsonFixtureStabilityStatus",
+    "irisCurrentMainPostMergeValidationStatus",
+    "irisBelovedAvatarSafetyFixtureGateStatus",
+    "irisCandidateExecutionBoundaryV2Status",
+    "criptoTipEvidenceClosureStatus",
+    "criptoTipPrBodyArtifactLoopBreakerStatus",
+    "criptoTipManualGateAuditChainStatus",
+    "criptoTipProviderErrorTaxonomyStatus",
+    "criptoTipChaosSoakBudgetStatus",
+    "criptoTipRuntimePerformanceBudgetV4Status",
+    "criptoTipYouTubeProviderBoundaryV3Status",
+    "criptoTipCryptoNoCustodyStateMachineStatus",
+    "criptoTipNoInvestmentAdviceScannerV2Status",
+    "criptoTipViewerDataMinimizationV2Status",
+    "criptoTipOfficialYoutubeConnectorManualGateStatus",
+    "vgcTokenStageArtifactStatus",
+    "vgcDeployApprovalStateMachineStatus",
+    "vgcOwnerValuesWorkflowStatus",
+    "vgcNoDeployNoTxBoundaryStatus",
+    "vgcBscScanVerificationBoundaryStatus",
+    "vgcMainnetReadinessBoundaryStatus"
+  ],
+  "statusSurfaceTiersV114": {
+    "critical_now": [
+      "v114SelfTestStatus",
+      "loopKernelStatus",
+      "loopExitCriteriaStatus",
+      "noSpeculativeRepairStatus",
+      "evaluationAbsorptionStatus"
+    ],
+    "evidence_critical": [
+      "loopBudgetStatus",
+      "loopGuardrailStatus",
+      "loopFailureClassifierStatus",
+      "loopHandoffStatus",
+      "loopTerminalCloseoutStatus",
+      "hookGuardrailRegistryStatus"
+    ],
+    "compatibility_shadow": [
+      "v113SelfTestStatus",
+      "legacySelfTestLaneSeparationStatus",
+      "targetModeCompatibilityBridgeV3Status"
+    ]
+  },
+  "sourceProfileStubsV109": {
+    "CRIPTO-TIP": {
+      "criticalInvariants": [
+        "decision_ledger_required",
+        "pr_inventory_reduction_required",
+        "review_qg_separated"
+      ],
+      "forbiddenReadinessClaims": [
+        "runtime",
+        "production",
+        "real_tts",
+        "asr"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "main_reflection_candidate",
+        "inventory_reduction"
+      ],
+      "safeNextActionHints": [
+        "emit_decision_ledger_safe_summary"
+      ]
+    },
+    "IRIS-live2d-renderer": {
+      "criticalInvariants": [
+        "priority1_blocked_carryover",
+        "trusted_loader_disabled",
+        "future_motion_labels_non_executable"
+      ],
+      "forbiddenReadinessClaims": [
+        "renderer",
+        "runtime",
+        "production"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "harness_rollout",
+        "terminal_blocked"
+      ],
+      "safeNextActionHints": [
+        "require_fresh_resident_evidence_before_readiness"
+      ]
+    },
+    "FUNKY": {
+      "criticalInvariants": [
+        "formal_backend_evidence_precedence",
+        "d8_safe_db_read_export_lane_separation",
+        "no_funded_tx"
+      ],
+      "forbiddenReadinessClaims": [
+        "runtime",
+        "production",
+        "staging_no_tx_pass",
+        "mainnet"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "product_pr",
+        "manual_gate_candidate"
+      ],
+      "safeNextActionHints": [
+        "preserve_backend_cwd_evidence"
+      ]
+    },
+    "IRIS": {
+      "criticalInvariants": [
+        "priority1_blocked_carryover",
+        "dataset_audit_boundary",
+        "candidate_execution_boundary",
+        "memory_privacy"
+      ],
+      "forbiddenReadinessClaims": [
+        "runtime",
+        "production",
+        "production_go"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "terminal_blocked",
+        "main_reflection_candidate"
+      ],
+      "safeNextActionHints": [
+        "keep_priority1_blocked_until_fresh_evidence"
+      ]
+    },
+    "CRIPTO-TIP": {
+      "criticalInvariants": [
+        "safe_ci_failure_artifact_required",
+        "crypto_no_custody",
+        "no_wallet_rpc_deploy_access"
+      ],
+      "forbiddenReadinessClaims": [
+        "runtime",
+        "production",
+        "legal_compliance",
+        "youtube_policy_compliance"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "terminal_blocked",
+        "harness_rollout"
+      ],
+      "safeNextActionHints": [
+        "require_safe_artifact_or_state_delta"
+      ]
+    },
+    "VGC-TOKEN": {
+      "criticalInvariants": [
+        "token_stage_artifact",
+        "owner_values_workflow",
+        "deploy_approval_state_machine"
+      ],
+      "forbiddenReadinessClaims": [
+        "deploy",
+        "funded_tx",
+        "governance_tx",
+        "bscscan_verification",
+        "readiness"
+      ],
+      "runtimeAllowed": false,
+      "productionAllowed": false,
+      "profileEvidenceClasses": [
+        "manual_gate_candidate"
+      ],
+      "safeNextActionHints": [
+        "do_not_deploy_or_send_tx"
+      ]
+    }
+  },
+  "productCodeChanged": false,
+  "runtimeReadinessClaimed": false,
+  "productionReadinessClaimed": false,
+  "selfApproval": false,
+  "selfMerge": false,
+  "subagentMergeAuthority": false,
+  "localAgentSecretAccess": false,
+  "walletRpcDeployAccess": false,
+  "targetReposTouched": false,
+  "safeSummaryOnly": true,
+  "tokenEconomy": "required",
+  "operationalClosure": "required",
+  "v110AbsorptionMap": {
+    "decisionLedgerStatus": [
+      "decisionLedgerFileStatus",
+      "proSummaryFirstStatus"
+    ],
+    "gateLedgerStatus": [
+      "gateLedgerFileStatus"
+    ],
+    "operatorDigestV4Status": [
+      "proSummaryFirstStatus",
+      "detailOnDemandStatus"
+    ],
+    "workflowLedgerStatus": [
+      "stopResumeContractStatus",
+      "decisionLedgerFileStatus"
+    ],
+    "ciWatcherStatus": [
+      "ciWatcherV2Status"
+    ],
+    "prInventoryReductionStatus": [
+      "prInventoryReductionEngineStatus"
+    ],
+    "mainReflectionPackageStatus": [
+      "mainReflectionPackageBuilderStatus"
+    ],
+    "reviewEvidenceProtocolV2Status": [
+      "reviewEvidenceProtocolV3Status"
+    ],
+    "runtimeReturnGateStatus": [
+      "runtimeReturnGateV2Status"
+    ],
+    "safeCiFailureArtifactV2Status": [
+      "ciWatcherV2Status",
+      "failureTriageEngineStatus"
+    ],
+    "repairPlanSafeJsonStatus": [
+      "bodyRepairHintStatus",
+      "repairPlanSafeJsonStatus"
+    ],
+    "missingStatusTaxonomyStatus": [
+      "statusCompressionCompatibilityStatus"
+    ],
+    "externalSourceAbsorptionMapStatus": [
+      "standingPolicyReferenceStatus"
+    ],
+    "orchestrationAbsorptionMapStatus": [
+      "sessionBudgetStatus",
+      "mainThreadAuthorityStatus"
+    ]
+  },
+  "tokenHardCap": "required",
+  "contextCapsule": "required",
+  "failureClosure": "required",
+  "v111AbsorptionMap": {
+    "proSummaryFirstStatus": [
+      "chatHardCapStatus",
+      "artifactPointerOnlyStatus"
+    ],
+    "detailOnDemandStatus": [
+      "detailEscalationGateStatus"
+    ],
+    "deltaOnlyReportingStatus": [
+      "stateDeltaRequiredStatus",
+      "noHistoryReplayStatus"
+    ],
+    "tokenBudgetStatus": [
+      "inputTokenBudgetStatus",
+      "chatHardCapStatus"
+    ],
+    "sessionBudgetStatus": [
+      "activeSessionCountHardCapStatus",
+      "eightSessionDefaultDeniedStatus"
+    ],
+    "codexInstructionCompressionStatus": [
+      "codexInstructionMacroStatus"
+    ],
+    "standingPolicyReferenceStatus": [
+      "codexInstructionMacroStatus",
+      "noHistoryReplayStatus"
+    ],
+    "repoBoundaryReferenceStatus": [
+      "contextCapsuleStatus"
+    ],
+    "noRepeatContextGuardStatus": [
+      "noHistoryReplayStatus",
+      "stateDeltaRequiredStatus"
+    ],
+    "decisionLedgerFileStatus": [
+      "contextCapsuleStatus",
+      "ledgerAbsorptionFirstStatus"
+    ],
+    "gateLedgerFileStatus": [
+      "ledgerAbsorptionFirstStatus"
+    ],
+    "stopResumeContractStatus": [
+      "executableStopResumeStatus",
+      "validationResumePlanStatus"
+    ],
+    "longRunningValidationPlannerStatus": [
+      "longRunningValidationPlannerV2Status"
+    ],
+    "ciWatcherV2Status": [
+      "ciWatcherArtifactStatus",
+      "sameHeadCiLedgerStatus"
+    ],
+    "forbiddenContentScannerV2Status": [
+      "safeEvidenceWordingAllowlistStatus",
+      "forbiddenContentScannerV2Status"
+    ],
+    "readinessLanguageLinterV2Status": [
+      "readinessLanguageLinterV2Status"
+    ],
+    "noDeployProofArtifactStatus": [
+      "tokenPreflightGateLedgerStatus",
+      "deployApprovalStateMachineV2Status"
+    ],
+    "vgcTokenStageArtifactStatus": [
+      "vgcTokenStageArtifactV2Status"
+    ],
+    "ownerValuesWorkflowStatus": [
+      "ownerValuesWorkflowV2Status"
+    ],
+    "deployApprovalStateMachineStatus": [
+      "deployApprovalStateMachineV2Status"
+    ],
+    "runtimeReadinessBlockerDigestStatus": [
+      "runtimeReadinessBlockerDigestV3Status"
+    ],
+    "live2dCriticalInvariantStatus": [
+      "live2dCriticalInvariantTopGateStatus"
+    ],
+    "performanceBudgetV2Status": [
+      "performanceBudgetV3Status"
+    ],
+    "operatorEffortScoreStatus": [
+      "tokenEconomyLossAuditStatus",
+      "operationalClosureScoreStatus"
+    ],
+    "outputVolumeScoreStatus": [
+      "chatHardCapStatus"
+    ],
+    "sessionEfficiencyScoreStatus": [
+      "activeSessionCountHardCapStatus"
+    ]
+  },
+  "absorbedStatusMap": {
+    "tokenBudgetGovernorV2Status": [
+      "tokenBudgetStatus",
+      "inputTokenBudgetStatus"
+    ],
+    "conversationSurfaceBudgetStatus": [
+      "chatHardCapStatus",
+      "proSummaryFirstStatus"
+    ],
+    "ciWatcherThinModeStatus": [
+      "ciWatcherStatus",
+      "ciWatcherV2Status"
+    ],
+    "finalReportCompressionV2Status": [
+      "mainReflectionPackageStatus",
+      "mainReflectionPackageV2Status"
+    ],
+    "precisionBenchmarkParityV2Status": [
+      "precisionBenchmarkParityStatus"
+    ]
+  },
+  "targetRepoMode": true,
+  "contextRouting": {
+    "version": "1.2.6",
+    "field": "orchestrationCapsule.skillContextRouting",
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "subtitle": "Self-reporting becomes observed state; long autonomy uses short safe loops.",
+    "tokenOnlyMetadataProfile": false
+  },
+  "observedSkillDecisionClosure": {
+    "version": "1.2.4",
+    "fields": [
+      "orchestrationCapsule.finalDecisionClosure",
+      "orchestrationCapsule.workspaceIdentityGate",
+      "orchestrationCapsule.activePolicyIndex",
+      "orchestrationCapsule.contextReadLedger",
+      "orchestrationCapsule.skillContractRegistry",
+      "orchestrationCapsule.skillEffectivenessLedger",
+      "orchestrationCapsule.escalationEffectivenessLedger",
+      "workerProofCapsule.reviewerIndependenceProof",
+      "workerProofCapsule.reviewLoopVerification",
+      "ownerDecisionBrief.finalDecisionClosureSummary"
+    ],
+    "activePolicyIndex": "docs/process/CODEX_ACTIVE_POLICY_INDEX.json",
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "targetRollout": "not_started",
+    "subtitle": "Prove what was read. Prove what worked. Prove why it stopped."
+  },
+  "goalScopedDelegatedAutonomy": {
+    "version": "1.2.4",
+    "name": "Goal-Scoped Delegated Autonomy and Evidence Semantics",
+    "fields": [
+      "orchestrationCapsule.goalContract",
+      "orchestrationCapsule.delegationBoundary",
+      "orchestrationCapsule.evidenceSemanticsKernel",
+      "orchestrationCapsule.targetHarnessFootprintPolicy",
+      "workerProofCapsule.boundedExpertLoop",
+      "workerProofCapsule.expertRoleLedger",
+      "workerProofCapsule.safeFailureDigest",
+      "ownerDecisionBrief.finalDecisionClosureAdapter",
+      "ownerDecisionBrief.ownerBurdenReducer",
+      "ownerDecisionBrief.safeSessionLearningProposal",
+      "ownerDecisionBrief.repoSpecificVisualProofSurface"
+    ],
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "targetRollout": "not_started",
+    "finalAuthority": "v1.1.8_final_decision_kernel",
+    "subtitle": "Delegate technical evaluation inside the goal scope; never create owner authority."
+  },
+  "goalShardedWorktreeFleet": {
+    "version": "1.2.5",
+    "name": "Goal-Sharded Worktree Fleet and Evidence Lane Closure",
+    "p0InternalBlocks": [
+      "Goal Shard and Progress Evidence",
+      "Worktree Fleet and Shard Merge Queue",
+      "Evidence Lane and QG Lane Semantics",
+      "Typed Monitor Inbox and Cost-Aware Fanout Guard",
+      "Skill / Review / Product Value Yield"
+    ],
+    "fields": [
+      "orchestrationCapsule.goalShardAndProgressEvidence",
+      "orchestrationCapsule.evidenceLaneAndQGLaneSemantics",
+      "orchestrationCapsule.typedMonitorInboxAndFanoutGuard",
+      "orchestrationCapsule.skillReviewProductValueYield",
+      "workerProofCapsule.worktreeFleetContract",
+      "workerProofCapsule.shardMergeQueue",
+      "ownerDecisionBrief.productValueDeltaSummary",
+      "ownerDecisionBrief.safeMemoryLedger"
+    ],
+    "p1OptionalSurfaces": [
+      "Execution Ladder",
+      "Safe Batch Tool Plan",
+      "Safe Memory Ledger",
+      "Repo-specific Visual Proof Surface"
+    ],
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "targetRollout": "not_started",
+    "finalAuthority": "v1.1.8_final_decision_kernel",
+    "subtitle": "v1.2.5 is a control plane, not an authority expansion."
+  },
+  "observedStateMinimalLoopRuntime": {
+    "version": "1.2.6",
+    "name": "Observed-State Bridge-Safe Loop Runtime with Context-Slim Skill and Validation Routing",
+    "p0InternalBlocks": [
+      "Observed Workspace, Owner Receipt, and Capability Boundary",
+      "Spec-First Checker/Builder Loop and Stop Circuit",
+      "Evidence Lane State Machine and Safe Failure Capsule",
+      "Context / Skill / Validation Budget Router",
+      "Skill / Review / Product Value Effectiveness"
+    ],
+    "fields": [
+      "orchestrationCapsule.observedWorkspaceOwnerReceiptAndCapability",
+      "orchestrationCapsule.specFirstCheckerBuilderLoopAndStopCircuit",
+      "orchestrationCapsule.evidenceLaneStateMachineAndSafeFailureCapsule",
+      "orchestrationCapsule.contextSkillValidationBudgetRouter",
+      "orchestrationCapsule.skillReviewProductValueEffectiveness",
+      "workerProofCapsule.observedGitWorktreePrState",
+      "ownerDecisionBrief.ownerDecisionReceipt",
+      "ownerDecisionBrief.ownerDelegatedProcessReceipt"
+    ],
+    "p1OptionalSurfaces": [
+      "Knowledge Map Capsule",
+      "Bridge Handoff Extended Mode",
+      "Operator Output Discipline",
+      "Repo-specific Visual Proof",
+      "Safe Session Learning Proposal",
+      "Architecture Entropy Watch"
+    ],
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "targetRollout": "completed",
+    "finalAuthority": "v1.1.8_final_decision_kernel",
+    "subtitle": "Self-reporting becomes observed state; long autonomy uses short safe loops."
+  },
+  "versioning": {
+    "activeHarnessVersion": "1.2.7",
+    "activeSelfTestSuite": "v127",
+    "compatibility": "readable"
+  },
+  "targetRepoProfile": "FUNKY",
+  "targetRepository": "hiro4649/CRIPTO-TIP",
+  "prBodyMachineEvidence": false,
+  "deterministicDecisionProjectionAndTokenMinimalLoopClosure": {
+    "version": "1.2.8",
+    "name": "Deterministic Decision Projection and Token-Minimal Loop Closure",
+    "sourceOnlyRelease": false,
+    "targetRollout": "completed",
+    "rolloutClass": "complex",
+    "materialization": "target_quality_gate_active_path",
+    "newP0Artifact": false,
+    "newTopLevelStatus": false,
+    "newSkill": false,
+    "finalAuthority": "v1.1.8_final_decision_kernel",
+    "v127RollbackAvailable": true,
+    "previousRollbackAvailable": true,
+    "sourceFullBundleCopied": false,
+    "workflowChanged": false,
+    "productCodeChanged": false,
+    "packageOrLockfileChanged": false,
+    "routineManagedSafeArtifactRead": 1,
+    "routineColdArtifactRead": 0,
+    "diagnosticColdArtifactReadMax": 3,
+    "routineSelectedSkillMax": 1,
+    "routineReviewerFanout": 0,
+    "routineOwnerInterruptMax": 0,
+    "prBodyMachineEvidence": false,
+    "safeSummaryOnly": true,
+    "authority": {
+      "decisionCapsule": "domain_decision_authority",
+      "evidenceCapsule": "same_head_freshness_authority",
+      "finalDecision": "pass_block_mergeAllowed_exit_code_authority",
+      "qualityGateSafeSummary": "non_authoritative_projection"
+    },
+    "safety": {
+      "deployForbidden": true,
+      "walletAccessForbidden": true,
+      "rpcAccessForbidden": true,
+      "secretAccessForbidden": true,
+      "runtimeReadinessClaimed": false,
+      "productionReadinessClaimed": false,
+      "legalComplianceClaimed": false,
+      "youtubePolicyComplianceClaimed": false,
+      "sourceFullBundleCopied": false,
+      "falsePassForbidden": true,
+      "prHeadSelfAuthorizationForbidden": true
+    }
+  },
+  "authorityCreated": false,
+  "runtimeCodeChanged": false,
+  "packageOrLockfileChanged": false,
+  "workflowChanged": false,
+  "versioningRollback": {
+    "activeHarnessVersion": "1.2.8",
+    "activeSelfTestSuite": "v128",
+    "compatibility": "blocking"
+  },
+  "goalContractedCapabilityRouter": {
+    "version": "1.2.9",
+    "sourceHarnessCommit": "07bba3cba7456375194fc25fe1d2108a893502d0",
+    "rolloutClass": "complex",
+    "materialization": "target_quality_gate_active_path",
+    "sourceFullBundleCopied": false,
+    "modelIdPinnedInTarget": false,
+    "hostAdapterStoredInTarget": false,
+    "realHostExecution": "user_local_trusted_adapter",
+    "independentVerifierRequired": true,
+    "pluginDefault": "none",
+    "pluginUnavailablePolicy": "explicit_nonblocking",
+    "finalAuthority": "v1.1.8_final_decision_kernel",
+    "routineColdArtifactRead": 0,
+    "routineSelectedSkillMax": 1,
+    "routineReviewerFanout": 0,
+    "routineOwnerInterruptMax": 0,
+    "productCodeChanged": false,
+    "runtimeCodeChanged": false,
+    "packageOrLockfileChanged": false,
+    "workflowChanged": false,
+    "productRuntimeMutationCount": 0,
+    "authorityCreated": false,
+    "discoFunkySafetyPreserved": true
+  },
+  "currentVersion": "1.3.0",
+  "previousVersion": "1.2.9",
+  "targetProfileClass": "product_heavy_target",
+  "targetMutationCount": 0,
+  "productRuntimeMutationCount": 0,
+  "productMutationCount": 0,
+  "deployChanged": false,
+  "walletRpcSecretChanged": false,
+  "routineSelectedSkillMax": 0,
+  "routineColdArtifactRead": 0,
+  "routineReviewerFanout": 0,
+  "versionAuthority": {
+    "v130": "blocking_current_active_authority",
+    "v129": "immediate_rollback",
+    "v128": "blocking_compatibility",
+    "v127": "compatibility_readable"
+  },
+  "v129Rollback": {
+    "activeHarnessVersion": "1.2.9",
+    "activeSelfTestSuite": "v129",
+    "rollbackAvailable": true,
+    "targetHarnessVersion": "1.2.9"
+  },
+  "performanceTrack": {
+    "state": "deferred",
+    "authoritative": false,
+    "FableComparatorState": "unavailable",
+    "superiorityClaimState": "not_proven",
+    "sdkTransportState": "not_installed",
+    "sixtyTaskBenchmarkState": "not_required_for_core_activation",
+    "learnedPolicyState": "shadow_only",
+    "skillRuntimeState": "deferred",
+    "dagAgentTeamState": "deferred",
+    "affectsQualityScore": false,
+    "affectsBlockingCount": false,
+    "affectsRequiredChecks": false
+  },
+  "v130CoreTargetProfile": {
+    "state": "active",
+    "profile": "product_heavy_target",
+    "installsPerformanceTrack": false,
+    "installsFableComparator": false,
+    "installsSdkBenchmarkRunner": false,
+    "installsSixtyTaskBenchmark": false,
+    "installsSkillRuntimeActivation": false,
+    "installsDagAgentTeamRuntime": false,
+    "installsLearnedPolicyActivation": false,
+    "installsCyberSpecialistRuntime": false,
+    "routineColdArtifactRead": 0,
+    "routineSelectedSkillMax": 0,
+    "routineReviewerFanout": 0,
+    "routineOwnerInterruptMax": 0,
+    "authorityCreated": false,
+    "productRuntimeMutationCount": 0
+  },
+  "targetCompatibilityBridge": {
+    "state": "active",
+    "purpose": "preserve_v111_v129_target_compatibility_chain_for_v130_core_metadata_targets",
+    "targetProfile": "product_heavy_target",
+    "compatibilityChain": {
+      "v111SelfTestStatus": {
+        "required": true,
+        "preserveOrGenerate": true,
+        "missingBlockingForbidden": true,
+        "path": "v111SelfTestStatus",
+        "directProjectionRequired": true,
+        "directProjectionPath": "v111SelfTestStatus",
+        "directProjectionShapeKeys": [
+          "status",
+          "reasonCodes",
+          "blocking",
+          "safeSummary",
+          "nextSafeAction",
+          "safeSummaryOnly"
+        ],
+        "projectionSource": "existing_v111_self_test_report_or_buildDefaultV111Statuses",
+        "projectionOrder": "before_buildTargetModeLegacyCompatibilityReport",
+        "classificationPath": "targetModeLegacyCompatibilityStatus.classifications[]",
+        "forbiddenClassification": "missing_blocking",
+        "requiredClassification": "blocking_current",
+        "requiredEffectiveStatus": "pass",
+        "requiredStatus": "pass"
+      },
+      "v080_v112": "target_shadow_legacy_count_only",
+      "v127": "blocking_compatibility",
+      "v128": "blocking_compatibility_rollback",
+      "v129": "immediate_rollback",
+      "v130": "blocking_current_active_authority"
+    },
+    "forbiddenBypass": [
+      "new_checker",
+      "new_status_family",
+      "new_artifact_family",
+      "threshold_change",
+      "required_check_bypass",
+      "full_quality_gate_bypass",
+      "performance_track_start",
+      "fable_comparator_start",
+      "sdk_benchmark_start",
+      "target_product_code_change",
+      "package_or_lockfile_change",
+      "deploy_wallet_rpc_secret_change"
+    ],
+    "oneRepairMax": true,
+    "sameBlockerAction": "auto_quarantine"
+  },
+  "readonlyHarnessProfile": true
 }

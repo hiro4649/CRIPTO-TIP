@@ -2,77 +2,81 @@
 
 ## CRIPTO-TIP Working Guide
 
-CRIPTO-TIP is a crypto-tip and YouTube-facing application workspace. Normal work
-must stay inside the owner-approved repo scope and should prefer small,
-reviewable changes with current-head evidence.
+This repository is the FUNKY repair workspace. Normal work must stay inside the
+owner-approved scope and should preserve backend/D8, staging, and runtime
+boundaries unless explicitly authorized.
 
-Default commands:
-- Install: `corepack enable && corepack pnpm install`
-- Lint: `corepack pnpm -r --workspace-concurrency=1 lint`
-- Typecheck: `corepack pnpm -r --workspace-concurrency=1 typecheck`
-- Test: `vitest run packages/shared apps/api apps/overlay apps/web`
-- Evidence or CI changes: use the relevant `evidence:*` or `ci:*` script.
+Package metadata and verification entrypoints may vary by subproject. Before
+choosing commands, inspect the relevant package or tool metadata for the touched
+area and run the smallest meaningful check that already exists. Do not invent
+commands, install dependencies, or claim verification passed when dependencies
+or scripts are unavailable.
 
-Crypto custody, wallet/RPC access, investment advice, YouTube policy compliance,
-legal compliance, production, deployment, and readiness claims require explicit
-owner scope and evidence. Done means the smallest relevant verification was run
-or honestly reported unavailable, with no raw logs or secret-like output.
+Do not claim staging no-tx PASS, runtime readiness, production readiness,
+deployment readiness, backend/D8 readiness, or product repair completion unless
+the owner explicitly scopes that evidence. Done means changed files are scoped,
+verification is evidence-based or honestly unavailable, and no raw logs or
+secret-like output are exposed.
 
 <!-- CODEX_QUALITY_HARNESS_BEGIN -->
-CODEX_QUALITY_HARNESS_FILE v1.2.9
-
-## Prime Directive
-
-Ship the smallest correct change that increases product value without weakening
-truth, trust, security, or maintainability.
-
-This AGENTS.md is a compact doctrine and routing map; detailed policy lives in
-docs/process.
+CODEX_QUALITY_HARNESS_FILE v1.3.0
 
 ## Active Harness
 
-Active target harness: v1.2.9 / v129.
-Read first: AGENTS.md, docs/process/CODEX_HARNESS_MANIFEST.json,
-docs/process/CODEX_V129_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json.
-README, legacy specs, and PR history are conditional reads only.
+## Doctrine
+
+Truth, trust, security, maintainability, product value, and the smallest correct change are the top-level doctrine. Preserve authority boundaries before optimizing speed.
+
+## Routing
+
+Route routine harness work through the target quality gate and safe summaries. Route product, runtime, security, deployment, wallet/RPC, package, lockfile, or authority changes to their explicit repo profile and evidence lane before acting.
+Active target harness: v1.3.0 Core / v130 metadata gate target.
+Repository profile: FUNKY.
+Read first: AGENTS.md, docs/process/CODEX_HARNESS_MANIFEST.json, docs/process/CODEX_V130_SPEC.md, and docs/process/CODEX_ACTIVE_POLICY_INDEX.json when present.
+README, legacy specs, PR history, and full Source HARNESS files are conditional reads only.
 
 ## Authority
 
-v1.1.8 Final Decision remains final authority.
-v1.1.9 P0 artifacts and operator-visible statuses remain preserved.
-v1.2.0 adaptive routing, v1.2.1 calibration, v1.2.2 read-budget routing,
-and v1.2.3 observed evidence/decision closure remain compatibility layers.
-v1.2.4 specialist-governance fields remain compatibility layers.
-v1.2.5 adds Goal Shard, Worktree Fleet, Evidence Lane, Typed Monitor Inbox, Fanout Guard, and Yield fields. v1.2.6 adds observed-state loops. v1.2.7 adds receipt-carried continuation and evidence compression inside the existing P0 artifacts.
+v1.1.8 Final Decision remains final authority. v1.2.7 receipt-carried continuation, same-head evidence, PR body display-only, validation reuse, Stop Circuit, and rollback compatibility remain preserved.
 Rollback compatibility marker: CODEX_QUALITY_HARNESS_FILE v1.2.7.
-Rollback compatibility marker: Active target harness: v1.2.7 / v127.
-v1.2.7 remains available as compatibility. v1.2.8 remains available as rollback
-compatibility. v1.2.9 adds goal-contracted capability routing and independent
-verification metadata inside the existing target quality gate.
+v1.3.0 Core installs only the product-heavy target profile and v111-v129 compatibility bridge. v1.2.9 remains immediate rollback, v1.2.8 remains blocking compatibility, and v1.2.7 remains readable compatibility. It does not create owner authority.
 
 ## Target Footprint
 
-Do not add new P0 artifacts, top-level statuses, skills, workflow behavior,
-product code, package or lockfile changes, runtime code, or readiness claims
-for harness rollout unless separately scoped by the owner.
-Target AGENTS.md is a compact routing map. Put detailed policy in docs/process
-and use profile IDs instead of repeated forbidden-scope text.
+Metadata target rollout keeps the existing target quality gate active path, v111 legacy self-test projection, and repo-specific product/runtime boundaries.
+Do not add new P0 artifacts, top-level statuses, skills, workflow behavior, product code, runtime code, package or lockfile changes, deploy/RPC/wallet access, or readiness claims for harness rollout unless separately scoped. Performance Track, Fable comparison, SDK benchmark, Skill runtime, DAG agent team runtime, learned policy activation, and Cyber specialist runtime are deferred and non-authoritative.
+
+## Token Economy
+
+Routine path reads one managed safe artifact, zero cold artifacts, zero selected skills, zero routine reviewer fanout, and an eight-line final report maximum. Use profile IDs and safe summaries instead of repeated forbidden-scope text.
 
 ## Safety Boundary
 
-Use safe artifacts only. Do not read raw logs. Do not use 8-session.
-Do not access wallet/RPC/deploy/secrets, submit GitHub approval review,
-self-approve, release, publish, BscScan verify, or claim runtime, production,
-legal, or YouTube policy compliance.
-Expert agents may make technical findings and one safe next action inside the
-goal scope; they cannot create owner authority or widen product/runtime/package
-scope. Skeptic review is abnormal-condition only. Safe session learning is
-proposal-only and owner-approval-required.
+Prevent false PASS outcomes before adding features.
+Use safe artifacts only. Do not read raw logs. Do not use 8-session. Do not self-approve, submit approval reviews, release, publish, deploy, access wallet/RPC/secrets, or claim runtime, production, legal, YouTube, BscScan, staging, testnet, or mainnet readiness.
 
 ## Local Task Discipline
 
-Start from clean default branch or clean worktree. Preserve user changes.
-Run v129, v128 rollback, v127 compatibility self-tests and the local quality gate for harness rollout. For product
-work, use the repo-specific commands above and keep product evidence separate
-from harness evidence.
+Start from a clean default branch or clean worktree. Preserve user changes. Run v130 target self-test, v129 rollback evidence, v128 compatibility evidence, and v127 readable compatibility evidence when present. Use repo-specific checks for product work and keep product evidence separate from harness evidence.
+
+## v1.2.7 Rollback Compatibility Notes
+
+CODEX_QUALITY_HARNESS_FILE v1.2.7
+Active target harness: v1.2.7 / v127.
+v1.2.0 adaptive routing remains a compatibility layer.
+v1.2.4 specialist-governance fields remain compatibility layers.
+v1.2.5 adds Goal Shard.
+v1.2.6 adds observed-state loops.
+v1.2.7 adds receipt-carried continuation.
+Run v127 self-test and the local quality gate for v1.2.7 harness work.
+Run v126 only as a blocking compatibility test where required.
+v1.2.7 adds only typed owner process and conditional merge receipts,
+same-head decision evidence envelopes, content-addressed validation reuse,
+and context/output/owner-interrupt compression inside existing P0 artifacts.
+Do not add new P0 artifacts or top-level statuses.
+Do not widen runtime code, or readiness claims.
+
 <!-- CODEX_QUALITY_HARNESS_END -->
+
+
+HARNESS v1.3.0 Core metadata target bridge: v1.2.9 remains immediate rollback, v1.2.8 remains compatibility, v1.2.7 remains readable compatibility, and v080-v112 remains target shadow legacy count only. No product, runtime, package, lockfile, workflow, deploy, wallet, RPC, or secret scope is authorized by this rollout.

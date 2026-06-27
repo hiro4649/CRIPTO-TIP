@@ -1,6 +1,6 @@
 {
-  "marker": "CODEX_QUALITY_HARNESS_FILE v1.2.9",
-  "schemaVersion": "1.2.9",
+  "marker": "CODEX_QUALITY_HARNESS_FILE v1.3.0",
+  "schemaVersion": "1.3.0",
   "indexVersion": "1",
   "indexPath": "docs/process/CODEX_ACTIVE_POLICY_INDEX.json",
   "purpose": "Bound md and skill reads by task profile while preserving active authority.",
@@ -15,10 +15,9 @@
       "requiredReads": [
         "AGENTS.md",
         "docs/process/CODEX_HARNESS_MANIFEST.json",
-        "docs/process/CODEX_V129_SPEC.md"
+        "docs/process/CODEX_V128_SPEC.md"
       ],
       "deferredReads": [
-        "docs/process/CODEX_V128_SPEC.md",
         "docs/process/CODEX_V127_SPEC.md",
         "README.md",
         "legacy_specs",
@@ -34,6 +33,7 @@
         "docs/process/CODEX_HARNESS_MANIFEST.json"
       ],
       "deferredReads": [
+        "docs/process/CODEX_V128_SPEC.md",
         "README.md",
         "legacy_specs",
         "pr_history_docs"
@@ -46,11 +46,10 @@
       "requiredReads": [
         "AGENTS.md",
         "docs/process/CODEX_HARNESS_MANIFEST.json",
-        "docs/process/CODEX_V129_SPEC.md",
+        "docs/process/CODEX_V128_SPEC.md",
         "owner_rollout_instruction"
       ],
       "deferredReads": [
-        "docs/process/CODEX_V128_SPEC.md",
         "docs/process/CODEX_V127_SPEC.md",
         "README.md",
         "legacy_specs",
@@ -59,83 +58,34 @@
       "mdFilesReadMax": 4,
       "selectedSkillsMax": 1,
       "thirdSkillAllowed": false
-    },
-    "harness_source_body": {
-      "requiredReads": [
-        "AGENTS.md",
-        "docs/process/CODEX_HARNESS_MANIFEST.json",
-        "docs/process/CODEX_V128_SPEC.md"
-      ],
-      "deferredReads": [
-        "docs/process/CODEX_V127_SPEC.md",
-        "README.md",
-        "legacy_specs",
-        "pr_history_docs"
-      ],
-      "mdFilesReadMax": 6,
-      "selectedSkillsMax": 3,
-      "thirdSkillAllowed": true,
-      "thirdSkillRequiresTypedJustification": true
-    },
-    "compatibility_repair": {
-      "requiredReads": [
-        "AGENTS.md",
-        "docs/process/CODEX_HARNESS_MANIFEST.json",
-        "docs/process/CODEX_V127_SPEC.md",
-        "failing_legacy_spec_only"
-      ],
-      "deferredReads": [
-        "README.md",
-        "unrelated_legacy_specs",
-        "pr_history_docs"
-      ],
-      "mdFilesReadMax": 6,
-      "selectedSkillsMax": 3,
-      "thirdSkillAllowed": true,
-      "thirdSkillRequiresTypedJustification": true
     }
   },
   "requiredReads": [
     "AGENTS.md",
     "docs/process/CODEX_HARNESS_MANIFEST.json",
-    "docs/process/CODEX_V129_SPEC.md"
+    "docs/process/CODEX_V130_SPEC.md",
+    "docs/process/CODEX_ACTIVE_POLICY_INDEX.json"
   ],
   "deferredReads": [
+    "docs/process/CODEX_V129_SPEC.md",
     "docs/process/CODEX_V128_SPEC.md",
     "docs/process/CODEX_V127_SPEC.md",
     "README.md",
-    "legacy_specs",
-    "pr_history_docs"
+    "legacy specs",
+    "PR history"
   ],
-  "selectedSkillsMax": 1,
+  "selectedSkillsMax": 0,
   "mdFilesReadMax": 3,
   "newP0Artifact": false,
   "newTopLevelStatus": false,
   "newSkill": false,
   "safeSummaryOnly": true,
-  "routineColdArtifactReadMax": 0,
   "receiptCarriedContinuationAndEvidenceCompression": {
     "version": "1.2.7",
     "name": "Receipt-Carried Continuation and Evidence Compression",
     "sourceOnlyRelease": false,
     "targetRollout": "installed",
-    "newP0Artifact": false,
-    "newTopLevelStatus": false,
-    "newSkill": false,
     "finalAuthority": "v1.1.8_final_decision_kernel",
-    "p0InternalBlocks": [
-      "Typed Owner Process Receipt and Continuation Kernel",
-      "Decision Evidence Envelope and Same-Head Binder",
-      "Validation DAG and Content-Addressed Evidence Reuse",
-      "Context / Output / Owner-Interrupt Token Budget",
-      "Blocker Closure and Product Value Pressure"
-    ],
-    "processReceipt": {
-      "survivesInScopeCommitHeadChanges": true,
-      "expiresOnScopeDelta": true,
-      "commitPushCreatePrContinueInsideReceipt": true,
-      "mergeRequiresSeparateReceipt": true
-    },
     "decisionEvidence": {
       "prBodyMachineEvidence": false,
       "sameHeadBinderRequiredForMerge": true
@@ -147,13 +97,10 @@
     },
     "safety": {
       "rawLogsRead": false,
-      "eightSessionUsed": false,
       "selfApproval": false,
       "githubApprovalReview": false,
       "runtimeReadinessClaimed": false,
       "productionReadinessClaimed": false,
-      "legalComplianceClaimed": false,
-      "youtubePolicyComplianceClaimed": false,
       "walletRpcDeployAccess": false
     }
   },
@@ -163,36 +110,23 @@
     "sourceOnlyRelease": false,
     "targetRollout": "completed",
     "rolloutClass": "complex",
-    "materialization": "target_quality_gate_active_path",
-    "newP0Artifact": false,
-    "newTopLevelStatus": false,
-    "newSkill": false,
     "finalAuthority": "v1.1.8_final_decision_kernel",
-    "v127RollbackAvailable": true,
-    "sourceFullBundleCopied": false,
-    "workflowChanged": false,
-    "productCodeChanged": false,
-    "packageOrLockfileChanged": false,
-    "routineManagedSafeArtifactRead": 1,
-    "routineColdArtifactRead": 0,
-    "diagnosticColdArtifactReadMax": 3,
-    "routineSelectedSkillMax": 1,
-    "routineReviewerFanout": 0,
-    "routineOwnerInterruptMax": 0,
-    "prBodyMachineEvidence": false,
-    "complexSafety": {
-      "cryptoCustodyBoundaryPreserved": true,
-      "youtubePolicyBoundaryPreserved": true,
-      "deployForbidden": true,
-      "walletAccessForbidden": true,
-      "rpcAccessForbidden": true,
-      "secretAccessForbidden": true,
-      "runtimeReadinessClaimed": false,
-      "productionReadinessClaimed": false,
-      "legalComplianceClaimed": false,
-      "youtubePolicyComplianceClaimed": false
+    "routine": {
+      "managedSafeArtifactRead": 1,
+      "coldArtifactRead": 0,
+      "selectedSkillMax": 1,
+      "finalReportLineMax": 8,
+      "ownerInterruptMax": 0
+    },
+    "projection": {
+      "authority": "non_authoritative",
+      "routineBytesMax": 1600,
+      "stressBytesMax": 2048
     }
   },
+  "routineColdArtifactReadMax": 0,
+  "fullHistory": "forbidden",
+  "rawLogs": "forbidden",
   "goalContractedCapabilityRouter": {
     "version": "1.2.9",
     "sourceHarnessCommit": "07bba3cba7456375194fc25fe1d2108a893502d0",
@@ -205,10 +139,101 @@
     "independentVerifierRequired": true,
     "pluginDefault": "none",
     "pluginUnavailablePolicy": "explicit_nonblocking",
+    "finalAuthority": "v1.1.8_final_decision_kernel",
     "routineColdArtifactRead": 0,
     "routineSelectedSkillMax": 1,
     "routineReviewerFanout": 0,
     "routineOwnerInterruptMax": 0,
     "authorityCreated": false
-  }
+  },
+  "activeHarnessVersion": "1.3.0",
+  "activeSelfTestSuite": "v130",
+  "routineReviewerFanout": 0,
+  "authorityCreated": false,
+  "targetMutationCount": 0,
+  "performanceTrack": {
+    "state": "deferred",
+    "authoritative": false,
+    "FableComparatorState": "unavailable",
+    "superiorityClaimState": "not_proven",
+    "sdkTransportState": "not_installed",
+    "sixtyTaskBenchmarkState": "not_required_for_core_activation",
+    "learnedPolicyState": "shadow_only",
+    "skillRuntimeState": "deferred",
+    "dagAgentTeamState": "deferred",
+    "affectsQualityScore": false,
+    "affectsBlockingCount": false,
+    "affectsRequiredChecks": false
+  },
+  "v130CoreTargetProfile": {
+    "state": "active",
+    "profile": "product_heavy_target",
+    "installsPerformanceTrack": false,
+    "installsFableComparator": false,
+    "installsSdkBenchmarkRunner": false,
+    "installsSixtyTaskBenchmark": false,
+    "installsSkillRuntimeActivation": false,
+    "installsDagAgentTeamRuntime": false,
+    "installsLearnedPolicyActivation": false,
+    "installsCyberSpecialistRuntime": false,
+    "routineColdArtifactRead": 0,
+    "routineSelectedSkillMax": 0,
+    "routineReviewerFanout": 0,
+    "routineOwnerInterruptMax": 0,
+    "authorityCreated": false,
+    "productRuntimeMutationCount": 0
+  },
+  "targetCompatibilityBridge": {
+    "state": "active",
+    "purpose": "preserve_v111_v129_target_compatibility_chain_for_v130_core_metadata_targets",
+    "targetProfile": "product_heavy_target",
+    "compatibilityChain": {
+      "v111SelfTestStatus": {
+        "required": true,
+        "preserveOrGenerate": true,
+        "missingBlockingForbidden": true,
+        "path": "v111SelfTestStatus",
+        "directProjectionRequired": true,
+        "directProjectionPath": "v111SelfTestStatus",
+        "directProjectionShapeKeys": [
+          "status",
+          "reasonCodes",
+          "blocking",
+          "safeSummary",
+          "nextSafeAction",
+          "safeSummaryOnly"
+        ],
+        "projectionSource": "existing_v111_self_test_report_or_buildDefaultV111Statuses",
+        "projectionOrder": "before_buildTargetModeLegacyCompatibilityReport",
+        "classificationPath": "targetModeLegacyCompatibilityStatus.classifications[]",
+        "forbiddenClassification": "missing_blocking",
+        "requiredClassification": "blocking_current",
+        "requiredEffectiveStatus": "pass",
+        "requiredStatus": "pass"
+      },
+      "v080_v112": "target_shadow_legacy_count_only",
+      "v127": "blocking_compatibility",
+      "v128": "blocking_compatibility_rollback",
+      "v129": "immediate_rollback",
+      "v130": "blocking_current_active_authority"
+    },
+    "forbiddenBypass": [
+      "new_checker",
+      "new_status_family",
+      "new_artifact_family",
+      "threshold_change",
+      "required_check_bypass",
+      "full_quality_gate_bypass",
+      "performance_track_start",
+      "fable_comparator_start",
+      "sdk_benchmark_start",
+      "target_product_code_change",
+      "package_or_lockfile_change",
+      "deploy_wallet_rpc_secret_change"
+    ],
+    "oneRepairMax": true,
+    "sameBlockerAction": "auto_quarantine"
+  },
+  "targetRepoMode": true,
+  "readonlyHarnessProfile": true
 }
