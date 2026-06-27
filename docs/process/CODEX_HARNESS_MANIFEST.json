@@ -564,7 +564,7 @@
     "activeSelfTestSuite": "v127",
     "compatibility": "readable"
   },
-  "targetRepoProfile": "FUNKY",
+  "targetRepoProfile": "CRIPTO-TIP",
   "targetRepository": "hiro4649/CRIPTO-TIP",
   "prBodyMachineEvidence": false,
   "deterministicDecisionProjectionAndTokenMinimalLoopClosure": {
