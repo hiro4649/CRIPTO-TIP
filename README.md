@@ -6,6 +6,10 @@ CRIPTO-TIP is an external IRIS Web Companion that accepts crypto Tip intents dur
 
 YouTube LIVE remains the broadcast and chat surface. CRIPTO-TIP does not replace YouTube Super Chat payment, does not sell or exchange tokens, does not custody viewer assets, and does not provide cash-out.
 
+## Safety boundary
+
+CRIPTO-TIP keeps crypto support intent handling separate from production wallet, RPC, deployment, and secret operations. Changes that touch those surfaces require separate owner-scoped review and must not be bundled with routine UI, API, docs, or harness work.
+
 ## MVP
 
 - `apps/web`: viewer companion UI with safety notices and mocked wallet flow.
